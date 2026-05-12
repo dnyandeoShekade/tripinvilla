@@ -332,6 +332,30 @@ const propertiesHomestaysList = [
     reviews: '3,245 Genuine Reviews',
     price: '₹140',
     img: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    title: 'Aparthotel Stare Miasto',
+    location: 'Kasol, Himachal Pradesh, India',
+    area: '31 sq. ft.',
+    beds: '2 Beds',
+    rooms: '1 Room',
+    guests: '3 Person',
+    rating: '4.8',
+    reviews: '3,245 Genuine Reviews',
+    price: '₹140',
+    img: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    title: 'Aparthotel Stare Miasto',
+    location: 'Kasol, Himachal Pradesh, India',
+    area: '31 sq. ft.',
+    beds: '2 Beds',
+    rooms: '1 Room',
+    guests: '3 Person',
+    rating: '4.8',
+    reviews: '3,245 Genuine Reviews',
+    price: '₹140',
+    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80'
   }
 ];
 
@@ -431,6 +455,22 @@ const savedWishlistItems = [
     reviews: '3,245 Genuine Reviews',
     price: '₹140',
     img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    title: 'Hilltop Escape Villa',
+    location: 'Ooty, Tamil Nadu, India',
+    rating: '4.8',
+    reviews: '3,245 Genuine Reviews',
+    price: '₹140',
+    img: 'https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=600&q=80'
+  },
+  {
+    title: 'Sea Breeze Villa',
+    location: 'Alibaug, Maharashtra, India',
+    rating: '4.8',
+    reviews: '3,245 Genuine Reviews',
+    price: '₹140',
+    img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80'
   }
 ];
 
@@ -2170,9 +2210,11 @@ export default function App() {
 
               <div className="reservation-timing-row">
                 <div className="time-badge">
+                  <Calendar size={14} color="#48BB78" />
                   <span>Check In : 3:00 PM</span>
                 </div>
                 <div className="time-badge">
+                  <Calendar size={14} color="#48BB78" />
                   <span>Check Out : 12:00 PM</span>
                 </div>
               </div>

@@ -1571,7 +1571,7 @@
    PROPERTY DETAILS PAGE CUSTOM HIGH-FIDELITY LAYOUTS
    ========================================================================== */
 .detail-page-wrapper {
-  width: 1280px;
+  width: 1440px;
   max-width: calc(100% - 158px);
   margin: 0 auto;
   padding-top: 150px;
@@ -1637,13 +1637,15 @@
   display: grid;
   grid-template-columns: 1.6fr 1fr;
   grid-gap: 12px;
-  height: 384px;
+  height: 440px; /* Upgraded to 440px for highly premium cinematic proportions */
 }
 
 .gallery-master-img {
   height: 100%;
   border-radius: 20px;
   overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
 }
 
 .gallery-master-img img {
@@ -1651,6 +1653,11 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-master-img:hover img {
+  transform: scale(1.04);
 }
 
 .gallery-sub-images {
@@ -1665,6 +1672,7 @@
   border-radius: 16px;
   overflow: hidden;
   position: relative;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
 }
 
 .sub-img-wrap img {
@@ -1672,13 +1680,19 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sub-img-wrap:hover img {
+  transform: scale(1.05);
 }
 
 .sub-img-wrap.overlay .gallery-count-layer {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1686,6 +1700,12 @@
   font-family: 'Lato', sans-serif;
   font-size: 15px;
   font-weight: 700;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+.sub-img-wrap.overlay:hover .gallery-count-layer {
+  background: rgba(0, 0, 0, 0.4);
 }
 
 /* Reservation & Booking Info Panel */
@@ -1694,9 +1714,15 @@
   border: 1px solid #E5E7EB;
   border-radius: 24px;
   padding: 24px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
   display: flex;
   flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.detail-reservation-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 40px rgba(0,0,0,0.07);
 }
 
 .reservation-title {
@@ -1723,6 +1749,27 @@
   display: flex;
   gap: 12px;
   margin-bottom: 18px;
+}
+
+.time-badge {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-family: 'Lato', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.time-badge:hover {
+  background: #F1F5F9;
+  border-color: #CBD5E1;
 }
 
 .reservation-checks-list {
@@ -1847,32 +1894,55 @@
 .amenity-pill-item {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   background: #FFFFFF;
-  border: 1px solid #E5E7EB;
-  border-radius: 14px;
-  padding: 12px 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  padding: 12px 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.015);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.amenity-pill-item:hover {
+  transform: translateY(-3px);
+  border-color: #58A429;
+  box-shadow: 0 12px 24px rgba(88, 164, 41, 0.08);
+}
+
+.amenity-pill-item svg {
+  background: rgba(72, 187, 120, 0.08); /* light brand green background */
+  border-radius: 50%;
+  padding: 10px;
+  width: 40px !important;
+  height: 40px !important;
+  box-sizing: border-box;
+  color: #48BB78;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .pill-texts {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .pill-lbl {
   font-family: 'Lato', sans-serif;
   font-size: 11px;
   font-weight: 600;
-  color: #9CA3AF;
+  color: #94A3B8;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .pill-val.green-text {
   font-family: 'Lato', sans-serif;
   font-size: 14px;
   font-weight: 700;
-  color: #58A429;
+  color: #334155;
 }
 
 /* Tab menu */
