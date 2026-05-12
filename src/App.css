@@ -424,8 +424,8 @@
    ========================================================================== */
 .destinations-carousel-section {
   position: relative;
-  width: 1281px;
-  max-width: 100%;
+  width: 1440px;
+  max-width: calc(100% - 158px);
   height: 465px;
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
