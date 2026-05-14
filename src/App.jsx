@@ -7,6 +7,7 @@ import {
   Edit2, User, Filter, MessageSquare, Play, Sliders, UserRound, UploadCloud
 } from 'lucide-react';
 import logoImg from './assets/Mask group.png';
+import darkLogoImg from './assets/image 2936.png';
 import heroBgImg from './assets/image.png';
 import './App.css';
 
@@ -18,6 +19,21 @@ import enquiriesIcon from './assets/Group 1707482340 (5).png';
 import aboutIcon from './assets/Group 1707482340.png';
 import recommendIcon from './assets/Group 1707482340 (1).png';
 import listYourPlaceIcon from './assets/Group 1707482340.svg';
+import loginLeftImg from './assets/Group 1707482649.png';
+import rect32Img from './assets/Rectangle 32.png';
+import rect33Img from './assets/Rectangle 33.png';
+import rect35Img from './assets/Rectangle 35.png';
+import footerLogoImg from './assets/Logo Container.png';
+import footerBgImg from './assets/Footer Background.png';
+import profileHeroImg from './assets/images.png';
+import wishlistHeroImg from './assets/image (1).png';
+import reviewsHeroImg from './assets/image (2).png';
+import enquiriesHeroImg from './assets/image (3).png';
+import aboutHeroImg from './assets/image (4).png';
+import contactHeroImg from './assets/image (5).png';
+import listPlaceHeroImg from './assets/imagess.png';
+import recommendHeroImg from './assets/mage.png';
+import contactBgShapeImg from './assets/Background Shape.png';
 
 const carouselDestinations = [
   { name: 'Mumbai', img: 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=400&q=80', count: 'Homestays - Villas & Appartments' },
@@ -643,7 +659,7 @@ export default function App() {
         <div className="navbar-container">
           {/* Logo image rendered beautifully with custom specs */}
           <div className="nav-logo" onClick={() => setActiveMenu('Home')}>
-            <img src={logoImg} alt="Tripinstays Logo" />
+            <img src={(activeMenu === 'Detail' || activeMenu === 'Properties') ? darkLogoImg : logoImg} alt="Tripinstays Logo" />
           </div>
 
           {/* Navigation central capsule pill menu */}
@@ -667,44 +683,9 @@ export default function App() {
                     }}
                     className="nav-pill-item"
                   >
-                    {isActive ? (
-                      /* Active state: Renders the EXACT same custom icon image, but inside a solid blue background container! */
-                      <div 
-                        style={{ 
-                          width: '31px', 
-                          height: '31px', 
-                          borderRadius: '50%', 
-                          background: 'var(--primary-blue)', 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          justifyContent: 'center',
-                          boxShadow: '0 4px 10px rgba(37, 99, 235, 0.4)'
-                        }}
-                      >
-                        <img 
-                          src={item.customIcon} 
-                          alt={item.name} 
-                          style={{ 
-                            width: '31px', 
-                            height: '31px', 
-                            objectFit: 'contain',
-                            display: 'block'
-                          }} 
-                        />
-                      </div>
-                    ) : (
-                      /* Inactive state: Renders the exact same custom icon image naturally */
-                      <img 
-                        src={item.customIcon} 
-                        alt={item.name} 
-                        style={{ 
-                          width: '31px', 
-                          height: '31px', 
-                          objectFit: 'contain',
-                          display: 'block'
-                        }} 
-                      />
-                    )}
+                    <div className={`nav-icon-circle ${isActive ? 'active' : 'inactive'}`}>
+                      {item.lucideIcon}
+                    </div>
                     <span>{item.name}</span>
                   </button>
                   {/* Vertical separator divider if not the last item */}
@@ -720,7 +701,7 @@ export default function App() {
           </button>
         </div>
       {/* ══ HERO SECTION (Height: 712px, Width: 100%) ══ */}
-      {(activeMenu !== 'Detail' && activeMenu !== 'Profile' && activeMenu !== 'Wishlist' && activeMenu !== 'Enquiries' && activeMenu !== 'Reviews' && activeMenu !== 'About Us' && activeMenu !== 'Contact' && activeMenu !== 'Terms' && activeMenu !== 'Recommend By Us' && activeMenu !== 'List Your Place') && (
+      {(activeMenu !== 'Detail' && activeMenu !== 'Profile' && activeMenu !== 'Wishlist' && activeMenu !== 'Enquiries' && activeMenu !== 'Reviews' && activeMenu !== 'About Us' && activeMenu !== 'Contact' && activeMenu !== 'Terms' && activeMenu !== 'Privacy' && activeMenu !== 'Recommend By Us' && activeMenu !== 'List Your Place') && (
         <div className="hero-wrapper">
           
           {/* Background Image: Loads your exact high-resolution custom hero image */}
@@ -900,17 +881,17 @@ export default function App() {
 
               {/* Execution Buttons */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <button className="text-btn" onClick={handleClearAll}>Clear all</button>
-                <button className="text-btn">Close</button>
-                
-                <button className="btn-search-ai">
-                  <Sparkles size={16} color="var(--primary-blue)" />
-                  <span>Search with AI</span>
-                </button>
+                <button className="btn-outline">Close</button>
+                <button className="btn-outline" onClick={handleClearAll}>Clear all</button>
                 
                 <button className="btn-search" onClick={handleSearch}>
                   <Search size={16} />
                   <span>Search</span>
+                </button>
+
+                <button className="btn-search-ai">
+                  <Sparkles size={16} color="var(--primary-blue)" />
+                  <span>Search with AI</span>
                 </button>
               </div>
 
@@ -928,7 +909,7 @@ export default function App() {
         <div className="account-dashboard-wrapper fade-in">
           
           {/* Custom scenic high-resolution profile banner */}
-          <div className="dashboard-hero-banner" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80')` }}>
+          <div className="dashboard-hero-banner" style={{ backgroundImage: `url("${profileHeroImg}")` }}>
             <h1 className="dashboard-hero-title" style={{ marginTop: '170px' }}>My Profile</h1>
           </div>
 
@@ -973,7 +954,7 @@ export default function App() {
               <div className="profile-grid-block">
                 <div className="block-header">
                   <h4>Personal Information</h4>
-                  <button className="btn-edit-details">
+                  <button className="btn-edit-details" onClick={() => alert("Opening profile editing dialog... You can update your phone, email, and password.")}>
                     <Edit2 size={12} />
                     <span>Edit</span>
                   </button>
@@ -1011,7 +992,7 @@ export default function App() {
               <div className="profile-grid-block">
                 <div className="block-header">
                   <h4>Address</h4>
-                  <button className="btn-edit-details">
+                  <button className="btn-edit-details" onClick={() => alert("Opening address editing dialog...")}>
                     <Edit2 size={12} />
                     <span>Edit</span>
                   </button>
@@ -1041,7 +1022,7 @@ export default function App() {
               <div className="profile-grid-block" style={{ borderBottom: 'none', paddingBottom: 0 }}>
                 <div className="block-header">
                   <h4>Other Details</h4>
-                  <button className="btn-edit-details">
+                  <button className="btn-edit-details" onClick={() => alert("Opening other details dialog...")}>
                     <Edit2 size={12} />
                     <span>Edit</span>
                   </button>
@@ -1074,14 +1055,14 @@ export default function App() {
         <div className="account-dashboard-wrapper fade-in">
           
           {/* Custom scenic high-resolution wishlist banner */}
-          <div className="dashboard-hero-banner" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80')` }}>
+          <div className="dashboard-hero-banner" style={{ backgroundImage: `url("${wishlistHeroImg}")` }}>
             <h1 className="dashboard-hero-title" style={{ marginTop: '170px' }}>My Wishlist</h1>
           </div>
 
           <div className="dashboard-content-box">
             <div className="wishlist-title-header-row">
               <h2 className="dashboard-section-main">Wishlist</h2>
-              <button className="btn-wishlist-filter">
+              <button className="btn-wishlist-filter" onClick={() => alert("Displaying wishlist filters... Sort by Price, Rating, and Location availability.")}>
                 <Filter size={14} />
                 <span>Filters</span>
               </button>
@@ -1144,7 +1125,7 @@ export default function App() {
 
                     <div className="villa-card-actions">
                       <button className="btn-villa-action outline-blue" onClick={() => setActiveMenu('Detail')}>View Details</button>
-                      <button className="btn-villa-action outline-green">Contact Owner</button>
+                      <button className="btn-villa-action outline-green" onClick={() => { setContactStep(1); setContactModalOpen(true); }}>Contact Owner</button>
                     </div>
                   </div>
                 </div>
@@ -1160,14 +1141,14 @@ export default function App() {
         <div className="account-dashboard-wrapper fade-in">
           
           {/* Custom scenic high-resolution enquiries banner */}
-          <div className="dashboard-hero-banner" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80')` }}>
+          <div className="dashboard-hero-banner" style={{ backgroundImage: `url("${enquiriesHeroImg}")` }}>
             <h1 className="dashboard-hero-title" style={{ marginTop: '170px' }}>My Enquiries</h1>
           </div>
 
           <div className="dashboard-content-box">
             <div className="wishlist-title-header-row">
               <h2 className="dashboard-section-main">My Enquiries</h2>
-              <button className="btn-wishlist-filter">
+              <button className="btn-wishlist-filter" onClick={() => alert("Displaying enquiries filters... Filter by date, status, and property type.")}>
                 <Filter size={14} />
                 <span>Filters</span>
               </button>
@@ -1224,14 +1205,14 @@ export default function App() {
         <div className="account-dashboard-wrapper fade-in">
           
           {/* Custom scenic high-resolution reviews banner */}
-          <div className="dashboard-hero-banner" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80')` }}>
+          <div className="dashboard-hero-banner" style={{ backgroundImage: `url("${reviewsHeroImg}")` }}>
             <h1 className="dashboard-hero-title" style={{ marginTop: '170px' }}>My Reviews</h1>
           </div>
 
           <div className="dashboard-content-box">
             <div className="wishlist-title-header-row">
               <h2 className="dashboard-section-main">My Reviews</h2>
-              <button className="btn-wishlist-filter">
+              <button className="btn-wishlist-filter" onClick={() => alert("Displaying reviews filters... Filter by rating and date posted.")}>
                 <Filter size={14} />
                 <span>Filters</span>
               </button>
@@ -1294,7 +1275,7 @@ export default function App() {
         <div className="about-page-layout fade-in">
           
           {/* Custom scenic high-resolution About Us banner */}
-          <div className="dashboard-hero-banner" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80')` }}>
+          <div className="dashboard-hero-banner" style={{ backgroundImage: `url("${aboutHeroImg}")` }}>
             <h1 className="dashboard-hero-title" style={{ marginTop: '170px' }}>About Us</h1>
           </div>
 
@@ -1366,7 +1347,7 @@ export default function App() {
             </div>
 
             {/* Why Choose Our Services (Reused Component directly!) */}
-            <div className="services-section" style={{ background: '#EBFDF2', padding: '60px 0', borderRadius: '24px', margin: '80px 0 60px 0' }}>
+            <div className="services-section" style={{ background: '#EBFDF2', padding: '60px 0', borderRadius: '24px', margin: '80px 0 0 0' }}>
               <div className="services-inner-container" style={{ width: '100%', maxWidth: '1120px' }}>
                 
                 <div className="section-title-wrap">
@@ -1388,7 +1369,7 @@ export default function App() {
                       <p className="service-card-subtext">Get genuine and good stays</p>
                     </div>
                     <div className="service-image-card">
-                      <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=600&q=80" alt="Secure Payments" />
+                      <img src={rect35Img} alt="Secure Payments" />
                       <div className="service-overlay-badge-bottom">
                         <div className="service-icon-circle-overlay"><CreditCard size={18} color="#FFFFFF" /></div>
                         <span>Secure Payments</span>
@@ -1398,21 +1379,23 @@ export default function App() {
 
                   <div className="services-col-center">
                     <div className="service-tall-card">
-                      <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80" alt="Traveler center image" />
+                      <img src={rect32Img} alt="Traveler center image" />
                     </div>
                   </div>
 
                   <div className="services-col">
                     <div className="service-image-card">
-                      <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80" alt="Best Price" />
+                      <img src={rect33Img} alt="Best Price" />
                       <div className="service-overlay-badge-bottom">
                         <div className="service-icon-circle-overlay"><Percent size={18} color="#FFFFFF" /></div>
                         <span>Best Price Guarantee</span>
                       </div>
                     </div>
                     <div className="service-text-card transparent-bg">
-                      <h3 className="service-card-accent-title">24/7 Support, Always There</h3>
-                      <p className="service-card-bold-sub">All type of support</p>
+                      <div className="service-card-top-group">
+                        <h3 className="service-card-accent-title">24/7 Support, Always There</h3>
+                        <p className="service-card-bold-sub">All type of support</p>
+                      </div>
                       <p className="service-card-desc-light">
                         From booking to checkout, our support team is available anytime to help you.
                       </p>
@@ -1512,7 +1495,7 @@ export default function App() {
         <div className="contact-page-wrapper fade-in">
           
           {/* Custom scenic high-resolution Contact Us banner */}
-          <div className="dashboard-hero-banner" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80')` }}>
+          <div className="dashboard-hero-banner" style={{ backgroundImage: `url("${contactHeroImg}")` }}>
             <h1 className="dashboard-hero-title" style={{ marginTop: '170px' }}>Contact Us</h1>
           </div>
 
@@ -1521,7 +1504,7 @@ export default function App() {
             
             {/* Left Column Image of front desk receptionists */}
             <div className="contact-image-panel">
-              <img src="https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80" alt="Professional hotel frontdesk receptionists" />
+              <img src={contactBgShapeImg} alt="Professional hotel frontdesk receptionists" />
             </div>
 
             {/* Right Column Form */}
@@ -1746,12 +1729,44 @@ export default function App() {
         </div>
       )}
 
+      {/* VIEW B-6.5: PRIVACY POLICY FULL PAGE VIEW */}
+      {activeMenu === 'Privacy' && (
+        <div className="terms-page-wrapper fade-in">
+          <div className="dashboard-hero-banner" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80')` }}>
+            <h1 className="dashboard-hero-title" style={{ marginTop: '170px' }}>Privacy Policy</h1>
+          </div>
+
+          <div className="terms-document-box">
+            <h2 className="terms-document-title">Privacy Policy</h2>
+            <div className="terms-document-content">
+              <h3 className="terms-section-header">DATA PROTECTION OVERVIEW</h3>
+              <p className="terms-text-p">
+                At Tripinvilla, we take your privacy seriously. This Privacy Policy outlines how we collect, use, and safeguard your personal information when you use our website, booking platform, and customer service channels.
+              </p>
+              <p className="terms-text-p">
+                We collect information that you provide directly to us, such as when you create an account, update your profile, make a booking, or contact our support team. This includes your name, email address, phone number, and billing information.
+              </p>
+
+              <h3 className="terms-section-header">1 – INFORMATION USAGE</h3>
+              <p className="terms-text-p">
+                We use the information we collect to process bookings, facilitate payment transactions, communicate with you about your reservation, and provide customer support. We also use data to improve our platform security, prevent fraud, and optimize user experience across our digital properties.
+              </p>
+
+              <h3 className="terms-section-header">2 – DATA SHARING</h3>
+              <p className="terms-text-p" style={{ marginBottom: '40px' }}>
+                We share essential reservation details with verified property owners and hosts to ensure a smooth check-in experience. We never sell your personal information to third-party data brokers or marketing agencies. All payment processing is handled through secure, PCI-compliant payment gateways.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* VIEW B-7: RECOMMENDED BY US FULL PAGE VIEW */}
       {activeMenu === 'Recommend By Us' && (
         <div className="recommend-page-wrapper fade-in">
           
           {/* Custom scenic high-resolution swimming pool resort twilight banner */}
-          <div className="dashboard-hero-banner" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80')` }}>
+          <div className="dashboard-hero-banner" style={{ backgroundImage: `url("${recommendHeroImg}")` }}>
             <h1 className="dashboard-hero-title" style={{ marginTop: '170px' }}>Recommended By Us</h1>
           </div>
 
@@ -1952,7 +1967,7 @@ export default function App() {
         <div className="list-property-page-wrapper fade-in">
           
           {/* High-resolution hotel bedroom banner with centered button */}
-          <div className="dashboard-hero-banner list-hero-custom" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80')` }}>
+          <div className="dashboard-hero-banner list-hero-custom" style={{ backgroundImage: `url("${listPlaceHeroImg}")` }}>
             <h1 className="dashboard-hero-title" style={{ marginTop: '170px' }}>List Your Property</h1>
             
             <button className="btn-hero-green" onClick={() => alert('Launching partner sign-up wizard... Our agent will get in touch with you!')}>
@@ -2013,7 +2028,7 @@ export default function App() {
           </div>
 
           {/* Reused "Why Choose Our Services" Section Container */}
-          <div className="services-section">
+          <div className="services-section" style={{ marginBottom: 0 }}>
             <div className="services-inner-container">
               
               <div className="section-title-wrap">
@@ -2043,7 +2058,7 @@ export default function App() {
                   {/* Secure Payments bottom image */}
                   <div className="service-image-card">
                     <img 
-                      src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=600&q=80" 
+                      src={rect35Img} 
                       alt="Secure Payments" 
                     />
                     <div className="service-overlay-badge-bottom">
@@ -2060,7 +2075,7 @@ export default function App() {
                 <div className="services-col-center">
                   <div className="service-tall-card">
                     <img 
-                      src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80" 
+                      src={rect32Img} 
                       alt="Traveler with suitcase" 
                     />
                   </div>
@@ -2072,7 +2087,7 @@ export default function App() {
                   {/* Pool Resort top image */}
                   <div className="service-image-card">
                     <img 
-                      src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80" 
+                      src={rect33Img} 
                       alt="Best Price Guarantee Pool" 
                     />
                     <div className="service-overlay-badge-bottom">
@@ -2085,8 +2100,10 @@ export default function App() {
 
                   {/* 24/7 Support text card bottom */}
                   <div className="service-text-card transparent-bg">
-                    <h3 className="service-card-accent-title">24/7 Support, Always There</h3>
-                    <p className="service-card-bold-sub">All type of support</p>
+                    <div className="service-card-top-group">
+                      <h3 className="service-card-accent-title">24/7 Support, Always There</h3>
+                      <p className="service-card-bold-sub">All type of support</p>
+                    </div>
                     <p className="service-card-desc-light">
                       From booking to checkout, our support team is available anytime to help you.
                     </p>
@@ -2386,17 +2403,18 @@ export default function App() {
           {/* LOCATION AND LANDMARKS SECTION */}
           <div className="detail-tab-target-section border-box-style">
             <div className="map-landmarks-split">
-              {/* Left Mock Map Graphic */}
-              <div className="mock-map-graphic">
-                <div className="map-badge-point">
-                  <span>Gor</span>
-                </div>
-                <div className="map-badge-point active" style={{ left: '60%', top: '30%' }}>
-                  <span>Hee-Gyathang</span>
-                </div>
-                <div className="map-badge-point" style={{ left: '30%', top: '70%' }}>
-                  <span>Dikchu View Point</span>
-                </div>
+              {/* Left Fully Functional Interactive Google Map */}
+              <div className="mock-map-graphic" style={{ padding: 0, overflow: 'hidden' }}>
+                <iframe
+                  title="Kasol Himachal Pradesh Map"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d27038.31885698379!2d77.29699661562499!3d32.00999999999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39045c4491c2ce09%3A0x521f20108343160a!2sKasol%2C%20Himachal%2C%20India!5e0!3m2!1sen!2sus!4v1707500000000!5m2!1sen!2sus"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen=""
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
               </div>
 
               {/* Right Landmarks List */}
@@ -2606,7 +2624,7 @@ export default function App() {
 
                     <div className="villa-card-actions">
                       <button className="btn-villa-action outline-blue" onClick={() => setActiveMenu('Detail')}>View Details</button>
-                      <button className="btn-villa-action outline-green">Contact Owner</button>
+                      <button className="btn-villa-action outline-green" onClick={() => { setContactStep(1); setContactModalOpen(true); }}>Contact Owner</button>
                     </div>
                   </div>
                 </div>
@@ -2614,7 +2632,7 @@ export default function App() {
             </div>
 
             <div className="view-more-btn-container">
-              <button className="btn-view-more">View More</button>
+              <button className="btn-view-more" onClick={() => alert("Loading more properties from database catalog...")}>View More</button>
             </div>
 
           </div>
@@ -2675,7 +2693,7 @@ export default function App() {
 
                     <div className="villa-card-actions">
                       <button className="btn-villa-action outline-blue" onClick={() => setActiveMenu('Detail')}>View Details</button>
-                      <button className="btn-villa-action outline-green">Contact Owner</button>
+                      <button className="btn-villa-action outline-green" onClick={() => { setContactStep(1); setContactModalOpen(true); }}>Contact Owner</button>
                     </div>
                   </div>
                 </div>
@@ -2683,7 +2701,7 @@ export default function App() {
             </div>
 
             <div className="view-more-btn-container">
-              <button className="btn-view-more">View More</button>
+              <button className="btn-view-more" onClick={() => alert("Loading more homestays from database catalog...")}>View More</button>
             </div>
 
           </div>
@@ -2939,7 +2957,7 @@ export default function App() {
           </div>
 
           {/* ══ SECTION 5: WHY CHOOSE OUR SERVICES ══ */}
-          <div className="services-section">
+          <div className="services-section" style={{ marginBottom: 0 }}>
             <div className="services-inner-container">
               
               <div className="section-title-wrap">
@@ -2971,7 +2989,7 @@ export default function App() {
                   {/* Secure Payments bottom image */}
                   <div className="service-image-card">
                     <img 
-                      src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=600&q=80" 
+                      src={rect35Img} 
                       alt="Secure Payments" 
                     />
                     <div className="service-overlay-badge-bottom">
@@ -2988,7 +3006,7 @@ export default function App() {
                 <div className="services-col-center">
                   <div className="service-tall-card">
                     <img 
-                      src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=600&q=80" 
+                      src={rect32Img} 
                       alt="Traveler with suitcase" 
                     />
                   </div>
@@ -3000,7 +3018,7 @@ export default function App() {
                   {/* Pool Resort top image */}
                   <div className="service-image-card">
                     <img 
-                      src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80" 
+                      src={rect33Img} 
                       alt="Best Price Guarantee Pool" 
                     />
                     <div className="service-overlay-badge-bottom">
@@ -3013,8 +3031,10 @@ export default function App() {
 
                   {/* 24/7 Support text card bottom */}
                   <div className="service-text-card transparent-bg">
-                    <h3 className="service-card-accent-title">24/7 Support, Always There</h3>
-                    <p className="service-card-bold-sub">All type of support</p>
+                    <div className="service-card-top-group">
+                      <h3 className="service-card-accent-title">24/7 Support, Always There</h3>
+                      <p className="service-card-bold-sub">All type of support</p>
+                    </div>
                     <p className="service-card-desc-light">
                       From booking to checkout, our support team is available anytime to help you.
                     </p>
@@ -3030,18 +3050,14 @@ export default function App() {
       )}
 
       {/* ══ SECTION 6: PREMIUM SITE FOOTER ══ */}
-      <footer className="site-footer">
+      <footer className="site-footer" style={{ backgroundImage: `url("${footerBgImg}")` }}>
         
         {/* Semi-transparent dark background cover */}
         <div className="site-footer-overlay">
           
-          {/* Logo with house outline icon */}
-          <div className="footer-logo-row">
-            <span className="footer-logo-text">Tripin villa</span>
-            <div className="footer-logo-house-outline">
-              <div className="house-roof"></div>
-              <div className="house-body"></div>
-            </div>
+          {/* Logo container image */}
+          <div className="footer-logo-row" style={{ marginBottom: 24 }}>
+            <img src={footerLogoImg} alt="Tripin Villa Logo" style={{ height: '56px', width: 'auto', objectFit: 'contain' }} />
           </div>
 
           {/* Description statement */}
@@ -3065,6 +3081,10 @@ export default function App() {
             <a href="#about" onClick={() => setActiveMenu('About Us')}>About Us</a>
             <div className="footer-vertical-divider" />
             <a href="#contact" onClick={() => setActiveMenu('Contact')}>Contact Us</a>
+            <div className="footer-vertical-divider" />
+            <a href="#terms" onClick={() => setActiveMenu('Terms')}>Terms & Conditions</a>
+            <div className="footer-vertical-divider" />
+            <a href="#privacy" onClick={() => setActiveMenu('Privacy')}>Privacy Policy</a>
           </div>
 
           {/* Nav Divider 2 */}
@@ -3083,123 +3103,142 @@ export default function App() {
       {/* ══ INTERACTIVE AUTHENTICATION MODAL (Figma-Accurate Sign Up / Log In Views) ══ */}
       {authModalOpen && (
         <div className="auth-modal-overlay" onClick={() => setAuthModalOpen(false)}>
-          <div className={`auth-modal-card ${authMode === 'login' ? 'login-split-card' : ''}`} onClick={(e) => e.stopPropagation()}>
+          <div 
+            className={`auth-modal-card ${authMode === 'login' ? 'login-split-card' : ''}`} 
+            style={authMode === 'login' ? { padding: 0, overflow: 'hidden', height: '560px', width: '1000px', display: 'flex', borderRadius: '25px', backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', position: 'relative' } : { padding: '40px 60px', borderRadius: '25px', backgroundColor: '#FFFFFF', border: '1px solid #E5E7EB', position: 'relative', maxWidth: '1000px', width: '90%', margin: '0 auto' }}
+            onClick={(e) => e.stopPropagation()}
+          >
             
             {authMode === 'signup' ? (
-              <div className="auth-signup-content fade-in">
+              <div className="auth-signup-content fade-in" style={{ width: '100%', boxSizing: 'border-box' }}>
                 {/* Close Button */}
-                <button className="auth-close-btn" onClick={() => setAuthModalOpen(false)}>&times;</button>
+                <button className="auth-close-btn" style={{ position: 'absolute', top: '24px', right: '28px', background: 'none', border: 'none', fontSize: '30px', color: '#9CA3AF', cursor: 'pointer', zIndex: 10 }} onClick={() => setAuthModalOpen(false)}>&times;</button>
                 
-                <h2 className="auth-modal-title">
-                  Sign Up To Find Your <span className="highlight-sharp-blue-box">Perfect Stay</span>
+                <h2 className="auth-modal-title" style={{ textAlign: 'center', fontFamily: "'Lato', sans-serif", fontSize: '32px', fontWeight: '500', color: '#111827', lineHeight: '1.35', marginBottom: '32px' }}>
+                  Sign Up To <br />Find Your <span style={{ backgroundColor: '#0066ff', color: '#FFFFFF', padding: '2px 14px', borderRadius: '0px', display: 'inline-block', fontWeight: '700' }}>Perfect Stay</span>
                 </h2>
                 
-                <form onSubmit={(e) => { e.preventDefault(); alert('Sign up successful! Account Rohan created.'); setAuthModalOpen(false); }} className="auth-signup-form">
+                <form onSubmit={(e) => { e.preventDefault(); alert('Sign up successful! Account Rohan created.'); setAuthModalOpen(false); }} className="auth-signup-form" autoComplete="off">
                   <div className="auth-form-grid-3x3">
                     <div className="auth-form-group">
                       <label className="auth-input-label">First Name*</label>
-                      <input type="text" className="auth-input-field" placeholder="Rohan" required />
+                      <input type="text" className="auth-input-field" placeholder="Rohan" required autoComplete="off" />
                     </div>
                     <div className="auth-form-group">
                       <label className="auth-input-label">Last Name*</label>
-                      <input type="text" className="auth-input-field" placeholder="Sharma" required />
+                      <input type="text" className="auth-input-field" placeholder="Sharma" required autoComplete="off" />
                     </div>
                     <div className="auth-form-group">
                       <label className="auth-input-label">Country of Citizenship*</label>
-                      <input type="text" className="auth-input-field" placeholder="India" defaultValue="India" required />
+                      <input type="text" className="auth-input-field" placeholder="India" required autoComplete="off" />
                     </div>
                     
                     <div className="auth-form-group">
                       <label className="auth-input-label">Email Address*</label>
-                      <input type="email" className="auth-input-field" placeholder="jhondoe@gmail.com" defaultValue="jhondoe@gmail.com" required />
+                      <input type="email" className="auth-input-field" placeholder="jhondoe@gmail.com" required autoComplete="off" />
                     </div>
                     <div className="auth-form-group">
                       <label className="auth-input-label">Phone Number*</label>
-                      <input type="tel" className="auth-input-field" placeholder="+91 98765 43210" defaultValue="+91 98765 43210" required />
+                      <input type="tel" className="auth-input-field" placeholder="+91 98765 43210" required autoComplete="off" />
                     </div>
                     <div className="auth-form-group">
                       <label className="auth-input-label">Country of Residence*</label>
-                      <input type="text" className="auth-input-field" placeholder="India" defaultValue="India" required />
+                      <input type="text" className="auth-input-field" placeholder="India" required autoComplete="off" />
                     </div>
                     
                     <div className="auth-form-group">
                       <label className="auth-input-label">Address*</label>
-                      <input type="text" className="auth-input-field" placeholder="Flat No. 302, Green Apartments" defaultValue="Flat No. 302, Green Apartments" required />
+                      <input type="text" className="auth-input-field" placeholder="Flat No. 302, Green Apartments" required autoComplete="off" />
                     </div>
                     <div className="auth-form-group">
                       <label className="auth-input-label">Pin Code*</label>
-                      <input type="text" className="auth-input-field" placeholder="560102" defaultValue="560102" required />
+                      <input type="text" className="auth-input-field" placeholder="560102" required autoComplete="off" />
                     </div>
                     <div className="auth-form-group">
                       <label className="auth-input-label">State*</label>
-                      <input type="text" className="auth-input-field" placeholder="Karnataka" defaultValue="Karnataka" required />
+                      <input type="text" className="auth-input-field" placeholder="Karnataka" required autoComplete="off" />
                     </div>
                   </div>
-
-                  <button type="submit" className="auth-submit-btn-green">Continue</button>
+ 
+                  <button type="submit" className="auth-submit-btn-green" style={{ width: '100%', borderRadius: '15px', fontSize: '16px', fontWeight: '600', backgroundColor: '#58A429', color: '#FFFFFF', border: 'none', cursor: 'pointer', marginTop: '24px', height: '62px', transition: 'background-color 0.2s' }}>Continue</button>
                 </form>
-
+ 
                 {/* Dashed divider */}
-                <div className="auth-divider-wrap">
+                <div className="auth-divider-wrap" style={{ margin: '24px 0' }}>
                   <span className="auth-divider-text">Or Log In with</span>
                 </div>
-
-                {/* Green circle social items */}
-                <div className="auth-social-row">
-                  <button className="auth-social-circle-green" onClick={() => { alert('Authenticating with Google...'); setAuthModalOpen(false); }}>G</button>
-                  <button className="auth-social-circle-green" onClick={() => { alert('Authenticating with Facebook...'); setAuthModalOpen(false); }}>f</button>
+ 
+                {/* Official Brand square social items */}
+                <div className="auth-social-row" style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '24px' }}>
+                  <button style={{ background: '#f4f6f8', border: 'none', borderRadius: '10px', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background-color 0.2s' }} onClick={() => { alert('Authenticating with Google...'); setAuthModalOpen(false); }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24">
+                      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.85z"/>
+                      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                  </button>
+                  <button style={{ background: '#f4f6f8', border: 'none', borderRadius: '10px', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background-color 0.2s' }} onClick={() => { alert('Authenticating with Facebook...'); setAuthModalOpen(false); }}>
+                    <svg width="24" height="24" viewBox="0 0 24 24">
+                      <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                  </button>
                 </div>
-
-                <div className="auth-footer-links">
-                  <p className="auth-switch-text">
-                    Already have an account? <span className="auth-link-green" onClick={() => setAuthMode('login')}>Log In</span>
+ 
+                <div className="auth-footer-links" style={{ textAlign: 'center' }}>
+                  <p className="auth-switch-text" style={{ fontSize: '14px', color: '#4B5563', margin: '6px 0' }}>
+                    Already have an account? <span className="auth-link-green" style={{ color: '#1d9e75', fontWeight: '600', cursor: 'pointer', textDecoration: 'none' }} onClick={() => setAuthMode('login')}>Log In</span>
                   </p>
-                  <p className="auth-switch-text">
-                    <span className="auth-link-owner" onClick={() => { alert('Redirecting to Owner Portal...'); setAuthModalOpen(false); }}>Log In as a Property Owner</span>
+                  <p className="auth-switch-text" style={{ fontSize: '14px', color: '#4B5563', margin: '6px 0' }}>
+                    <span className="auth-link-owner" style={{ color: '#1d9e75', fontWeight: '600', cursor: 'pointer', textDecoration: 'none' }} onClick={() => { alert('Redirecting to Owner Portal...'); setAuthModalOpen(false); }}>Log In as a Property Owner</span>
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="auth-login-split-container fade-in">
-                {/* Close Button */}
-                <button className="auth-close-btn" onClick={() => setAuthModalOpen(false)}>&times;</button>
-                
-                {/* Left side scenic Sunset pool image */}
-                <div className="auth-login-left-image" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.25)), url('https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80')` }}>
-                  <div className="auth-left-inner-box">
-                    <div className="auth-left-logo-row">
-                      <span className="auth-left-logo-main">Tripinstays</span>
-                      <span className="auth-left-logo-sub">STAY, EXPLORE, RELAX</span>
-                    </div>
-                    <p className="auth-left-tagline">Sign Up to get</p>
-                    <h3 className="auth-left-headline">Best Hotels<br />and Villas</h3>
-                  </div>
+              <div className="auth-login-split-container fade-in" style={{ display: 'flex', width: '100%', height: '100%' }}>
+                {/* Left side scenic Sunset pool image (pre-rendered with logo, overlays, and text inside assets) */}
+                <div className="auth-login-left-image" style={{ backgroundImage: `url(${loginLeftImg})`, backgroundSize: 'cover', backgroundPosition: 'center', width: '550px', height: '600px', marginLeft: '-28px', marginTop: '-20px', marginBottom: '-20px', flexShrink: 0, borderTopLeftRadius: '25px', borderBottomLeftRadius: '25px' }}>
+                  {/* Empty since everything is pre-rendered in the image */}
                 </div>
 
                 {/* Right side Log In form fields */}
-                <div className="auth-login-right-content">
-                  <h2 className="auth-modal-title login-title-align">
-                    Log In Your Account To Find Your <span className="highlight-sharp-blue-box">Perfect Stay</span>
+                <div className="auth-login-right-content" style={{ flex: 1, padding: '30px 60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box', position: 'relative' }}>
+                  {/* Close Button positioned inside the right side block */}
+                  <button className="auth-close-btn" style={{ position: 'absolute', top: '20px', right: '24px', background: 'none', border: 'none', fontSize: '28px', color: '#9CA3AF', cursor: 'pointer', zIndex: 10 }} onClick={() => setAuthModalOpen(false)}>&times;</button>
+                  
+                  <h2 className="auth-modal-title login-title-align" style={{ fontFamily: "'Lato', sans-serif", fontSize: '24px', fontWeight: '500', color: '#111827', lineHeight: '1.4', marginBottom: '20px' }}>
+                    Log In Your Account To <br />Find Your <span style={{ backgroundColor: '#0066ff', color: '#FFFFFF', padding: '2px 10px', borderRadius: '4px', marginLeft: '6px', fontWeight: '700', display: 'inline-block' }}>Perfect Stay</span>
                   </h2>
                   
-                  <form onSubmit={(e) => { e.preventDefault(); alert('Login successful! Welcome Rohan Sharma.'); setAuthModalOpen(false); }} className="auth-login-form">
+                  <form onSubmit={(e) => { e.preventDefault(); alert('Login successful! Welcome Rohan Sharma.'); setAuthModalOpen(false); }} className="auth-login-form" autoComplete="off">
                     <div className="auth-form-group full-width">
                       <label className="auth-input-label">Email Id or Mobile Number*</label>
-                      <input type="text" className="auth-input-field" placeholder="jhondoe@gmail.com" defaultValue="jhondoe@gmail.com" required />
+                      <input type="text" className="auth-input-field" placeholder="jhondoe@gmail.com" required autoComplete="off" />
                     </div>
 
-                    <button type="submit" className="auth-submit-btn-green mt-24">Continue</button>
+                    <button type="submit" className="auth-submit-btn-green" style={{ width: '100%', borderRadius: '15px', fontSize: '16px', fontWeight: '600', backgroundColor: '#58A429', color: '#FFFFFF', border: 'none', cursor: 'pointer', height: '62px', transition: 'background-color 0.2s', marginTop: '24px' }}>Continue</button>
                   </form>
 
                   {/* Divider */}
-                  <div className="auth-divider-wrap">
+                  <div className="auth-divider-wrap" style={{ margin: '20px 0' }}>
                     <span className="auth-divider-text">Or Sign In with</span>
                   </div>
 
-                  {/* Green circle social items */}
-                  <div className="auth-social-row">
-                    <button className="auth-social-circle-green" onClick={() => { alert('Authenticating with Google...'); setAuthModalOpen(false); }}>G</button>
-                    <button className="auth-social-circle-green" onClick={() => { alert('Authenticating with Facebook...'); setAuthModalOpen(false); }}>f</button>
+                  {/* Official Brand square social items */}
+                  <div className="auth-social-row" style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '20px' }}>
+                    <button style={{ background: '#f4f6f8', border: 'none', borderRadius: '10px', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background-color 0.2s' }} onClick={() => { alert('Authenticating with Google...'); setAuthModalOpen(false); }}>
+                      <svg width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.85z"/>
+                        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                      </svg>
+                    </button>
+                    <button style={{ background: '#f4f6f8', border: 'none', borderRadius: '10px', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background-color 0.2s' }} onClick={() => { alert('Authenticating with Facebook...'); setAuthModalOpen(false); }}>
+                      <svg width="24" height="24" viewBox="0 0 24 24">
+                        <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                      </svg>
+                    </button>
                   </div>
 
                   <div className="auth-footer-links">

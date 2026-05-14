@@ -105,8 +105,8 @@
 
 /* Rounded Icon Wrappers */
 .nav-icon-circle {
-  width: 28px;
-  height: 28px;
+  width: 31px;
+  height: 31px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -247,7 +247,7 @@
   font-weight: 400; /* Exact Figma Regular weight */
   border: none;
   background: transparent;
-  color: #8A99AD; /* Beautiful light steel-blue gray from Figma */
+  color: #000000; /* Crisp black text as requested */
   line-height: 100%; /* Exact Figma Line Height */
   letter-spacing: 0%;
   cursor: pointer;
@@ -259,7 +259,7 @@
 }
 
 .tab-btn:hover {
-  color: #4B5563; /* Smooth transitions to a slightly darker slate on hover */
+  opacity: 0.8;
 }
 
 .tab-btn.active {
@@ -415,6 +415,27 @@
 }
 
 .btn-search-ai:hover {
+  background: #F9FAFB;
+  border-color: #9CA3AF;
+}
+
+.btn-outline {
+  background: #FFFFFF;
+  color: #1F2937;
+  border: 1px solid #D1D5DB;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 12px;
+  padding: 12px 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  transition: all 0.2s ease;
+}
+
+.btn-outline:hover {
   background: #F9FAFB;
   border-color: #9CA3AF;
 }
@@ -599,11 +620,11 @@
 
 .section-main-headline {
   font-family: 'Lato', sans-serif;
-  font-size: 50px; /* Exact Figma font size */
-  font-weight: 400; /* Exact Figma regular weight */
-  line-height: 75px; /* Exact Figma line height */
+  font-size: 40px; /* Refined smaller headline size */
+  font-weight: 400;
+  line-height: 56px;
   color: #111827;
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -612,19 +633,19 @@
 .highlight-sharp-blue-box {
   background: var(--primary-blue);
   color: #FFFFFF;
-  font-weight: 700; /* Exact Figma bold weight */
-  padding: 0 16px;
-  border-radius: 0px; /* Sharp corners as requested */
+  font-weight: 700;
+  padding: 8px 20px 12px 20px; /* Generous vertical cushioning so descenders like 'p' are perfectly encapsulated */
+  border-radius: 0px;
   display: inline-block;
-  line-height: 75px; /* Matches parent line height */
+  line-height: 1.1;
 }
 
 .section-sub-headline {
   font-family: 'Lato', sans-serif;
-  font-size: 20px; /* Exact Figma size */
-  font-weight: 400; /* Regular weight */
-  line-height: 32px; /* Exact Figma line height */
-  color: #1C1C1C; /* Exact Figma color */
+  font-size: 18px; /* Balanced sub headline size */
+  font-weight: 400;
+  line-height: 28px;
+  color: #1C1C1C;
   margin: 0;
 }
 
@@ -1060,7 +1081,7 @@
 .popular-offers-grid {
   display: grid;
   grid-template-columns: repeat(2, 580px); /* Sized beautifully to 580px */
-  grid-gap: 54px; /* Spacious, elegant column spacing matching villas section */
+  grid-gap: 24px 54px; /* Reduced vertical row gap, preserved elegant column spacing */
   justify-content: start; /* Perfectly left-aligned with other sections */
 }
 
@@ -1178,9 +1199,10 @@
    ========================================================================== */
 .services-section {
   width: 100%;
-  background-color: #EBFADE; /* Beautiful soft pale green background from mockup */
-  padding: 80px 0;
+  background-color: #EBFADE; /* Beautiful soft pale green background */
+  padding: 60px 0 100px 0; /* Expanded bottom padding to connect seamlessly with footer */
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .services-inner-container {
@@ -1192,15 +1214,16 @@
 .services-grid-asym {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 30px;
-  margin-top: 50px;
-  height: 620px;
+  gap: 24px;
+  margin-top: 40px;
+  min-height: 696.27px; /* Exact Figma height */
+  height: auto;
 }
 
 .services-col {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 24.6px;
   height: 100%;
 }
 
@@ -1209,41 +1232,44 @@
 }
 
 .service-text-card {
-  border-radius: 24px;
-  padding: 24px; /* Slightly more compact padding to look extremely elegant at smaller height */
+  border-radius: 23.49px; /* Exact Figma border radius */
+  padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: calc(40% - 15px); /* Reduced card height to make it smaller as requested */
+  height: 226.6px; /* Proportionate text card height */
+  min-height: 226.6px;
+  flex-shrink: 0;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .service-text-card.white-bg {
   background: #FFFFFF;
   border: 1px solid #E5E7EB;
   box-shadow: 0 10px 30px rgba(0,0,0,0.02);
-  justify-content: space-between; /* Spreads description to top and titles to bottom exactly as shown */
+  justify-content: space-between;
 }
 
 .service-text-card.transparent-bg {
   background: transparent;
-  justify-content: flex-start;
-  padding-left: 10px;
+  justify-content: space-between;
+  padding-left: 8px;
 }
 
 .service-card-desc {
   font-family: 'Lato', sans-serif;
   font-size: 16px;
-  color: #4B5563; /* Refined gray description text */
-  line-height: 150%;
-  margin: 0; /* Let space-between position it dynamically */
+  color: #4B5563;
+  line-height: 1.5;
+  margin: 0;
 }
 
 .service-card-accent-title {
   font-family: 'Lato', sans-serif;
-  font-size: 20px; /* Highly elegant title scale matching screenshot */
+  font-size: 20px;
   font-weight: 700;
-  color: #E65100; /* Beautiful rich golden-orange tone from screenshot */
+  color: #E65100;
   margin: 0 0 4px 0;
 }
 
@@ -1259,22 +1285,24 @@
   font-family: 'Lato', sans-serif;
   font-size: 15px;
   color: #4B5563;
-  line-height: 150%;
+  line-height: 1.5;
   margin: 0;
 }
 
 .service-card-subtext {
   font-family: 'Lato', sans-serif;
-  font-size: 15px; /* Clean, highly readable size matching screenshot */
-  font-weight: 600; /* Solid bold text weight */
-  color: #111827; /* Rich dark black from screenshot */
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
   margin: 0;
 }
 
 .service-image-card {
   position: relative;
-  height: calc(60% - 15px); /* Sized up proportionately to match the smaller text card height */
-  border-radius: 24px;
+  height: 445.67px; /* Exact Figma image height */
+  min-height: 445.67px;
+  flex-shrink: 0;
+  border-radius: 23.49px; /* Exact Figma border radius */
   overflow: hidden;
 }
 
@@ -1282,6 +1310,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top center;
   transition: transform 0.3s ease;
 }
 
@@ -1290,8 +1319,10 @@
 }
 
 .service-tall-card {
-  height: 100%;
-  border-radius: 24px;
+  height: 696.27px; /* Exact Figma center image height */
+  min-height: 696.27px;
+  flex-shrink: 0;
+  border-radius: 23.49px; /* Exact Figma border radius */
   overflow: hidden;
 }
 
@@ -1299,7 +1330,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top center; /* Preserves the traveler's face and hat perfectly */
 }
+
 
 .service-overlay-badge-bottom {
   position: absolute;
@@ -1329,12 +1362,11 @@
 }
 
 /* ==========================================================================
-   SECTION 6: PREMIUM SITE FOOTER (Height 513px, Sunset Villa Background)
+   SECTION 6: PREMIUM SITE FOOTER (Height 513px, Custom Villa Background)
    ========================================================================== */
 .site-footer {
   width: 100%;
   height: 513px;
-  background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=1200&q=80'); /* Luxury sunset villa backdrop */
   background-size: cover;
   background-position: center;
   position: relative;
@@ -1347,7 +1379,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.75) 100%);
+  background: transparent; /* Fully transparent so custom background image is 100% visible */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1454,7 +1486,7 @@
    ========================================================================== */
 .properties-page-layout {
   width: 100%;
-  padding-top: 140px; /* Offset to sit below hero searches */
+  padding-top: 40px; /* Reduced offset to bring category icons beautifully closer to the hero section */
 }
 
 .properties-categories-scroller {
@@ -2422,7 +2454,7 @@
    MY PROFILE & WISHLIST DASHBOARD LAYOUTS
    ========================================================================== */
 .account-dashboard-wrapper {
-  background-color: #FDFBF7;
+  background-color: #FCF9EA;
   padding-bottom: 80px;
 }
 
@@ -2441,7 +2473,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.45);
+  background: transparent;
   z-index: 1;
 }
 
@@ -2764,7 +2796,7 @@
    ABOUT US PAGE STYLING
    ========================================================================== */
 .about-page-layout {
-  background-color: #FDFBF7;
+  background-color: #FCF9EA;
   padding-bottom: 80px;
 }
 
@@ -3077,8 +3109,8 @@
    CONTACT US PAGE STYLING
    ========================================================================== */
 .contact-page-wrapper {
-  background-color: #FDFBF7;
-  padding-top: 150px;
+  background-color: #FCF9EA;
+  padding-top: 0;
   padding-bottom: 80px;
 }
 
@@ -3088,11 +3120,9 @@
   margin: 80px auto;
   display: grid;
   grid-template-columns: 1fr 1.25fr;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.015);
+  grid-gap: 60px;
+  background: transparent;
+  align-items: center;
 }
 
 .contact-image-panel {
@@ -3110,8 +3140,8 @@
 }
 
 .contact-form-panel {
-  padding: 50px;
-  background: #FFFFFF;
+  padding: 0;
+  background: transparent;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -3263,21 +3293,32 @@
   width: 1280px;
   max-width: calc(100% - 160px);
   margin: 80px auto 0 auto;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
-  border-radius: 24px;
-  padding: 50px;
+  background: transparent;
+  padding: 0;
   display: grid;
   grid-template-columns: 1fr 1.25fr;
   grid-gap: 60px;
-  align-items: center;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.012);
+  align-items: flex-start;
+  position: relative;
+}
+
+.contact-bg-shape-graphic {
+  position: absolute;
+  right: -80px;
+  top: -60px;
+  width: 650px;
+  height: auto;
+  z-index: 0;
+  opacity: 0.9;
+  pointer-events: none;
 }
 
 .details-left-side {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  position: relative;
+  z-index: 1;
 }
 
 .details-main-title {
@@ -3299,6 +3340,8 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .details-pill-card {
@@ -3354,8 +3397,8 @@
    TERMS & CONDITIONS PAGE STYLING
    ========================================================================== */
 .terms-page-wrapper {
-  background-color: #FDFBF7;
-  padding-top: 150px;
+  background-color: #FCF9EA;
+  padding-top: 0;
   padding-bottom: 80px;
 }
 
@@ -3363,11 +3406,8 @@
   width: 1062px;
   max-width: calc(100% - 160px);
   margin: 80px auto;
-  background: #FFFFFF;
-  border: 1px solid #E5E7EB;
-  border-radius: 24px;
-  padding: 60px 80px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.012);
+  background: transparent;
+  padding: 0 40px;
 }
 
 .terms-document-title {
@@ -3411,7 +3451,7 @@
    RECOMMENDED BY US PAGE STYLING
    ========================================================================= */
 .recommend-page-wrapper {
-  background-color: #FDFBF7;
+  background-color: #FCF9EA;
   padding-top: 0;
   padding-bottom: 80px;
 }
@@ -3661,7 +3701,7 @@
    LIST YOUR PLACE PAGE STYLING
    ========================================================================== */
 .list-property-page-wrapper {
-  background-color: #FDFBF7;
+  background-color: #FCF9EA;
   padding-top: 0;
   padding-bottom: 80px;
 }
@@ -3893,8 +3933,10 @@
   padding: 0;
   overflow: hidden;
   height: 648px;
+  width: 1153px;
   max-height: calc(100vh - 40px);
   display: flex;
+  border-radius: 25px;
 }
 
 .auth-signup-content {
@@ -4107,13 +4149,16 @@
 }
 
 .auth-login-left-image {
-  width: 50%;
+  width: 653px;
+  height: 648px;
+  flex-shrink: 0;
   background-size: cover;
   background-position: center;
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 25px 0 0 25px;
 }
 
 .auth-left-inner-box {
@@ -4163,7 +4208,7 @@
 }
 
 .auth-login-right-content {
-  width: 50%;
+  flex: 1;
   padding: 50px 80px;
   display: flex;
   flex-direction: column;
