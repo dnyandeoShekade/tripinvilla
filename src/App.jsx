@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { 
   Home, MapPin, Heart, Inbox, Info, ThumbsUp, PlusCircle, 
   Search, Sparkles, Calendar, Users, DollarSign, Bed, Utensils, ChevronDown,
@@ -3543,7 +3543,7 @@ export default function App() {
 
             {/* Main Results Column */}
             <div className="search-main-content">
-              <h2 className="search-results-count">{liveProperties.length} Properties In {where || "Goa"}</h2>
+              <h2 className="search-results-count">{currentPropertiesVillas.length} Properties In {where || "Goa"}</h2>
               
               <div className="search-sort-tabs">
                 <button className="sort-tab active">Popularity</button>
@@ -3554,7 +3554,7 @@ export default function App() {
               </div>
 
               <div className="search-horizontal-list">
-                {liveProperties.length === 0 ? (
+                {currentPropertiesVillas.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '60px', background: 'white', borderRadius: '20px', border: '1px solid #E5E7EB' }}>
                     <Search size={40} color="#0C6DC4" style={{ marginBottom: '16px' }} />
                     <h3 style={{ fontSize: '20px', color: '#111827', marginBottom: '8px' }}>No properties found</h3>
@@ -3562,7 +3562,7 @@ export default function App() {
                     <button className="btn-view-details" onClick={handleClearAll}>Clear Filters</button>
                   </div>
                 ) : (
-                  liveProperties.map((property, idx) => {
+                  currentPropertiesVillas.map((property, idx) => {
                     const isWishlisted = user && user.wishlist && user.wishlist.some(w => w._id === property._id || w === property._id);
                     return (
                       <div key={idx} className="horizontal-property-card">
