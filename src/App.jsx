@@ -4,7 +4,7 @@ import {
   Search, Sparkles, Calendar, Users, DollarSign, Bed, Utensils, ChevronDown,
   ChevronLeft, ChevronRight, Star, CreditCard, Shield, Percent,
   Maximize, DoorClosed, Compass, Trees, Building, Hotel, CheckCircle, Phone,
-  Edit2, User, Filter, MessageSquare, Play, Sliders, UserRound, UploadCloud, ArrowRight
+  Edit2, User, Filter, MessageSquare, Play, Sliders, UserRound, UploadCloud, ArrowRight, X
 } from 'lucide-react';
 import logoImg from './assets/Mask group.png';
 import darkLogoImg from './assets/image 2936.png';
@@ -679,6 +679,9 @@ export default function App() {
   const [authLoading, setAuthLoading] = useState(false);
   const [aiSearchLoading, setAiSearchLoading] = useState(false);
   const [aiSearchLabel, setAiSearchLabel] = useState('');
+  // Gallery modal states
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Profile editing modal states
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
@@ -3305,7 +3308,7 @@ export default function App() {
                     gridTemplateColumns: propImages.length <= 1 ? '1fr' : '1.6fr 1fr'
                   }}>
                     {/* Large main image */}
-                    <div className="gallery-master-img" style={{ borderRadius: '12px 0 0 12px', overflow: 'hidden' }}>
+                    <div className="gallery-master-img" style={{ borderRadius: '12px 0 0 12px', overflow: 'hidden', cursor: 'pointer' }} onClick={() => { setCurrentImageIndex(0); setIsGalleryOpen(true); }}>
                       <img src={propImages[0]} alt={activeDetailProp.title} />
                     </div>
 
@@ -3313,7 +3316,7 @@ export default function App() {
                     {propImages.length > 1 && (
                       <div style={{ display: 'grid', gridTemplateRows: '1fr 1fr', gap: '6px', height: '440px' }}>
                         {/* Top thumbnail: image[1] */}
-                        <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '0 12px 0 0' }}>
+                        <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '0 12px 0 0', cursor: 'pointer' }} onClick={() => { setCurrentImageIndex(1); setIsGalleryOpen(true); }}>
                           <img
                             src={propImages[1]}
                             alt={`${activeDetailProp.title} view 2`}
@@ -3321,18 +3324,17 @@ export default function App() {
                           />
                         </div>
 
-                        {/* Bottom thumbnail: image[2] with "View X more" overlay */}
+                        {/* Bottom thumbnail: image[2] with "+X" overlay */}
                         {propImages[2] && (
-                          <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '0 0 12px 0' }}>
+                          <div style={{ position: 'relative', overflow: 'hidden', borderRadius: '0 0 12px 0', cursor: 'pointer' }} onClick={() => { setCurrentImageIndex(2); setIsGalleryOpen(true); }}>
                             <img
                               src={propImages[2]}
                               alt={`${activeDetailProp.title} view 3`}
                               style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                             />
                             {propImages.length > 3 && (
-                              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.52)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', gap: '4px' }}>
-                                <span style={{ color: '#fff', fontWeight: 700, fontSize: '15px', letterSpacing: '0.3px' }}>View</span>
-                                <span style={{ color: '#fff', fontWeight: 700, fontSize: '15px', letterSpacing: '0.3px' }}>{propImages.length - 3} more</span>
+                              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <span style={{ color: '#fff', fontWeight: 600, fontSize: '28px', letterSpacing: '1px' }}>+{propImages.length - 3}</span>
                               </div>
                             )}
                           </div>
@@ -4798,6 +4800,59 @@ export default function App() {
 
       </footer>
     </div>
+
+      {/* ══ FULL SCREEN IMAGE GALLERY MODAL ══ */}
+      {isGalleryOpen && activeDetailProp && (
+        <div 
+          className="modal-overlay" 
+          style={{ zIndex: 10000, background: 'rgba(0,0,0,0.92)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
+          onClick={() => setIsGalleryOpen(false)}
+        >
+          <div 
+            className="gallery-modal-content" 
+            style={{ position: 'relative', width: '90%', height: '90%', display: 'flex', alignItems: 'center', justifyContent: 'center' }} 
+            onClick={e => e.stopPropagation()}
+          >
+            <button 
+              className="modal-close-btn" 
+              style={{ position: 'absolute', top: '-40px', right: '0', color: '#fff', background: 'transparent', border: 'none', cursor: 'pointer', padding: '8px' }} 
+              onClick={() => setIsGalleryOpen(false)}
+            >
+              <X size={32} />
+            </button>
+            
+            <button 
+              style={{ position: 'absolute', left: '0', color: '#fff', background: 'rgba(0,0,0,0.5)', border: 'none', cursor: 'pointer', padding: '16px', borderRadius: '50%' }} 
+              onClick={() => setCurrentImageIndex(prev => {
+                const imagesList = activeDetailProp.images && activeDetailProp.images.length > 0 ? activeDetailProp.images : [activeDetailProp.img];
+                return prev === 0 ? imagesList.length - 1 : prev - 1;
+              })}
+            >
+              <ChevronLeft size={32} />
+            </button>
+
+            <img 
+              src={(activeDetailProp.images && activeDetailProp.images.length > 0 ? activeDetailProp.images : [activeDetailProp.img])[currentImageIndex]} 
+              alt="Gallery view" 
+              style={{ maxHeight: '100%', maxWidth: '85%', objectFit: 'contain', borderRadius: '8px', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }} 
+            />
+
+            <button 
+              style={{ position: 'absolute', right: '0', color: '#fff', background: 'rgba(0,0,0,0.5)', border: 'none', cursor: 'pointer', padding: '16px', borderRadius: '50%' }} 
+              onClick={() => setCurrentImageIndex(prev => {
+                const imagesList = activeDetailProp.images && activeDetailProp.images.length > 0 ? activeDetailProp.images : [activeDetailProp.img];
+                return prev === imagesList.length - 1 ? 0 : prev + 1;
+              })}
+            >
+              <ChevronRight size={32} />
+            </button>
+
+            <div style={{ position: 'absolute', bottom: '-40px', color: '#fff', fontSize: '18px', fontWeight: '500', tracking: '1px' }}>
+              {currentImageIndex + 1} / {(activeDetailProp.images && activeDetailProp.images.length > 0 ? activeDetailProp.images : [activeDetailProp.img]).length}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ══ INTERACTIVE AUTHENTICATION MODAL (Figma-Accurate Sign Up / Log In Views) ══ */}
       {authModalOpen && (
