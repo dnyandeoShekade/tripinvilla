@@ -126,8 +126,8 @@ export default function Navbar({
             onClick={() => onNavigate('Profile')}
             style={{
               background: 'var(--primary-green, #58A429)',
-              width: '36px',
-              height: '36px',
+              width: '40px',
+              height: '40px',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
@@ -135,7 +135,7 @@ export default function Navbar({
               color: '#ffffff',
               fontWeight: 700,
               cursor: 'pointer',
-              fontSize: '14px',
+              fontSize: '18px',
               fontFamily: '"Outfit", sans-serif'
             }}
           >

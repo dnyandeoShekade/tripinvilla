@@ -258,6 +258,9 @@ export default function GuestApp() {
   const [wishlistSortOption, setWishlistSortOption] = useState('All');
   const [isWishlistFilterOpen, setIsWishlistFilterOpen] = useState(false);
 
+  const [recommendSearchQuery, setRecommendSearchQuery] = useState('');
+  const [isRecommendFilterOpen, setIsRecommendFilterOpen] = useState(false);
+
   const [propertyRooms, setPropertyRooms] = useState([]);
   const [dynamicLandmarks, setDynamicLandmarks] = useState([]);
   const [dynamicReviews, setDynamicReviews] = useState([]);
@@ -1682,7 +1685,7 @@ export default function GuestApp() {
             <div className="wishlist-title-header-row">
               <h2 className="dashboard-section-main">Wishlist</h2>
               <button className="btn-wishlist-filter" onClick={() => setIsWishlistFilterOpen(!isWishlistFilterOpen)}>
-                <img src={filterIcon} alt="Filter" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
+                <img src={filterIcon} alt="Filter" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
                 <span>Filters</span>
               </button>
             </div>
@@ -1853,7 +1856,7 @@ export default function GuestApp() {
             <div className="wishlist-title-header-row">
               <h2 className="dashboard-section-main">My Enquiries</h2>
               <button className="btn-wishlist-filter" onClick={() => setIsEnquiryFilterOpen(!isEnquiryFilterOpen)}>
-                <img src={filterIcon} alt="Filter" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
+                <img src={filterIcon} alt="Filter" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
                 <span>Filters</span>
               </button>
             </div>
@@ -1988,7 +1991,7 @@ export default function GuestApp() {
             <div className="wishlist-title-header-row">
               <h2 className="dashboard-section-main">My Reviews</h2>
               <button className="btn-wishlist-filter" onClick={() => setIsReviewsFilterOpen(!isReviewsFilterOpen)}>
-                <img src={filterIcon} alt="Filter" style={{ width: '14px', height: '14px', objectFit: 'contain' }} />
+                <img src={filterIcon} alt="Filter" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
                 <span>Filters</span>
               </button>
             </div>
@@ -2634,13 +2637,26 @@ export default function GuestApp() {
                 <h2 className="recommend-header-title">Our Recommendations</h2>
                 <p className="recommend-header-sub">Keep track of destinations and villas you love. Access them anytime and make your travel planning simple.</p>
               </div>
-              <button className="recommend-filter-btn" onClick={() => alert('Filtering options are coming soon!')}>
-                <div className="filter-icon-circle-green">
-                  <img src={filterIcon} alt="Filter" style={{ width: '16px', height: '16px', objectFit: 'contain' }} />
-                </div>
+              <button className="recommend-filter-btn" onClick={() => setIsRecommendFilterOpen(!isRecommendFilterOpen)}>
+                <img src={filterIcon} alt="Filter" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
                 <span>Filters</span>
               </button>
             </div>
+
+            {isRecommendFilterOpen && (
+              <div className="filter-panel-box" style={{ display: 'flex', gap: '16px', margin: '16px 0', padding: '16px', background: '#FAFAFA', borderRadius: '10px', border: '1px solid #E5E7EB', alignItems: 'center' }}>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <label style={{ fontSize: '11px', fontWeight: 600, color: '#4B5563' }}>Search Recommendations</label>
+                  <input 
+                    type="text" 
+                    placeholder="Search by name or location..." 
+                    value={recommendSearchQuery}
+                    onChange={e => setRecommendSearchQuery(e.target.value)}
+                    style={{ padding: '8px 12px', border: '1px solid #D1D5DB', borderRadius: '8px', fontSize: '13px', outline: 'none' }}
+                  />
+                </div>
+              </div>
+            )}
 
             {/* Recommendations Grid layout */}
             <div className="recommend-cards-grid">
@@ -2711,7 +2727,11 @@ export default function GuestApp() {
                   price: "140",
                   img: "https://images.unsplash.com/photo-1449034446853-66c86144b0ad?auto=format&fit=crop&w=600&q=80"
                 }
-              ].map((item) => {
+              ].filter(item => 
+                !recommendSearchQuery || 
+                item.name.toLowerCase().includes(recommendSearchQuery.toLowerCase()) || 
+                item.location.toLowerCase().includes(recommendSearchQuery.toLowerCase())
+              ).map((item) => {
                 const isLiked = recWishlist.includes(item.id);
                 return (
                   <div key={item.id} className="recommend-property-card">
