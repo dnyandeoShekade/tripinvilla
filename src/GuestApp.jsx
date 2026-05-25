@@ -206,9 +206,14 @@ export default function GuestApp() {
   const [user, setUser] = useState(localStorage.getItem('user_data') ? JSON.parse(localStorage.getItem('user_data')) : null);
   const [liveProperties, setLiveProperties] = useState([]);
   const [allProperties, setAllProperties] = useState([]);
+  const [liveDestinations, setLiveDestinations] = useState([]);
+  const [liveExperiences, setLiveExperiences] = useState([]);
+  const [featuredProperties, setFeaturedProperties] = useState([]);
+  const [homepageContent, setHomepageContent] = useState(null);
+  const [fullPropertyDetail, setFullPropertyDetail] = useState(null);
   const [liveEnquiries, setLiveEnquiries] = useState([]);
   const [selectedProperty, setSelectedProperty] = useState(null);
-  const activeDetailProp = selectedProperty || {
+  const activeDetailProp = fullPropertyDetail ? mapDbProperties([fullPropertyDetail], [])[0] : (selectedProperty || {
     title: 'Azure Bay Hotel, Premium Suite',
     location: 'Kasol, Himachal Pradesh, India',
     price: '₹1,400',
@@ -220,13 +225,17 @@ export default function GuestApp() {
     rooms: '1 Room',
     beds: '2 Beds',
     guests: '3 Person',
+    experiences: [],
     description: 'Experience a comfortable and refined stay at Azure Bay Hotel, located in the heart of the city and designed for both leisure and business travelers. The hotel offers thoughtfully designed rooms, modern amenities, and warm hospitality to ensure a relaxing and memorable stay.'
-  };
+  });
   const [authLoading, setAuthLoading] = useState(false);
   const [aiSearchLoading, setAiSearchLoading] = useState(false);
+  const [aiSummary, setAiSummary] = useState(null);
+  const [aiTags, setAiTags] = useState([]);
   // Gallery modal states
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [showFullDescription, setShowFullDescription] = useState(false);
 
   // Profile editing modal states
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
@@ -301,11 +310,22 @@ export default function GuestApp() {
         .then(data => setDynamicReviewStats(data))
         .catch(() => setDynamicReviewStats({ avg: 0, count: 0, label: 'No Reviews' }));
 
+      // Fetch full property details
+      fetch(`${API_BASE}/properties/${selectedProperty._id}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data && data._id) {
+                setFullPropertyDetail(data);
+            }
+        })
+        .catch(err => console.error("Error fetching full details:", err));
+
     } else {
       setPropertyRooms([]);
       setDynamicLandmarks([]);
       setDynamicReviews([]);
       setDynamicReviewStats({ avg: 0, count: 0, label: 'No Reviews' });
+      setFullPropertyDetail(null);
     }
   }, [selectedProperty]);
 
@@ -315,7 +335,7 @@ export default function GuestApp() {
 
   const [reviewsRatingFilter, setReviewsRatingFilter] = useState('All');
   const [isReviewsFilterOpen, setIsReviewsFilterOpen] = useState(false);
-  const [userReviews] = useState([]);
+  const [userReviews, setUserReviews] = useState([]);
 
   const openAuthModal = (mode = 'login') => {
     setAuthMode(mode);
@@ -500,10 +520,11 @@ export default function GuestApp() {
       const searchVal = hasOwn('search') ? searchParams.search : where;
       const hasSearchText = searchVal && searchVal.trim() !== '';
       if (hasSearchText) {
-        query.append('search', searchVal.trim());
+        query.append('keyword', searchVal.trim());
+        query.append('city', searchVal.trim()); // Also try matching city exactly
       }
       
-      // 2. Type / Category — skip type filter if user typed a location search
+      // 2. Type / Category
       const typeOverride = hasOwn('type') ? searchParams.type : null;
       let dbType = typeOverride !== null ? typeOverride : (hasSearchText ? '' : activePropCategory);
       if (dbType && dbType !== 'More+' && dbType !== 'Any' && dbType !== '') {
@@ -545,10 +566,43 @@ export default function GuestApp() {
       // 5. Dates
       const datesVal = hasOwn('dates') ? searchParams.dates : dates;
       if (datesVal && datesVal !== 'Select dates' && datesVal.trim() !== '') {
-        query.append('date', datesVal.trim());
+        // Flatpickr 'Y-m-d to Y-m-d'
+        if (datesVal.includes(' to ')) {
+          const [start, end] = datesVal.split(' to ');
+          if (start) query.append('checkIn', start);
+          if (end) query.append('checkOut', end);
+        }
       }
       
-      const res = await fetch(`${API_BASE}/properties?${query.toString()}`);
+      // 6. Room Type
+      if (stayType && stayType !== 'Any') {
+        const roomMap = {
+          '1 Deluxe Room': 'private-room',
+          '2 Deluxe Rooms': 'private-room',
+          'Entire Villa': 'entire-place'
+        };
+        if (roomMap[stayType]) query.append('roomType', roomMap[stayType]);
+      }
+      
+      // 7. Food Preference
+      if (foodPref && foodPref !== 'Any') {
+        const foodMap = {
+          'Pure Veg': 'veg',
+          'Non-Veg': 'non-veg',
+          'Buffet Available': 'both'
+        };
+        if (foodMap[foodPref]) query.append('foodPreference', foodMap[foodPref]);
+      }
+      
+      // 8. Checkboxes
+      if (verifiedOnly) query.append('verifiedOnly', 'true');
+      if (featuredOnly) query.append('featuredOnly', 'true');
+      
+      // Pagination & Limits
+      if (searchParams.limit) query.append('limit', searchParams.limit);
+      if (searchParams.status) query.append('status', searchParams.status);
+      
+      const res = await fetch(`${API_BASE}/search?${query.toString()}`);
       if (res.ok) {
         const data = await res.json();
         if (data && data.properties) {
@@ -566,8 +620,10 @@ export default function GuestApp() {
       return;
     }
     setAiSearchLoading(true);
+    setAiSummary(null);
+    setAiTags([]);
     try {
-      const res = await fetch(`${API_BASE}/properties/ai-search`, {
+      const res = await fetch(`${API_BASE}/search/ai`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: where })
@@ -577,7 +633,18 @@ export default function GuestApp() {
         if (data && data.properties) {
           setLiveProperties(data.properties);
           setActiveMenu('Search');
+          setAiSummary(data.aiSummary);
+          
+          const tags = [];
           const f = data.extractedFilters || {};
+          if (f.city) tags.push(`📍 ${f.city}`);
+          if (f.type) tags.push(`🏠 ${f.type}`);
+          if (f.guests) tags.push(`👥 ${f.guests} guests`);
+          if (f.checkIn) tags.push(`📅 ${f.checkIn} → ${f.checkOut || "?"}`);
+          if (f.maxPrice) tags.push(`💰 Under ₹${f.maxPrice}/night`);
+          if (f.foodPreference) tags.push(`🍽️ ${f.foodPreference}`);
+          setAiTags(tags);
+          
           if (f.city) setWhere(f.city);
           if (f.type) setActivePropCategory(f.type + 's');
         }
@@ -615,6 +682,23 @@ export default function GuestApp() {
         const enquiriesData = await enquiriesRes.json();
         setLiveEnquiries(enquiriesData);
       }
+
+      // Fetch user's reviews
+      const reviewsRes = await fetch(`${API_BASE}/reviews/user/me`, {
+        headers: { Authorization: `Bearer ${activeToken}` }
+      });
+      if (reviewsRes.ok) {
+        const reviewsData = await reviewsRes.json();
+        // Format to match the UI expectation
+        const formattedReviews = reviewsData.map(r => ({
+          title: r.property_id?.name || 'Property Review',
+          rating: r.rating,
+          location: r.property_id?.location || r.property_id?.city || 'Location',
+          reviewText: r.review_text,
+          img: (r.property_id?.images && r.property_id.images.length > 0) ? r.property_id.images[0] : 'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=400&q=80'
+        }));
+        setUserReviews(formattedReviews);
+      }
     } catch (e) {
       console.error('Error fetching profile/enquiries:', e);
     }
@@ -622,6 +706,36 @@ export default function GuestApp() {
 
   // Initial load
   React.useEffect(() => {
+    const fetchHomepageData = async () => {
+      try {
+        const destRes = await fetch(`${API_BASE}/masters/destinations?status=Active`);
+        if (destRes.ok) {
+           const d = await destRes.json();
+           setLiveDestinations(d);
+        }
+        const expRes = await fetch(`${API_BASE}/admin/experiences/active`);
+        if (expRes.ok) {
+           const e = await expRes.json();
+           setLiveExperiences(e);
+        }
+        const featRes = await fetch(`${API_BASE}/properties?limit=6&status=Active`);
+        if (featRes.ok) {
+           const f = await featRes.json();
+           setFeaturedProperties(f.properties || []);
+        }
+        const contentRes = await fetch(`${API_BASE}/content/homepage`);
+        if (contentRes.ok) {
+           const contentData = await contentRes.json();
+           if (contentData && contentData.data) {
+             setHomepageContent(contentData.data);
+           }
+        }
+      } catch (err) {
+        console.error('Error fetching homepage data:', err);
+      }
+    };
+    fetchHomepageData();
+
     const fetchAll = async () => {
       try {
         const res = await fetch(`${API_BASE}/properties`);
@@ -702,6 +816,8 @@ export default function GuestApp() {
     setFoodPref('Any');
     setVerifiedOnly(false);
     setFeaturedOnly(false);
+    setAiSummary(null);
+    setAiTags([]);
     fetchProperties({});
   };
 
@@ -718,7 +834,7 @@ export default function GuestApp() {
     }
   };
 
-  const mapDbProperties = (dbProps, defaultList) => {
+  function mapDbProperties(dbProps, defaultList) {
     const listToMap = (dbProps && dbProps.length > 0) 
       ? dbProps 
       : ((where && where.trim() !== '') ? [] : defaultList);
@@ -750,6 +866,13 @@ export default function GuestApp() {
         rules: p.rules || '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).',
         category: category,
         type: category,
+        experiences: p.experiences || [],
+        highlights: p.highlights || [],
+        taxAmount: p.taxAmount || 0,
+        mapLocation: p.mapLocation || null,
+        latitude: p.latitude || null,
+        longitude: p.longitude || null,
+        full_address: p.full_address || p.location || '',
         instantBook: p.instantBook !== undefined ? p.instantBook : true,
         cancellationPolicy: p.cancellationPolicy !== undefined ? p.cancellationPolicy : true,
         homestay: category.toLowerCase() === 'homestay'
@@ -757,13 +880,18 @@ export default function GuestApp() {
     });
   };
 
-  const mappedBest = mapDbProperties(allProperties, bestVillasList);
+  const mappedBest = featuredProperties.length > 0 ? mapDbProperties(featuredProperties, bestVillasList) : mapDbProperties(allProperties, bestVillasList).slice(0, 6);
   let currentBestVillas = [...mappedBest];
-  if (allProperties && allProperties.length > 0 && currentBestVillas.length < 8) {
-    const diff = 8 - currentBestVillas.length;
-    const extraMockItems = bestVillasList.slice(currentBestVillas.length, currentBestVillas.length + diff);
-    const mappedExtra = mapDbProperties([], extraMockItems);
-    currentBestVillas = [...currentBestVillas, ...mappedExtra];
+  if (currentBestVillas.length === 0) {
+    currentBestVillas = mapDbProperties([], bestVillasList.slice(0, 6));
+  }
+
+  // Also map properties for Curated section (Section 3) instead of hardcoded curatedList
+  let currentCuratedVillas = featuredProperties.length > 0 
+    ? mapDbProperties(featuredProperties.slice().reverse(), curatedList)
+    : mapDbProperties(allProperties.slice().reverse(), curatedList).slice(0, 6);
+  if (currentCuratedVillas.length === 0) {
+    currentCuratedVillas = mapDbProperties([], curatedList); // fallback to 3 mock items
   }
 
   const mappedProps = mapDbProperties(liveProperties, propertiesVillasList);
@@ -777,6 +905,47 @@ export default function GuestApp() {
       currentPropertiesVillas = [...currentPropertiesVillas, ...mappedExtra];
     }
   }
+
+  const displayDestinations = liveDestinations.length > 0 ? liveDestinations.map(d => ({
+    img: d.coverImageUrl || 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80',
+    name: d.destinationName || d.name,
+    count: `${d.propertiesCount || 0} Homestays - Villas & Appartments`
+  })) : carouselDestinations;
+  const displayExperiences = liveExperiences.length > 0 ? liveExperiences.map(e => ({
+    img: e.themeCoverImageUrl || e.cover_image_url,
+    name: e.experienceName || e.name,
+    count: `${e.propertiesCount || 0} properties`
+  })) : carouselDestinations;
+
+  
+  const renderTitle = (title, defaultElement, defaultHighlightWord) => {
+    if (!title) return defaultElement;
+    
+    // Check if the user used *word* syntax for custom highlighting
+    if (title.includes('*')) {
+      const parts = title.split(/(\*[^*]+\*)/g);
+      return (
+        <>{parts.map((part, i) => {
+          if (part.startsWith('*') && part.endsWith('*')) {
+            return <span key={i} className="highlight-sharp-blue-box">{part.slice(1, -1)}</span>;
+          }
+          return part;
+        })}</>
+      );
+    }
+
+    // Fallback to default highlighting word if specified
+    if (defaultHighlightWord) {
+      const regex = new RegExp(`(${defaultHighlightWord})`, 'gi');
+      const parts = title.split(regex);
+      if (parts.length > 1) {
+        return (
+          <>{parts.map((part, i) => part.toLowerCase() === defaultHighlightWord.toLowerCase() ? <span key={i} className="highlight-sharp-blue-box">{part}</span> : part)}</>
+        );
+      }
+    }
+    return title;
+  };
 
   const handleSendOTP = async (e) => {
     if (e) e.preventDefault();
@@ -865,12 +1034,12 @@ export default function GuestApp() {
           ...(token ? { Authorization: `Bearer ${token}` } : {})
         },
         body: JSON.stringify({
-          property_id: propToUse._id,
-          user_id: user?._id || null,
-          user_name: guestEnquiryName,
+          propertyId: propToUse._id,
+          propertyName: propToUse.title || propToUse.propertyName,
+          name: guestEnquiryName,
           phone: guestEnquiryPhone,
           email: guestEnquiryEmail,
-          query: guestEnquiryMessage
+          message: guestEnquiryMessage
         })
       });
 
@@ -1129,8 +1298,8 @@ export default function GuestApp() {
           
           {/* Background Image: Loads your exact high-resolution custom hero image */}
           <img 
-            src={heroBgImg} 
-            className="hero-background" 
+            src={homepageContent?.banner?.image || heroBgImg}
+            className="hero-background"
             alt="Luxury Villa Background" 
           />
 
@@ -1147,12 +1316,7 @@ export default function GuestApp() {
                   </span>
                 </h1>
               ) : (
-                <h1 className="hero-headline">
-                  Find Your 
-                  <span className="hero-headline-span">
-                    Perfect Stay
-                  </span>
-                </h1>
+                <h1 className="hero-headline">{homepageContent?.banner?.title ? ( <>{homepageContent.banner.title.split(" ").slice(0, -2).join(" ")} <span className="hero-headline-span">{homepageContent.banner.title.split(" ").slice(-2).join(" ")}</span></> ) : ( <>Find Your <span className="hero-headline-span">Perfect Stay</span></> )}</h1>
               )}
             </div>
 
@@ -1999,10 +2163,10 @@ export default function GuestApp() {
                 
                 <div className="section-title-wrap">
                   <h2 className="section-main-headline">
-                    Why Choose Our <span className="highlight-sharp-blue-box">Services</span>
+                    {renderTitle(homepageContent?.section5?.title, <span>Why Choose Our <span className="highlight-sharp-blue-box">Services</span></span>, "Services")}
                   </h2>
                   <p className="section-sub-headline" style={{ color: '#4B5563' }}>
-                    Choose the next destination for you
+                    {homepageContent?.section5?.subText || 'Choose the next destination for you'}
                   </p>
                 </div>
 
@@ -2010,38 +2174,38 @@ export default function GuestApp() {
                   <div className="services-col">
                     <div className="service-text-card white-bg">
                       <p className="service-card-desc">
-                        Every property is carefully verified to ensure quality, safety, and comfort you can rely on.
+                        {homepageContent?.section5?.row1?.subText || 'Every property is carefully verified to ensure quality, safety, and comfort you can rely on.'}
                       </p>
-                      <h3 className="service-card-accent-title">Verified & Trusted Stays</h3>
-                      <p className="service-card-subtext">Get genuine and good stays</p>
+                      <h3 className="service-card-accent-title">{homepageContent?.section5?.row1?.title || 'Verified & Trusted Stays'}</h3>
+                      <p className="service-card-subtext">{homepageContent?.section5?.row1?.subText || 'Get genuine and good stays'}</p>
                     </div>
                     <div className="service-image-card">
-                      <img src={rect35Img} alt="Secure Payments" />
+                      <img src={rect35Img} alt="{homepageContent?.section5?.features?.[0]?.title || 'Secure Payments'}" />
                       <div className="service-overlay-badge-bottom">
                         <div className="service-icon-circle-overlay"><CreditCard size={18} color="#FFFFFF" /></div>
-                        <span>Secure Payments</span>
+                        <span>{homepageContent?.section5?.features?.[0]?.title || 'Secure Payments'}</span>
                       </div>
                     </div>
                   </div>
 
                   <div className="services-col-center">
                     <div className="service-tall-card">
-                      <img src={rect32Img} alt="Traveler center image" />
+                      <img src={homepageContent?.section5?.image3 || rect32Img} alt="Traveler center image" />
                     </div>
                   </div>
 
                   <div className="services-col">
                     <div className="service-image-card">
-                      <img src={rect33Img} alt="Best Price" />
+                      <img src={homepageContent?.section5?.features?.[1]?.image || rect33Img} alt="Best Price" />
                       <div className="service-overlay-badge-bottom">
                         <div className="service-icon-circle-overlay"><Percent size={18} color="#FFFFFF" /></div>
-                        <span>Best Price Guarantee</span>
+                        <span>{homepageContent?.section5?.features?.[1]?.title || 'Best Price Guarantee'}</span>
                       </div>
                     </div>
                     <div className="service-text-card transparent-bg">
                       <div className="service-card-top-group">
-                        <h3 className="service-card-accent-title">24/7 Support, Always There</h3>
-                        <p className="service-card-bold-sub">All type of support</p>
+                        <h3 className="service-card-accent-title">{homepageContent?.section5?.row2?.title || '24/7 Support, Always There'}</h3>
+                        <p className="service-card-bold-sub">{homepageContent?.section5?.row2?.subText || 'All type of support'}</p>
                       </div>
                       <p className="service-card-desc-light">
                         From booking to checkout, our support team is available anytime to help you.
@@ -2058,10 +2222,10 @@ export default function GuestApp() {
             <div className="our-testimonials-section" style={{ margin: '80px 0 20px 0' }}>
               <div className="section-title-wrap">
                 <h2 className="section-main-headline">
-                  Our <span className="highlight-sharp-blue-box">Testimonials</span>
+                  {homepageContent?.section6?.title || <span>Our <span className="highlight-sharp-blue-box">Testimonials</span></span>}
                 </h2>
                 <p className="section-sub-headline">
-                  Check what our customers says about us
+                  {homepageContent?.section6?.subText || 'Check what our customers says about us'}
                 </p>
               </div>
 
@@ -2725,10 +2889,10 @@ export default function GuestApp() {
               
               <div className="section-title-wrap">
                 <h2 className="section-main-headline">
-                  Why Choose Our <span className="highlight-sharp-blue-box">Services</span>
+                  {homepageContent?.section5?.row1?.title || <span>Why Choose Our <span className="highlight-sharp-blue-box">Services</span></span>}
                 </h2>
                 <p className="section-sub-headline" style={{ color: '#4B5563' }}>
-                  Choose the next destination for you
+                  {homepageContent?.section5?.row1?.subText || 'Choose the next destination for you'}
                 </p>
               </div>
 
@@ -2741,23 +2905,23 @@ export default function GuestApp() {
                   {/* White card top */}
                   <div className="service-text-card white-bg">
                     <p className="service-card-desc">
-                      Every property is carefully verified to ensure quality, safety, and comfort you can rely on.
+                      {homepageContent?.section5?.row1?.subText || 'Every property is carefully verified to ensure quality, safety, and comfort you can rely on.'}
                     </p>
-                    <h3 className="service-card-accent-title">Verified & Trusted Stays</h3>
-                    <p className="service-card-subtext">Get genuine and good stays</p>
+                    <h3 className="service-card-accent-title">{homepageContent?.section5?.row1?.title || 'Verified & Trusted Stays'}</h3>
+                    <p className="service-card-subtext">{homepageContent?.section5?.row1?.subText || 'Get genuine and good stays'}</p>
                   </div>
 
-                  {/* Secure Payments bottom image */}
+                  {/* {homepageContent?.section5?.features?.[0]?.title || 'Secure Payments'} bottom image */}
                   <div className="service-image-card">
                     <img 
                       src={rect35Img} 
-                      alt="Secure Payments" 
+                      alt="{homepageContent?.section5?.features?.[0]?.title || 'Secure Payments'}" 
                     />
                     <div className="service-overlay-badge-bottom">
                       <div className="service-icon-circle-overlay">
                         <CreditCard size={18} color="#FFFFFF" />
                       </div>
-                      <span>Secure Payments</span>
+                      <span>{homepageContent?.section5?.features?.[0]?.title || 'Secure Payments'}</span>
                     </div>
                   </div>
 
@@ -2766,10 +2930,7 @@ export default function GuestApp() {
                 {/* Column 2 (Full Height Traveler center image) */}
                 <div className="services-col-center">
                   <div className="service-tall-card">
-                    <img 
-                      src={rect32Img} 
-                      alt="Traveler with suitcase" 
-                    />
+                    <img src={homepageContent?.section5?.image3 || rect32Img} alt="Traveler with suitcase" />
                   </div>
                 </div>
 
@@ -2778,23 +2939,20 @@ export default function GuestApp() {
                   
                   {/* Pool Resort top image */}
                   <div className="service-image-card">
-                    <img 
-                      src={rect33Img} 
-                      alt="Best Price Guarantee Pool" 
-                    />
+                    <img src={homepageContent?.section5?.features?.[1]?.image || rect33Img} alt={homepageContent?.section5?.features?.[1]?.title || "Best Price Guarantee"} />
                     <div className="service-overlay-badge-bottom">
                       <div className="service-icon-circle-overlay">
                         <Percent size={18} color="#FFFFFF" />
                       </div>
-                      <span>Best Price Guarantee</span>
+                      <span>{homepageContent?.section5?.features?.[1]?.title || 'Best Price Guarantee'}</span>
                     </div>
                   </div>
 
                   {/* 24/7 Support text card bottom */}
                   <div className="service-text-card transparent-bg">
                     <div className="service-card-top-group">
-                      <h3 className="service-card-accent-title">24/7 Support, Always There</h3>
-                      <p className="service-card-bold-sub">All type of support</p>
+                      <h3 className="service-card-accent-title">{homepageContent?.section5?.row2?.title || '24/7 Support, Always There'}</h3>
+                      <p className="service-card-bold-sub">{homepageContent?.section5?.row2?.subText || 'All type of support'}</p>
                     </div>
                     <p className="service-card-desc-light">
                       From booking to checkout, our support team is available anytime to help you.
@@ -2959,23 +3117,49 @@ export default function GuestApp() {
                     </div>
 
                     <div className="reservation-checks-list">
-                      <div className="check-bullet">
-                        <CheckCircle size={15} color="var(--primary-blue)" fill="rgba(37,99,235,0.1)" />
-                        <span>Breakfast Included</span>
-                      </div>
-                      <div className="check-bullet">
-                        <CheckCircle size={15} color="var(--primary-blue)" fill="rgba(37,99,235,0.1)" />
-                        <span>Free cancellation till 24 hrs before check</span>
-                      </div>
-                      <div className="check-bullet">
-                        <CheckCircle size={15} color="var(--primary-blue)" fill="rgba(37,99,235,0.1)" />
-                        <span>Parking Available</span>
-                      </div>
+                      {(activeDetailProp.highlights && activeDetailProp.highlights.length > 0 ? activeDetailProp.highlights : ['Breakfast Included', 'Free cancellation till 24 hrs before check', 'Parking Available']).map((highlight, idx) => (
+                        <div key={idx} className="check-bullet">
+                          <CheckCircle size={15} color="var(--primary-blue)" fill="rgba(37,99,235,0.1)" />
+                          <span>{highlight}</span>
+                        </div>
+                      ))}
                     </div>
 
+                    {/* Offer Display Block */}
+                    {(() => {
+                      const currentOffer = popularOffers.find(o => 
+                        (o.property_id && o.property_id._id === activeDetailProp._id) || 
+                        o.property_id === activeDetailProp._id ||
+                        o.propertyId === activeDetailProp._id
+                      );
+                      
+                      if (currentOffer) {
+                        return (
+                          <div style={{ 
+                            background: 'rgba(56, 161, 105, 0.08)', 
+                            border: '1px dashed rgba(56, 161, 105, 0.5)', 
+                            borderRadius: '8px', 
+                            padding: '12px', 
+                            marginBottom: '16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px'
+                          }}>
+                            <div style={{ background: '#38A169', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontWeight: 'bold', fontSize: '13px' }}>
+                              {currentOffer.offerPercent || currentOffer.offer_percent} OFF
+                            </div>
+                            <span style={{ fontSize: '13px', color: '#276749', fontWeight: '500', lineHeight: 1.4 }}>
+                              {currentOffer.description || 'Special offer applicable on this property.'}
+                            </span>
+                          </div>
+                        );
+                      }
+                      return null;
+                    })()}
+
                     <div className="reservation-pricing-block">
-                      <span className="old-strike-price">₹2140/night</span>
-                      <span className="taxes-subtext">+212 taxes & fees per room per night</span>
+                      <span className="old-strike-price">₹{Number(activeDetailProp.priceRaw * 1.2 || 2140).toLocaleString('en-IN')}/night</span>
+                      <span className="taxes-subtext">+{activeDetailProp.taxAmount || 212} taxes & fees per room per night</span>
                       <div style={{ marginTop: '4px' }}>
                         <span className="highlight-green-detail">{activeDetailProp.price}/night</span>
                       </div>
@@ -3006,51 +3190,69 @@ export default function GuestApp() {
           <div className="about-property-section">
             <h3 className="section-subtitle-title">About Property</h3>
             <p className="about-property-text">
-              {(selectedProperty && selectedProperty.description) || 'Experience a comfortable and refined stay at Azure Bay Hotel, located in the heart of the city and designed for both leisure and business travelers. The hotel offers thoughtfully designed rooms, modern amenities, and warm hospitality to ensure a relaxing and memorable stay. With easy access to popular attractions, dining spots, and transport hubs, Azure Bay Hotel is an ideal choice for a seamless travel.'} <span className="read-more-link">Read More</span>
+              {activeDetailProp?.description ? (
+                showFullDescription || activeDetailProp.description.length <= 250 
+                  ? activeDetailProp.description 
+                  : `${activeDetailProp.description.substring(0, 250)}...`
+              ) : 'Experience a comfortable and refined stay at Azure Bay Hotel, located in the heart of the city and designed for both leisure and business travelers. The hotel offers thoughtfully designed rooms, modern amenities, and warm hospitality to ensure a relaxing and memorable stay. With easy access to popular attractions, dining spots, and transport hubs, Azure Bay Hotel is an ideal choice for a seamless travel.'} 
+              {activeDetailProp?.description && activeDetailProp.description.length > 250 && (
+                <span className="read-more-link" onClick={() => setShowFullDescription(!showFullDescription)} style={{ cursor: 'pointer', color: '#2563EB', fontWeight: '500', marginLeft: '5px' }}>
+                  {showFullDescription ? 'Read Less' : 'Read More'}
+                </span>
+              )}
             </p>
           </div>
 
           {/* Amenities Row */}
           <div className="about-property-section">
             <h3 className="section-subtitle-title">Amenities</h3>
-            <div className="amenities-horizontal-layout">
+            <div className="amenities-horizontal-layout" style={{ flexWrap: 'wrap' }}>
               <div className="amenity-vertical-item">
                 <img src={areaIcon} alt="Area Size" className="amenity-vertical-icon" />
                 <span className="amenity-vertical-lbl">Area Size</span>
-                <span className="amenity-vertical-val">{(selectedProperty && selectedProperty.area) || '31 sq. ft.'}</span>
+                <span className="amenity-vertical-val">{activeDetailProp.area || '31 sq. ft.'}</span>
               </div>
               <div className="amenity-vertical-item">
                 <img src={roomIcon} alt="Rooms" className="amenity-vertical-icon" />
                 <span className="amenity-vertical-lbl">Rooms</span>
-                <span className="amenity-vertical-val">{(selectedProperty && selectedProperty.rooms) || '1 Room'}</span>
+                <span className="amenity-vertical-val">{activeDetailProp.rooms || '1 Room'}</span>
               </div>
               <div className="amenity-vertical-item">
                 <img src={bedIcon} alt="Beds" className="amenity-vertical-icon" />
                 <span className="amenity-vertical-lbl">Beds</span>
-                <span className="amenity-vertical-val">{(selectedProperty && selectedProperty.beds) || '2 Beds'}</span>
+                <span className="amenity-vertical-val">{activeDetailProp.beds || '2 Beds'}</span>
               </div>
               <div className="amenity-vertical-item">
                 <img src={guestIcon} alt="Guests" className="amenity-vertical-icon" />
                 <span className="amenity-vertical-lbl">Guests</span>
-                <span className="amenity-vertical-val">{(selectedProperty && selectedProperty.guests) || '3 Person'}</span>
+                <span className="amenity-vertical-val">{activeDetailProp.guests || '3 Person'}</span>
               </div>
-              <div className="amenity-vertical-item">
-                <div className="amenity-vertical-icon">
-                  <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#58A429" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M5 10h14" />
-                    <path d="M12 10v10" />
-                    <path d="M8 20h8" />
-                    <path d="M6 10c0 4 3 6 6 6s6-2 6-6" />
-                    <path d="M9 6c.5-1.5 .5-3 .5-3" />
-                    <path d="M12 6c.5-1.5 .5-3 .5-3" />
-                    <path d="M15 6c.5-1.5 .5-3 .5-3" />
-                  </svg>
+              {(activeDetailProp.amenities || []).map((amenity, idx) => (
+                <div key={idx} className="amenity-vertical-item">
+                  <div className="amenity-vertical-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <CheckCircle size={30} color="#58A429" />
+                  </div>
+                  <span className="amenity-vertical-lbl">{amenity}</span>
+                  <span className="amenity-vertical-val">Available</span>
                 </div>
-                <span className="amenity-vertical-lbl">Barbeque</span>
-                <span className="amenity-vertical-val">Available</span>
-              </div>
+              ))}
             </div>
           </div>
+
+          {/* Unique Experiences Section (Moved after amenities) */}
+          {activeDetailProp && activeDetailProp.experiences && activeDetailProp.experiences.length > 0 && (
+            <div className="about-property-section">
+              <h3 className="section-subtitle-title">Unique Experiences</h3>
+              <div style={{ display: 'flex', gap: '12px', overflowX: 'auto', paddingBottom: '8px' }}>
+                {activeDetailProp.experiences.map((exp, idx) => (
+                  <div key={idx} style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '12px', padding: '12px 20px', display: 'flex', gap: '8px', alignItems: 'center', flexShrink: 0 }}>
+                    <span style={{ fontSize: '24px' }}>{exp.representingIcon || '✨'}</span>
+                    <span style={{ fontSize: '14px', fontWeight: 600, color: '#065F46', fontFamily: '"Outfit", sans-serif' }}>{exp.experienceName}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           </div>
 
           {/* Sub Navigation Anchor Tabs Row */}
@@ -3164,7 +3366,7 @@ export default function GuestApp() {
               <div className="landmarks-sidebar">
                 <h3 className="section-subtitle-title" style={{ fontSize: '20px', marginBottom: '20px' }}>Key Landmarks</h3>
                 <div className="landmarks-stack">
-                  {(dynamicLandmarks.length > 0 ? dynamicLandmarks : landmarks).map((mark, idx) => (
+                  {(dynamicLandmarks.length > 0 ? dynamicLandmarks : (activeDetailProp._id?.toString().startsWith('mock-') ? landmarks : [])).map((mark, idx) => (
                     <div key={idx} className="landmark-row-item">
                       <div className="landmark-row-left-content">
                         <div className="landmark-avatar-square">
@@ -3187,6 +3389,9 @@ export default function GuestApp() {
                       </button>
                     </div>
                   ))}
+                  {dynamicLandmarks.length === 0 && !activeDetailProp._id?.toString().startsWith('mock-') && (
+                    <span style={{ fontSize: '13px', color: '#9CA3AF' }}>No landmarks added yet.</span>
+                  )}
                 </div>
               </div>
             </div>
@@ -3813,6 +4018,43 @@ export default function GuestApp() {
 
             {/* Main Results Column */}
             <div className="search-main-content">
+              {/* AI Summary Banner */}
+              {aiSummary && (
+                <div style={{
+                  background: 'linear-gradient(to right, rgba(14, 165, 233, 0.1), rgba(168, 85, 247, 0.1))',
+                  border: '1px solid rgba(14, 165, 233, 0.2)',
+                  borderRadius: '16px',
+                  padding: '20px',
+                  marginBottom: '24px',
+                  boxShadow: '0 4px 15px rgba(0,0,0,0.03)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                    <Sparkles size={20} color="#0ea5e9" />
+                    <span style={{ fontWeight: 700, fontSize: '15px', color: '#0ea5e9', fontFamily: '"Outfit", sans-serif' }}>AI Search Summary</span>
+                  </div>
+                  <p style={{ color: '#374151', fontSize: '15px', lineHeight: '1.5', marginBottom: '16px' }}>{aiSummary}</p>
+                  
+                  {aiTags && aiTags.length > 0 && (
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {aiTags.map((tag, i) => (
+                        <span key={i} style={{ 
+                          background: '#fff', 
+                          padding: '6px 12px', 
+                          borderRadius: '100px', 
+                          fontSize: '13px', 
+                          fontWeight: 500,
+                          color: '#4b5563',
+                          border: '1px solid rgba(0,0,0,0.05)',
+                          boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+                        }}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               <h2 className="search-results-count">
                 {(() => {
                   const displayList = getFilteredProperties();
@@ -4071,10 +4313,10 @@ export default function GuestApp() {
           <div className="villas-around-section" style={{ marginTop: '40px' }}>
             <div className="section-title-wrap">
               <h2 className="section-main-headline">
-                Best <span className="highlight-sharp-blue-box">Villas</span> Around You
+                {renderTitle(homepageContent?.section1?.title, <span>Best <span className="highlight-sharp-blue-box">Villas</span> Around You</span>, "Villas")}
               </h2>
               <p className="section-sub-headline">
-                Choose from homestays, villas, apartments, resorts and more—stays that fit your travel style.
+                {homepageContent?.section1?.subText || 'Choose from homestays, villas, apartments, resorts and more—stays that fit your travel style.'}
               </p>
             </div>
 
@@ -4147,7 +4389,7 @@ export default function GuestApp() {
                 Best <span className="highlight-sharp-blue-box">Homestays</span> Around You
               </h2>
               <p className="section-sub-headline">
-                Choose from homestays, villas, apartments, resorts and more—stays that fit your travel style.
+                {homepageContent?.section1?.subText || 'Choose from homestays, villas, apartments, resorts and more—stays that fit your travel style.'}
               </p>
             </div>
 
@@ -4253,7 +4495,7 @@ export default function GuestApp() {
               </button>
 
               <div className="carousel-track">
-                {carouselDestinations.map((dest, i) => (
+                {(activeDestTab === 'Destinations' ? displayDestinations : displayExperiences).map((dest, i) => (
                   <div key={i} className="carousel-card-item">
                     <div className="carousel-img-wrap">
                       <img src={dest.img} alt={dest.name} />
@@ -4285,10 +4527,10 @@ export default function GuestApp() {
             {/* Keyword-highlighted headline block */}
             <div className="section-title-wrap">
               <h2 className="section-main-headline">
-                Best <span className="highlight-sharp-blue-box">Villas</span> Around You
+                {renderTitle(homepageContent?.section1?.title, <span>Best <span className="highlight-sharp-blue-box">Villas</span> Around You</span>, "Villas")}
               </h2>
               <p className="section-sub-headline">
-                Choose from homestays, villas, apartments, resorts and more—stays that fit your travel style.
+                {homepageContent?.section1?.subText || 'Choose from homestays, villas, apartments, resorts and more—stays that fit your travel style.'}
               </p>
             </div>
 
@@ -4370,10 +4612,10 @@ export default function GuestApp() {
             {/* Title layout block */}
             <div className="section-title-wrap">
               <h2 className="section-main-headline">
-                <span className="highlight-sharp-blue-box">Curated</span> Properties
+                {renderTitle(homepageContent?.section2?.title, <span><span className="highlight-sharp-blue-box">Curated</span> Properties</span>, "Curated")}
               </h2>
               <p className="section-sub-headline">
-                Carefully selected stays that meet our standards for comfort, quality, and location.
+                {homepageContent?.section2?.subText || 'Carefully selected stays that meet our standards for comfort, quality, and location.'}
               </p>
             </div>
 
@@ -4392,7 +4634,7 @@ export default function GuestApp() {
               </button>
 
               <div className="curated-horizontal-grid">
-                {curatedList.map((item, idx) => (
+                {currentCuratedVillas.map((item, idx) => (
                   <div key={idx} className="curated-horizontal-card">
                     <div className="curated-card-img-wrap">
                       <img src={item.img} alt={item.title} />
@@ -4456,7 +4698,7 @@ export default function GuestApp() {
                 <span className="highlight-sharp-blue-box">Popular</span> Offers Of Property
               </h2>
               <p className="section-sub-headline">
-                Carefully selected stays that meet our standards for comfort, quality, and location.
+                {homepageContent?.section2?.subText || 'Carefully selected stays that meet our standards for comfort, quality, and location.'}
               </p>
             </div>
 
@@ -4518,10 +4760,10 @@ export default function GuestApp() {
               
               <div className="section-title-wrap">
                 <h2 className="section-main-headline">
-                  Why Choose Our <span className="highlight-sharp-blue-box">Services</span>
+                  {renderTitle(homepageContent?.section5?.title, <span>Why Choose Our <span className="highlight-sharp-blue-box">Services</span></span>, "Services")}
                 </h2>
                 <p className="section-sub-headline" style={{ color: '#4B5563' }}>
-                  Choose the next destination for you
+                  {homepageContent?.section5?.subText || 'Choose the next destination for you'}
                 </p>
               </div>
 
@@ -4534,25 +4776,25 @@ export default function GuestApp() {
                   {/* White card top */}
                   <div className="service-text-card white-bg">
                     <p className="service-card-desc">
-                      Every property is carefully verified to ensure quality, safety, and comfort you can rely on.
+                      {homepageContent?.section5?.row1?.subText || 'Every property is carefully verified to ensure quality, safety, and comfort you can rely on.'}
                     </p>
                     <div className="service-card-bottom-group">
-                      <h3 className="service-card-accent-title">Verified & Trusted Stays</h3>
-                      <p className="service-card-subtext">Get genuine and good stays</p>
+                      <h3 className="service-card-accent-title">{homepageContent?.section5?.row1?.title || 'Verified & Trusted Stays'}</h3>
+                      <p className="service-card-subtext">{homepageContent?.section5?.row1?.subText || 'Get genuine and good stays'}</p>
                     </div>
                   </div>
 
-                  {/* Secure Payments bottom image */}
+                  {/* {homepageContent?.section5?.features?.[0]?.title || 'Secure Payments'} bottom image */}
                   <div className="service-image-card">
                     <img 
-                      src={rect35Img} 
-                      alt="Secure Payments" 
+                      src={homepageContent?.section5?.features?.[0]?.image || rect35Img} 
+                      alt={homepageContent?.section5?.features?.[0]?.title || "Secure Payments"} 
                     />
                     <div className="service-overlay-badge-bottom">
                       <div className="service-icon-circle-overlay">
                         <CreditCard size={18} color="#FFFFFF" />
                       </div>
-                      <span>Secure Payments</span>
+                      <span>{homepageContent?.section5?.features?.[0]?.title || 'Secure Payments'}</span>
                     </div>
                   </div>
 
@@ -4562,7 +4804,7 @@ export default function GuestApp() {
                 <div className="services-col-center">
                   <div className="service-tall-card">
                     <img 
-                      src={rect32Img} 
+                      src={homepageContent?.section5?.image3 || rect32Img} 
                       alt="Traveler with suitcase" 
                     />
                   </div>
@@ -4574,22 +4816,22 @@ export default function GuestApp() {
                   {/* Pool Resort top image */}
                   <div className="service-image-card">
                     <img 
-                      src={rect33Img} 
-                      alt="Best Price Guarantee Pool" 
+                      src={homepageContent?.section5?.features?.[1]?.image || rect33Img} 
+                      alt={homepageContent?.section5?.features?.[1]?.title || 'Best Price Guarantee'} 
                     />
                     <div className="service-overlay-badge-bottom">
                       <div className="service-icon-circle-overlay">
                         <Percent size={18} color="#FFFFFF" />
                       </div>
-                      <span>Best Price Guarantee</span>
+                      <span>{homepageContent?.section5?.features?.[1]?.title || 'Best Price Guarantee'}</span>
                     </div>
                   </div>
 
                   {/* 24/7 Support text card bottom */}
                   <div className="service-text-card transparent-bg">
                     <div className="service-card-top-group">
-                      <h3 className="service-card-accent-title">24/7 Support, Always There</h3>
-                      <p className="service-card-bold-sub">All type of support</p>
+                      <h3 className="service-card-accent-title">{homepageContent?.section5?.row2?.title || '24/7 Support, Always There'}</h3>
+                      <p className="service-card-bold-sub">{homepageContent?.section5?.row2?.subText || 'All type of support'}</p>
                     </div>
                     <p className="service-card-desc-light">
                       From booking to checkout, our support team is available anytime to help you.
@@ -4775,8 +5017,10 @@ export default function GuestApp() {
                 <div style={{ width: '100%', borderTop: '1px dotted #D1D5DB', margin: '24px 0 12px 0' }}></div>
 
                 {/* Dashed divider */}
-                <div className="auth-divider-wrap" style={{ margin: '12px 0 24px 0' }}>
-                  <span className="auth-divider-text">Or Log In with</span>
+                <div style={{ display: 'flex', alignItems: 'center', width: '100%', margin: '12px 0 24px 0' }}>
+                  <div style={{ flex: 1, borderTop: '1px dotted #D1D5DB' }}></div>
+                  <span style={{ padding: '0 16px', fontSize: '13px', color: '#9CA3AF' }}>Or Sign Up with</span>
+                  <div style={{ flex: 1, borderTop: '1px dotted #D1D5DB' }}></div>
                 </div>
  
                 {/* Official Brand square social items */}
@@ -4806,77 +5050,63 @@ export default function GuestApp() {
                 </div>
               </div>
             ) : (
-              <div className="auth-login-split-container fade-in" style={{ display: 'flex', width: '100%', height: '100%' }}>
-                {/* Left side scenic Sunset pool image (pre-rendered with logo, overlays, and text inside assets) */}
-                <div className="auth-login-left-image" style={{ backgroundImage: `url(${loginLeftImg})`, backgroundSize: 'cover', backgroundPosition: 'center', width: '550px', height: '600px', marginLeft: '-28px', marginTop: '-20px', marginBottom: '-20px', flexShrink: 0, borderTopLeftRadius: '25px', borderBottomLeftRadius: '25px' }}>
-                  {/* Empty since everything is pre-rendered in the image */}
+              <div className="auth-login-split-container fade-in" style={{ display: 'flex', width: '100%', height: '100%', flex: 1 }}>
+                {/* Left side scenic Sunset pool image with clean CSS Glassmorphism Box */}
+                <div className="auth-login-left-image" style={{ width: '550px', flexShrink: 0, height: '100%', display: 'block', overflow: 'hidden', position: 'relative' }}>
+                  <img src={loginLeftImg} alt="Sign In / Sign Up" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', borderRadius: '0', transform: 'scale(1.15)' }} />
                 </div>
 
                 {/* Right side Log In form fields */}
-                <div className="auth-login-right-content" style={{ flex: 1, padding: '30px 60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box', position: 'relative' }}>
+                <div className="auth-login-right-content" style={{ flex: 1, padding: '50px 80px', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box', position: 'relative' }}>
                   
-                  <h2 className="auth-modal-title login-title-align" style={{ fontFamily: "'Lato', sans-serif", fontSize: '24px', fontWeight: '500', color: '#111827', lineHeight: '1.4', marginBottom: '20px' }}>
-                    Log In Your Account To <br />Find Your <span style={{ backgroundColor: '#0066ff', color: '#FFFFFF', padding: '2px 10px', borderRadius: '4px', marginLeft: '6px', fontWeight: '700', display: 'inline-block' }}>Perfect Stay</span>
+                  <h2 className="auth-modal-title login-title-align" style={{ fontFamily: "'Lato', sans-serif", fontSize: '24px', fontWeight: '400', color: '#374151', lineHeight: '1.4', marginBottom: '24px' }}>
+                    Log In Your Account To <br />Find Your <span style={{ backgroundColor: '#0066FF', color: '#FFFFFF', padding: '2px 10px', borderRadius: '4px', marginLeft: '6px', fontWeight: '700', display: 'inline-block' }}>Perfect Stay</span>
                   </h2>
                   
-                  <form onSubmit={(e) => {
-                    e.preventDefault();
-                    if (!showPasswordStep) {
-                      if (!loginEmail.trim()) {
-                        alert('Please enter your email or mobile number.');
-                        return;
-                      }
-                      setShowPasswordStep(true);
-                    } else {
-                      handleLoginSubmit(e);
-                    }
-                  }} className="auth-login-form" autoComplete="off">
-                    {!showPasswordStep ? (
-                      <div className="auth-form-group full-width">
-                        <label className="auth-input-label">Email Id or Mobile Number*</label>
-                        <input type="text" className="auth-input-field" placeholder="jhondoe@gmail.com" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required autoComplete="off" />
-                      </div>
-                    ) : (
-                      <>
-                        <div className="auth-form-group full-width">
-                          <label className="auth-input-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span>Password*</span>
-                            <span style={{ color: '#0066ff', fontSize: '12px', fontWeight: '600', cursor: 'pointer' }} onClick={() => setShowPasswordStep(false)}>Back</span>
-                          </label>
-                          <div style={{ position: 'relative' }}>
-                            <input type={showPassword ? "text" : "password"} className="auth-input-field" placeholder="••••••••" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required autoComplete="off" autoFocus />
-                            <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7280' }}>
-                              {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                            </button>
-                          </div>
-                        </div>
-                      </>
-                    )}
+                  <form onSubmit={handleLoginSubmit} className="auth-login-form" autoComplete="off" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div className="auth-form-group full-width">
+                      <label className="auth-input-label">Email Address*</label>
+                      <input type="text" className="auth-input-field" placeholder="jhondoe@gmail.com" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required autoComplete="off" />
+                    </div>
 
-                    <button type="submit" className="auth-submit-btn-green" style={{ width: '100%', borderRadius: '15px', fontSize: '16px', fontWeight: '600', backgroundColor: '#58A429', color: '#FFFFFF', border: 'none', cursor: 'pointer', height: '48px', transition: 'background-color 0.2s', marginTop: '24px' }}>
-                      {authLoading ? (showPasswordStep ? 'Logging In...' : 'Checking...') : (showPasswordStep ? 'Log In' : 'Continue')}
+                    <div className="auth-form-group full-width">
+                      <label className="auth-input-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span>Password*</span>
+                      </label>
+                      <div style={{ position: 'relative' }}>
+                        <input type={showPassword ? "text" : "password"} className="auth-input-field" placeholder="••••••••" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required autoComplete="off" />
+                        <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7280' }}>
+                          {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <button type="submit" className="auth-submit-btn-green" style={{ width: '100%', borderRadius: '8px', fontSize: '15px', fontWeight: '600', backgroundColor: '#58A429', color: '#FFFFFF', border: 'none', cursor: 'pointer', height: '46px', transition: 'background-color 0.2s', marginTop: '12px' }}>
+                      {authLoading ? 'Logging In...' : 'Continue'}
                     </button>
                   </form>
 
                   {/* Dotted separator line */}
-                  <div style={{ width: '100%', borderTop: '1px dotted #D1D5DB', margin: '24px 0 12px 0' }}></div>
+                  <div style={{ width: '100%', borderTop: '1px dotted #D1D5DB', margin: '24px 0 8px 0' }}></div>
 
                   {/* Dashed divider */}
-                  <div className="auth-divider-wrap" style={{ margin: '12px 0 20px 0' }}>
-                    <span className="auth-divider-text">Or Sign In with</span>
+                  <div style={{ display: 'flex', alignItems: 'center', width: '100%', margin: '20px 0' }}>
+                    <div style={{ flex: 1, borderTop: '1px dotted #D1D5DB' }}></div>
+                    <span style={{ padding: '0 16px', fontSize: '13px', color: '#9CA3AF' }}>Or Sign In with</span>
+                    <div style={{ flex: 1, borderTop: '1px dotted #D1D5DB' }}></div>
                   </div>
 
-                  <div className="auth-social-row" style={{ display: 'flex', gap: '32px', justifyContent: 'center', marginBottom: '4px' }}>
-                    <button style={{ background: '#f4f6f8', border: 'none', borderRadius: '10px', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background-color 0.2s' }} onClick={() => handleOAuthLogin('google')}>
-                      <svg width="24" height="24" viewBox="0 0 24 24">
+                  <div className="auth-social-row" style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '8px' }}>
+                    <button style={{ background: '#F3F4F6', border: 'none', borderRadius: '8px', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background-color 0.2s' }} onClick={() => handleOAuthLogin('google')}>
+                      <svg width="20" height="20" viewBox="0 0 24 24">
                         <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                         <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
                         <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l3.66-2.85z"/>
                         <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z"/>
                       </svg>
                     </button>
-                    <button style={{ background: '#f4f6f8', border: 'none', borderRadius: '10px', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background-color 0.2s' }} onClick={() => handleOAuthLogin('facebook')}>
-                      <svg width="24" height="24" viewBox="0 0 24 24">
+                    <button style={{ background: '#F3F4F6', border: 'none', borderRadius: '8px', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background-color 0.2s' }} onClick={() => handleOAuthLogin('facebook')}>
+                      <svg width="20" height="20" viewBox="0 0 24 24">
                         <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                       </svg>
                     </button>

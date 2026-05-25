@@ -269,13 +269,28 @@ export default function LocationMaster() {
                 </label>
                 <div className="file-upload-wrapper">
                   <input 
-                    type="text" 
-                    value={currentLandmarkImg || "image.jpg image.jpg"} 
-                    onChange={(e) => setCurrentLandmarkImg(e.target.value)}
-                    placeholder="Paste image URL..." 
+                    type="file" 
+                    accept=".jpg,.jpeg"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (!file) return;
+                      if (!file.type.match('image/jpeg')) {
+                        alert('Only JPG images are supported.');
+                        e.target.value = '';
+                        return;
+                      }
+                      if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB.');
+                        e.target.value = '';
+                        return;
+                      }
+                      // For demonstration without an upload endpoint, we'll create a local object URL
+                      const fileUrl = URL.createObjectURL(file);
+                      setCurrentLandmarkImg(fileUrl);
+                    }}
                     className="file-upload-input" 
+                    style={{ padding: '8px' }}
                   />
-                  <button type="button" className="btn-browse" style={{ cursor: 'pointer' }}>Browse</button>
                 </div>
               </div>
             </div>

@@ -95,8 +95,8 @@ export default function UniqueExperienceMaster() {
   const handleEdit = (expObj) => {
     setFormData({
       id: expObj._id,
-      experienceName: expObj.experienceName,
-      representingIcon: expObj.representingIcon || 'TreePine',
+      experienceName: expObj.experienceName || expObj.name || '',
+      representingIcon: expObj.representingIcon || expObj.icon || 'TreePine',
       description: expObj.description || '',
       themeCoverImageUrl: expObj.themeCoverImageUrl || '',
       status: expObj.status || 'Active'
@@ -129,7 +129,7 @@ export default function UniqueExperienceMaster() {
   };
 
   const filteredExperiences = experiences.filter(exp => 
-    (exp.experienceName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    ((exp.experienceName || exp.name) || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
     (exp.description || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -278,10 +278,10 @@ export default function UniqueExperienceMaster() {
                   <tr key={exp._id}>
                     <td style={{ textAlign: 'center' }}>
                       <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'var(--primary-light)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: 'auto' }}>
-                        {getIconComponent(exp.representingIcon)}
+                        {getIconComponent(exp.representingIcon || exp.icon)}
                       </div>
                     </td>
-                    <td style={{ fontWeight: 700, color: '#111827' }}>{exp.experienceName}</td>
+                    <td style={{ fontWeight: 700, color: '#111827' }}>{exp.experienceName || exp.name}</td>
                     <td style={{ fontSize: '11.5px', color: '#6B7280', whiteSpace: 'normal', maxW: '240px', lineHeight: 1.4 }}>{exp.description}</td>
                     <td>
                       <div style={{ width: 44, height: 32, borderRadius: 4, overflow: 'hidden', border: '1px solid #E5E7EB' }}>

@@ -19,8 +19,6 @@ const CATEGORIES = [
   'View', 'Fine & Dining', 'Recreation', 'Wellness', 'Business'
 ];
 
-const SCOPES = ['All', 'Villa', 'Hotel', 'Homestay', 'Resort'];
-
 const CATEGORY_ICON_MAP = {
   'Basic':       'Wifi',
   'Kitchen':     'ChefHat',
@@ -32,14 +30,6 @@ const CATEGORY_ICON_MAP = {
   'Recreation':  'Waves',
   'Wellness':    'Bath',
   'Business':    'Tv',
-};
-
-const SCOPE_COLORS = {
-  All:      { bg: '#EFF6FF', color: '#3B82F6' },
-  Villa:    { bg: '#FEF9C3', color: '#CA8A04' },
-  Hotel:    { bg: '#F3E8FF', color: '#9333EA' },
-  Homestay: { bg: '#ECFDF5', color: '#059669' },
-  Resort:   { bg: '#FEE2E2', color: '#DC2626' },
 };
 
 const BLANK_FORM = {
@@ -317,7 +307,7 @@ export default function AmenitiesMaster() {
                 <th style={{ width: 56, textAlign: 'center' }}>Icon</th>
                 <th>Amenity Name</th>
                 <th>Category</th>
-                <th style={{ textAlign: 'center' }}>Properties Using</th>
+                <th style={{ textAlign: 'center' }}>Properties Using This</th>
                 <th>Status</th>
                 <th style={{ textAlign: 'right', paddingRight: 24 }}>Actions</th>
               </tr>
@@ -382,20 +372,6 @@ export default function AmenitiesMaster() {
             </tbody>
           </table>
         </div>
-      </div>
-
-      {/* ─── Scope Legend ─────────────────────────── */}
-      <div style={{ margin: '16px 39px', display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-        <span style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 600 }}>SCOPE LEGEND:</span>
-        {SCOPES.map(s => (
-          <span key={s} style={{
-            fontSize: 11, fontWeight: 600, padding: '3px 10px', borderRadius: 20,
-            background: scopeStyle(s).bg, color: scopeStyle(s).color
-          }}>{s}</span>
-        ))}
-        <span style={{ fontSize: 11, color: '#6B7280', marginLeft: 4 }}>
-          — Scope controls which Owner form dropdowns show this amenity. "All" appears everywhere.
-        </span>
       </div>
 
       {/* ─── Delete Modal ──────────────────────────── */}

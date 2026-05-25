@@ -1,16 +1,18 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, Search, MoreVertical } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function CitiesLocations() {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedState, setSelectedState] = useState('');
+  const navigate = useNavigate();
 
   const fetchCities = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/cities');
+      const res = await fetch('http://localhost:5000/api/cities/analytics');
       const data = await res.json();
       if (Array.isArray(data)) setCities(data);
     } catch (err) {
@@ -88,18 +90,22 @@ export default function CitiesLocations() {
                   <th style={{ color: '#9CA3AF', fontWeight: 500 }}>Apartments <ChevronDown size={12} style={{ display: 'inline', marginLeft: 4 }} /></th>
                   <th style={{ color: '#9CA3AF', fontWeight: 500 }}>Cottages <ChevronDown size={12} style={{ display: 'inline', marginLeft: 4 }} /></th>
                   <th style={{ color: '#9CA3AF', fontWeight: 500 }}>Others <ChevronDown size={12} style={{ display: 'inline', marginLeft: 4 }} /></th>
-                  <th></th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan="10" style={{ textAlign: 'center', padding: '30px 0', color: '#6B7280' }}>Loading cities...</td></tr>
+                  <tr><td colSpan="9" style={{ textAlign: 'center', padding: '30px 0', color: '#6B7280' }}>Loading cities...</td></tr>
                 ) : filteredCities.length === 0 ? (
-                  <tr><td colSpan="10" style={{ textAlign: 'center', padding: '30px 0', color: '#6B7280' }}>No cities found</td></tr>
+                  <tr><td colSpan="9" style={{ textAlign: 'center', padding: '30px 0', color: '#6B7280' }}>No cities found</td></tr>
                 ) : (
                   filteredCities.map((c, i) => (
                     <tr key={c._id || i}>
-                      <td style={{ color: '#58A429', fontWeight: 600 }}>{c.cityName}</td>
+                      <td 
+                        style={{ color: '#58A429', fontWeight: 600, cursor: 'pointer' }}
+                        onClick={() => navigate(`/admin/properties/all?city=${encodeURIComponent(c.cityName)}`)}
+                      >
+                        {c.cityName}
+                      </td>
                       <td style={{ color: '#6B7280' }}>{c.stateName}</td>
                       <td style={{ color: '#6B7280', fontWeight: 600 }}>{c.totalProperties} Properties</td>
                       <td style={{ color: '#6B7280' }}>{c.homestays}</td>
@@ -108,11 +114,6 @@ export default function CitiesLocations() {
                       <td style={{ color: '#6B7280' }}>{c.apartments}</td>
                       <td style={{ color: '#6B7280' }}>{c.cottages}</td>
                       <td style={{ color: '#6B7280' }}>{c.others}</td>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: 8 }}>
-                          <button className="action-dots"><MoreVertical size={14} /></button>
-                        </div>
-                      </td>
                     </tr>
                   ))
                 )}

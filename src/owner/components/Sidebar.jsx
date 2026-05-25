@@ -20,22 +20,22 @@ const NAV_SECTIONS = [
   {
     label: 'Property Management',
     items: [
-      { label: 'My Properties',      icon: Home,          to: '/owner/properties' },
-      { label: 'Property Requests',   icon: ClipboardList, to: '/owner/requests' },
-      { label: 'Offers by Date',      icon: Tag,           to: '/owner/offers' },
+      { label: 'My Properties', icon: Home, to: '/owner/properties' },
+      { label: 'Property Requests', icon: ClipboardList, to: '/owner/requests' },
+      { label: 'Offers by Date', icon: Tag, to: '/owner/offers' },
     ],
   },
   {
     label: 'Enquiries',
     items: [
-      { label: 'Enquiries',           icon: MessageSquare, to: '/owner/enquiries' },
+      { label: 'Enquiries', icon: MessageSquare, to: '/owner/enquiries' },
     ],
   },
   {
     label: 'User Access',
     items: [
-      { label: 'Upgrade to Premium',  icon: Sparkles,      to: '/owner/premium' },
-      { label: 'Log Out',             icon: LogOut,        to: '/owner/logout' },
+      { label: 'Upgrade to Premium', icon: Sparkles, to: '/owner/premium' },
+      { label: 'Log Out', icon: LogOut, to: '/owner/logout' },
     ],
   },
 ];
@@ -45,10 +45,10 @@ export default function Sidebar() {
     <aside className="sidebar">
       {/* ── Logo Container ─────────── */}
       <div className="sidebar-logo">
-        <img 
-          src="/tripinvilla_logo.png" 
-          alt="Tripinstays" 
-          className="sidebar-logo-img" 
+        <img
+          src="/tripinvilla_logo.png"
+          alt="Tripinstays"
+          className="sidebar-logo-img"
         />
       </div>
 

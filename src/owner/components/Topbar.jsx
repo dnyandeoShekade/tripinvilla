@@ -12,7 +12,7 @@ const PAGE_TITLES = {
 };
 
 function formatMonthYear() {
-  return "Feb 2026"; // Hardcoded to match the specific Figma design screenshot exactly
+  return new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 }
 
 export default function Topbar() {

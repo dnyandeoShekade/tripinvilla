@@ -44,7 +44,7 @@ export default function Contacts() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, marginBottom: 24 }}>
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title*</label>
-              <input type="text" className="form-input" defaultValue="Pioneering the Future of Pharma CRDMO with AI" />
+              <input type="text" className="form-input" defaultValue="Contact Us" />
             </div>
             <FileUpload label="Image*" />
           </div>

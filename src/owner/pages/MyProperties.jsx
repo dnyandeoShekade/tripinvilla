@@ -42,6 +42,11 @@ export default function MyProperties() {
     rules: '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).',
     description: '',
     status: 'Active',
+    // --- Type-Specific Details ---
+    privatePool: false, gardenArea: false, chefAvailable: false, entirePropertyOnly: false, securityCCTV: false, numberOfFloors: '', plotSize: '',
+    restaurantOnSite: false, spaWellness: false, conferenceRoom: false, roomService: false, receptionAllDay: false, liftElevator: false, starRating: '', totalRooms: '', totalFloors: '', activities: [],
+    floorNumber: '', totalFloorsBuilding: '', furnishedStatus: 'Fully Furnished', washingMachine: false, societyAmenities: [],
+    bonfireArea: false, viewType: 'Mountain', outdoorSeating: false, nearestHikingTrail: '', distanceFromCity: '',
   });
 
   // ─── Highlights / Quick info ──────────────────────────────
@@ -65,6 +70,7 @@ export default function MyProperties() {
   const [selectedExperiences, setSelectedExperiences] = useState([]);
   const [availableExperiences, setAvailableExperiences] = useState([]);
   const [experiencesLoading, setExperiencesLoading] = useState(false);
+  const [newCustomExp, setNewCustomExp] = useState("");
 
   // ─── Location Masters (cascading dropdowns) ───────────────
   const [countries, setCountries] = useState([]);
@@ -147,6 +153,25 @@ export default function MyProperties() {
     }
   };
 
+  
+  const handleAddCustomExperience = async () => {
+    if (!newCustomExp.trim()) return;
+    try {
+      const API_ENDPOINT = typeof API !== 'undefined' ? API : 'http://localhost:5000/api';
+      const res = await fetch(`${API_ENDPOINT}/admin/experiences`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ experienceName: newCustomExp.trim(), representingIcon: '✨', status: 'Active' })
+      });
+      const data = await res.json();
+      setAvailableExperiences(prev => [...prev, data]);
+      setSelectedExperiences(prev => [...prev, data._id || data.experienceName || data.name]);
+      setNewCustomExp('');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const fetchExperiences = async () => {
     setExperiencesLoading(true);
     try {
@@ -172,11 +197,17 @@ export default function MyProperties() {
   const fetchCountries = async () => {
     setLocLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/masters/countries`);
+      const res = await fetch(`${API_BASE}/masters/countries/active`);
       const data = await res.json();
       setCountries(Array.isArray(data) ? data : data.countries || []);
     } catch {
-      setCountries([{ _id: 'c1', countryName: 'India' }]);
+      setCountries([
+        { _id: 'c1', countryName: 'India' },
+        { _id: 'c2', countryName: 'United States' },
+        { _id: 'c3', countryName: 'United Kingdom' },
+        { _id: 'c4', countryName: 'Canada' },
+        { _id: 'c5', countryName: 'Australia' }
+      ]);
     } finally {
       setLocLoading(false);
     }
@@ -185,7 +216,7 @@ export default function MyProperties() {
   const fetchStates = async (countryId) => {
     if (!countryId) { setStates([]); return; }
     try {
-      const res = await fetch(`${API_BASE}/masters/states?countryId=${countryId}`);
+      const res = await fetch(`${API_BASE}/masters/states/active?country_id=${countryId}`);
       const data = await res.json();
       setStates(Array.isArray(data) ? data : data.states || []);
     } catch {
@@ -196,7 +227,7 @@ export default function MyProperties() {
   const fetchCities = async (stateId) => {
     if (!stateId) { setCities([]); return; }
     try {
-      const res = await fetch(`${API_BASE}/masters/cities?stateId=${stateId}`);
+      const res = await fetch(`${API_BASE}/masters/cities/active?state_id=${stateId}`);
       const data = await res.json();
       setCities(Array.isArray(data) ? data : data.cities || []);
     } catch {
@@ -207,7 +238,7 @@ export default function MyProperties() {
   const fetchLocations = async (cityId) => {
     if (!cityId) { setLocations([]); return; }
     try {
-      const res = await fetch(`${API_BASE}/masters/locations?cityId=${cityId}`);
+      const res = await fetch(`${API_BASE}/masters/locations/active?city_id=${cityId}`);
       const data = await res.json();
       setLocations(Array.isArray(data) ? data : data.locations || []);
     } catch {
@@ -357,6 +388,10 @@ export default function MyProperties() {
       rules: p.rules || '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).',
       description: p.description || '',
       status: p.status || 'Active',
+      privatePool: p.privatePool || false, gardenArea: p.gardenArea || false, chefAvailable: p.chefAvailable || false, entirePropertyOnly: p.entirePropertyOnly || false, securityCCTV: p.securityCCTV || false, numberOfFloors: p.numberOfFloors || '', plotSize: p.plotSize || '',
+      restaurantOnSite: p.restaurantOnSite || false, spaWellness: p.spaWellness || false, conferenceRoom: p.conferenceRoom || false, roomService: p.roomService || false, receptionAllDay: p.receptionAllDay || false, liftElevator: p.liftElevator || false, starRating: p.starRating || '', totalRooms: p.totalRooms || '', totalFloors: p.totalFloors || '', activities: p.activities || [],
+      floorNumber: p.floorNumber || '', totalFloorsBuilding: p.totalFloorsBuilding || '', furnishedStatus: p.furnishedStatus || 'Fully Furnished', washingMachine: p.washingMachine || false, societyAmenities: p.societyAmenities || [],
+      bonfireArea: p.bonfireArea || false, viewType: p.viewType || 'Mountain', outdoorSeating: p.outdoorSeating || false, nearestHikingTrail: p.nearestHikingTrail || '', distanceFromCity: p.distanceFromCity || '',
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -438,6 +473,10 @@ export default function MyProperties() {
         description: formData.description,
         status: formData.status,
         images: allImages,
+        privatePool: formData.privatePool, gardenArea: formData.gardenArea, chefAvailable: formData.chefAvailable, entirePropertyOnly: formData.entirePropertyOnly, securityCCTV: formData.securityCCTV, numberOfFloors: formData.numberOfFloors, plotSize: formData.plotSize,
+        restaurantOnSite: formData.restaurantOnSite, spaWellness: formData.spaWellness, conferenceRoom: formData.conferenceRoom, roomService: formData.roomService, receptionAllDay: formData.receptionAllDay, liftElevator: formData.liftElevator, starRating: formData.starRating, totalRooms: formData.totalRooms, totalFloors: formData.totalFloors, activities: formData.activities,
+        floorNumber: formData.floorNumber, totalFloorsBuilding: formData.totalFloorsBuilding, furnishedStatus: formData.furnishedStatus, washingMachine: formData.washingMachine, societyAmenities: formData.societyAmenities,
+        bonfireArea: formData.bonfireArea, viewType: formData.viewType, outdoorSeating: formData.outdoorSeating, nearestHikingTrail: formData.nearestHikingTrail, distanceFromCity: formData.distanceFromCity,
       };
 
       if (editId) {
@@ -520,6 +559,10 @@ export default function MyProperties() {
       checkIn: '3:00 PM', checkOut: '12:00 PM',
       rules: '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).',
       description: '', status: 'Active',
+      privatePool: false, gardenArea: false, chefAvailable: false, entirePropertyOnly: false, securityCCTV: false, numberOfFloors: '', plotSize: '',
+      restaurantOnSite: false, spaWellness: false, conferenceRoom: false, roomService: false, receptionAllDay: false, liftElevator: false, starRating: '', totalRooms: '', totalFloors: '', activities: [],
+      floorNumber: '', totalFloorsBuilding: '', furnishedStatus: 'Fully Furnished', washingMachine: false, societyAmenities: [],
+      bonfireArea: false, viewType: 'Mountain', outdoorSeating: false, nearestHikingTrail: '', distanceFromCity: '',
     });
     setSelectedFiles([]);
     setExistingImages([]);
@@ -557,8 +600,8 @@ export default function MyProperties() {
   );
 
   const labelStyle = { fontSize: '12px', fontWeight: 600, color: '#374151', fontFamily: '"Outfit", sans-serif', marginBottom: '6px', display: 'block' };
-  const inputStyle = { width: '100%', padding: '9px 12px', border: '1px solid #D1D5DB', borderRadius: '8px', fontSize: '13px', fontFamily: '"Outfit", sans-serif', outline: 'none', background: '#fff', boxSizing: 'border-box' };
-  const selectStyle = { ...inputStyle, cursor: 'pointer' };
+  const inputStyle = { width: '100%', padding: '9px 12px', border: '1px solid #D1D5DB', borderRadius: '8px', fontSize: '13px', fontFamily: '"Outfit", sans-serif', outline: 'none', background: '#fff', boxSizing: 'border-box', color: '#111827' };
+  const selectStyle = { ...inputStyle, cursor: 'pointer', appearance: 'auto' };
 
   return (
     <div className="fade-in">
@@ -732,8 +775,8 @@ export default function MyProperties() {
                   <div style={{ marginTop: '12px', borderRadius: '8px', overflow: 'hidden', border: '1px solid #D1D5DB', height: '180px' }}>
                     <iframe title="Map Preview" width="100%" height="100%" style={{ border: 0 }} loading="lazy"
                       src={`https://www.google.com/maps?q=${formData.latitude},${formData.longitude}&z=14&output=embed`} />
-                  </div>
-                )}
+                    </div>
+                  )}
               </div>
             </>)}
 
@@ -778,8 +821,8 @@ export default function MyProperties() {
                       <button type="button" onClick={() => handleRemoveNewFile(idx)} style={{ position: 'absolute', top: '-6px', right: '-6px', background: '#EF4444', color: '#fff', border: 'none', borderRadius: '50%', width: '18px', height: '18px', fontSize: '11px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>×</button>
                     </div>
                   ))}
-                </div>
-              )}
+                    </div>
+                  )}
               {(existingImages.length + selectedFiles.length) < 10 ? (
                 <div onClick={() => fileInputRef.current.click()} style={{ border: '2px dashed #D1D5DB', borderRadius: '10px', padding: '24px', textAlign: 'center', cursor: 'pointer', background: '#FAFAFA' }}>
                   <Upload size={24} style={{ color: '#9CA3AF', marginBottom: '8px' }} />
@@ -821,6 +864,137 @@ export default function MyProperties() {
                   <label style={labelStyle}>Check-Out Time *</label>
                   <input style={inputStyle} type="text" name="checkOut" value={formData.checkOut} onChange={handleChange} placeholder="e.g. 12:00 PM" required />
                 </div>
+              </div>
+            </>)}
+
+            {/* ── SECTION 5b: Type-Specific Details ─────────── */}
+            {sectionWrap(<>
+              {sectionHeader('5b. Type-Specific Details', `Extra details specific to ${formData.type} properties`)}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+                {formData.type === 'Villa' && (
+                  <>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="privatePool" checked={formData.privatePool} onChange={e => setFormData(p => ({...p, privatePool: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Private Pool</label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="gardenArea" checked={formData.gardenArea} onChange={e => setFormData(p => ({...p, gardenArea: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Garden / Outdoor Area</label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="chefAvailable" checked={formData.chefAvailable} onChange={e => setFormData(p => ({...p, chefAvailable: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Chef / Caretaker Available</label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="entirePropertyOnly" checked={formData.entirePropertyOnly} onChange={e => setFormData(p => ({...p, entirePropertyOnly: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Entire Property Booking Only</label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="securityCCTV" checked={formData.securityCCTV} onChange={e => setFormData(p => ({...p, securityCCTV: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Security / CCTV</label>
+                    <div>
+                      <label style={labelStyle}>Number of Floors</label>
+                      <input style={inputStyle} type="number" name="numberOfFloors" value={formData.numberOfFloors} onChange={handleChange} placeholder="e.g. 2" />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Plot Size (sq ft)</label>
+                      <input style={inputStyle} type="number" name="plotSize" value={formData.plotSize} onChange={handleChange} placeholder="e.g. 4000" />
+                    </div>
+                  </>
+                )}
+                {(formData.type === 'Resort' || formData.type === 'Hotel') && (
+                  <>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="restaurantOnSite" checked={formData.restaurantOnSite} onChange={e => setFormData(p => ({...p, restaurantOnSite: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Restaurant on-site</label>
+                    {formData.type === 'Resort' && (
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="spaWellness" checked={formData.spaWellness} onChange={e => setFormData(p => ({...p, spaWellness: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Spa / Wellness Center</label>
+                    )}
+                    {formData.type === 'Resort' && (
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="conferenceRoom" checked={formData.conferenceRoom} onChange={e => setFormData(p => ({...p, conferenceRoom: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Conference Room</label>
+                    )}
+                    {formData.type === 'Hotel' && (
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="receptionAllDay" checked={formData.receptionAllDay} onChange={e => setFormData(p => ({...p, receptionAllDay: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Reception 24/7</label>
+                    )}
+                    {formData.type === 'Hotel' && (
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="roomService" checked={formData.roomService} onChange={e => setFormData(p => ({...p, roomService: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Room Service Available</label>
+                    )}
+                    {formData.type === 'Hotel' && (
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="liftElevator" checked={formData.liftElevator} onChange={e => setFormData(p => ({...p, liftElevator: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Lift / Elevator</label>
+                    )}
+                    <div>
+                      <label style={labelStyle}>Star Rating (1-5)</label>
+                      <input style={inputStyle} type="number" min="1" max="5" name="starRating" value={formData.starRating} onChange={handleChange} placeholder="e.g. 4" />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Total Rooms</label>
+                      <input style={inputStyle} type="number" name="totalRooms" value={formData.totalRooms} onChange={handleChange} placeholder="e.g. 24" />
+                    </div>
+                    {formData.type === 'Hotel' && (
+                      <div>
+                        <label style={labelStyle}>Total Floors</label>
+                        <input style={inputStyle} type="number" name="totalFloors" value={formData.totalFloors} onChange={handleChange} placeholder="e.g. 5" />
+                    </div>
+                  )}
+                    {formData.type === 'Resort' && (
+                      <div style={{ gridColumn: 'span 3' }}>
+                        <label style={labelStyle}>Activities Offered</label>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                          {['Swimming', 'Trekking', 'Cycling', 'Yoga', 'Bonfire', 'Wildlife Safari'].map(act => (
+                            <button key={act} type="button" onClick={() => {
+                              const curr = formData.activities || [];
+                              setFormData(p => ({...p, activities: curr.includes(act) ? curr.filter(a => a !== act) : [...curr, act]}));
+                            }} style={{ padding: '6px 12px', borderRadius: '16px', fontSize: '12px', border: (formData.activities || []).includes(act) ? '1px solid #58A429' : '1px solid #D1D5DB', background: (formData.activities || []).includes(act) ? '#ECFDF5' : '#fff', color: (formData.activities || []).includes(act) ? '#58A429' : '#374151', cursor: 'pointer' }}>{act}</button>
+                          ))}
+                        </div>
+                    </div>
+                  )}
+                  </>
+                )}
+                {formData.type === 'Apartment' && (
+                  <>
+                    <div>
+                      <label style={labelStyle}>Floor Number</label>
+                      <input style={inputStyle} type="number" name="floorNumber" value={formData.floorNumber} onChange={handleChange} placeholder="e.g. 3" />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Total Floors in Building</label>
+                      <input style={inputStyle} type="number" name="totalFloorsBuilding" value={formData.totalFloorsBuilding} onChange={handleChange} placeholder="e.g. 10" />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Furnished Status</label>
+                      <select style={selectStyle} name="furnishedStatus" value={formData.furnishedStatus} onChange={handleChange}>
+                        <option value="Fully Furnished">Fully Furnished</option>
+                        <option value="Semi Furnished">Semi Furnished</option>
+                        <option value="Unfurnished">Unfurnished</option>
+                      </select>
+                    </div>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="washingMachine" checked={formData.washingMachine} onChange={e => setFormData(p => ({...p, washingMachine: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Washing Machine</label>
+                    <div style={{ gridColumn: 'span 3' }}>
+                      <label style={labelStyle}>Society Amenities</label>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                        {['Gym', 'Pool', 'Security', 'Clubhouse', 'Power Backup'].map(act => (
+                          <button key={act} type="button" onClick={() => {
+                            const curr = formData.societyAmenities || [];
+                            setFormData(p => ({...p, societyAmenities: curr.includes(act) ? curr.filter(a => a !== act) : [...curr, act]}));
+                          }} style={{ padding: '6px 12px', borderRadius: '16px', fontSize: '12px', border: (formData.societyAmenities || []).includes(act) ? '1px solid #58A429' : '1px solid #D1D5DB', background: (formData.societyAmenities || []).includes(act) ? '#ECFDF5' : '#fff', color: (formData.societyAmenities || []).includes(act) ? '#58A429' : '#374151', cursor: 'pointer' }}>{act}</button>
+                        ))}
+                      </div>
+                    </div>
+                  </>
+                )}
+                {formData.type === 'Cottage' && (
+                  <>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="bonfireArea" checked={formData.bonfireArea} onChange={e => setFormData(p => ({...p, bonfireArea: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Bonfire Area</label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="outdoorSeating" checked={formData.outdoorSeating} onChange={e => setFormData(p => ({...p, outdoorSeating: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Outdoor Seating</label>
+                    <div>
+                      <label style={labelStyle}>View Type</label>
+                      <select style={selectStyle} name="viewType" value={formData.viewType} onChange={handleChange}>
+                        <option value="Mountain">Mountain</option>
+                        <option value="Forest">Forest</option>
+                        <option value="River">River</option>
+                        <option value="Valley">Valley</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Nearest Hiking Trail</label>
+                      <input style={inputStyle} type="text" name="nearestHikingTrail" value={formData.nearestHikingTrail} onChange={handleChange} placeholder="e.g. Pine Ridge Trail" />
+                    </div>
+                    <div>
+                      <label style={labelStyle}>Distance from City (km)</label>
+                      <input style={inputStyle} type="number" name="distanceFromCity" value={formData.distanceFromCity} onChange={handleChange} placeholder="e.g. 15" />
+                    </div>
+                  </>
+                )}
+                {formData.type === 'Homestay' && (
+                  <div style={{ gridColumn: 'span 3', color: '#6B7280', fontSize: '13px' }}>
+                    All required Homestay fields are covered in other sections.
+                    </div>
+                  )}
               </div>
             </>)}
 
@@ -875,8 +1049,8 @@ export default function MyProperties() {
                     );
                   })}
                   {availableAmenitiesList.length === 0 && <span style={{ fontSize: '12px', color: '#9CA3AF' }}>No amenities found for this property type.</span>}
-                </div>
-              )}
+                    </div>
+                  )}
               {selectedAmenitiesList.length > 0 && (
                 <p style={{ marginTop: '10px', fontSize: '12px', color: '#6B7280', fontFamily: '"Outfit", sans-serif' }}>
                   ✅ Selected: <strong style={{ color: '#58A429' }}>{selectedAmenitiesList.join(', ')}</strong>
@@ -893,13 +1067,13 @@ export default function MyProperties() {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                   {availableExperiences.map(exp => {
                     const isSelected = selectedExperiences.includes(exp._id || exp.experienceName);
-                    const id = exp._id || exp.experienceName;
+                    const id = exp._id || exp.experienceName || exp.name;
                     return (
                       <button key={id} type="button"
                         onClick={() => setSelectedExperiences(prev => prev.includes(id) ? prev.filter(e => e !== id) : [...prev, id])}
                         style={{ padding: '8px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: 500, border: isSelected ? '1.5px solid #58A429' : '1px solid #D1D5DB', background: isSelected ? '#ECFDF5' : '#fff', color: isSelected ? '#58A429' : '#374151', cursor: 'pointer', transition: 'all 0.15s', fontFamily: '"Outfit", sans-serif', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span>{exp.representingIcon || '✨'}</span>
-                        <span>{exp.experienceName}</span>
+                        <span>{exp.representingIcon || exp.icon || "✨"}</span>
+                        <span>{exp.experienceName || exp.name}</span>
                         {isSelected && <span style={{ fontSize: '11px' }}>✓</span>}
                       </button>
                     );
@@ -907,8 +1081,12 @@ export default function MyProperties() {
                   {availableExperiences.length === 0 && (
                     <p style={{ fontSize: '12px', color: '#9CA3AF' }}>No experiences available. Ask admin to add them in Unique Experience Master.</p>
                   )}
-                </div>
-              )}
+                      <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center' }}>
+                        <input type="text" value={newCustomExp} onChange={e => setNewCustomExp(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddCustomExperience(); } }} placeholder="Add custom experience" style={{ padding: '6px 12px', fontSize: 13, border: '1px solid #D1D5DB', borderRadius: 6, flex: 1, maxWidth: 200 }} />
+                        <button type="button" onClick={handleAddCustomExperience} style={{ padding: '6px 12px', background: '#58A429', color: '#fff', border: 'none', borderRadius: 6, fontSize: 13, cursor: 'pointer' }}>Add</button>
+                      </div>
+                    </div>
+                  )}
             </>)}
 
             {/* ── SECTION 9: Nearby Landmarks ───────────────── */}
@@ -978,8 +1156,8 @@ export default function MyProperties() {
                 {loading ? 'Saving...' : (editId ? '✅ Update Property' : '✅ Add Property')}
               </button>
             </div>
-          </div>
-        )}
+                    </div>
+                  )}
       </div>
 
       <div style={{ height: '24px' }} />

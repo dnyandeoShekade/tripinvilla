@@ -29,6 +29,10 @@ export default function PropertyRequests() {
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [availableAmenities, setAvailableAmenities] = useState([]);
   const [amenitiesLoading, setAmenitiesLoading] = useState(false);
+  const [selectedExperiences, setSelectedExperiences] = useState([]);
+  const [availableExperiences, setAvailableExperiences] = useState([]);
+  const [experiencesLoading, setExperiencesLoading] = useState(false);
+  const [newCustomExp, setNewCustomExp] = useState("");
   // Multi-room queue
   const [roomQueue, setRoomQueue] = useState([]);
   const imageInputRef = useRef(null);
@@ -44,6 +48,38 @@ export default function PropertyRequests() {
       setAvailableAmenities(['WiFi', 'Parking', 'Pool', 'AC', 'Kitchen', 'Barbeque', 'Gym', 'Breakfast']);
     } finally {
       setAmenitiesLoading(false);
+    }
+  };
+
+  
+  const handleAddCustomExperience = async () => {
+    if (!newCustomExp.trim()) return;
+    try {
+      const API_ENDPOINT = typeof API !== 'undefined' ? API : 'http://localhost:5000/api';
+      const res = await fetch(`${API_ENDPOINT}/admin/experiences`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ experienceName: newCustomExp.trim(), representingIcon: '✨', status: 'Active' })
+      });
+      const data = await res.json();
+      setAvailableExperiences(prev => [...prev, data]);
+      setSelectedExperiences(prev => [...prev, data._id || data.experienceName || data.name]);
+      setNewCustomExp('');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchExperiences = async () => {
+    setExperiencesLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/admin/experiences/active`);
+      const data = await res.json();
+      if (Array.isArray(data)) setAvailableExperiences(data);
+    } catch {
+      setAvailableExperiences([]);
+    } finally {
+      setExperiencesLoading(false);
     }
   };
 
@@ -63,6 +99,7 @@ export default function PropertyRequests() {
     } catch {
       fetchAmenities('All');
     }
+    fetchExperiences();
   };
 
   useEffect(() => { fetchData(); }, []);
@@ -77,6 +114,8 @@ export default function PropertyRequests() {
   const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const toggleAmenity = (a) => setSelectedAmenities(prev => prev.includes(a) ? prev.filter(x => x !== a) : [...prev, a]);
+  
+  const toggleExperience = (id) => setSelectedExperiences(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
 
   const handleAddRuleSection = () => setRulesSections(prev => [...prev, { title: '', text: '' }]);
   const handleRemoveRuleSection = (idx) => setRulesSections(prev => prev.filter((_, i) => i !== idx));
@@ -98,6 +137,7 @@ export default function PropertyRequests() {
     setSelectedRoomImage(null);
     setRoomImagePreview('');
     setSelectedAmenities([]);
+    setSelectedExperiences([]);
     if (imageInputRef.current) imageInputRef.current.value = '';
   };
 
@@ -132,6 +172,7 @@ export default function PropertyRequests() {
         checkout_time: formData.checkout_time,
         room_image_url: roomImageUrl,
         amenities_types: [...selectedAmenities],
+        experiences: [...selectedExperiences],
         offers: [...offersList],
         rules: formattedRules,
         _preview_img: roomImagePreview,
@@ -320,8 +361,34 @@ export default function PropertyRequests() {
                       {a}
                     </button>
                   ))}
-                </div>
-              )}
+                    </div>
+                  )}
+            </div>
+
+            {/* Unique Experiences */}
+            <div style={{ marginBottom: '16px' }}>
+              <label className="form-label" style={{ marginBottom: '4px', display: 'block' }}>Unique Experiences for this Room Type</label>
+              <span style={{ display: 'block', fontSize: '11px', color: '#6B7280', marginBottom: '8px' }}>Tag special experiences this room offers</span>
+              {experiencesLoading ? <div style={{ color: '#9CA3AF', fontSize: 13 }}>Loading experiences...</div> : (
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {availableExperiences.map(exp => {
+                    const id = exp._id || exp.experienceName || exp.name;
+                    const isSelected = selectedExperiences.includes(id);
+                    return (
+                      <button type="button" key={id} onClick={() => toggleExperience(id)}
+                        style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '20px', border: isSelected ? '1.5px solid #58A429' : '1px solid #D1D5DB', background: isSelected ? '#ECFDF5' : '#fff', color: isSelected ? '#58A429' : '#374151', fontSize: '13px', fontWeight: 500, cursor: 'pointer' }}>
+                        <span>{exp.representingIcon || exp.icon || "✨"}</span>
+                        <span>{exp.experienceName || exp.name}</span>
+                      </button>
+                    );
+                  })}
+                  {availableExperiences.length === 0 && <span style={{ fontSize: '12px', color: '#9CA3AF' }}>No experiences found.</span>}
+                      <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center' }}>
+                        <input type="text" value={newCustomExp} onChange={e => setNewCustomExp(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddCustomExperience(); } }} placeholder="Add custom experience" style={{ padding: '6px 12px', fontSize: 13, border: '1px solid #D1D5DB', borderRadius: 6, flex: 1, maxWidth: 200 }} />
+                        <button type="button" onClick={handleAddCustomExperience} style={{ padding: '6px 12px', background: '#58A429', color: '#fff', border: 'none', borderRadius: 6, fontSize: 13, cursor: 'pointer' }}>Add</button>
+                      </div>
+                    </div>
+                  )}
             </div>
 
             {/* Dynamic Rules */}

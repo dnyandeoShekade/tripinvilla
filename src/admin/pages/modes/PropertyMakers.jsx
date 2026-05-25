@@ -1,47 +1,329 @@
-import { useState, useEffect } from 'react';
-import { ChevronDown, Edit2, Trash2, MoreVertical } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { ChevronDown, Edit2, Trash2, MoreVertical } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function PropertyMakers() {
   const navigate = useNavigate();
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    id: '',
-    propertyType: 'Homestay',
-    propertyName: '',
-    ownerName: '',
-    ownerContact: '',
-    amenityTypes: '',
-    location: '',
-    propertyPrice: '',
-    imagesUrl: '',
-    videosUrl: '',
-    aboutProperty: '',
-    status: 'Active'
+    id: "",
+    propertyType: "Homestay",
+    propertyName: "",
+    ownerName: "",
+    ownerContact: "",
+    ownerId: "",
+    amenities: [],
+    location: "",
+    full_address: "",
+    latitude: "",
+    longitude: "",
+    propertyPrice: "",
+    originalPrice: "",
+    taxAmount: "",
+    imagesUrl: "",
+    videosUrl: "",
+    aboutProperty: "",
+    status: "Active",
+    checkIn: "3:00 PM",
+    checkOut: "12:00 PM",
+    area: "31 sq. ft.",
+    bedRooms: 1,
+    beds: 2,
+    capacity: 3,
+    bathRooms: 1,
+    rules:
+      "• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).",
+    highlights: {
+      breakfastIncluded: false,
+      parkingAvailable: false,
+      freeCancellation: false,
+      freeCancellationHours: "24",
+    },
   });
   const [isEditing, setIsEditing] = useState(false);
+
+  // Owners Data
+  const [ownersList, setOwnersList] = useState([]);
+
+  // Upload/images state
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
+  const fileInputRef = React.useRef(null);
+
+  // Amenities list
+  const [selectedAmenitiesList, setSelectedAmenitiesList] = useState([]);
+  const [availableAmenitiesList, setAvailableAmenitiesList] = useState([]);
+  const [amenitiesLoading, setAmenitiesLoading] = useState(false);
+
+  // Experiences list
+  const [selectedExperiences, setSelectedExperiences] = useState([]);
+  const [availableExperiences, setAvailableExperiences] = useState([]);
+  const [experiencesLoading, setExperiencesLoading] = useState(false);
+  const [newCustomExp, setNewCustomExp] = useState("");
+
+  // Location dropdowns state
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [areas, setAreas] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState({ id: "", name: "" });
+  const [selectedState, setSelectedState] = useState({ id: "", name: "" });
+  const [selectedCity, setSelectedCity] = useState({ id: "", name: "" });
+  const [selectedArea, setSelectedArea] = useState({ id: "", name: "" });
+
+  // Landmarks state
+  const [landmarksList, setLandmarksList] = useState([]);
+  const [landmarkName, setLandmarkName] = useState("");
+  const [landmarkType, setLandmarkType] = useState("Tourist Popular");
+  const [landmarkImageFile, setLandmarkImageFile] = useState(null);
+  const [landmarkImagePreview, setLandmarkImagePreview] = useState("");
+  const [landmarkImageUploading, setLandmarkImageUploading] = useState(false);
+  const landmarkImageRef = React.useRef(null);
 
   const fetchProperties = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/master/properties');
+      const res = await fetch("http://localhost:5000/api/master/properties");
       const data = await res.json();
       if (Array.isArray(data)) setProperties(data);
     } catch (err) {
-      console.error('Error fetching property masters:', err);
+      console.error("Error fetching property masters:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchOwners = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/owners");
+      const data = await res.json();
+      if (data && data.owners) setOwnersList(data.owners);
+      else if (Array.isArray(data)) setOwnersList(data);
+    } catch (err) {
+      console.error("Error fetching owners:", err);
+    }
+  };
+
+  const fetchAmenitiesForType = async (type) => {
+    setAmenitiesLoading(true);
+    try {
+      const scope = type || "All";
+      const res = await fetch(
+        `http://localhost:5000/api/admin/amenities/active?scope=${scope}`,
+      );
+      const data = await res.json();
+      if (Array.isArray(data)) {
+        setAvailableAmenitiesList(data.map((a) => a.amenitiesName));
+      }
+    } catch (err) {
+      console.error(err);
+      setAvailableAmenitiesList([
+        "WiFi",
+        "Parking",
+        "Pool",
+        "AC",
+        "Kitchen",
+        "Barbeque",
+        "Gym",
+      ]);
+    } finally {
+      setAmenitiesLoading(false);
+    }
+  };
+
+  const handleAddCustomExperience = async () => {
+    if (!newCustomExp.trim()) return;
+    try {
+      const API_ENDPOINT =
+        typeof API !== "undefined" ? API : "http://localhost:5000/api";
+      const res = await fetch(`${API_ENDPOINT}/admin/experiences`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          experienceName: newCustomExp.trim(),
+          representingIcon: "✨",
+          status: "Active",
+        }),
+      });
+      const data = await res.json();
+      setAvailableExperiences((prev) => [...prev, data]);
+      setSelectedExperiences((prev) => [
+        ...prev,
+        data._id || data.experienceName || data.name,
+      ]);
+      setNewCustomExp("");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchExperiences = async () => {
+    setExperiencesLoading(true);
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/admin/experiences/active`,
+      );
+      const data = await res.json();
+      if (Array.isArray(data)) setAvailableExperiences(data);
+    } catch (err) {
+      console.error(err);
+      setAvailableExperiences([]);
+    } finally {
+      setExperiencesLoading(false);
+    }
+  };
+
+  const fetchCountries = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/masters/countries`);
+      const data = await res.json();
+      setCountries(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchStates = async (countryId) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/masters/states/active?country_id=${countryId}`,
+      );
+      const data = await res.json();
+      setStates(data);
+      setCities([]);
+      setAreas([]);
+      setSelectedState({ id: "", name: "" });
+      setSelectedCity({ id: "", name: "" });
+      setSelectedArea({ id: "", name: "" });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchCities = async (stateId) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/masters/cities/active?state_id=${stateId}`,
+      );
+      const data = await res.json();
+      setCities(data);
+      setAreas([]);
+      setSelectedCity({ id: "", name: "" });
+      setSelectedArea({ id: "", name: "" });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchAreas = async (cityId) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/masters/locations/active?city_id=${cityId}`,
+      );
+      const data = await res.json();
+      setAreas(data);
+      setSelectedArea({ id: "", name: "" });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchProperties();
+    fetchOwners();
+    fetchCountries();
+    fetchExperiences();
+    fetchAmenitiesForType("Homestay");
   }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    if (name === "propertyType") {
+      setSelectedAmenitiesList([]);
+      fetchAmenitiesForType(value);
+    }
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleOwnerSelect = (e) => {
+    const ownerId = e.target.value;
+    const selectedOwner = ownersList.find((o) => o._id === ownerId);
+    if (selectedOwner) {
+      setFormData((prev) => ({
+        ...prev,
+        ownerId: ownerId,
+        ownerName: selectedOwner.ownerName || selectedOwner.name,
+        ownerContact: selectedOwner.phone || selectedOwner.email || "",
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        ownerId: "",
+        ownerName: "",
+        ownerContact: "",
+      }));
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const newFiles = Array.from(e.target.files);
+    const totalAllowed = 10 - existingImages.length;
+    const combined = [...selectedFiles, ...newFiles].slice(0, totalAllowed);
+    setSelectedFiles(combined);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleRemoveNewFile = (idx) => {
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleRemoveExistingImage = (idx) => {
+    setExistingImages((prev) => prev.filter((_, i) => i !== idx));
+  };
+
+  const handleAddLandmark = async () => {
+    if (!landmarkName.trim()) return;
+    setLandmarkImageUploading(true);
+    let imageUrl = "";
+    try {
+      if (landmarkImageFile) {
+        const uploadData = new FormData();
+        uploadData.append("images", landmarkImageFile);
+        const token = localStorage.getItem("admin_token");
+        const uploadRes = await fetch(
+          `http://localhost:5000/api/properties/upload`,
+          {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            body: uploadData,
+          },
+        );
+        const uploadDataJson = await uploadRes.json();
+        if (
+          uploadDataJson &&
+          uploadDataJson.urls &&
+          uploadDataJson.urls.length > 0
+        ) {
+          imageUrl = uploadDataJson.urls[0];
+        }
+      }
+    } catch (err) {
+      console.error("Image upload failed", err);
+    } finally {
+      setLandmarkImageUploading(false);
+    }
+
+    const lmData = {
+      landmark_name: landmarkName.trim(),
+      landmark_type: landmarkType,
+      landmark_image_url: imageUrl,
+    };
+    setLandmarksList((prev) => [...prev, lmData]);
+    setLandmarkName("");
+    setLandmarkImageFile(null);
+    setLandmarkImagePreview("");
+    if (landmarkImageRef.current) landmarkImageRef.current.value = "";
   };
 
   const handleSubmit = async (e) => {
@@ -49,166 +331,1320 @@ export default function PropertyMakers() {
     try {
       const payload = {
         ...formData,
-        amenityTypes: formData.amenityTypes.split(',').map(s => s.trim()),
-        images: formData.imagesUrl ? [formData.imagesUrl] : ['https://images.unsplash.com/photo-1580587722351-9d9b788c0784?w=500&auto=format&fit=crop&q=60']
+        countryId: selectedCountry.id || undefined,
+        countryName: selectedCountry.name || undefined,
+        stateId: selectedState.id || undefined,
+        stateName: selectedState.name || undefined,
+        cityId: selectedCity.id || undefined,
+        cityName: selectedCity.name || undefined,
+        locationId: selectedArea.id || undefined,
+        locationName: selectedArea.name || undefined,
+        address: selectedArea.name
+          ? `${selectedArea.name}, ${selectedCity.name}`
+          : formData.location,
+        location: selectedArea.name
+          ? `${selectedArea.name}, ${selectedCity.name}`
+          : formData.location,
+        city: selectedCity.name || undefined,
+        state: selectedState.name || undefined,
+        country: selectedCountry.name || undefined,
+        full_address: formData.full_address || formData.location,
+        latitude: formData.latitude ? Number(formData.latitude) : undefined,
+        longitude: formData.longitude ? Number(formData.longitude) : undefined,
+        owner: formData.ownerId,
+        amenities: selectedAmenitiesList,
+        experiences: selectedExperiences,
+        price_per_night: Number(formData.propertyPrice),
+        price: Number(formData.propertyPrice),
+        originalPrice: formData.originalPrice
+          ? Number(formData.originalPrice)
+          : undefined,
+        taxAmount: formData.taxAmount ? Number(formData.taxAmount) : undefined,
+        highlights: formData.highlights,
+        landmarks: landmarksList,
+        images: [
+          ...existingImages,
+          ...selectedFiles.map((f) => URL.createObjectURL(f)),
+        ], // Note: Files need real upload in a real scenario
       };
 
       if (isEditing) {
-        const res = await fetch(`http://localhost:5000/api/master/properties/${formData.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
+        const res = await fetch(
+          `http://localhost:5000/api/master/properties/${formData.id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          },
+        );
         if (res.ok) fetchProperties();
         setIsEditing(false);
       } else {
-        const res = await fetch('http://localhost:5000/api/master/properties', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+        const res = await fetch("http://localhost:5000/api/master/properties", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
         });
         if (res.ok) fetchProperties();
       }
 
       setFormData({
-        id: '',
-        propertyType: 'Homestay',
-        propertyName: '',
-        ownerName: '',
-        ownerContact: '',
-        amenityTypes: '',
-        location: '',
-        propertyPrice: '',
-        imagesUrl: '',
-        videosUrl: '',
-        aboutProperty: '',
-        status: 'Active'
+        id: "",
+        propertyType: "Homestay",
+        propertyName: "",
+        ownerName: "",
+        ownerContact: "",
+        ownerId: "",
+        amenities: [],
+        location: "",
+        full_address: "",
+        latitude: "",
+        longitude: "",
+        propertyPrice: "",
+        originalPrice: "",
+        taxAmount: "",
+        imagesUrl: "",
+        videosUrl: "",
+        aboutProperty: "",
+        status: "Active",
+        checkIn: "3:00 PM",
+        checkOut: "12:00 PM",
+        area: "31 sq. ft.",
+        bedRooms: 1,
+        beds: 2,
+        capacity: 3,
+        bathRooms: 1,
+        rules:
+          "• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).",
+        highlights: {
+          breakfastIncluded: false,
+          parkingAvailable: false,
+          freeCancellation: false,
+          freeCancellationHours: "24",
+        },
       });
+      setSelectedExperiences([]);
+      setSelectedAmenitiesList([]);
+      setCountries([]);
+      setStates([]);
+      setCities([]);
+      setAreas([]);
+      setSelectedCountry({ id: "", name: "" });
+      setSelectedState({ id: "", name: "" });
+      setSelectedCity({ id: "", name: "" });
+      setSelectedArea({ id: "", name: "" });
+      setExistingImages([]);
+      setSelectedFiles([]);
+      setLandmarksList([]);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (err) {
-      console.error('Error submitting property master:', err);
+      console.error("Error submitting property master:", err);
     }
   };
 
   const handleEdit = (p) => {
     setFormData({
       id: p._id,
-      propertyType: p.propertyType || 'Homestay',
-      propertyName: p.propertyName || '',
-      ownerName: p.ownerName || '',
-      ownerContact: p.ownerContact || '',
-      amenityTypes: Array.isArray(p.amenityTypes) ? p.amenityTypes.join(', ') : (p.amenityTypes || ''),
-      location: p.location || '',
-      propertyPrice: p.propertyPrice || '',
-      imagesUrl: Array.isArray(p.images) && p.images[0] ? p.images[0] : '',
-      videosUrl: '',
-      aboutProperty: p.aboutProperty || '',
-      status: p.status || 'Active'
+      propertyType: p.propertyType || "Homestay",
+      propertyName: p.propertyName || "",
+      ownerName: p.ownerName || "",
+      ownerContact: p.ownerContact || "",
+      ownerId: p.owner || "",
+      amenities: Array.isArray(p.amenities) ? p.amenities : [],
+      location: p.location || "",
+      full_address: p.full_address || p.location || "",
+      latitude: p.latitude || "",
+      longitude: p.longitude || "",
+      propertyPrice: p.price || p.propertyPrice || "",
+      originalPrice: p.originalPrice || "",
+      taxAmount: p.taxAmount || "",
+      imagesUrl: "",
+      videosUrl: "",
+      aboutProperty: p.aboutProperty || p.description || "",
+      status: p.status || "Active",
+      checkIn: p.checkIn || "3:00 PM",
+      checkOut: p.checkOut || "12:00 PM",
+      area: p.area || "31 sq. ft.",
+      bedRooms: p.bedRooms || 1,
+      beds: p.beds || 2,
+      capacity: p.capacity || 3,
+      bathRooms: p.bathRooms || 1,
+      rules:
+        p.rules ||
+        "• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).",
+      highlights: p.highlights || {
+        breakfastIncluded: false,
+        parkingAvailable: false,
+        freeCancellation: false,
+        freeCancellationHours: "24",
+      },
     });
+    setSelectedAmenitiesList(Array.isArray(p.amenities) ? p.amenities : []);
+    setSelectedExperiences(
+      Array.isArray(p.experiences) ? p.experiences.map((e) => e._id || e) : [],
+    );
+    setExistingImages(Array.isArray(p.images) ? p.images : []);
+    setLandmarksList(Array.isArray(p.landmarks) ? p.landmarks : []);
+    if (p.countryId) {
+      setSelectedCountry({ id: p.countryId, name: p.countryName || p.country });
+      fetchStates(p.countryId);
+    }
+    if (p.stateId) {
+      setSelectedState({ id: p.stateId, name: p.stateName || p.state });
+      fetchCities(p.stateId);
+    }
+    if (p.cityId) {
+      setSelectedCity({ id: p.cityId, name: p.cityName || p.city });
+      fetchAreas(p.cityId);
+    }
+    if (p.locationId) {
+      setSelectedArea({ id: p.locationId, name: p.locationName || p.address });
+    }
     setIsEditing(true);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this property master?')) return;
+    if (!confirm("Are you sure you want to delete this property master?"))
+      return;
     try {
-      const res = await fetch(`http://localhost:5000/api/master/properties/${id}`, { method: 'DELETE' });
+      const res = await fetch(
+        `http://localhost:5000/api/master/properties/${id}`,
+        { method: "DELETE" },
+      );
       if (res.ok) fetchProperties();
     } catch (err) {
-      console.error('Error deleting property master:', err);
+      console.error("Error deleting property master:", err);
     }
   };
 
   return (
     <div className="fade-in">
       {/* Breadcrumb */}
-      <div className="props-breadcrumb" style={{ margin: '0 39px 12px' }}>
+      <div className="props-breadcrumb" style={{ margin: "0 39px 12px" }}>
         Masters &gt; <span>Property Masters</span>
       </div>
 
       {/* Form Section */}
       <div className="dash-section" style={{ marginBottom: 16 }}>
-        <form onSubmit={handleSubmit} className="master-form-card" style={{ margin: 0 }}>
+        <form
+          onSubmit={handleSubmit}
+          className="master-form-card"
+          style={{ margin: 0 }}
+        >
           <div className="master-form-header">
-            <div className="master-form-title">{isEditing ? 'Modify Property Master' : 'Add New Property Master'}</div>
+            <div className="master-form-title">
+              {isEditing ? "Modify Property Master" : "Add New Property Master"}
+            </div>
             <div className="master-form-actions">
-              <button type="button" className="btn-outline-green" onClick={() => navigate('/admin/modes/pricing-rules')}>Edit Pricing &amp; Rules</button>
-              <button type="submit" className="btn-solid-green" style={{ cursor: 'pointer' }}>{isEditing ? 'Update' : 'Add'}</button>
+              <button
+                type="button"
+                className="btn-outline-green"
+                onClick={() => navigate("/admin/modes/pricing-rules")}
+              >
+                Edit Pricing &amp; Rules
+              </button>
+              <button
+                type="submit"
+                className="btn-solid-green"
+                style={{ cursor: "pointer" }}
+              >
+                {isEditing ? "Update" : "Add"}
+              </button>
             </div>
           </div>
 
           <div className="form-grid-3">
             <div className="form-group">
               <label className="form-label">Property Type*</label>
-              <div style={{ position: 'relative' }}>
-                <select name="propertyType" value={formData.propertyType} onChange={handleChange} className="form-select" style={{ appearance: 'none' }}>
+              <div style={{ position: "relative" }}>
+                <select
+                  name="propertyType"
+                  value={formData.propertyType}
+                  onChange={handleChange}
+                  className="form-select"
+                  style={{ appearance: "none" }}
+                >
                   <option value="Homestay">Homestay</option>
                   <option value="Villa">Villa</option>
                   <option value="Hotel">Hotel</option>
                   <option value="Resort">Resort</option>
                 </select>
-                <ChevronDown size={16} style={{ position: 'absolute', right: 16, top: 14, color: '#6B7280', pointerEvents: 'none' }} />
+                <ChevronDown
+                  size={16}
+                  style={{
+                    position: "absolute",
+                    right: 16,
+                    top: 14,
+                    color: "#6B7280",
+                    pointerEvents: "none",
+                  }}
+                />
               </div>
             </div>
             <div className="form-group">
               <label className="form-label">Property Name*</label>
-              <input type="text" name="propertyName" value={formData.propertyName} onChange={handleChange} placeholder="e.g. Bodhi Roots Homestay" className="form-input" required />
+              <input
+                type="text"
+                name="propertyName"
+                value={formData.propertyName}
+                onChange={handleChange}
+                placeholder="e.g. Bodhi Roots Homestay"
+                className="form-input"
+                required
+              />
             </div>
             <div className="form-group">
               <label className="form-label">Owner Name*</label>
-              <input type="text" name="ownerName" value={formData.ownerName} onChange={handleChange} placeholder="e.g. Navin Kumar" className="form-input" required />
+              <div style={{ position: "relative" }}>
+                <select
+                  name="ownerId"
+                  value={formData.ownerId}
+                  onChange={handleOwnerSelect}
+                  className="form-select"
+                  required
+                >
+                  <option value="">Select an Owner</option>
+                  {ownersList.map((o) => (
+                    <option key={o._id} value={o._id}>
+                      {o.ownerName || o.name} ({o.email || o.phone})
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown
+                  size={16}
+                  style={{
+                    position: "absolute",
+                    right: 16,
+                    top: 14,
+                    color: "#6B7280",
+                    pointerEvents: "none",
+                  }}
+                />
+              </div>
             </div>
           </div>
 
           <div className="form-grid-3">
             <div className="form-group">
               <label className="form-label">Owner Contact*</label>
-              <input type="text" name="ownerContact" value={formData.ownerContact} onChange={handleChange} placeholder="e.g. +91 9988776655" className="form-input" required />
+              <input
+                type="text"
+                name="ownerContact"
+                value={formData.ownerContact}
+                onChange={handleChange}
+                placeholder="e.g. +91 9988776655"
+                className="form-input"
+                required
+              />
             </div>
-            <div className="form-group">
-              <label className="form-label">Amenities Types* (comma separated)</label>
-              <input type="text" name="amenityTypes" value={formData.amenityTypes} onChange={handleChange} placeholder="e.g. Barbeque, Pub, WiFi" className="form-input" required />
+            <div className="form-group" style={{ gridColumn: "span 2" }}>
+              <label className="form-label">
+                Amenities Types *
+                <span
+                  style={{
+                    marginLeft: 8,
+                    fontSize: 11,
+                    color: "#9CA3AF",
+                    fontWeight: 400,
+                  }}
+                >
+                  Showing amenities for:{" "}
+                  <strong style={{ color: "#58A429" }}>
+                    {formData.propertyType}
+                  </strong>
+                </span>
+              </label>
+              {amenitiesLoading ? (
+                <div style={{ color: "#9CA3AF", fontSize: 13 }}>
+                  Loading amenities...
+                </div>
+              ) : (
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 8,
+                    marginTop: 4,
+                  }}
+                >
+                  {availableAmenitiesList.map((am) => {
+                    const isSelected = selectedAmenitiesList.includes(am);
+                    return (
+                      <button
+                        key={am}
+                        type="button"
+                        onClick={() =>
+                          setSelectedAmenitiesList((prev) =>
+                            prev.includes(am)
+                              ? prev.filter((a) => a !== am)
+                              : [...prev, am],
+                          )
+                        }
+                        style={{
+                          padding: "5px 13px",
+                          borderRadius: 20,
+                          fontSize: 12,
+                          fontWeight: 500,
+                          border: isSelected
+                            ? "1.5px solid #58A429"
+                            : "1px solid #D1D5DB",
+                          background: isSelected ? "#ECFDF5" : "#fff",
+                          color: isSelected ? "#58A429" : "#374151",
+                          cursor: "pointer",
+                          transition: "all 0.15s",
+                        }}
+                      >
+                        {am}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
+          </div>
+
+          <div className="form-grid-1" style={{ marginBottom: 16 }}>
             <div className="form-group">
-              <label className="form-label">Location*</label>
-              <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="e.g. Kasol, Himachal Pradesh, India" className="form-input" required />
+              <label className="form-label">Unique Experiences</label>
+              {experiencesLoading ? (
+                <div style={{ color: "#9CA3AF", fontSize: 13 }}>
+                  Loading experiences...
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                  {availableExperiences.map((exp) => {
+                    const id = exp._id || exp.experienceName || exp.name;
+                    const isSelected = selectedExperiences.includes(id);
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        onClick={() =>
+                          setSelectedExperiences((prev) =>
+                            prev.includes(id)
+                              ? prev.filter((x) => x !== id)
+                              : [...prev, id],
+                          )
+                        }
+                        style={{
+                          padding: "6px 14px",
+                          borderRadius: 20,
+                          fontSize: 13,
+                          fontWeight: 500,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 6,
+                          border: isSelected
+                            ? "1.5px solid #58A429"
+                            : "1px solid #D1D5DB",
+                          background: isSelected ? "#ECFDF5" : "#fff",
+                          color: isSelected ? "#58A429" : "#374151",
+                          cursor: "pointer",
+                          transition: "all 0.15s",
+                        }}
+                      >
+                        <span>{exp.representingIcon || exp.icon || "✨"}</span>
+                        <span>{exp.experienceName || exp.name}</span>
+                      </button>
+                    );
+                  })}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: 8,
+                      marginTop: 12,
+                      alignItems: "center",
+                    }}
+                  >
+                    <input
+                      type="text"
+                      value={newCustomExp}
+                      onChange={(e) => setNewCustomExp(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddCustomExperience();
+                        }
+                      }}
+                      placeholder="Add custom experience"
+                      style={{
+                        padding: "6px 12px",
+                        fontSize: 13,
+                        border: "1px solid #D1D5DB",
+                        borderRadius: 6,
+                        flex: 1,
+                        maxWidth: 200,
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddCustomExperience}
+                      style={{
+                        padding: "6px 12px",
+                        background: "#58A429",
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 6,
+                        fontSize: 13,
+                        cursor: "pointer",
+                      }}
+                    >
+                      Add
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Location */}
+          <div
+            className="form-group"
+            style={{
+              border: "1px solid #E5E7EB",
+              padding: "16px",
+              borderRadius: "8px",
+              background: "#F9FAFB",
+              marginBottom: 16,
+            }}
+          >
+            <label
+              className="form-label"
+              style={{
+                fontSize: "15px",
+                color: "#111827",
+                display: "block",
+                marginBottom: "12px",
+              }}
+            >
+              Location Details
+            </label>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4, 1fr)",
+                gap: "16px",
+                marginBottom: "16px",
+              }}
+            >
+              <div>
+                <label
+                  className="form-label"
+                  style={{ fontSize: "12px", color: "#4B5563" }}
+                >
+                  Country*
+                </label>
+                <select
+                  className="form-select"
+                  required
+                  value={selectedCountry.id}
+                  onChange={(e) => {
+                    const c = countries.find((x) => x._id === e.target.value);
+                    setSelectedCountry(
+                      c
+                        ? { id: c._id, name: c.countryName }
+                        : { id: "", name: "" },
+                    );
+                    if (c) fetchStates(c._id);
+                  }}
+                >
+                  <option value="">Select Country</option>
+                  {countries.map((c) => (
+                    <option key={c._id} value={c._id}>
+                      {c.countryName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  className="form-label"
+                  style={{ fontSize: "12px", color: "#4B5563" }}
+                >
+                  State*
+                </label>
+                <select
+                  className="form-select"
+                  required
+                  value={selectedState.id}
+                  onChange={(e) => {
+                    const s = states.find((x) => x._id === e.target.value);
+                    setSelectedState(
+                      s
+                        ? { id: s._id, name: s.stateName }
+                        : { id: "", name: "" },
+                    );
+                    if (s) fetchCities(s._id);
+                  }}
+                  disabled={!selectedCountry.id}
+                >
+                  <option value="">Select State</option>
+                  {states.map((s) => (
+                    <option key={s._id} value={s._id}>
+                      {s.stateName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  className="form-label"
+                  style={{ fontSize: "12px", color: "#4B5563" }}
+                >
+                  City*
+                </label>
+                <select
+                  className="form-select"
+                  required
+                  value={selectedCity.id}
+                  onChange={(e) => {
+                    const c = cities.find((x) => x._id === e.target.value);
+                    setSelectedCity(
+                      c
+                        ? { id: c._id, name: c.cityName }
+                        : { id: "", name: "" },
+                    );
+                    if (c) fetchAreas(c._id);
+                  }}
+                  disabled={!selectedState.id}
+                >
+                  <option value="">Select City</option>
+                  {cities.map((c) => (
+                    <option key={c._id} value={c._id}>
+                      {c.cityName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label
+                  className="form-label"
+                  style={{ fontSize: "12px", color: "#4B5563" }}
+                >
+                  Area/Location*
+                </label>
+                <select
+                  className="form-select"
+                  required
+                  value={selectedArea.id}
+                  onChange={(e) => {
+                    const a = areas.find((x) => x._id === e.target.value);
+                    setSelectedArea(
+                      a
+                        ? { id: a._id, name: a.locationName }
+                        : { id: "", name: "" },
+                    );
+                  }}
+                  disabled={!selectedCity.id}
+                >
+                  <option value="">Select Area</option>
+                  {areas.map((a) => (
+                    <option key={a._id} value={a._id}>
+                      {a.locationName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4, 1fr)",
+                gap: "16px",
+              }}
+            >
+              <div style={{ gridColumn: "span 2" }}>
+                <label
+                  className="form-label"
+                  style={{ fontSize: "12px", color: "#4B5563" }}
+                >
+                  Full Address / Location String*
+                </label>
+                <input
+                  type="text"
+                  className="form-input"
+                  name="full_address"
+                  value={formData.full_address}
+                  onChange={(e) => {
+                    handleChange(e);
+                    setFormData((prev) => ({
+                      ...prev,
+                      location: e.target.value,
+                      full_address: e.target.value,
+                    }));
+                  }}
+                  placeholder="e.g. Near Market, Kasol"
+                  required
+                />
+              </div>
+              <div>
+                <label
+                  className="form-label"
+                  style={{ fontSize: "12px", color: "#4B5563" }}
+                >
+                  Latitude
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  className="form-input"
+                  name="latitude"
+                  value={formData.latitude}
+                  onChange={handleChange}
+                  placeholder="e.g. 32.0100"
+                />
+              </div>
+              <div>
+                <label
+                  className="form-label"
+                  style={{ fontSize: "12px", color: "#4B5563" }}
+                >
+                  Longitude
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  className="form-input"
+                  name="longitude"
+                  value={formData.longitude}
+                  onChange={handleChange}
+                  placeholder="e.g. 77.2970"
+                />
+              </div>
             </div>
           </div>
 
           <div className="form-grid-3">
             <div className="form-group">
               <label className="form-label">Property Price (₹)*</label>
-              <input type="number" name="propertyPrice" value={formData.propertyPrice} onChange={handleChange} placeholder="e.g. 3500" className="form-input" required />
+              <input
+                type="number"
+                name="propertyPrice"
+                value={formData.propertyPrice}
+                onChange={handleChange}
+                placeholder="e.g. 3500"
+                className="form-input"
+                required
+              />
             </div>
-            <div className="form-group" style={{ gridColumn: 'span 2' }}>
-              <label className="form-label">Image URL*</label>
-              <input type="text" name="imagesUrl" value={formData.imagesUrl} onChange={handleChange} placeholder="https://images.unsplash.com/..." className="form-input" />
+            <div className="form-group">
+              <label className="form-label">
+                Original Price (Strikethrough)
+              </label>
+              <input
+                type="number"
+                name="originalPrice"
+                value={formData.originalPrice}
+                onChange={handleChange}
+                placeholder="e.g. 5000"
+                className="form-input"
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Tax Amount (₹)</label>
+              <input
+                type="number"
+                name="taxAmount"
+                value={formData.taxAmount}
+                onChange={handleChange}
+                placeholder="e.g. 212"
+                className="form-input"
+              />
+            </div>
+          </div>
+
+          <div className="form-grid-1" style={{ marginBottom: 16 }}>
+            <div className="form-group">
+              <label className="form-label">
+                Upload Property Images*{" "}
+                <span
+                  style={{
+                    fontWeight: 400,
+                    color: "#9CA3AF",
+                    fontSize: "11px",
+                  }}
+                >
+                  (Min 1, Max 10)
+                </span>
+              </label>
+              {(existingImages.length > 0 || selectedFiles.length > 0) && (
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "8px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  {existingImages.map((url, idx) => (
+                    <div
+                      key={`ex-${idx}`}
+                      style={{
+                        position: "relative",
+                        width: "60px",
+                        height: "60px",
+                      }}
+                    >
+                      <img
+                        src={url}
+                        alt={`img-${idx}`}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                          border: "1px solid #D1D5DB",
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveExistingImage(idx)}
+                        style={{
+                          position: "absolute",
+                          top: "-6px",
+                          right: "-6px",
+                          background: "#EF4444",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "18px",
+                          height: "18px",
+                          fontSize: "11px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                  {selectedFiles.map((file, idx) => (
+                    <div
+                      key={`new-${idx}`}
+                      style={{
+                        position: "relative",
+                        width: "60px",
+                        height: "60px",
+                      }}
+                    >
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={file.name}
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          borderRadius: "8px",
+                          border: "2px solid #58A429",
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveNewFile(idx)}
+                        style={{
+                          position: "absolute",
+                          top: "-6px",
+                          right: "-6px",
+                          background: "#EF4444",
+                          color: "#fff",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "18px",
+                          height: "18px",
+                          fontSize: "11px",
+                          cursor: "pointer",
+                        }}
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {existingImages.length + selectedFiles.length < 10 && (
+                <div
+                  className="file-upload-wrapper"
+                  onClick={() => fileInputRef.current.click()}
+                  style={{
+                    cursor: "pointer",
+                    display: "flex",
+                    border: "1px solid #D1D5DB",
+                    borderRadius: "8px",
+                    overflow: "hidden",
+                  }}
+                >
+                  <input
+                    type="text"
+                    className="file-upload-input"
+                    style={{
+                      flex: 1,
+                      border: "none",
+                      outline: "none",
+                      padding: "8px 12px",
+                      fontSize: "13px",
+                    }}
+                    value={
+                      existingImages.length + selectedFiles.length > 0
+                        ? `${existingImages.length + selectedFiles.length} image(s)`
+                        : "Browse images"
+                    }
+                    readOnly
+                  />
+                  <button
+                    type="button"
+                    style={{
+                      background: "#58A429",
+                      color: "#fff",
+                      border: "none",
+                      padding: "8px 16px",
+                      cursor: "pointer",
+                    }}
+                  >
+                    Upload
+                  </button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    multiple
+                    hidden
+                    accept="image/*"
+                  />
+                </div>
+              )}
             </div>
           </div>
 
           <div className="form-grid-3">
-            <div className="form-group" style={{ gridColumn: 'span 2' }}>
+            <div className="form-group">
+              <label className="form-label">Check-In Time*</label>
+              <input
+                type="text"
+                name="checkIn"
+                value={formData.checkIn}
+                onChange={handleChange}
+                placeholder="e.g. 3:00 PM"
+                className="form-input"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Check-Out Time*</label>
+              <input
+                type="text"
+                name="checkOut"
+                value={formData.checkOut}
+                onChange={handleChange}
+                placeholder="e.g. 12:00 PM"
+                className="form-input"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Area Size*</label>
+              <input
+                type="text"
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                placeholder="e.g. 31 sq. ft."
+                className="form-input"
+                required
+              />
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "16px",
+              marginBottom: 16,
+            }}
+          >
+            <div className="form-group">
+              <label className="form-label">Bed Rooms*</label>
+              <input
+                type="number"
+                name="bedRooms"
+                value={formData.bedRooms}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Beds Count*</label>
+              <input
+                type="number"
+                name="beds"
+                value={formData.beds}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Guests Capacity*</label>
+              <input
+                type="number"
+                name="capacity"
+                value={formData.capacity}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Bath Rooms*</label>
+              <input
+                type="number"
+                name="bathRooms"
+                value={formData.bathRooms}
+                onChange={handleChange}
+                className="form-input"
+                required
+              />
+            </div>
+          </div>
+
+          <div className="form-grid-3">
+            <div className="form-group" style={{ gridColumn: "span 2" }}>
               <label className="form-label">Video URL (Optional)</label>
-              <input type="text" name="videosUrl" value={formData.videosUrl} onChange={handleChange} placeholder="https://..." className="form-input" />
+              <input
+                type="text"
+                name="videosUrl"
+                value={formData.videosUrl}
+                onChange={handleChange}
+                placeholder="https://..."
+                className="form-input"
+              />
             </div>
             <div className="form-group">
               <label className="form-label">Status*</label>
-              <select name="status" value={formData.status} onChange={handleChange} className="form-select">
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="form-select"
+              >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
             </div>
           </div>
 
+          <div
+            className="form-group"
+            style={{
+              border: "1px solid #E5E7EB",
+              padding: "16px",
+              borderRadius: "8px",
+              background: "#F9FAFB",
+              marginBottom: 16,
+            }}
+          >
+            <label
+              className="form-label"
+              style={{
+                fontSize: "15px",
+                color: "#111827",
+                display: "block",
+                marginBottom: "12px",
+              }}
+            >
+              Highlights
+            </label>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr 1fr",
+                gap: "16px",
+              }}
+            >
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontSize: "13px",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={formData.highlights.breakfastIncluded}
+                  onChange={(e) =>
+                    setFormData((p) => ({
+                      ...p,
+                      highlights: {
+                        ...p.highlights,
+                        breakfastIncluded: e.target.checked,
+                      },
+                    }))
+                  }
+                  style={{ accentColor: "#58A429" }}
+                />
+                Breakfast Included
+              </label>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontSize: "13px",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={formData.highlights.parkingAvailable}
+                  onChange={(e) =>
+                    setFormData((p) => ({
+                      ...p,
+                      highlights: {
+                        ...p.highlights,
+                        parkingAvailable: e.target.checked,
+                      },
+                    }))
+                  }
+                  style={{ accentColor: "#58A429" }}
+                />
+                Parking Available
+              </label>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    fontSize: "13px",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={formData.highlights.freeCancellation}
+                    onChange={(e) =>
+                      setFormData((p) => ({
+                        ...p,
+                        highlights: {
+                          ...p.highlights,
+                          freeCancellation: e.target.checked,
+                        },
+                      }))
+                    }
+                    style={{ accentColor: "#58A429" }}
+                  />
+                  Free Cancellation
+                </label>
+                {formData.highlights.freeCancellation && (
+                  <input
+                    type="text"
+                    value={formData.highlights.freeCancellationHours}
+                    onChange={(e) =>
+                      setFormData((p) => ({
+                        ...p,
+                        highlights: {
+                          ...p.highlights,
+                          freeCancellationHours: e.target.value,
+                        },
+                      }))
+                    }
+                    placeholder="hrs"
+                    style={{
+                      width: "40px",
+                      padding: "2px 4px",
+                      fontSize: "12px",
+                      border: "1px solid #D1D5DB",
+                      borderRadius: "4px",
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="form-group" style={{ marginBottom: 16 }}>
+            <label className="form-label">Nearby Landmarks</label>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                marginBottom: "12px",
+              }}
+            >
+              <div style={{ display: "flex", gap: "8px" }}>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={landmarkName}
+                  onChange={(e) => setLandmarkName(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleAddLandmark();
+                    }
+                  }}
+                  placeholder="e.g. Anjuna Flea Market"
+                  style={{ flex: 1 }}
+                />
+                <select
+                  className="form-select"
+                  value={landmarkType}
+                  onChange={(e) => setLandmarkType(e.target.value)}
+                  style={{ width: "180px" }}
+                >
+                  <option value="Tourist Popular">Tourist Popular</option>
+                  <option value="Hospital">Hospital</option>
+                  <option value="Airport">Airport</option>
+                  <option value="Railway Station">Railway Station</option>
+                  <option value="Bus Stand">Bus Stand</option>
+                </select>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <input
+                    type="file"
+                    ref={landmarkImageRef}
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (file) {
+                        setLandmarkImageFile(file);
+                        setLandmarkImagePreview(URL.createObjectURL(file));
+                      }
+                    }}
+                    hidden
+                    accept="image/*"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => landmarkImageRef.current.click()}
+                    style={{
+                      padding: "8px",
+                      background: "#F3F4F6",
+                      border: "1px solid #D1D5DB",
+                      borderRadius: "6px",
+                      cursor: "pointer",
+                      fontSize: 13,
+                    }}
+                  >
+                    {landmarkImagePreview ? "Change Image" : "Image (Opt)"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleAddLandmark}
+                    disabled={landmarkImageUploading}
+                    className="btn-solid-green"
+                    style={{ padding: "8px 16px" }}
+                  >
+                    {landmarkImageUploading ? "..." : "Add"}
+                  </button>
+                </div>
+              </div>
+            </div>
+            {landmarksList.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                {landmarksList.map((lm, idx) => (
+                  <div
+                    key={idx}
+                    style={{
+                      padding: "4px 10px",
+                      background: "#F9FAFB",
+                      border: "1px solid #E5E7EB",
+                      borderRadius: "16px",
+                      fontSize: "12px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                    }}
+                  >
+                    <span style={{ fontWeight: 500 }}>{lm.landmark_name}</span>{" "}
+                    <span style={{ color: "#6B7280", fontSize: "11px" }}>
+                      ({lm.landmark_type})
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setLandmarksList((prev) =>
+                          prev.filter((_, i) => i !== idx),
+                        )
+                      }
+                      style={{
+                        color: "#EF4444",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        padding: 0,
+                        marginLeft: 4,
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="form-grid-1" style={{ marginBottom: 16 }}>
+            <div className="form-group">
+              <label className="form-label">Property Rules*</label>
+              <textarea
+                name="rules"
+                value={formData.rules}
+                onChange={handleChange}
+                placeholder="Enter rules separated by newlines"
+                className="form-textarea"
+                required
+              ></textarea>
+            </div>
+          </div>
+
           <div className="form-grid-1" style={{ marginBottom: 0 }}>
             <div className="form-group">
               <label className="form-label">About Property*</label>
-              <textarea name="aboutProperty" value={formData.aboutProperty} onChange={handleChange} placeholder="Provide a detailed description..." className="form-textarea" required></textarea>
+              <textarea
+                name="aboutProperty"
+                value={formData.aboutProperty}
+                onChange={handleChange}
+                placeholder="Provide a detailed description..."
+                className="form-textarea"
+                required
+              ></textarea>
             </div>
           </div>
 
           {isEditing && (
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
-              <button type="button" onClick={() => { setIsEditing(false); setFormData({ id: '', propertyType: 'Homestay', propertyName: '', ownerName: '', ownerContact: '', amenityTypes: '', location: '', propertyPrice: '', imagesUrl: '', videosUrl: '', aboutProperty: '', status: 'Active' }); }} className="btn-outline-green" style={{ cursor: 'pointer', padding: '8px 16px', fontSize: 12 }}>Cancel Edit</button>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-end",
+                marginTop: 16,
+              }}
+            >
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditing(false);
+                  setFormData({
+                    id: "",
+                    propertyType: "Homestay",
+                    propertyName: "",
+                    ownerName: "",
+                    ownerContact: "",
+                    amenityTypes: "",
+                    location: "",
+                    propertyPrice: "",
+                    imagesUrl: "",
+                    videosUrl: "",
+                    aboutProperty: "",
+                    status: "Active",
+                  });
+                }}
+                className="btn-outline-green"
+                style={{ cursor: "pointer", padding: "8px 16px", fontSize: 12 }}
+              >
+                Cancel Edit
+              </button>
             </div>
           )}
         </form>
@@ -216,9 +1652,9 @@ export default function PropertyMakers() {
 
       {/* Table Section */}
       <div className="dash-section" style={{ marginBottom: 24 }}>
-        <div className="chart-card" style={{ padding: 0, overflow: 'hidden' }}>
-          <div style={{ overflowX: 'auto' }}>
-            <table className="data-table" style={{ whiteSpace: 'nowrap' }}>
+        <div className="chart-card" style={{ padding: 0, overflow: "hidden" }}>
+          <div style={{ overflowX: "auto" }}>
+            <table className="data-table" style={{ whiteSpace: "nowrap" }}>
               <thead>
                 <tr>
                   <th>Property No</th>
@@ -227,40 +1663,148 @@ export default function PropertyMakers() {
                   <th>Property Name</th>
                   <th>Owner Name</th>
                   <th>Owner Contact</th>
-                  <th>Amenities Types</th>
+                  <th>Amenities</th>
+                  <th>Experiences</th>
                   <th>Location</th>
+                  <th>Address</th>
                   <th>About Property</th>
                   <th>Status</th>
-                  <th style={{ textAlign: 'right', paddingRight: 24 }}>Actions</th>
+                  <th style={{ textAlign: "right", paddingRight: 24 }}>
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan="11" style={{ textAlign: 'center', padding: '32px', color: '#6B7280' }}>Loading properties...</td></tr>
-                ) : properties.map((p) => (
-                  <tr key={p._id}>
-                    <td style={{ color: '#58A429', fontWeight: 600 }}>{p.propertyNo}</td>
-                    <td style={{ color: '#6B7280' }}>{p.propertyType}</td>
-                    <td>
-                      <div style={{ width: 40, height: 30, background: '#E5E7EB', borderRadius: 6, overflow: 'hidden' }}>
-                        <img src={Array.isArray(p.images) && p.images[0] ? p.images[0] : "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=100&q=80"} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="property" />
-                      </div>
-                    </td>
-                    <td style={{ color: '#111827', fontWeight: 600 }}>{p.propertyName}</td>
-                    <td style={{ color: '#6B7280' }}>{p.ownerName}</td>
-                    <td style={{ color: '#6B7280' }}>{p.ownerContact}</td>
-                    <td style={{ color: '#6B7280' }}>{Array.isArray(p.amenityTypes) ? p.amenityTypes.join(', ') : p.amenityTypes}</td>
-                    <td style={{ color: '#6B7280' }}>{p.location}</td>
-                    <td style={{ color: '#6B7280', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis' }}>{p.aboutProperty}</td>
-                    <td><span className={`status-pill ${p.status ? p.status.toLowerCase() : 'active'}`}>{p.status || 'Active'}</span></td>
-                    <td style={{ textAlign: 'right', paddingRight: 24 }}>
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-                        <button onClick={() => handleEdit(p)} style={{ color: '#58A429', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}><Edit2 size={15} strokeWidth={2} /></button>
-                        <button onClick={() => handleDelete(p._id)} style={{ color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}><Trash2 size={15} strokeWidth={2} /></button>
-                      </div>
+                  <tr>
+                    <td
+                      colSpan="11"
+                      style={{
+                        textAlign: "center",
+                        padding: "32px",
+                        color: "#6B7280",
+                      }}
+                    >
+                      Loading properties...
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  properties.map((p) => (
+                    <tr key={p._id}>
+                      <td style={{ color: "#58A429", fontWeight: 600 }}>
+                        {p.propertyNo}
+                      </td>
+                      <td style={{ color: "#6B7280" }}>{p.propertyType}</td>
+                      <td>
+                        <div
+                          style={{
+                            width: 40,
+                            height: 30,
+                            background: "#E5E7EB",
+                            borderRadius: 6,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <img
+                            src={
+                              Array.isArray(p.images) && p.images[0]
+                                ? p.images[0]
+                                : "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=100&q=80"
+                            }
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                            alt="property"
+                          />
+                        </div>
+                      </td>
+                      <td style={{ color: "#111827", fontWeight: 600 }}>
+                        {p.propertyName}
+                      </td>
+                      <td style={{ color: "#6B7280" }}>{p.ownerName}</td>
+                      <td style={{ color: "#6B7280" }}>{p.ownerContact}</td>
+                      <td style={{ color: "#6B7280" }}>
+                        {Array.isArray(p.amenities)
+                          ? p.amenities.slice(0, 2).join(", ") +
+                            (p.amenities.length > 2 ? "..." : "")
+                          : ""}
+                      </td>
+                      <td style={{ color: "#6B7280" }}>
+                        {Array.isArray(p.experiences)
+                          ? p.experiences
+                              .map((e) => e.experienceName || e.name || e)
+                              .slice(0, 2)
+                              .join(", ") +
+                            (p.experiences.length > 2 ? "..." : "")
+                          : ""}
+                      </td>
+                      <td style={{ color: "#6B7280" }}>{p.location}</td>
+                      <td
+                        style={{
+                          color: "#6B7280",
+                          maxWidth: 150,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {p.full_address || p.location}
+                      </td>
+                      <td
+                        style={{
+                          color: "#6B7280",
+                          maxWidth: 150,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {p.aboutProperty || p.description}
+                      </td>
+                      <td>
+                        <span
+                          className={`status-pill ${p.status ? p.status.toLowerCase() : "active"}`}
+                        >
+                          {p.status || "Active"}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: "right", paddingRight: 24 }}>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            gap: 8,
+                          }}
+                        >
+                          <button
+                            onClick={() => handleEdit(p)}
+                            style={{
+                              color: "#58A429",
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              padding: 4,
+                            }}
+                          >
+                            <Edit2 size={15} strokeWidth={2} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(p._id)}
+                            style={{
+                              color: "#EF4444",
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              padding: 4,
+                            }}
+                          >
+                            <Trash2 size={15} strokeWidth={2} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>
