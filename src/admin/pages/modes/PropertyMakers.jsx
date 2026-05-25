@@ -84,7 +84,7 @@ export default function PropertyMakers() {
   const fetchProperties = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/master/properties");
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/properties`);
       const data = await res.json();
       if (Array.isArray(data)) setProperties(data);
     } catch (err) {
@@ -96,7 +96,7 @@ export default function PropertyMakers() {
 
   const fetchOwners = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/owners");
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/owners`);
       const data = await res.json();
       if (data && data.owners) setOwnersList(data.owners);
       else if (Array.isArray(data)) setOwnersList(data);
@@ -110,7 +110,7 @@ export default function PropertyMakers() {
     try {
       const scope = type || "All";
       const res = await fetch(
-        `http://localhost:5000/api/admin/amenities/active?scope=${scope}`,
+        `${import.meta.env.VITE_API_BASE}/admin/amenities/active?scope=${scope}`,
       );
       const data = await res.json();
       if (Array.isArray(data)) {
@@ -136,7 +136,7 @@ export default function PropertyMakers() {
     if (!newCustomExp.trim()) return;
     try {
       const API_ENDPOINT =
-        typeof API !== "undefined" ? API : "http://localhost:5000/api";
+        typeof API !== "undefined" ? API : `${import.meta.env.VITE_API_BASE}`;
       const res = await fetch(`${API_ENDPOINT}/admin/experiences`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -162,7 +162,7 @@ export default function PropertyMakers() {
     setExperiencesLoading(true);
     try {
       const res = await fetch(
-        `http://localhost:5000/api/admin/experiences/active`,
+        `${import.meta.env.VITE_API_BASE}/admin/experiences/active`,
       );
       const data = await res.json();
       if (Array.isArray(data)) setAvailableExperiences(data);
@@ -176,7 +176,7 @@ export default function PropertyMakers() {
 
   const fetchCountries = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/masters/countries`);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/masters/countries`);
       const data = await res.json();
       setCountries(data);
     } catch (err) {
@@ -187,7 +187,7 @@ export default function PropertyMakers() {
   const fetchStates = async (countryId) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/masters/states/active?country_id=${countryId}`,
+        `${import.meta.env.VITE_API_BASE}/masters/states/active?country_id=${countryId}`,
       );
       const data = await res.json();
       setStates(data);
@@ -204,7 +204,7 @@ export default function PropertyMakers() {
   const fetchCities = async (stateId) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/masters/cities/active?state_id=${stateId}`,
+        `${import.meta.env.VITE_API_BASE}/masters/cities/active?state_id=${stateId}`,
       );
       const data = await res.json();
       setCities(data);
@@ -219,7 +219,7 @@ export default function PropertyMakers() {
   const fetchAreas = async (cityId) => {
     try {
       const res = await fetch(
-        `http://localhost:5000/api/masters/locations/active?city_id=${cityId}`,
+        `${import.meta.env.VITE_API_BASE}/masters/locations/active?city_id=${cityId}`,
       );
       const data = await res.json();
       setAreas(data);
@@ -292,7 +292,7 @@ export default function PropertyMakers() {
         uploadData.append("images", landmarkImageFile);
         const token = localStorage.getItem("admin_token");
         const uploadRes = await fetch(
-          `http://localhost:5000/api/properties/upload`,
+          `${import.meta.env.VITE_API_BASE}/properties/upload`,
           {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },
@@ -370,7 +370,7 @@ export default function PropertyMakers() {
 
       if (isEditing) {
         const res = await fetch(
-          `http://localhost:5000/api/master/properties/${formData.id}`,
+          `${import.meta.env.VITE_API_BASE}/master/properties/${formData.id}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -380,7 +380,7 @@ export default function PropertyMakers() {
         if (res.ok) fetchProperties();
         setIsEditing(false);
       } else {
-        const res = await fetch("http://localhost:5000/api/master/properties", {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/properties`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
@@ -509,7 +509,7 @@ export default function PropertyMakers() {
       return;
     try {
       const res = await fetch(
-        `http://localhost:5000/api/master/properties/${id}`,
+        `${import.meta.env.VITE_API_BASE}/master/properties/${id}`,
         { method: "DELETE" },
       );
       if (res.ok) fetchProperties();

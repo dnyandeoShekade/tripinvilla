@@ -46,7 +46,7 @@ function getIconComp(iconName, cat) {
   return <Comp size={15} style={{ color: 'var(--primary)' }} />;
 }
 
-const API = 'http://localhost:5000/api/admin/amenities';
+const API = `${import.meta.env.VITE_API_BASE}/admin/amenities`;
 
 export default function AmenitiesMaster() {
   const [amenities, setAmenities] = useState([]);

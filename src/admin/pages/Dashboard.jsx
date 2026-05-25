@@ -51,11 +51,11 @@ export default function Dashboard() {
   const fetchData = async () => {
     try {
       const [statsRes, chartRes, catRes, topRes, enqRes] = await Promise.all([
-        fetch('http://localhost:5000/api/dashboard/stats').then(r => r.json()),
-        fetch(`http://localhost:5000/api/dashboard/enquiries-chart?year=${selectedYear}`).then(r => r.json()),
-        fetch('http://localhost:5000/api/dashboard/property-categories').then(r => r.json()),
-        fetch('http://localhost:5000/api/dashboard/top-properties').then(r => r.json()),
-        fetch('http://localhost:5000/api/dashboard/recent-enquiries').then(r => r.json())
+        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/stats`).then(r => r.json()),
+        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/enquiries-chart?year=${selectedYear}`).then(r => r.json()),
+        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/property-categories`).then(r => r.json()),
+        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/top-properties`).then(r => r.json()),
+        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/recent-enquiries`).then(r => r.json())
       ]);
 
       if (statsRes && statsRes.activeProperties !== undefined) setStats(statsRes);

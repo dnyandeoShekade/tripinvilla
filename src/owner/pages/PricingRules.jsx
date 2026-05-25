@@ -25,7 +25,7 @@ export default function PricingRules() {
 
   const fetchRules = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/pricing-rules', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/pricing-rules`, {
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
       const data = await res.json();
@@ -50,8 +50,8 @@ export default function PricingRules() {
     setLoading(true);
     try {
       const url = editId 
-        ? `http://localhost:5000/api/pricing-rules/${editId}` 
-        : 'http://localhost:5000/api/pricing-rules';
+        ? `${import.meta.env.VITE_API_BASE}/pricing-rules/${editId}` 
+        : `${import.meta.env.VITE_API_BASE}/pricing-rules`;
       const method = editId ? 'PUT' : 'POST';
 
       const res = await fetch(url, {
@@ -99,7 +99,7 @@ export default function PricingRules() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this pricing rule?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/pricing-rules/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/pricing-rules/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });

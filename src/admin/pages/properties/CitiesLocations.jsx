@@ -12,7 +12,7 @@ export default function CitiesLocations() {
   const fetchCities = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/cities/analytics');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/cities/analytics`);
       const data = await res.json();
       if (Array.isArray(data)) setCities(data);
     } catch (err) {

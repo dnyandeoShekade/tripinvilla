@@ -26,14 +26,14 @@ export default function Register() {
       if (urlToken) {
         setLoading(true);
         try {
-          const profileRes = await fetch('http://localhost:5000/api/users/profile', {
+          const profileRes = await fetch(`${import.meta.env.VITE_API_BASE}/users/profile`, {
             headers: { 'Authorization': `Bearer ${urlToken}` }
           });
           if (!profileRes.ok) throw new Error('Token verification failed');
           let user = await profileRes.json();
           
           if (!['owner', 'admin', 'super_admin'].includes(user.role)) {
-            const updateRes = await fetch('http://localhost:5000/api/users/profile', {
+            const updateRes = await fetch(`${import.meta.env.VITE_API_BASE}/users/profile`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',
@@ -61,13 +61,13 @@ export default function Register() {
         } else {
           setLoading(true);
           try {
-            const profileRes = await fetch('http://localhost:5000/api/users/profile', {
+            const profileRes = await fetch(`${import.meta.env.VITE_API_BASE}/users/profile`, {
               headers: { 'Authorization': `Bearer ${existingToken}` }
             });
             if (profileRes.ok) {
               let user = await profileRes.json();
               if (!['owner', 'admin', 'super_admin'].includes(user.role)) {
-                const updateRes = await fetch('http://localhost:5000/api/users/profile', {
+                const updateRes = await fetch(`${import.meta.env.VITE_API_BASE}/users/profile`, {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -95,7 +95,8 @@ export default function Register() {
 
   React.useEffect(() => {
     const handleOAuthMessage = async (event) => {
-      if (event.origin !== 'http://localhost:5000') return;
+      const apiOrigin = new URL(import.meta.env.VITE_API_BASE || 'http://localhost:5000').origin;
+      if (event.origin !== apiOrigin) return;
       if (event.data?.type === 'tripinvilla_oauth_success') {
         setLoading(true);
         try {
@@ -103,7 +104,7 @@ export default function Register() {
           let finalUser = user;
           
           if (!['owner', 'admin', 'super_admin'].includes(user.role)) {
-            const updateRes = await fetch('http://localhost:5000/api/users/profile', {
+            const updateRes = await fetch(`${import.meta.env.VITE_API_BASE}/users/profile`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',
@@ -137,7 +138,7 @@ export default function Register() {
     const left = window.screen.width / 2 - width / 2;
     const top = window.screen.height / 2 - height / 2;
     window.open(
-      `http://localhost:5000/api/auth/oauth/${provider}`,
+      `${import.meta.env.VITE_API_BASE}/auth/oauth/${provider}`,
       `${provider}_oauth`,
       `width=${width},height=${height},top=${top},left=${left}`
     );
@@ -150,7 +151,7 @@ export default function Register() {
       const name = `${formData.firstName} ${formData.lastName}`.trim();
       
       // Step 1: Register User with Role 'owner'
-      const registerRes = await fetch('http://localhost:5000/api/auth/register', {
+      const registerRes = await fetch(`${import.meta.env.VITE_API_BASE}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -168,7 +169,7 @@ export default function Register() {
       localStorage.setItem('owner_user', JSON.stringify(registerData.user));
 
       // Step 2: Update Profile details
-      const profileRes = await fetch('http://localhost:5000/api/users/profile', {
+      const profileRes = await fetch(`${import.meta.env.VITE_API_BASE}/users/profile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

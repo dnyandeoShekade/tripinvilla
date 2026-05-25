@@ -3,7 +3,7 @@ import { Search, Filter, Calendar, ChevronDown, CheckCircle2, XCircle, MoreVerti
 import { useNavigate } from 'react-router-dom';
 import { propertyService, dashboardService } from '../services/api';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:5000/api';
+const API_BASE = import.meta.env.VITE_API_BASE || `${import.meta.env.VITE_API_BASE}`;
 
 export default function MyProperties() {
   const navigate = useNavigate();
@@ -157,7 +157,7 @@ export default function MyProperties() {
   const handleAddCustomExperience = async () => {
     if (!newCustomExp.trim()) return;
     try {
-      const API_ENDPOINT = typeof API !== 'undefined' ? API : 'http://localhost:5000/api';
+      const API_ENDPOINT = typeof API !== 'undefined' ? API : `${import.meta.env.VITE_API_BASE}`;
       const res = await fetch(`${API_ENDPOINT}/admin/experiences`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

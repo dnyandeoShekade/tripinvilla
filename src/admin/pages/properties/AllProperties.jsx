@@ -14,7 +14,7 @@ import {
   Upload,
 } from "lucide-react";
 
-const API = "http://localhost:5000/api";
+const API = `${import.meta.env.VITE_API_BASE}`;
 
 export default function AllProperties() {
   const [properties, setProperties] = useState([]);
@@ -143,7 +143,7 @@ export default function AllProperties() {
     if (!newCustomExp.trim()) return;
     try {
       const API_ENDPOINT =
-        typeof API !== "undefined" ? API : "http://localhost:5000/api";
+        typeof API !== "undefined" ? API : `${import.meta.env.VITE_API_BASE}`;
       const res = await fetch(`${API_ENDPOINT}/admin/experiences`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

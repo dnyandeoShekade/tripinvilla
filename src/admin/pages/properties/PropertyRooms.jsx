@@ -24,7 +24,7 @@ export default function PropertyRooms() {
   const fetchRequests = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/property-requests', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/property-requests`, {
         headers: getAuthHeaders()
       });
       const data = await res.json();
@@ -45,7 +45,7 @@ export default function PropertyRooms() {
 
   const handleAccept = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/property-requests/${id}/accept`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/property-requests/${id}/accept`, {
         method: 'PUT',
         headers: getAuthHeaders('PUT')
       });
@@ -62,7 +62,7 @@ export default function PropertyRooms() {
 
   const handleReject = async (id) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/property-requests/${id}/reject`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/property-requests/${id}/reject`, {
         method: 'PUT',
         headers: getAuthHeaders('PUT')
       });
@@ -80,7 +80,7 @@ export default function PropertyRooms() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this property request?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/property-requests/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/property-requests/${id}`, {
         method: 'DELETE',
         headers: getAuthHeaders('DELETE')
       });

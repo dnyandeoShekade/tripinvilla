@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Trash2, ShieldAlert, Plus, CheckCircle } from 'lucide-react';
 import { propertyService, propertyRequestService } from '../services/api';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = `${import.meta.env.VITE_API_BASE}`;
 
 const defaultRules = [{ title: 'Must Read Rules', text: '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s)' }];
 
@@ -55,7 +55,7 @@ export default function PropertyRequests() {
   const handleAddCustomExperience = async () => {
     if (!newCustomExp.trim()) return;
     try {
-      const API_ENDPOINT = typeof API !== 'undefined' ? API : 'http://localhost:5000/api';
+      const API_ENDPOINT = typeof API !== 'undefined' ? API : `${import.meta.env.VITE_API_BASE}`;
       const res = await fetch(`${API_ENDPOINT}/admin/experiences`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

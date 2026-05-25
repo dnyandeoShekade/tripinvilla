@@ -21,7 +21,7 @@ export default function CountryMaster() {
   const fetchCountries = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/admin/countries');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/countries`);
       const data = await res.json();
       if (Array.isArray(data)) setCountries(data);
     } catch (err) {
@@ -54,7 +54,7 @@ export default function CountryMaster() {
       };
 
       if (isEditing) {
-        const res = await fetch(`http://localhost:5000/api/admin/countries/${formData.id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/countries/${formData.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -62,7 +62,7 @@ export default function CountryMaster() {
         if (res.ok) fetchCountries();
         setIsEditing(false);
       } else {
-        const res = await fetch('http://localhost:5000/api/admin/countries', {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/countries`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -105,7 +105,7 @@ export default function CountryMaster() {
 
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/countries/${deleteTargetId}`, { method: 'DELETE' });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/countries/${deleteTargetId}`, { method: 'DELETE' });
       if (res.ok) {
         fetchCountries();
       } else {

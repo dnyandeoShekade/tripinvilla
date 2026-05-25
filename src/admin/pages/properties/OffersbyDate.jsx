@@ -12,7 +12,7 @@ export default function OffersbyDate() {
   const fetchOffers = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/offers');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/offers`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setOffers(data);
@@ -31,7 +31,7 @@ export default function OffersbyDate() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this offer?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/offers/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/offers/${id}`, { method: 'DELETE' });
       if (res.ok) fetchOffers();
     } catch (err) {
       console.error('Error deleting offer:', err);

@@ -60,7 +60,7 @@ export default function Homepage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/content/homepage')
+    fetch(`${import.meta.env.VITE_API_BASE}/content/homepage`)
       .then(res => res.json())
       .then(data => {
         if (data && data.data && Object.keys(data.data).length > 0) {
@@ -112,7 +112,7 @@ export default function Homepage() {
       Object.keys(files).forEach(key => {
         fd.append(key, files[key]);
       });
-      const res = await fetch('http://localhost:5000/api/content/homepage', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/content/homepage`, {
         method: 'PUT',
         body: fd
       });

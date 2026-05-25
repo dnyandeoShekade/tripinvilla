@@ -29,7 +29,7 @@ export default function LocationMaster() {
   const fetchLocations = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/admin/locations');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/locations`);
       const data = await res.json();
       if (Array.isArray(data)) setLocations(data);
     } catch (err) {
@@ -61,7 +61,7 @@ export default function LocationMaster() {
     
     if (isEditing && formData.id) {
       try {
-        const res = await fetch(`http://localhost:5000/api/admin/locations/${formData.id}/landmarks`, {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/locations/${formData.id}/landmarks`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newL)
@@ -86,7 +86,7 @@ export default function LocationMaster() {
     const land = landmarks[index];
     if (isEditing && formData.id && land._id) {
       try {
-        const res = await fetch(`http://localhost:5000/api/admin/landmarks/${land._id}`, { method: 'DELETE' });
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/landmarks/${land._id}`, { method: 'DELETE' });
         if (res.ok) {
           fetchLocations();
         }
@@ -108,7 +108,7 @@ export default function LocationMaster() {
       const payload = { ...formData, landmarks };
 
       if (isEditing) {
-        const res = await fetch(`http://localhost:5000/api/admin/locations/${formData.id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/locations/${formData.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -116,7 +116,7 @@ export default function LocationMaster() {
         if (res.ok) fetchLocations();
         setIsEditing(false);
       } else {
-        const res = await fetch('http://localhost:5000/api/admin/locations', {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/locations`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -159,7 +159,7 @@ export default function LocationMaster() {
 
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/locations/${deleteTargetId}`, { method: 'DELETE' });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/locations/${deleteTargetId}`, { method: 'DELETE' });
       if (res.ok) fetchLocations();
     } catch (err) {
       console.error('Error deleting location:', err);

@@ -9,7 +9,7 @@ export default function AdminList() {
   const fetchAdmins = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/auth/admins');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/auth/admins`);
       const data = await res.json();
       if (Array.isArray(data)) setAdmins(data);
     } catch (err) {

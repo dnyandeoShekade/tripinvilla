@@ -30,7 +30,7 @@ export default function UniqueExperienceMaster() {
   const fetchExperiences = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/master/experiences');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/experiences`);
       const data = await res.json();
       if (Array.isArray(data)) setExperiences(data);
     } catch (err) {
@@ -63,7 +63,7 @@ export default function UniqueExperienceMaster() {
       };
 
       if (isEditing) {
-        const res = await fetch(`http://localhost:5000/api/master/experiences/${formData.id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/experiences/${formData.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -71,7 +71,7 @@ export default function UniqueExperienceMaster() {
         if (res.ok) fetchExperiences();
         setIsEditing(false);
       } else {
-        const res = await fetch('http://localhost:5000/api/master/experiences', {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/experiences`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -112,7 +112,7 @@ export default function UniqueExperienceMaster() {
 
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/master/experiences/${deleteTargetId}`, { method: 'DELETE' });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/experiences/${deleteTargetId}`, { method: 'DELETE' });
       if (res.ok) fetchExperiences();
     } catch (err) {
       console.error('Error deleting experience:', err);

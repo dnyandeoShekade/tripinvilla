@@ -16,14 +16,14 @@ export default function Login() {
       if (urlToken) {
         setLoading(true);
         try {
-          const profileRes = await fetch('http://localhost:5000/api/users/profile', {
+          const profileRes = await fetch(`${import.meta.env.VITE_API_BASE}/users/profile`, {
             headers: { 'Authorization': `Bearer ${urlToken}` }
           });
           if (!profileRes.ok) throw new Error('Token verification failed');
           let user = await profileRes.json();
           
           if (!['owner', 'admin', 'super_admin'].includes(user.role)) {
-            const updateRes = await fetch('http://localhost:5000/api/users/profile', {
+            const updateRes = await fetch(`${import.meta.env.VITE_API_BASE}/users/profile`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',
@@ -51,7 +51,8 @@ export default function Login() {
 
   React.useEffect(() => {
     const handleOAuthMessage = async (event) => {
-      if (event.origin !== 'http://localhost:5000') return;
+      const apiOrigin = new URL(import.meta.env.VITE_API_BASE || 'http://localhost:5000').origin;
+      if (event.origin !== apiOrigin) return;
       if (event.data?.type === 'tripinvilla_oauth_success') {
         setLoading(true);
         try {
@@ -59,7 +60,7 @@ export default function Login() {
           let finalUser = user;
           
           if (!['owner', 'admin', 'super_admin'].includes(user.role)) {
-            const updateRes = await fetch('http://localhost:5000/api/users/profile', {
+            const updateRes = await fetch(`${import.meta.env.VITE_API_BASE}/users/profile`, {
               method: 'PUT',
               headers: {
                 'Content-Type': 'application/json',
@@ -93,7 +94,7 @@ export default function Login() {
     const left = window.screen.width / 2 - width / 2;
     const top = window.screen.height / 2 - height / 2;
     window.open(
-      `http://localhost:5000/api/auth/oauth/${provider}`,
+      `${import.meta.env.VITE_API_BASE}/auth/oauth/${provider}`,
       `${provider}_oauth`,
       `width=${width},height=${height},top=${top},left=${left}`
     );

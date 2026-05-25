@@ -24,7 +24,7 @@ export default function CityMaster() {
 
   const fetchStates = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/admin/states/active');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/states/active`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setStates(data);
@@ -41,8 +41,8 @@ export default function CityMaster() {
     setLoading(true);
     try {
       const url = filterState === 'All' 
-        ? 'http://localhost:5000/api/admin/cities' 
-        : `http://localhost:5000/api/admin/cities?state_id=${filterState}`;
+        ? `${import.meta.env.VITE_API_BASE}/admin/cities` 
+        : `${import.meta.env.VITE_API_BASE}/admin/cities?state_id=${filterState}`;
       const res = await fetch(url);
       const data = await res.json();
       if (Array.isArray(data)) setCities(data);
@@ -75,7 +75,7 @@ export default function CityMaster() {
 
     try {
       if (isEditing) {
-        const res = await fetch(`http://localhost:5000/api/admin/cities/${formData.id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/cities/${formData.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
@@ -83,7 +83,7 @@ export default function CityMaster() {
         if (res.ok) fetchCities();
         setIsEditing(false);
       } else {
-        const res = await fetch('http://localhost:5000/api/admin/cities', {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/cities`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
@@ -120,7 +120,7 @@ export default function CityMaster() {
 
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/cities/${deleteTargetId}`, { method: 'DELETE' });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/cities/${deleteTargetId}`, { method: 'DELETE' });
       if (res.ok) {
         fetchCities();
       } else {

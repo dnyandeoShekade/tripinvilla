@@ -12,7 +12,7 @@ export default function PropertyOwned() {
   const fetchOwners = async () => {
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/owners');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/owners`);
       const data = await res.json();
       if (data && data.owners) {
         setOwners(data.owners);
@@ -32,7 +32,7 @@ export default function PropertyOwned() {
   const toggleStatus = async (id, currentStatus) => {
     const nextStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
     try {
-      const res = await fetch(`http://localhost:5000/api/owners/${id}/status`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/owners/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: nextStatus })
@@ -46,7 +46,7 @@ export default function PropertyOwned() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this property owner?')) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/owners/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/owners/${id}`, { method: 'DELETE' });
       if (res.ok) fetchOwners();
     } catch (err) {
       console.error('Error deleting owner:', err);

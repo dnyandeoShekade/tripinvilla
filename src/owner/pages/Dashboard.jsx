@@ -28,7 +28,7 @@ export default function Dashboard() {
         const statsRes = await dashboardService.getStats();
         setStatsData(statsRes.data);
         
-        const enquiriesRes = await fetch('http://localhost:5000/api/owner-dashboard/enquiries', {
+        const enquiriesRes = await fetch(`${import.meta.env.VITE_API_BASE}/owner-dashboard/enquiries`, {
           headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
         });
         const enquiriesData = await enquiriesRes.json();

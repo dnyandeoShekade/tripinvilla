@@ -21,7 +21,7 @@ export default function StateMaster() {
 
   const fetchCountries = async () => {
     try {
-      const res = await fetch('http://localhost:5000/api/admin/countries/active');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/countries/active`);
       const data = await res.json();
       if (Array.isArray(data)) {
         setCountries(data);
@@ -38,8 +38,8 @@ export default function StateMaster() {
     setLoading(true);
     try {
       const url = filterCountry === 'All' 
-        ? 'http://localhost:5000/api/admin/states' 
-        : `http://localhost:5000/api/admin/states?country_id=${filterCountry}`;
+        ? `${import.meta.env.VITE_API_BASE}/admin/states` 
+        : `${import.meta.env.VITE_API_BASE}/admin/states?country_id=${filterCountry}`;
       const res = await fetch(url);
       const data = await res.json();
       if (Array.isArray(data)) setStates(data);
@@ -71,7 +71,7 @@ export default function StateMaster() {
 
     try {
       if (isEditing) {
-        const res = await fetch(`http://localhost:5000/api/admin/states/${formData.id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/states/${formData.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
@@ -79,7 +79,7 @@ export default function StateMaster() {
         if (res.ok) fetchStates();
         setIsEditing(false);
       } else {
-        const res = await fetch('http://localhost:5000/api/admin/states', {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/states`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(formData)
@@ -116,7 +116,7 @@ export default function StateMaster() {
 
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/admin/states/${deleteTargetId}`, { method: 'DELETE' });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/states/${deleteTargetId}`, { method: 'DELETE' });
       if (res.ok) {
         fetchStates();
       } else {

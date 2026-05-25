@@ -28,9 +28,9 @@ export default function DestinationMaster() {
     setLoading(true);
     try {
       const [destRes, statesRes, countriesRes] = await Promise.all([
-        fetch('http://localhost:5000/api/master/destinations').then(r => r.json()),
-        fetch('http://localhost:5000/api/admin/states/active').then(r => r.json()),
-        fetch('http://localhost:5000/api/admin/countries/active').then(r => r.json())
+        fetch(`${import.meta.env.VITE_API_BASE}/master/destinations`).then(r => r.json()),
+        fetch(`${import.meta.env.VITE_API_BASE}/admin/states/active`).then(r => r.json()),
+        fetch(`${import.meta.env.VITE_API_BASE}/admin/countries/active`).then(r => r.json())
       ]);
       if (Array.isArray(destRes)) setDestinations(destRes);
       if (Array.isArray(statesRes)) {
@@ -90,7 +90,7 @@ export default function DestinationMaster() {
       };
 
       if (isEditing) {
-        const res = await fetch(`http://localhost:5000/api/master/destinations/${formData.id}`, {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/destinations/${formData.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -98,7 +98,7 @@ export default function DestinationMaster() {
         if (res.ok) fetchData();
         setIsEditing(false);
       } else {
-        const res = await fetch('http://localhost:5000/api/master/destinations', {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/destinations`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -143,7 +143,7 @@ export default function DestinationMaster() {
 
   const confirmDelete = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/master/destinations/${deleteTargetId}`, { method: 'DELETE' });
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/destinations/${deleteTargetId}`, { method: 'DELETE' });
       if (res.ok) fetchData();
     } catch (err) {
       console.error('Error deleting destination:', err);
