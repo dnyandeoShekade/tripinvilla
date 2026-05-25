@@ -95,7 +95,7 @@ export default function Register() {
 
   React.useEffect(() => {
     const handleOAuthMessage = async (event) => {
-      const apiOrigin = new URL(import.meta.env.VITE_API_BASE || 'http://localhost:5000').origin;
+      const apiOrigin = new URL(import.meta.env.VITE_API_BASE || 'http://13.127.196.228:8000').origin;
       if (event.origin !== apiOrigin) return;
       if (event.data?.type === 'tripinvilla_oauth_success') {
         setLoading(true);

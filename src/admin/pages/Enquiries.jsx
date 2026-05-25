@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Calendar, Filter, Search, ChevronDown, MessageSquare, X, Clock, CheckCircle } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:8000/api';
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://13.127.196.228:8000/api';
 
 export default function Enquiries() {
   const [enquiries, setEnquiries] = useState([]);

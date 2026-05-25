@@ -4,7 +4,7 @@ export const API_ORIGIN = (() => {
   try {
     return new URL(API_BASE).origin;
   } catch {
-    return 'http://localhost:5000';
+    return 'http://13.127.196.228:8000';
   }
 })();
 
