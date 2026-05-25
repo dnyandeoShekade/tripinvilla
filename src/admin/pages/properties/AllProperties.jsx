@@ -111,13 +111,23 @@ export default function AllProperties() {
       if (searchQuery) params.append("search", searchQuery);
       if (propertyType) params.append("type", propertyType);
       if (dateFrom) params.append("date", dateFrom);
-      params.append("status", "All");
-      const res = await fetch(`${API}/properties?${params.toString()}`);
-      const data = await res.json();
-      if (data?.properties) {
-        setProperties(data.properties);
-        if (data.stats) setStats(data.stats);
-      }
+      
+      // Fetch Active properties (default when no status is passed)
+      const resActive = await fetch(`${API}/properties?${params.toString()}`);
+      const dataActive = await resActive.json();
+
+      // Fetch Inactive Admin properties
+      params.append("status", "Inactive Admin");
+      const resInactive = await fetch(`${API}/properties?${params.toString()}`);
+      const dataInactive = await resInactive.json();
+
+      let combinedProperties = [];
+      if (dataActive?.properties) combinedProperties = [...dataActive.properties];
+      if (dataInactive?.properties) combinedProperties = [...combinedProperties, ...dataInactive.properties];
+
+      setProperties(combinedProperties);
+      if (dataActive?.stats) setStats(dataActive.stats);
+      
     } catch (err) {
       console.error(err);
     } finally {

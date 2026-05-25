@@ -1,0 +1,42 @@
+/* ══════════════════════════════════════════════
+   TOPBAR
+══════════════════════════════════════════════ */
+.topbar {
+  height: 97px;
+  background: #fff;
+  border-bottom: none;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 61px 0 39px;
+  flex-shrink: 0;
+  border-radius: 16px 16px 0 0;
+}
+.topbar-title { font-size: 15px; font-weight: 700; color: #111827; }
+.topbar-right { display: flex; align-items: center; gap: 22px; }
+
+.topbar-date-btn {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--border); border-radius: 8px;
+  background: #fff; font-size: 12px; font-weight: 500;
+  color: #374151; cursor: pointer; font-family: inherit;
+  transition: var(--transition);
+}
+.topbar-date-btn:hover { border-color: #D1D5DB; background: #F9FAFB; }
+
+.topbar-user {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 10px 4px 5px;
+  border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--border);
+  transition: var(--transition);
+}
+.topbar-user:hover { background: #F9FAFB; }
+.topbar-avatar {
+  width: 28px; height: 28px; border-radius: 7px;
+  background: #10B981;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.topbar-user-name { font-size: 12px; font-weight: 600; color: #111827; }
+.topbar-user-role { font-size: 10px; color: #9CA3AF; }
+

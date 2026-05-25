@@ -1,0 +1,177 @@
+/* ==========================================================================
+   SECTION 1: DESTINATIONS CAROUSEL (Width 1281px, Height 465px, Top 761px)
+   ========================================================================== */
+.destinations-carousel-section {
+  position: relative;
+  width: 1440px;
+  max-width: calc(100% - 158px);
+  height: 465px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 15px;
+  margin: 80px auto 40px auto;
+  /* Increased spacing to allow both components to breathe comfortably */
+  box-sizing: border-box;
+  opacity: 1;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.carousel-header {
+  display: none;
+  /* No longer needed as pill is absolutely positioned */
+}
+
+.carousel-nav-pill {
+  position: absolute;
+  top: 23px;
+  left: 20px;
+  width: 344px;
+  height: 72px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 15px;
+  padding: 6px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  opacity: 1;
+}
+
+.carousel-nav-btn {
+  flex: 1;
+  height: 100%;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 11px;
+  /* Fits elegantly inside the 15px rounded switcher */
+  border: none;
+  background: transparent;
+  color: #8A99AD;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-nav-btn.active {
+  background: var(--primary-blue);
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.carousel-viewport {
+  position: absolute;
+  top: 120px;
+  left: 20px;
+  width: calc(100% - 40px);
+  height: 310px;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  /* Hide default scrollbar in Firefox */
+  padding: 10px 0;
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none;
+  /* Hide default scrollbar in Chrome/Safari */
+}
+
+.carousel-card-item {
+  flex: 0 0 calc((100% - 100px) / 6);
+  /* Perfectly fits 6 items on wide desktops */
+  min-width: 180px;
+  /* Ensures items preserve size and scroll on smaller screen widths */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.carousel-card-item:hover {
+  transform: translateY(-4px);
+}
+
+.carousel-img-wrap {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.carousel-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.carousel-card-item:hover .carousel-img-wrap img {
+  transform: scale(1.05);
+}
+
+.carousel-city-title {
+  font-family: 'Lato', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.carousel-city-sub {
+  font-family: 'Lato', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #8A99AD;
+  margin: 0;
+  max-width: 140px;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.carousel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+}
+
+.carousel-arrow:hover {
+  background: #F9FAFB;
+  border-color: #9CA3AF;
+}
+
+.carousel-arrow.left {
+  left: -22px;
+}
+
+.carousel-arrow.right {
+  right: -22px;
+}
+

@@ -1,0 +1,288 @@
+/* ==========================================================================
+   SECTION 2: BEST VILLAS AROUND YOU (3-column, Gap 54px)
+   ========================================================================== */
+.villas-around-section {
+  width: 100%;
+  max-width: 1360px;
+  margin: 40px auto 80px auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.villas-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 30px;
+  justify-content: start;
+}
+
+.villa-card {
+  width: 100%;
+  max-width: 100%;
+  /* Let the grid track control card width */
+  height: 560px;
+  background: #FFFFFF;
+  border-radius: 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  border: 1px solid #F3F4F6;
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.villa-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.07);
+}
+
+.villa-card-img-wrap {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  /* Increased from 210px to scale image sizes up beautifully */
+  border-radius: 18px;
+  /* Inset rounded corners */
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+
+.villa-card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.villa-card:hover .villa-card-img-wrap img {
+  transform: scale(1.04);
+}
+
+.wishlist-btn-circle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.wishlist-btn-circle:hover {
+  transform: scale(1.1);
+}
+
+.villa-card-content {
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: space-between;
+  /* Spreads content to fill card height gracefully */
+}
+
+.villa-card-title {
+  font-family: 'Lato', sans-serif;
+  font-size: 20px;
+  /* Scaled down title size */
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 2px 0;
+}
+
+.villa-card-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  /* Scaled down location size */
+  color: #8A99AD;
+  margin-bottom: 8px;
+}
+
+.villa-card-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rating-pill {
+  background: #58A429;
+  color: #FFFFFF;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rating-text-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.rating-desc-excellent {
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  /* Regular weight from Figma */
+  color: #8A99AD;
+  /* Gray color to match design */
+  line-height: 1;
+}
+
+.rating-reviews-count {
+  font-family: 'Lato', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #8A99AD;
+  line-height: 1;
+}
+
+.villa-card-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: 'Lato', sans-serif;
+  margin-top: 2px;
+}
+
+.villa-card-price-row .price-label {
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.villa-card-price-row .price-value-highlight {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.villa-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* Scaled down gap */
+  margin-top: 10px;
+}
+
+.villa-card-actions .btn-villa-action {
+  height: 40px;
+  /* Compact height */
+  font-size: 14px;
+  /* Compact font size */
+  border-radius: 20px;
+  /* Compact pill shape */
+}
+
+.price-label {
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  /* Exact Figma size */
+  font-weight: 500;
+  /* Exact Figma weight */
+  line-height: 32px;
+  /* Exact Figma line height */
+  color: #8A99AD;
+}
+
+.price-value-highlight {
+  font-family: 'Lato', sans-serif;
+  font-size: 23px;
+  /* Exact Figma size */
+  font-weight: 500;
+  /* Exact Figma weight */
+  line-height: 32px;
+  /* Exact Figma line height */
+  color: #58A429;
+  /* Cohesive Brand Green */
+}
+
+.btn-villa-action {
+  width: 100%;
+  height: 48px;
+  /* Taller, more prominent buttons */
+  border-radius: 24px;
+  /* Fully rounded pill shape */
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.btn-villa-action.outline-blue {
+  border: 1px solid var(--primary-blue);
+  color: var(--primary-blue);
+  position: relative;
+}
+
+.view-details-toggle-pill {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #333333;
+  /* Dark pill background */
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.toggle-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Lato', sans-serif;
+}
+
+.toggle-m {
+  background: #64748B;
+  z-index: 1;
+}
+
+.toggle-i {
+  background: #E84C22;
+  /* Red-orange from screenshot */
+  margin-left: -4px;
+  /* Overlapping circles effect */
+  z-index: 2;
+}
+
+.btn-villa-action.outline-blue:hover {
+  background: rgba(37, 99, 235, 0.04);
+}
+
+.btn-villa-action.outline-green {
+  border: 1px solid #58A429;
+  color: #58A429;
+}
+
+.btn-villa-action.outline-green:hover {
+  background: rgba(72, 187, 120, 0.04);
+}
+

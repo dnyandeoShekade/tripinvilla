@@ -1,0 +1,60 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --primary:        #58A429;
+  --primary-light:  #F9FFEA;
+  --primary-dark:   #157a5a;
+  /* Figma dashboard bg: #FCF9EA (skin tone) */
+  --bg-main:        #FCF9EA;
+  --bg-card:        #FFFFFF;
+  --text-primary:   #111827;
+  --text-secondary: #4B5563;
+  --text-muted:     #9CA3AF;
+  --border:         #E5E7EB;
+  --border-light:   #F0F0F0;
+  --success:        #58A429;
+  --success-light:  #F9FFEA;
+  --warning:        #D97706;
+  --warning-light:  #FEF3C7;
+  --danger:         #DC2626;
+  --danger-light:   #FEE2E2;
+  --info:           #58A429;
+  --info-light:     #F9FFEA;
+  --radius-sm:      6px;
+  --radius-md:      10px;
+  --radius-lg:      16px;
+  --shadow-card:    0 4px 40px rgba(0, 61, 92, 0.04);
+  --shadow-sm:      0 1px 3px rgba(0,0,0,0.06);
+  --transition:     all 0.18s ease;
+
+  /* Exact Figma dimensions */
+  --sidebar-w:      297px;
+  --sidebar-margin: 20px;
+  --main-left:      337px;   /* 297 + 20 + 20 */
+}
+
+.owner-theme {
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  background: #FCF9EA;
+  color: #111827;
+}
+a { text-decoration: none; color: inherit; }
+ul, ol { list-style: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+h1 { font-size: inherit; font-weight: inherit; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 10px; }
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.3s ease forwards; }
+

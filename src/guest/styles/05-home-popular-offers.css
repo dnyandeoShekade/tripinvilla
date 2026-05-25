@@ -1,0 +1,149 @@
+/* ==========================================================================
+   SECTION 4: POPULAR OFFERS OF PROPERTY (2x2 Horizontal Layout)
+   ========================================================================== */
+.popular-offers-section {
+  width: 1440px;
+  /* Standardizes container width with other page sections */
+  max-width: calc(100% - 158px);
+  margin: 60px auto 120px auto;
+  box-sizing: border-box;
+}
+
+.popular-offers-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 580px);
+  /* Sized beautifully to 580px */
+  grid-gap: 24px 54px;
+  /* Reduced vertical row gap, preserved elegant column spacing */
+  justify-content: start;
+  /* Perfectly left-aligned with other sections */
+}
+
+.offer-horizontal-card {
+  background: #FFFFFF;
+  border-radius: 20px;
+  /* Refined rounded corner */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  border: 1px solid #F3F4F6;
+  display: flex;
+  padding: 16px;
+  /* Elegant, spacious padding */
+  box-sizing: border-box;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 580px;
+  /* Restored beautiful larger width */
+  height: 250px;
+  /* Restored beautiful larger height */
+}
+
+.offer-horizontal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+.offer-card-img-wrap {
+  position: relative;
+  width: 42%;
+  /* Premium layout ratio */
+  height: 100%;
+  border-radius: 16px;
+  /* Inset rounded corners */
+  overflow: hidden;
+}
+
+.offer-card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.exclusive-offer-badge {
+  position: absolute;
+  top: 0;
+  /* Attached exactly to image top edge */
+  left: 0;
+  /* Attached exactly to image left edge */
+  width: 110px;
+  /* Sleek, small badge size */
+  height: 28px;
+  background: var(--primary-blue);
+  color: #FFFFFF;
+  font-family: 'Lato', sans-serif;
+  font-size: 10.5px;
+  font-weight: 700;
+  border-top-left-radius: 16px;
+  /* Matches parent image wrapper corner precisely */
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.offer-card-content {
+  width: 58%;
+  padding: 0 0 0 16px;
+  /* Spacious separation gap */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.offer-card-title {
+  font-family: 'Lato', sans-serif;
+  font-size: 24px;
+  /* Increased from 21px */
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 4px 0;
+  /* Slightly increased margin to accommodate larger text */
+  line-height: 1.2;
+}
+
+.offer-card-subtitle {
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  /* Increased from 14px */
+  color: #4B5563;
+  /* Darkened from #8A99AD for better readability */
+  line-height: 1.35;
+  margin: 0;
+}
+
+.offer-card-discount-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: 'Lato', sans-serif;
+}
+
+.discount-label {
+  font-family: 'Lato', sans-serif;
+  font-size: 18px;
+  /* Perfectly balanced text size */
+  font-weight: 500;
+  line-height: 26px;
+  color: #8A99AD;
+}
+
+.discount-value-highlight {
+  font-family: 'Lato', sans-serif;
+  font-size: 26px;
+  /* Perfectly balanced value size */
+  font-weight: 500;
+  line-height: 26px;
+  color: #58A429;
+}
+
+.offer-card-content .btn-villa-action {
+  height: 36px !important;
+  /* Sleek, premium CTA button */
+  font-size: 13px !important;
+  border-radius: 18px !important;
+  width: 100% !important;
+  /* Elegant full width */
+}
+

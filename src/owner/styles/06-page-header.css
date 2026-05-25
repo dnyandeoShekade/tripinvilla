@@ -1,0 +1,11 @@
+/* ══════════════════════════════════════════════
+   PAGE HEADER (inner pages)
+══════════════════════════════════════════════ */
+.page-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 40px 0;
+  margin-bottom: 16px;
+}
+.page-title { font-size: 16px; font-weight: 700; color: #111827; }
+.page-subtitle { font-size: 12px; color: #9CA3AF; margin-top: 2px; }
+

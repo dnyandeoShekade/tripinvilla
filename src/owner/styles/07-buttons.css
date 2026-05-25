@@ -1,0 +1,17 @@
+/* ══════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 8px;
+  font-size: 12.5px; font-weight: 600;
+  transition: var(--transition); cursor: pointer; font-family: inherit; border: none;
+}
+.btn svg { width: 14px; height: 14px; }
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-outline { background: transparent; color: #4B5563; border: 1px solid var(--border); }
+.btn-outline:hover { border-color: #9CA3AF; }
+.btn-ghost { background: #F3F4F6; color: #4B5563; }
+.btn-ghost:hover { background: #E5E7EB; }
+

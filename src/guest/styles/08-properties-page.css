@@ -1,0 +1,121 @@
+/* ==========================================================================
+   PROPERTIES PAGE SPECIFIC LAYOUTS & CATEGORIES BAR
+   ========================================================================== */
+.properties-page-layout {
+  width: 100%;
+  padding-top: 40px;
+  /* Reduced offset to bring category icons beautifully closer to the hero section */
+}
+
+.properties-categories-scroller {
+  width: 1280px;
+  max-width: calc(100% - 158px);
+  margin: 0 auto 30px auto;
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.properties-categories-scroller::-webkit-scrollbar {
+  height: 4px;
+}
+
+.properties-categories-scroller::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.properties-categories-inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: max-content;
+}
+
+.prop-cat-outline-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 26px;
+  background: transparent;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 16px;
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4B5563;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.prop-cat-outline-btn:hover {
+  border-color: #CBD5E1;
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.prop-cat-outline-btn.active {
+  background: rgba(88, 164, 41, 0.1);
+  /* Light green tint */
+  border: 2px solid #58A429;
+  /* Active green border */
+  color: #58A429;
+  /* Green text */
+  box-shadow: 0 4px 12px rgba(88, 164, 41, 0.15);
+}
+
+.prop-cat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 2x2 custom traits layout inside property lists */
+.property-specs-grid-2x2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 12px;
+  background: #F9FAFB;
+  padding: 14px;
+  border-radius: 16px;
+  margin: 10px 0;
+  border: 1px solid #F3F4F6;
+}
+
+.prop-spec-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Lato', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+/* Centered View More Button styling */
+.view-more-btn-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 50px auto 20px auto;
+}
+
+.btn-view-more {
+  background: #FFFFFF;
+  border: 1px solid #D1D5DB;
+  color: #374151;
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 42px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.btn-view-more:hover {
+  background: #F9FAFB;
+  border-color: #9CA3AF;
+  transform: translateY(-1px);
+}
+

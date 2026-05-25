@@ -1,0 +1,173 @@
+/* ==========================================================================
+   SECTION 3: CURATED PROPERTIES (Horizontal Grid)
+   ========================================================================== */
+.curated-properties-section {
+  width: 1440px;
+  max-width: calc(100% - 158px);
+  margin: 80px auto;
+  box-sizing: border-box;
+}
+
+.curated-viewport {
+  position: relative;
+  width: 100%;
+}
+
+.curated-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+  color: #111827;
+}
+
+.curated-arrow:hover {
+  background: #F9FAFB;
+  transform: translateY(-50%) scale(1.05);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+}
+
+.curated-arrow.left {
+  left: -22px;
+  /* Hangs off the left edge beautifully */
+}
+
+.curated-arrow.right {
+  right: -22px;
+  /* Hangs off the right edge beautifully */
+}
+
+.curated-horizontal-grid {
+  display: flex;
+  /* Flex layout to support horizontal scrolling row */
+  gap: 30px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  /* Hide scrollbar for Firefox */
+  padding: 12px 0;
+  /* Vertical breathing room for card shadows */
+  box-sizing: border-box;
+}
+
+.curated-horizontal-grid::-webkit-scrollbar {
+  display: none;
+  /* Hide scrollbar for Chrome/Safari/Edge */
+}
+
+.curated-horizontal-card {
+  background: #FFFFFF;
+  border-radius: 25px;
+  /* Dimensions provided by user */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  border: 1px solid #F3F4F6;
+  display: flex;
+  padding: 16px;
+  /* Slightly reduced padding for smaller card bounds */
+  box-sizing: border-box;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 600px;
+  /* Scaled down width for standard desktop viewports */
+  height: 300px;
+  /* Scaled down height */
+  flex-shrink: 0;
+  /* Prevent horizontal compression inside scrolling layout */
+}
+
+.curated-horizontal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+.curated-card-img-wrap {
+  position: relative;
+  width: 42%;
+  /* Optimized width for image wrap */
+  height: 100%;
+  border-radius: 18px;
+  /* Inset rounded corners */
+  overflow: hidden;
+}
+
+.curated-card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.curated-card-content {
+  width: 58%;
+  /* Expanded content width to preserve breathing room */
+  padding: 0 0 0 16px;
+  /* Spacing from image wrap */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.curated-card-title {
+  font-family: 'Lato', sans-serif;
+  font-size: 20px;
+  /* Scaled down title size */
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 2px 0;
+}
+
+.curated-card-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  /* Scaled down location size */
+  color: #8A99AD;
+  margin-bottom: 8px;
+}
+
+.curated-card-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.curated-card-price-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: 'Lato', sans-serif;
+  margin-top: 2px;
+}
+
+.curated-card-price-row .price-label {
+  font-size: 14px;
+  line-height: 24px;
+}
+
+.curated-card-price-row .price-value-highlight {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.curated-card-actions {
+  margin-top: 10px;
+}
+
+.curated-card-actions .btn-villa-action {
+  height: 40px;
+  /* More compact CTA button */
+  font-size: 14px;
+  border-radius: 20px;
+}
+

@@ -1,0 +1,13 @@
+/* ══════════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════════ */
+@media (max-width: 1200px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .charts-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 900px) {
+  :root { --main-left: 20px; }
+  .sidebar { display: none; }
+  .stats-grid { grid-template-columns: 1fr; }
+}
+

@@ -1,0 +1,126 @@
+/* ══════════════════════════════════════════════
+   SIDEBAR  — Figma exact specs: Width 297px, Height 1651px, Radius 16px
+══════════════════════════════════════════════ */
+.sidebar {
+  width: var(--sidebar-w);
+  height: 1651px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  position: absolute; /* stands tall on the page layout */
+  left: 20px;
+  top: 20px;
+  z-index: 100;
+  border-radius: 16px;
+  border: 1px solid #EAEAEA;
+  box-shadow: 0px 4px 40px 0px rgba(0, 61, 92, 0.04);
+  padding: 11px 0 24px;
+}
+
+/* Scrollbar for sidebar if content overflows */
+.sidebar::-webkit-scrollbar { width: 3px; }
+.sidebar::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 4px; }
+
+/* Logo Container */
+.sidebar-logo {
+  margin-left: 19px;
+  margin-bottom: 12px;
+}
+.sidebar-logo-img {
+  width: 192px;
+  height: 95px;
+  object-fit: contain;
+  display: block;
+}
+
+/* Mathematically Centered Divider: 22px Left, 22px Right, 253px Width */
+.sidebar-divider {
+  width: 253px;
+  height: 1px;
+  background-color: #DDDDDD;
+  margin: 16px 22px;
+  border: none;
+}
+
+/* Navigation List (Width 265px, Left 22px) */
+.sidebar-nav {
+  width: 265px;
+  margin-left: 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-section-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Section label: normal case, dark color, semi-bold */
+.sidebar-section-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+/* Nav Item Container */
+.sidebar-nav-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Nav item */
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  color: #4B5563;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  transition: var(--transition);
+  text-decoration: none;
+  position: relative;
+  white-space: nowrap;
+}
+.nav-item:hover {
+  background: #F3F4F6;
+  color: #111827;
+}
+.nav-item:hover .nav-icon {
+  color: #4B5563;
+}
+.nav-item.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 600;
+}
+.nav-item.active .nav-icon {
+  color: var(--primary);
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  background: var(--primary);
+  border-radius: 0 4px 4px 0;
+}
+.nav-icon {
+  width: 16px;
+  height: 16px;
+  color: #9CA3AF;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+.nav-icon svg {
+  width: 15px;
+  height: 15px;
+}

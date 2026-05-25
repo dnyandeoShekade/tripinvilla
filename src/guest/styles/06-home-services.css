@@ -1,0 +1,183 @@
+/* ==========================================================================
+   SECTION 5: WHY CHOOSE OUR SERVICES (Soft pale green, asymmetric grid)
+   ========================================================================== */
+.services-section {
+  width: 100%;
+  background-color: #EBFADE;
+  /* Beautiful soft pale green background */
+  padding: 60px 0 100px 0;
+  /* Expanded bottom padding to connect seamlessly with footer */
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.services-inner-container {
+  width: 1440px;
+  max-width: calc(100% - 158px);
+  margin: 0 auto;
+}
+
+.services-grid-asym {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 40px;
+  min-height: 696.27px;
+  /* Exact Figma height */
+  height: auto;
+}
+
+.services-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24.6px;
+  height: 100%;
+}
+
+.services-col-center {
+  height: 100%;
+}
+
+.service-text-card {
+  border-radius: 23.49px;
+  /* Exact Figma border radius */
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 226.6px;
+  /* Proportionate text card height */
+  min-height: 226.6px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.service-text-card.white-bg {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+  justify-content: flex-start;
+  gap: 16px;
+  height: auto;
+  min-height: 0;
+}
+
+.service-text-card.transparent-bg {
+  background: transparent;
+  justify-content: flex-start;
+  gap: 12px;
+  padding-left: 8px;
+  height: auto;
+  min-height: 0;
+}
+
+.service-card-desc {
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  color: #4B5563;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.service-card-accent-title {
+  font-family: 'Lato', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #E65100;
+  margin: 0 0 4px 0;
+}
+
+.service-card-bold-sub {
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 12px 0;
+}
+
+.service-card-desc-light {
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+  color: #4B5563;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.service-card-subtext {
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+}
+
+.service-image-card {
+  position: relative;
+  height: 445.67px;
+  /* Exact Figma image height */
+  min-height: 445.67px;
+  flex-shrink: 0;
+  border-radius: 23.49px;
+  /* Exact Figma border radius */
+  overflow: hidden;
+}
+
+.service-image-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  transition: transform 0.3s ease;
+}
+
+.service-image-card:hover img {
+  transform: scale(1.03);
+}
+
+.service-tall-card {
+  height: 696.27px;
+  /* Exact Figma center image height */
+  min-height: 696.27px;
+  flex-shrink: 0;
+  border-radius: 23.49px;
+  /* Exact Figma border radius */
+  overflow: hidden;
+}
+
+.service-tall-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  /* Preserves the traveler's face and hat perfectly */
+}
+
+
+.service-overlay-badge-bottom {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(8px);
+  padding: 8px 18px;
+  border-radius: 100px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #FFFFFF;
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.service-icon-circle-overlay {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
