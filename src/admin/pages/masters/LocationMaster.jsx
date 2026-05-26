@@ -31,7 +31,18 @@ export default function LocationMaster() {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/locations`);
       const data = await res.json();
-      if (Array.isArray(data)) setLocations(data);
+      if (Array.isArray(data)) {
+        const mapped = data.map(loc => ({
+          ...loc,
+          landmarks: (loc.landmarks || []).map(l => ({
+            _id: l._id,
+            landmarkName: l.name || l.landmarkName || '',
+            landmarkPopularity: l.popularity || l.landmarkPopularity || 'Tourist Popular',
+            landmarkImageUrl: (l.images && l.images[0]) || l.landmarkImageUrl || 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=100&q=80'
+          }))
+        }));
+        setLocations(mapped);
+      }
     } catch (err) {
       console.error('Error fetching locations:', err);
     } finally {

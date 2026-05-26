@@ -121,7 +121,7 @@
   color: #6B7280;
   font-size: 14px;
   background: #fff;
-  pointer-events: none;
+  pointer-events: auto;
 }
 .btn-browse {
   padding: 10px 20px;

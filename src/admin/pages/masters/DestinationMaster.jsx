@@ -23,6 +23,8 @@ export default function DestinationMaster() {
   const [viewMode, setViewMode] = useState('grid');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [filePreviewUrl, setFilePreviewUrl] = useState('');
 
   const fetchData = async () => {
     setLoading(true);
@@ -84,24 +86,31 @@ export default function DestinationMaster() {
     }
 
     try {
-      const payload = {
-        ...formData,
-        coverImageUrl: formData.coverImageUrl || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80'
-      };
+      const dataToSend = new FormData();
+      dataToSend.append('destinationName', formData.destinationName);
+      dataToSend.append('stateId', formData.stateId);
+      dataToSend.append('countryId', formData.countryId);
+      dataToSend.append('description', formData.description);
+      dataToSend.append('status', formData.status);
+      dataToSend.append('propertyTypesOffered', JSON.stringify(formData.propertyTypesOffered));
+
+      if (selectedFile) {
+        dataToSend.append('coverImage', selectedFile);
+      } else {
+        dataToSend.append('coverImageUrl', formData.coverImageUrl || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=400&q=80');
+      }
 
       if (isEditing) {
         const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/destinations/${formData.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: dataToSend
         });
         if (res.ok) fetchData();
         setIsEditing(false);
       } else {
         const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/destinations`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: dataToSend
         });
         if (res.ok) fetchData();
       }
@@ -116,6 +125,8 @@ export default function DestinationMaster() {
         description: '',
         status: 'Active'
       });
+      setSelectedFile(null);
+      setFilePreviewUrl('');
     } catch (err) {
       console.error('Error submitting destination:', err);
     }
@@ -132,6 +143,8 @@ export default function DestinationMaster() {
       description: destObj.description || '',
       status: destObj.status || 'Active'
     });
+    setSelectedFile(null);
+    setFilePreviewUrl(destObj.coverImageUrl || '');
     setIsEditing(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -241,15 +254,51 @@ export default function DestinationMaster() {
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', marginBottom: 20 }}>
             <div className="form-group">
-              <label className="form-label">Cover Image URL</label>
-              <input 
-                type="text" 
-                name="coverImageUrl"
-                value={formData.coverImageUrl}
-                onChange={handleChange}
-                placeholder="Paste destination image URL..." 
-                className="form-input"
-              />
+              <label className="form-label">
+                Cover Image <span style={{ color: '#6B7280', fontSize: 11, fontWeight: 400, marginLeft: 4 }}>(Upload image or paste URL)</span>
+              </label>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <div className="file-upload-wrapper" style={{ flex: 1 }}>
+                  <input 
+                    type="file" 
+                    accept=".jpg,.jpeg,.png"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (!file) return;
+                      if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB.');
+                        e.target.value = '';
+                        return;
+                      }
+                      setSelectedFile(file);
+                      setFilePreviewUrl(URL.createObjectURL(file));
+                    }}
+                    className="file-upload-input" 
+                    style={{ padding: '8px' }}
+                  />
+                </div>
+                <input 
+                  type="text" 
+                  name="coverImageUrl"
+                  value={formData.coverImageUrl}
+                  onChange={(e) => {
+                    handleChange(e);
+                    if (e.target.value) {
+                      setSelectedFile(null);
+                      setFilePreviewUrl(e.target.value);
+                    }
+                  }}
+                  placeholder="Or paste image URL..." 
+                  className="form-input"
+                  style={{ flex: 1 }}
+                />
+              </div>
+              {filePreviewUrl && (
+                <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <img src={filePreviewUrl} alt="preview" style={{ width: 44, height: 32, objectFit: 'cover', borderRadius: 4, border: '1px solid #E5E7EB' }} />
+                  <span style={{ fontSize: 11, color: '#6B7280' }}>Image Preview</span>
+                </div>
+              )}
             </div>
 
             <div className="form-group">

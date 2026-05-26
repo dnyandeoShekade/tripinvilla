@@ -113,15 +113,14 @@
   font-size: 13px;
   color: #6B7280;
   background: transparent;
-}
-.file-upload-input {
+}.file-upload-input {
   flex: 1;
   padding: 12px 16px;
   border: none;
   color: #6B7280;
   font-size: 14px;
   background: #fff;
-  pointer-events: none;
+  pointer-events: auto;
 }
 .btn-browse {
   padding: 10px 20px;
