@@ -557,7 +557,8 @@ export default function PropertyMakers() {
   };
 
   return (
-    <div className="fade-in">
+    <>
+      <div className="fade-in">
       {/* Breadcrumb */}
       <div className="props-breadcrumb" style={{ margin: "0 39px 12px" }}>
         Masters &gt; <span>Property Masters</span>
@@ -2025,5 +2026,6 @@ export default function PropertyMakers() {
         onClose={() => setManagingRoomsProperty(null)}
       />
     )}
+    </>
   );
 }
