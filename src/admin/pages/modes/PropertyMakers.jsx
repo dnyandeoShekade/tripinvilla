@@ -63,7 +63,7 @@ export default function PropertyMakers() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
   const [roomsList, setRoomsList] = useState([]);
-  const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
+  const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
   const fileInputRef = React.useRef(null);
 
   // Amenities list
@@ -407,7 +407,7 @@ export default function PropertyMakers() {
     setManualLocation({ country: false, state: false, city: false, area: false });
     setManualValues({ country: '', state: '', city: '', area: '' });
     setExistingImages([]); setRoomsList([]);
-    setRoomForm({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
+    setRoomForm({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
     setSelectedFiles([]); setLandmarksList([]);
     if (fileInputRef.current) fileInputRef.current.value = "";
     setIsEditing(false);
@@ -1510,7 +1510,10 @@ export default function PropertyMakers() {
               </div>
               <div className="form-group">
                 <label className="form-label">Room Name*</label>
-                <input type="text" className="form-input" value={roomForm.roomName} onChange={e => setRoomForm(p => ({ ...p, roomName: e.target.value }))} placeholder="e.g. Sea View Deluxe" />
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <input type="text" className="form-input" value={roomForm.roomName} onChange={e => setRoomForm(p => ({ ...p, roomName: e.target.value }))} placeholder="e.g. Sea View Deluxe" />
+                  <input type="text" className="form-input" value={roomForm.imageUrl || ''} onChange={e => setRoomForm(p => ({ ...p, imageUrl: e.target.value }))} placeholder="Image URL (Optional)" />
+                </div>
               </div>
               <div className="form-group">
                 <label className="form-label">Bed Type*</label>
@@ -1572,7 +1575,7 @@ export default function PropertyMakers() {
                   if (!roomForm.roomName.trim() || !roomForm.pricePerNight) { alert('Please fill Room Name and Price.'); return; }
                   const amenArr = (roomForm.amenitiesText || '').split(',').map(a => a.trim()).filter(Boolean);
                   setRoomsList(prev => [...prev, { ...roomForm, amenities: amenArr, pricePerNight: Number(roomForm.pricePerNight), maxGuests: Number(roomForm.maxGuests), count: Number(roomForm.count) }]);
-                  setRoomForm({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], amenitiesText: '', checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
+                  setRoomForm({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], amenitiesText: '', checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
                 }}
                 style={{ padding: '10px 32px', background: '#58A429', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 600 }}>
                 + Add Room
@@ -1585,7 +1588,7 @@ export default function PropertyMakers() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                   <thead>
                     <tr style={{ background: '#F3F4F6' }}>
-                      {['Room Name', 'Type', 'Bed', 'Amenities', 'Price/Night', 'Check-in', 'Check-out', 'Offer', 'Guests', 'Count', ''].map(h => (
+                      {['Room Image', 'Room Name', 'Type', 'Bed', 'Amenities', 'Price/Night', 'Check-in', 'Check-out', 'Offer', 'Guests', 'Count', ''].map(h => (
                         <th key={h} style={{ padding: '8px 12px', textAlign: 'left', color: '#6B7280', fontWeight: 500, whiteSpace: 'nowrap' }}>{h}</th>
                       ))}
                     </tr>
@@ -1593,6 +1596,9 @@ export default function PropertyMakers() {
                   <tbody>
                     {roomsList.map((room, idx) => (
                       <tr key={idx} style={{ borderTop: '1px solid #E5E7EB' }}>
+                        <td style={{ padding: '8px 12px' }}>
+                          {room.imageUrl ? <img src={room.imageUrl} alt="Room" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} /> : <span style={{ color: '#9CA3AF', fontSize: 11 }}>No Image</span>}
+                        </td>
                         <td style={{ padding: '8px 12px', fontWeight: 600, color: '#58A429' }}>{room.roomName || room.roomType}</td>
                         <td style={{ padding: '8px 12px', color: '#374151' }}>{room.roomType}</td>
                         <td style={{ padding: '8px 12px', color: '#6B7280' }}>{room.bedType}</td>

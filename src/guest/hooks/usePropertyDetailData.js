@@ -60,6 +60,29 @@ export default function usePropertyDetailData({ API_BASE, selectedProperty }) {
         .then((data) => {
           if (data && data._id) {
             setFullPropertyDetail(data);
+            // Fallback: if PropertyRequests returned no rooms, use Property.rooms array
+            if (Array.isArray(data.rooms) && data.rooms.length > 0) {
+              setPropertyRooms(prev => {
+                if (prev && prev.length > 0) return prev; // PropertyRequests already found
+                return data.rooms.map((r, i) => ({
+                  _id: r._id || `room-${i}`,
+                  room_type: r.roomType || r.roomName || 'Standard Room',
+                  roomName: r.roomName || r.roomType || 'Standard Room',
+                  bed_type: r.bedType || '2 Beds',
+                  amenities_types: Array.isArray(r.amenities) ? r.amenities : (r.amenitiesText ? r.amenitiesText.split(',').map(a => a.trim()) : []),
+                  price_per_room: r.pricePerNight || 0,
+                  original_price: r.pricePerNight ? Math.round(r.pricePerNight * 1.2) : 0,
+                  checkin_time: r.checkIn || data.checkIn || '3:00 PM',
+                  checkout_time: r.checkOut || data.checkOut || '12:00 PM',
+                  offers: r.offer ? [r.offer] : [],
+                  room_image_url: r.imageUrl || r.image || r.room_image_url || '',
+                  guests: r.maxGuests ? `${r.maxGuests} Person${r.maxGuests > 1 ? 's' : ''}` : '2 Persons',
+                  rooms: r.count ? `${r.count} Room${r.count > 1 ? 's' : ''}` : '1 Room',
+                  rules: r.rules ? [{ title: 'Property Rules', points: r.rules.split('\n').filter(Boolean) }] : [],
+                  features: Array.isArray(r.amenities) ? r.amenities : [],
+                }));
+              });
+            }
           }
         })
         .catch((err) => console.error('Error fetching full details:', err));
