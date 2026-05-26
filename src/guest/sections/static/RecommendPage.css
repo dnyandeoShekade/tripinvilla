@@ -1,9 +1,289 @@
 /* ==========================================================================
-   RECOMMEND PAGE
-   Source: 15-recommend.css
-   ========================================================================== */
+   RECOMMENDED BY US PAGE STYLING
+   ========================================================================= */
+.recommend-page-wrapper {
+  background-color: #FCF9EA;
+  padding-top: 0;
+  padding-bottom: 80px;
+}
 
-/* All styles for this page live in the global:
-   src/guest/styles/15-recommend.css
+.recommend-main-container {
+  width: 1280px;
+  max-width: calc(100% - 160px);
+  margin: 80px auto 0 auto;
+}
 
-   Add any RecommendPage-specific overrides below: */
+.recommend-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.recommend-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.recommend-header-title {
+  font-family: 'Lato', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.recommend-header-sub {
+  font-family: 'Lato', sans-serif;
+  font-size: 14.5px;
+  color: #6B7280;
+  margin: 0;
+}
+
+.recommend-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  padding: 8px 18px 8px 10px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-family: 'Lato', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  color: #374151;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
+}
+
+.recommend-filter-btn:hover {
+  border-color: #58A429;
+  transform: translateY(-1px);
+}
+
+.filter-icon-circle-green {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #58A429;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recommend-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 30px;
+}
+
+.recommend-property-card {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 25px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.005);
+  box-sizing: border-box;
+}
+
+.recommend-property-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.035);
+}
+
+.recommend-card-img-wrap {
+  width: 100%;
+  height: 250px;
+  border-radius: 18px;
+  overflow: hidden;
+  position: relative;
+}
+
+.recommend-card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.recommend-heart-circle {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(4px);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  z-index: 5;
+}
+
+.recommend-heart-circle:hover {
+  transform: scale(1.08);
+  background: rgba(0, 0, 0, 0.32);
+}
+
+.recommend-heart-circle.liked {
+  background: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.18);
+}
+
+.recommend-card-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.recommend-card-name-text {
+  font-family: 'Lato', sans-serif;
+  font-size: 21px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.recommend-card-location-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Lato', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #9CA3AF;
+}
+
+.recommend-specs-2x2-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 12px 14px;
+  border-top: 1px solid #F3F4F6;
+  border-bottom: 1px solid #F3F4F6;
+  padding: 14px 0;
+  margin: 4px 0;
+}
+
+.recommend-spec-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Lato', sans-serif;
+  font-size: 12.5px;
+  color: #4B5563;
+  font-weight: 500;
+}
+
+.recommend-card-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.rating-badge-green {
+  background: #58A429;
+  color: #FFFFFF;
+  font-size: 13.5px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  line-height: 1;
+  display: inline-block;
+}
+
+.rating-text-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1F2937;
+  line-height: 1.2;
+}
+
+.rating-text-reviews {
+  font-size: 12px;
+  color: #9CA3AF;
+  line-height: 1.2;
+}
+
+.recommend-price-tag-row {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: 'Lato', sans-serif;
+  font-size: 13.5px;
+  color: #6B7280;
+  margin-top: 4px;
+}
+
+.price-green-bold {
+  font-size: 19px;
+  font-weight: 700;
+  color: #58A429;
+}
+
+.recommend-actions-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.recommend-details-btn-blue {
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary-blue);
+  background: #FFFFFF;
+  border: 1px solid var(--primary-blue);
+  border-radius: 12px;
+  height: 42px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  width: 100%;
+}
+
+.recommend-details-btn-blue:hover {
+  background: var(--primary-blue);
+  color: #FFFFFF;
+}
+
+.recommend-contact-btn-green, .recommend-owner-btn-green {
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #58A429;
+  background: #FFFFFF;
+  border: 1px solid #58A429;
+  border-radius: 12px;
+  height: 42px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  width: 100%;
+}
+
+.recommend-contact-btn-green:hover, .recommend-owner-btn-green:hover {
+  background: #58A429;
+  color: #FFFFFF;
+}
+
+
+

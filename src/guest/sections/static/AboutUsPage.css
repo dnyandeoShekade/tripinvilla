@@ -1,9 +1,333 @@
 /* ==========================================================================
-   ABOUT US PAGE
-   Source: 12-about-us.css
+   ABOUT US PAGE STYLING
    ========================================================================== */
+.about-page-layout {
+  background-color: #FCF9EA;
+  padding-bottom: 20px;
+}
 
-/* All styles for this page live in the global:
-   src/guest/styles/12-about-us.css
+.about-main-wrapper {
+  width: 1280px;
+  max-width: calc(100% - 160px);
+  margin: 80px auto 0 auto;
+}
 
-   Add any AboutUsPage-specific overrides below: */
+.about-split-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 50px 1fr;
+  grid-gap: 20px;
+  align-items: center;
+}
+
+.about-vertical-line {
+  width: 17.45px;
+  height: 210.18px;
+  background-color: #0C6DC4;
+  justify-self: center;
+  align-self: start;
+  margin-top: 10px;
+}
+
+.about-left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.about-main-hdr {
+  font-family: 'Lato', sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.about-desc-p {
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+  color: #4B5563;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.about-bullets-row {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.about-bullet-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Lato', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.about-mission-block {
+  display: flex;
+  gap: 18px;
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 20px;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.01);
+}
+
+.green-circle-icon-wrap {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #EBFDF2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.mission-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mission-texts h5 {
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.mission-texts p {
+  font-family: 'Lato', sans-serif;
+  font-size: 14px;
+  color: #6B7280;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.about-right-col {
+  position: relative;
+  width: 525px;
+  /* Exact Figma width spec */
+}
+
+.about-master-image-box {
+  width: 525px;
+  /* Exact Figma width spec */
+  height: 672px;
+  /* Exact Figma height spec: 672.73px scaled down */
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.04);
+}
+
+.about-master-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.about-blue-badge-card {
+  position: absolute;
+  bottom: 50px;
+  left: -40px;
+  /* Overlaps elegantly to the left of the image container as seen in Figma */
+  width: 250px;
+  /* Narrower, more premium vertical box */
+  height: 230px;
+  /* Vertically balanced height */
+  background: var(--primary-blue);
+  padding: 32px;
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  /* Vertically center badge content */
+  gap: 12px;
+  z-index: 5;
+  border-radius: 12px;
+  /* Smooth card border radii */
+  box-shadow: 0 15px 35px rgba(12, 109, 196, 0.35);
+  /* Tailored brand-blue glow */
+}
+
+.about-badge-title {
+  font-family: 'Lato', sans-serif;
+  font-weight: 800;
+  font-size: 52px;
+  /* Expanded for high visual hierarchy */
+  line-height: 1;
+  letter-spacing: -1.5px;
+  margin: 0;
+}
+
+.about-badge-sub {
+  font-family: 'Lato', sans-serif;
+  font-weight: 600;
+  font-size: 14.5px;
+  line-height: 145%;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+/* Testimonials section horizontal styling */
+.testimonials-horizontal-cards-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 24px;
+  /* Slightly wider, premium gap */
+  margin-top: 40px;
+}
+
+.testimonial-card-item {
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 24px;
+  /* Fluid rounded corners */
+  padding: 32px;
+  /* Generous, cozy padding */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  height: 440px;
+  /* Tall elegant vertical cards */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.015);
+  box-sizing: border-box;
+}
+
+.testimonial-card-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+.testimonial-card-item.image-cover-mode {
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  height: 440px;
+  /* Perfect matching height */
+}
+
+.testimonial-card-item.image-cover-mode img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-cover-tint-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.85));
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 32px;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.play-btn-circle-large {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.play-btn-circle-large:hover {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.cover-mode-signature-title {
+  font-family: 'Dancing Script', cursive;
+  /* Signature cursive name */
+  font-size: 28px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.cover-mode-signature-role {
+  font-family: 'Lato', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 4px 0 0 0;
+  line-height: 1.3;
+}
+
+.testimonial-author-avatar-top {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 24px;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  flex-shrink: 0;
+}
+
+.testimonial-author-avatar-top img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.testimonial-card-quote {
+  font-family: 'Lato', sans-serif;
+  font-size: 14.5px;
+  color: #4B5563;
+  line-height: 165%;
+  margin: 0 0 24px 0;
+  flex-grow: 1;
+  /* Maximizes inner flex layout vertical flow */
+}
+
+.testimonial-footer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  width: 100%;
+  border-top: 1px solid #F3F4F6;
+  padding-top: 18px;
+}
+
+.author-name-signature {
+  font-family: 'Dancing Script', cursive;
+  /* Exquisite brand-defining handwriting */
+  font-size: 25px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+
+.author-role-text {
+  font-family: 'Lato', sans-serif;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #9CA3AF;
+  margin: 0;
+  line-height: 1.3;
+}
+

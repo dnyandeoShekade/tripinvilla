@@ -14,7 +14,12 @@ export default function PropertyOwned() {
   const fetchOwners = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE}/owners`);
+      const params = new URLSearchParams();
+      if (searchQuery) params.append("search", searchQuery);
+      if (propertyType) params.append("type", propertyType);
+      if (dateFrom) params.append("date", dateFrom);
+
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/owners?${params.toString()}`);
       const data = await res.json();
       if (data && data.owners) {
         setOwners(data.owners);
@@ -55,11 +60,7 @@ export default function PropertyOwned() {
     }
   };
 
-  const filteredOwners = owners.filter(o => 
-    (o.ownerName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (o.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (o.contactNo || '').toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredOwners = owners;
 
   return (
     <div className="fade-in">
