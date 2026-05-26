@@ -62,6 +62,13 @@ export default function useGuestAuth({ API_BASE, API_ORIGIN, setActiveMenu }) {
     }
   }, []);
 
+  useEffect(() => {
+    if (token && token !== 'fake_token_for_user') {
+      fetchProfileAndEnquiries(token);
+    }
+  }, []); // Run once on mount if token exists
+
+
   const openAuthModal = (mode = 'login') => {
     setAuthMode(mode);
     setAuthModalOpen(true);

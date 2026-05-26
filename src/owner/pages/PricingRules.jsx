@@ -347,7 +347,7 @@ export default function PricingRules() {
             </div>
 
             {/* Row 4: Full width Textarea */}
-            <div className="form-grid-1" style={{ marginBottom: 0 }}>
+            <div className="form-grid-1" style={{ marginBottom: '24px' }}>
               <div className="form-group">
                 <label className="form-label" style={{ fontFamily: '"Outfit", sans-serif' }}>Rules &amp; Regulations*</label>
                 <textarea 
@@ -360,6 +360,31 @@ export default function PricingRules() {
                   required
                 />
               </div>
+            </div>
+
+            {/* Bottom Form Actions */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px' }}>
+              {editId && (
+                <button type="button" onClick={resetForm} style={{ padding: '10px 24px', fontSize: '13px', border: '1px solid #E5E7EB', borderRadius: '8px', cursor: 'pointer', background: '#fff', fontFamily: '"Outfit", sans-serif' }}>Cancel</button>
+              )}
+              <button 
+                type="submit" 
+                disabled={loading}
+                style={{ 
+                  background: '#58A429', 
+                  color: '#ffffff', 
+                  borderRadius: '8px', 
+                  padding: '10px 32px', 
+                  fontWeight: 600, 
+                  fontSize: '13px', 
+                  border: 'none', 
+                  cursor: 'pointer',
+                  fontFamily: '"Outfit", sans-serif',
+                  boxShadow: '0 2px 8px rgba(88, 164, 41, 0.2)'
+                }}
+              >
+                {loading ? 'Saving...' : (editId ? 'Update Rule' : 'Add Rule')}
+              </button>
             </div>
           </form>
         </div>

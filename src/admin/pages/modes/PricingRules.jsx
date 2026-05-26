@@ -105,7 +105,7 @@ export default function PricingRules() {
           </div>
 
           {/* Row 4: Full width Textarea */}
-          <div className="form-grid-1" style={{ marginBottom: 0 }}>
+          <div className="form-grid-1" style={{ marginBottom: 24 }}>
             <div className="form-group">
               <label className="form-label">Rules &amp; Regulations*</label>
               <textarea 
@@ -114,6 +114,10 @@ export default function PricingRules() {
                 defaultValue={"Must Read Rules\n• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s)"}
               ></textarea>
             </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: '12px' }}>
+            <button className="btn-solid-green" style={{ padding: '10px 32px' }}>Add Rule</button>
           </div>
         </div>
       </div>
