@@ -1,5 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MapPin, Edit2, Trash2, Search, Plus, X, AlertTriangle } from 'lucide-react';
+
+const API = import.meta.env.VITE_API_BASE;
+const UPLOADS_BASE = API.replace('/api', '');
+
+const getImgUrl = (url) => {
+  if (!url) return '';
+  if (url.startsWith('http') || url.startsWith('blob')) return url;
+  return `${UPLOADS_BASE}${url}`;
+};
 
 export default function LocationMaster() {
   const [locations, setLocations] = useState([]);
@@ -19,7 +28,9 @@ export default function LocationMaster() {
 
   const [currentLandmarkName, setCurrentLandmarkName] = useState('');
   const [currentLandmarkPop, setCurrentLandmarkPop] = useState('Tourist Popular');
-  const [currentLandmarkImg, setCurrentLandmarkImg] = useState('');
+  const [currentLandmarkFile, setCurrentLandmarkFile] = useState(null);
+  const [currentLandmarkPreview, setCurrentLandmarkPreview] = useState('');
+  const landmarkFileRef = useRef(null);
 
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -64,34 +75,49 @@ export default function LocationMaster() {
       alert('Please provide a landmark name.');
       return;
     }
-    const newL = {
-      landmarkName: currentLandmarkName,
-      landmarkPopularity: currentLandmarkPop,
-      landmarkImageUrl: currentLandmarkImg || 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=100&q=80'
-    };
-    
+
+    let imgUrl = '';
+    // If editing an existing location, upload directly via API
     if (isEditing && formData.id) {
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/locations/${formData.id}/landmarks`, {
+        const uploadForm = new FormData();
+        uploadForm.append('landmarkName', currentLandmarkName);
+        uploadForm.append('landmarkPopularity', currentLandmarkPop);
+        if (currentLandmarkFile) uploadForm.append('landmarkImage', currentLandmarkFile);
+        const res = await fetch(`${API}/admin/locations/${formData.id}/landmarks`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(newL)
+          body: uploadForm
         });
         if (res.ok) {
           const addedL = await res.json();
           setLandmarks(prev => [...prev, addedL]);
-          fetchLocations(); // Refresh data table
+          fetchLocations();
+        } else {
+          const e = await res.json();
+          alert('Error adding landmark: ' + e.message);
         }
       } catch (err) {
-        console.error('Error adding landmark directly:', err);
+        console.error('Error adding landmark:', err);
+        alert('Error adding landmark');
       }
     } else {
+      // Not editing: store the file locally, upload later with parent location
+      const newL = {
+        landmarkName: currentLandmarkName,
+        landmarkPopularity: currentLandmarkPop,
+        landmarkImageUrl: currentLandmarkPreview,
+        _file: currentLandmarkFile  // keep the file ref for later upload
+      };
       setLandmarks(prev => [...prev, newL]);
     }
-    
+
     setCurrentLandmarkName('');
-    setCurrentLandmarkImg('');
+    setCurrentLandmarkPop('Tourist Popular');
+    setCurrentLandmarkFile(null);
+    setCurrentLandmarkPreview('');
+    if (landmarkFileRef.current) landmarkFileRef.current.value = '';
   };
+
 
   const handleRemoveLandmark = async (index) => {
     const land = landmarks[index];
@@ -116,38 +142,54 @@ export default function LocationMaster() {
     }
 
     try {
-      const payload = { ...formData, landmarks };
+      const dataToSend = new FormData();
+      dataToSend.append('locationName', formData.locationName);
+      dataToSend.append('locationType', formData.locationType);
+      dataToSend.append('parentLocationHierarchy', formData.parentLocationHierarchy);
+      dataToSend.append('aboutLocation', formData.aboutLocation || '');
+      dataToSend.append('status', formData.status);
 
+      // Serialize landmarks (without _file refs)
+      const landmarksMeta = landmarks.map(l => ({
+        landmarkName: l.landmarkName,
+        landmarkPopularity: l.landmarkPopularity,
+        landmarkImageUrl: (l.landmarkImageUrl && !l.landmarkImageUrl.startsWith('blob:')) ? l.landmarkImageUrl : ''
+      }));
+      dataToSend.append('landmarks', JSON.stringify(landmarksMeta));
+
+      // Append actual image files for each landmark that has one
+      landmarks.forEach(l => {
+        if (l._file) dataToSend.append('landmarkImages', l._file);
+      });
+
+      let res;
       if (isEditing) {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/locations/${formData.id}`, {
+        res = await fetch(`${API}/admin/locations/${formData.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: dataToSend
         });
-        if (res.ok) fetchLocations();
         setIsEditing(false);
       } else {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/locations`, {
+        res = await fetch(`${API}/admin/locations`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: dataToSend
         });
-        if (res.ok) fetchLocations();
       }
 
-      setFormData({
-        id: '',
-        locationName: '',
-        locationType: 'City',
-        parentLocationHierarchy: '',
-        aboutLocation: '',
-        status: 'Active'
-      });
-      setLandmarks([]);
+      if (res.ok) {
+        fetchLocations();
+        setFormData({ id: '', locationName: '', locationType: 'City', parentLocationHierarchy: '', aboutLocation: '', status: 'Active' });
+        setLandmarks([]);
+      } else {
+        const err = await res.json();
+        alert('Error saving location: ' + (err.message || 'Unknown error'));
+      }
     } catch (err) {
       console.error('Error submitting location:', err);
+      alert('Error saving location');
     }
   };
+
 
   const handleEdit = (locObj) => {
     setFormData({
@@ -276,34 +318,27 @@ export default function LocationMaster() {
               </div>
               <div className="form-group">
                 <label className="form-label">
-                  Landmark Images* <span style={{ color: '#EF4444', fontSize: 11, fontWeight: 400, marginLeft: 4 }}>Supported File: .jpg / max. 5mb</span>
+                  Landmark Image <span style={{ color: '#EF4444', fontSize: 11, fontWeight: 400, marginLeft: 4 }}>Supported: .jpg/.png / max. 5mb</span>
                 </label>
-                <div className="file-upload-wrapper">
-                  <input 
-                    type="file" 
-                    accept=".jpg,.jpeg"
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (!file) return;
-                      if (!file.type.match('image/jpeg')) {
-                        alert('Only JPG images are supported.');
-                        e.target.value = '';
-                        return;
-                      }
-                      if (file.size > 5 * 1024 * 1024) {
-                        alert('File size must be less than 5MB.');
-                        e.target.value = '';
-                        return;
-                      }
-                      // For demonstration without an upload endpoint, we'll create a local object URL
-                      const fileUrl = URL.createObjectURL(file);
-                      setCurrentLandmarkImg(fileUrl);
-                    }}
-                    className="file-upload-input" 
-                    style={{ padding: '8px' }}
-                  />
-                </div>
+                <input 
+                  type="file" 
+                  ref={landmarkFileRef}
+                  accept="image/jpeg,image/png,image/jpg"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    if (file.size > 5 * 1024 * 1024) { alert('File size must be less than 5MB.'); e.target.value = ''; return; }
+                    setCurrentLandmarkFile(file);
+                    setCurrentLandmarkPreview(URL.createObjectURL(file));
+                  }}
+                  className="file-upload-input" 
+                  style={{ padding: '8px' }}
+                />
+                {currentLandmarkPreview && (
+                  <img src={currentLandmarkPreview} alt="preview" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 6, marginTop: 6 }} />
+                )}
               </div>
+
             </div>
 
             <div style={{ display: 'flex', marginTop: 12 }}>
@@ -322,9 +357,11 @@ export default function LocationMaster() {
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginTop: 16 }}>
                 {landmarks.map((land, idx) => (
                   <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#fff', padding: '6px 12px', borderRadius: '8px', border: '1px solid #E5E7EB', boxShadow: '0 1px 2px rgba(0,0,0,0.03)' }}>
-                    <div style={{ width: 24, height: 24, borderRadius: 4, overflow: 'hidden' }}>
-                      <img src={land.landmarkImageUrl} alt="land" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
+                    {(land.landmarkImageUrl || (land.images && land.images[0])) && (
+                      <div style={{ width: 24, height: 24, borderRadius: 4, overflow: 'hidden', flexShrink: 0 }}>
+                        <img src={getImgUrl(land.landmarkImageUrl || (land.images && land.images[0]))} alt="land" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                    )}
                     <div style={{ textAlign: 'left', lineHeight: 1.1 }}>
                       <p style={{ fontSize: '11px', fontWeight: 700, color: '#111827', margin: 0 }}>{land.landmarkName}</p>
                       <span style={{ fontSize: '9px', color: '#9CA3AF' }}>{land.landmarkPopularity}</span>
@@ -435,9 +472,14 @@ export default function LocationMaster() {
                             style={{ width: 24, height: 24, borderRadius: '50%', overflow: 'hidden', border: '2px solid #fff', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', marginLeft: i > 0 ? -8 : 0 }}
                             title={`${l.landmarkName} (${l.landmarkPopularity})`}
                           >
-                            <img src={l.landmarkImageUrl} alt={l.landmarkName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            {l.landmarkImageUrl ? (
+                              <img src={getImgUrl(l.landmarkImageUrl)} alt={l.landmarkName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            ) : (
+                              <div style={{ width: '100%', height: '100%', background: '#E5E7EB', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>📍</div>
+                            )}
                           </div>
                         ))}
+
                         <span style={{ fontSize: '11px', color: '#9CA3AF', fontWeight: 'bold', marginLeft: 6 }}>({loc.landmarks?.length || 0})</span>
                       </div>
                     </td>

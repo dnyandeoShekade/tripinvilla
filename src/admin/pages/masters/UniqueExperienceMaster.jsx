@@ -76,14 +76,26 @@ export default function UniqueExperienceMaster() {
           method: 'PUT',
           body: dataToSend
         });
-        if (res.ok) fetchExperiences();
-        setIsEditing(false);
+        if (res.ok) {
+          fetchExperiences();
+          setIsEditing(false);
+        } else {
+          const err = await res.json();
+          alert('Error updating experience: ' + (err.message || 'Unknown error'));
+          return;
+        }
       } else {
         const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/experiences`, {
           method: 'POST',
           body: dataToSend
         });
-        if (res.ok) fetchExperiences();
+        if (res.ok) {
+          fetchExperiences();
+        } else {
+          const err = await res.json();
+          alert('Error adding experience: ' + (err.message || 'Unknown error'));
+          return;
+        }
       }
 
       setFormData({

@@ -21,13 +21,18 @@ export default function StateMaster() {
 
   const fetchCountries = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/countries/active`);
-      const data = await res.json();
-      if (Array.isArray(data)) {
+      // Try admin/countries/active first, then fall back to masters/countries
+      let res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/countries/active`);
+      let data = await res.json();
+      if (!Array.isArray(data) || data.length === 0) {
+        // Try alternative endpoint
+        res = await fetch(`${import.meta.env.VITE_API_BASE}/masters/countries`);
+        data = await res.json();
+      }
+      if (Array.isArray(data) && data.length > 0) {
         setCountries(data);
-        if (data.length > 0 && !formData.countryId) {
-          setFormData(prev => ({ ...prev, countryId: data[0]._id }));
-        }
+        // Only auto-select if no country is selected yet
+        setFormData(prev => ({ ...prev, countryId: prev.countryId || data[0]._id }));
       }
     } catch (err) {
       console.error('Error fetching countries:', err);
@@ -176,16 +181,23 @@ export default function StateMaster() {
 
             <div className="form-group">
               <label className="form-label">Associated Country*</label>
-              <select 
-                name="countryId"
-                value={formData.countryId}
-                onChange={handleChange}
-                className="form-select"
-              >
-                {countries.map(c => (
-                  <option key={c._id} value={c._id}>{c.countryName}</option>
-                ))}
-              </select>
+              {countries.length === 0 ? (
+                <div style={{ padding: '10px', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '8px', fontSize: '12px', color: '#EF4444' }}>
+                  ⚠️ No countries found. Please add countries in Country Master first.
+                </div>
+              ) : (
+                <select 
+                  name="countryId"
+                  value={formData.countryId}
+                  onChange={handleChange}
+                  className="form-select"
+                >
+                  <option value="">-- Select Country --</option>
+                  {countries.map(c => (
+                    <option key={c._id} value={c._id}>{c.countryName}</option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div className="form-group">

@@ -88,8 +88,8 @@ export default function DestinationMaster() {
     try {
       const dataToSend = new FormData();
       dataToSend.append('destinationName', formData.destinationName);
-      dataToSend.append('stateId', formData.stateId);
-      dataToSend.append('countryId', formData.countryId);
+      if (formData.stateId) dataToSend.append('stateId', formData.stateId);
+      if (formData.countryId) dataToSend.append('countryId', formData.countryId);
       dataToSend.append('description', formData.description);
       dataToSend.append('status', formData.status);
       dataToSend.append('propertyTypesOffered', JSON.stringify(formData.propertyTypesOffered));
@@ -105,14 +105,26 @@ export default function DestinationMaster() {
           method: 'PUT',
           body: dataToSend
         });
-        if (res.ok) fetchData();
-        setIsEditing(false);
+        if (res.ok) {
+          fetchData();
+          setIsEditing(false);
+        } else {
+          const err = await res.json();
+          alert('Error updating destination: ' + (err.message || 'Unknown error'));
+          return;
+        }
       } else {
         const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/destinations`, {
           method: 'POST',
           body: dataToSend
         });
-        if (res.ok) fetchData();
+        if (res.ok) {
+          fetchData();
+        } else {
+          const err = await res.json();
+          alert('Error adding destination: ' + (err.message || 'Unknown error'));
+          return;
+        }
       }
 
       setFormData({
