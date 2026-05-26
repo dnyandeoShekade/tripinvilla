@@ -68,6 +68,10 @@ export default function MyProperties() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
 
+  // ─── Rooms (for Hotel / Resort) ──────────────────────
+  const [roomsList, setRoomsList] = useState([]);
+  const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
+
   // ─── Amenities ────────────────────────────────────────────
   const [selectedAmenitiesList, setSelectedAmenitiesList] = useState([]);
   const [availableAmenitiesList, setAvailableAmenitiesList] = useState([]);
@@ -348,8 +352,10 @@ export default function MyProperties() {
       setLandmarksList(lmRes.data);
     } catch { setLandmarksList([]); }
 
+      setIsEditing(true);
     setExistingImages(Array.isArray(p.images) ? p.images : []);
     setSelectedFiles([]);
+    setRoomsList(Array.isArray(p.rooms) ? p.rooms : []);
 
     // Load cascading location
     if (p.countryId) {
@@ -480,6 +486,7 @@ export default function MyProperties() {
         description: formData.description,
         status: formData.status,
         images: allImages,
+        rooms: roomsList,
         privatePool: formData.privatePool, gardenArea: formData.gardenArea, chefAvailable: formData.chefAvailable, entirePropertyOnly: formData.entirePropertyOnly, securityCCTV: formData.securityCCTV, numberOfFloors: formData.numberOfFloors, plotSize: formData.plotSize,
         restaurantOnSite: formData.restaurantOnSite, spaWellness: formData.spaWellness, conferenceRoom: formData.conferenceRoom, roomService: formData.roomService, receptionAllDay: formData.receptionAllDay, liftElevator: formData.liftElevator, starRating: formData.starRating, totalRooms: formData.totalRooms, totalFloors: formData.totalFloors, activities: formData.activities,
         floorNumber: formData.floorNumber, totalFloorsBuilding: formData.totalFloorsBuilding, furnishedStatus: formData.furnishedStatus, washingMachine: formData.washingMachine, societyAmenities: formData.societyAmenities,
@@ -573,6 +580,8 @@ export default function MyProperties() {
     });
     setSelectedFiles([]);
     setExistingImages([]);
+    setRoomsList([]);
+    setRoomForm({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
     setStates([]); setCities([]); setLocations([]);
   };
 
@@ -1003,6 +1012,70 @@ export default function MyProperties() {
                     </div>
                   )}
               </div>
+            </>)}
+
+            {/* ── SECTION 5c: Rooms (Hotel / Resort only) ──────── */}
+            {(formData.type === 'Hotel' || formData.type === 'Resort') && sectionWrap(<>
+              {sectionHeader('5c. Room Types', 'Add different room types for your Hotel/Resort (e.g., Deluxe, Suite, Standard)')}
+              {/* Room form row */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '12px', marginBottom: '12px', alignItems: 'flex-end' }}>
+                <div>
+                  <label style={labelStyle}>Room Type</label>
+                  <select style={selectStyle} value={roomForm.roomType} onChange={e => setRoomForm(p => ({ ...p, roomType: e.target.value }))}>
+                    {['Standard', 'Deluxe', 'Suite', 'Executive', 'Premium', 'Presidential', 'Family Room', 'Double', 'Single', 'Twin'].map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label style={labelStyle}>Room Name / Label</label>
+                  <input style={inputStyle} type="text" value={roomForm.roomName} onChange={e => setRoomForm(p => ({ ...p, roomName: e.target.value }))} placeholder="e.g. Sea View Suite" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Price/Night (₹)</label>
+                  <input style={inputStyle} type="number" value={roomForm.pricePerNight} onChange={e => setRoomForm(p => ({ ...p, pricePerNight: e.target.value }))} placeholder="e.g. 3500" />
+                </div>
+                <div>
+                  <label style={labelStyle}>Bed Type</label>
+                  <select style={selectStyle} value={roomForm.bedType} onChange={e => setRoomForm(p => ({ ...p, bedType: e.target.value }))}>
+                    {['Single', 'Double', 'Queen', 'King', 'Twin', 'Bunk'].map(t => <option key={t} value={t}>{t}</option>)}
+                  </select>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+                  <div>
+                    <label style={labelStyle}>Max Guests</label>
+                    <input style={inputStyle} type="number" min={1} value={roomForm.maxGuests} onChange={e => setRoomForm(p => ({ ...p, maxGuests: e.target.value }))} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Count</label>
+                    <input style={inputStyle} type="number" min={1} value={roomForm.count} onChange={e => setRoomForm(p => ({ ...p, count: e.target.value }))} />
+                  </div>
+                </div>
+              </div>
+              <button type="button"
+                onClick={() => {
+                  if (!roomForm.roomName.trim() || !roomForm.pricePerNight) { alert('Please fill Room Name and Price.'); return; }
+                  setRoomsList(prev => [...prev, { ...roomForm, pricePerNight: Number(roomForm.pricePerNight), maxGuests: Number(roomForm.maxGuests), count: Number(roomForm.count) }]);
+                  setRoomForm({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
+                }}
+                style={{ padding: '8px 20px', background: '#58A429', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 600, marginBottom: 12 }}>
+                + Add Room Type
+              </button>
+              {/* Room list */}
+              {roomsList.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {roomsList.map((room, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 8, padding: '10px 14px' }}>
+                      <div style={{ flex: 1 }}>
+                        <span style={{ fontWeight: 700, color: '#111827', fontSize: 13 }}>{room.roomName || room.roomType}</span>
+                        <span style={{ color: '#6B7280', fontSize: 12, marginLeft: 8 }}>{room.roomType} · {room.bedType} bed · {room.maxGuests} guests · {room.count} rooms</span>
+                        <span style={{ color: '#58A429', fontWeight: 600, fontSize: 13, marginLeft: 8 }}>₹{room.pricePerNight}/night</span>
+                      </div>
+                      <button type="button" onClick={() => setRoomsList(prev => prev.filter((_, i) => i !== idx))}
+                        style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: 18, lineHeight: 1 }}>×</button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {roomsList.length === 0 && <p style={{ fontSize: 12, color: '#9CA3AF' }}>No room types added yet. Add at least one room type for guests to see.</p>}
             </>)}
 
             {/* ── SECTION 6: Highlights ─────────────────────── */}
