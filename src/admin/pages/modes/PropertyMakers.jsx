@@ -231,14 +231,18 @@ export default function PropertyMakers() {
     }
   };
 
-  const fetchAreas = async (cityId) => {
+  const fetchAreas = async (cityId, cityName) => {
     try {
+      // Pass city_name so the backend can match by parentLocation (stored as name, not ID)
+      const params = new URLSearchParams();
+      if (cityId) params.set('city_id', cityId);
+      if (cityName) params.set('city_name', cityName);
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE}/masters/locations/active?city_id=${cityId}`,
+        `${import.meta.env.VITE_API_BASE}/masters/locations/active?${params.toString()}`,
       );
       const data = await res.json();
       setAreas(data);
-      setSelectedArea({ id: "", name: "" });
+      setSelectedArea({ id: '', name: '' });
     } catch (err) {
       console.error(err);
     }
@@ -513,7 +517,7 @@ export default function PropertyMakers() {
     }
     if (p.cityId) {
       setSelectedCity({ id: p.cityId, name: p.cityName || p.city });
-      fetchAreas(p.cityId);
+      fetchAreas(p.cityId, p.cityName || p.city);
     }
     if (p.locationId) {
       setSelectedArea({ id: p.locationId, name: p.locationName || p.address });
@@ -941,7 +945,7 @@ export default function PropertyMakers() {
                         ? { id: c._id, name: c.cityName }
                         : { id: "", name: "" },
                     );
-                    if (c) fetchAreas(c._id);
+                    if (c) fetchAreas(c._id, c.cityName);
                   }}
                   disabled={!selectedState.id}
                 >
