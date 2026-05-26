@@ -26,6 +26,8 @@ export default function UniqueExperienceMaster() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [filePreviewUrl, setFilePreviewUrl] = useState('');
 
   const fetchExperiences = async () => {
     setLoading(true);
@@ -57,24 +59,29 @@ export default function UniqueExperienceMaster() {
     }
 
     try {
-      const payload = {
-        ...formData,
-        themeCoverImageUrl: formData.themeCoverImageUrl || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=300&q=80'
-      };
+      const dataToSend = new FormData();
+      dataToSend.append('experienceName', formData.experienceName);
+      dataToSend.append('representingIcon', formData.representingIcon);
+      dataToSend.append('description', formData.description);
+      dataToSend.append('status', formData.status);
+
+      if (selectedFile) {
+        dataToSend.append('themeCoverImage', selectedFile);
+      } else {
+        dataToSend.append('themeCoverImageUrl', formData.themeCoverImageUrl || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=300&q=80');
+      }
 
       if (isEditing) {
         const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/experiences/${formData.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: dataToSend
         });
         if (res.ok) fetchExperiences();
         setIsEditing(false);
       } else {
         const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/experiences`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: dataToSend
         });
         if (res.ok) fetchExperiences();
       }
@@ -87,6 +94,8 @@ export default function UniqueExperienceMaster() {
         themeCoverImageUrl: '',
         status: 'Active'
       });
+      setSelectedFile(null);
+      setFilePreviewUrl('');
     } catch (err) {
       console.error('Error submitting experience:', err);
     }
@@ -101,6 +110,8 @@ export default function UniqueExperienceMaster() {
       themeCoverImageUrl: expObj.themeCoverImageUrl || '',
       status: expObj.status || 'Active'
     });
+    setSelectedFile(null);
+    setFilePreviewUrl(expObj.themeCoverImageUrl || '');
     setIsEditing(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -155,7 +166,7 @@ export default function UniqueExperienceMaster() {
             </div>
           </div>
 
-          <div className="form-grid-4">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', marginBottom: 20 }}>
             <div className="form-group">
               <label className="form-label">Experience Name*</label>
               <input 
@@ -195,31 +206,69 @@ export default function UniqueExperienceMaster() {
                 <option value="Inactive">Inactive</option>
               </select>
             </div>
-
-            <div className="form-group">
-              <label className="form-label">Theme Cover Image URL</label>
-              <input 
-                type="text" 
-                name="themeCoverImageUrl"
-                value={formData.themeCoverImageUrl}
-                onChange={handleChange}
-                placeholder="Paste high-res cover image URL..." 
-                className="form-input"
-              />
-            </div>
           </div>
 
-          <div className="form-group" style={{ marginTop: 20, marginBottom: 0 }}>
-            <label className="form-label">Experience Description*</label>
-            <textarea 
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Provide a stunning outline description for this specialty experience theme..." 
-              className="form-textarea"
-              style={{ minHeight: 46 }}
-              required
-            />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: 0 }}>
+            <div className="form-group">
+              <label className="form-label">
+                Theme Cover Image <span style={{ color: '#6B7280', fontSize: 11, fontWeight: 400, marginLeft: 4 }}>(Upload image or paste URL)</span>
+              </label>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                <div className="file-upload-wrapper" style={{ flex: 1 }}>
+                  <input 
+                    type="file" 
+                    accept=".jpg,.jpeg,.png"
+                    onChange={(e) => {
+                      const file = e.target.files[0];
+                      if (!file) return;
+                      if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB.');
+                        e.target.value = '';
+                        return;
+                      }
+                      setSelectedFile(file);
+                      setFilePreviewUrl(URL.createObjectURL(file));
+                    }}
+                    className="file-upload-input" 
+                    style={{ padding: '8px' }}
+                  />
+                </div>
+                <input 
+                  type="text" 
+                  name="themeCoverImageUrl"
+                  value={formData.themeCoverImageUrl}
+                  onChange={(e) => {
+                    handleChange(e);
+                    if (e.target.value) {
+                      setSelectedFile(null);
+                      setFilePreviewUrl(e.target.value);
+                    }
+                  }}
+                  placeholder="Or paste image URL..." 
+                  className="form-input"
+                  style={{ flex: 1 }}
+                />
+              </div>
+              {filePreviewUrl && (
+                <div style={{ marginTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <img src={filePreviewUrl} alt="preview" style={{ width: 44, height: 32, objectFit: 'cover', borderRadius: 4, border: '1px solid #E5E7EB' }} />
+                  <span style={{ fontSize: 11, color: '#6B7280' }}>Image Preview</span>
+                </div>
+              )}
+            </div>
+
+            <div className="form-group" style={{ display: 'flex', flexDirection: 'column' }}>
+              <label className="form-label">Experience Description*</label>
+              <textarea 
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Provide a stunning outline description for this specialty experience theme..." 
+                className="form-textarea"
+                style={{ flex: 1, minHeight: 46, resize: 'none' }}
+                required
+              />
+            </div>
           </div>
 
           {isEditing && (
