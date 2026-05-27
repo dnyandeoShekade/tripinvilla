@@ -48,15 +48,17 @@ export default function AddOffer() {
     setSelectedPropertyId(propertyId);
     const prop = properties.find(p => p._id === propertyId);
     if (prop) {
-      const rooms = Array.isArray(prop.rooms) ? prop.rooms : [];
+      const rooms = Array.isArray(prop.rooms) && prop.rooms.length > 0 ? prop.rooms : [{ roomType: 'Deluxe Room' }];
       setAvailableRooms(rooms);
+      const amenitiesArr = Array.isArray(prop.amenities) ? prop.amenities : (Array.isArray(prop.amenityTypes) ? prop.amenityTypes : []);
+      const priceVal = prop.price || prop.propertyPrice || '';
       setFormData(prev => ({
         ...prev,
         propertyName: prop.name || prop.propertyName || '',
         category: prop.type || prop.propertyType || 'Homestay',
         room: rooms[0]?.roomType || 'Deluxe Room',
-        amenities: Array.isArray(prop.amenities) ? prop.amenities.join(', ') : '',
-        price: prop.price ? `₹${prop.price} per night` : '',
+        amenities: amenitiesArr.join(', '),
+        price: priceVal ? `₹${priceVal} per night` : '',
       }));
     } else {
       setAvailableRooms([]);
