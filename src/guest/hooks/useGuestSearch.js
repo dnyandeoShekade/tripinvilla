@@ -63,7 +63,6 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
       const hasSearchText = searchVal && searchVal.trim() !== '';
       if (hasSearchText) {
         query.append('keyword', searchVal.trim());
-        query.append('city', searchVal.trim()); // Also try matching city exactly
       }
 
       // 2. Type / Category

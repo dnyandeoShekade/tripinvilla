@@ -40,7 +40,7 @@ export default function SearchResultsPage(props) {
             {/* Map Preview */}
             <div className="map-preview-box" style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', height: '180px', marginBottom: '20px' }}>
               <img src="https://images.unsplash.com/photo-1569336415962-a4bd9f69cd83?auto=format&fit=crop&w=400&q=80" alt="Map Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              <button className="btn-explore-map" style={{ zIndex: 10 }}>Explore on Map</button>
+              <button className="btn-explore-map" style={{ zIndex: 10 }} onClick={() => window.open(`https://www.google.com/maps/search/Hotels+in+${where || 'India'}`, '_blank')}>Explore on Map</button>
             </div>
 
             {/* Sidebar search */}
