@@ -32,6 +32,7 @@ export default function HomePage(props) {
     // Navigation / selections
     setActiveMenu,
     setSelectedProperty,
+    setActiveDestinationInfo,
     setContactStep,
     setContactModalOpen,
   } = props;
@@ -76,7 +77,12 @@ export default function HomePage(props) {
 
               <div className="carousel-track">
                 {(activeDestTab === 'Destinations' ? displayDestinations : displayExperiences).map((dest, i) => (
-                  <div key={i} className="carousel-card-item">
+                  <div 
+                    key={i} 
+                    className="carousel-card-item" 
+                    onClick={() => setActiveDestinationInfo(dest)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div className="carousel-img-wrap">
                       <img src={dest.img} alt={dest.name} />
                     </div>

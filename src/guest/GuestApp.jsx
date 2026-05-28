@@ -174,6 +174,7 @@ export default function GuestApp() {
 
   const [activeDestTab, setActiveDestTab] = useState('Destinations');
   const [activeDetailTab, setActiveDetailTab] = useState('Rooms');
+  const [activeDestinationInfo, setActiveDestinationInfo] = useState(null);
 
   const scrollToDetailSection = (tabName) => {
     setActiveDetailTab(tabName);
@@ -444,15 +445,26 @@ export default function GuestApp() {
     }
   }
 
-  const displayDestinations = liveDestinations.length > 0 ? liveDestinations.map(d => ({
-    img: d.coverImageUrl ? (d.coverImageUrl.startsWith('http') ? d.coverImageUrl : `${import.meta.env.VITE_API_BASE.replace('/api', '')}${d.coverImageUrl}`) : 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80',
-    name: d.destinationName || d.name,
-    count: `${d.propertiesCount || 0} Homestays - Villas & Appartments`
-  })) : carouselDestinations;
+  const displayDestinations = liveDestinations.length > 0 ? liveDestinations.map(d => {
+    const types = d.propertyTypesOffered || [];
+    let suffix = 'properties';
+    if (types.length === 1) suffix = types[0] + 's';
+    else if (types.length === 2) suffix = types.join(' & ') + 's';
+    else if (types.length > 2) suffix = types.slice(0, -1).join(', ') + ' & ' + types[types.length - 1] + 's';
+    else suffix = 'Homestays & Villas';
+    return {
+      img: d.coverImageUrl ? (d.coverImageUrl.startsWith('http') ? d.coverImageUrl : `${import.meta.env.VITE_API_BASE.replace('/api', '')}${d.coverImageUrl}`) : 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80',
+      name: d.destinationName || d.name,
+      count: `${d.propertiesCount || 0} ${suffix}`,
+      originalObj: d
+    };
+  }) : carouselDestinations;
+  
   const displayExperiences = liveExperiences.length > 0 ? liveExperiences.map(e => ({
     img: e.themeCoverImageUrl ? (e.themeCoverImageUrl.startsWith('http') ? e.themeCoverImageUrl : `${import.meta.env.VITE_API_BASE.replace('/api', '')}${e.themeCoverImageUrl}`) : 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=300&q=80',
     name: e.experienceName || e.name,
-    count: `${e.propertiesCount || 0} properties`
+    count: `${e.propertiesCount || 0} properties`,
+    originalObj: e
   })) : carouselExperiences;
 
   const getFilteredProperties = () => {
@@ -642,6 +654,8 @@ export default function GuestApp() {
     mockWishlistedTitles,
     toggleMockWishlist,
     mapDbProperties,
+    activeDestinationInfo,
+    setActiveDestinationInfo,
     setSelectedProperty,
     activeDetailProp,
     displayDestinations,

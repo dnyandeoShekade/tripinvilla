@@ -363,6 +363,7 @@ export function buildHomePageProps({
   fetchProfileAndEnquiries,
   setActiveMenu,
   setSelectedProperty,
+  setActiveDestinationInfo,
   setContactStep,
   setContactModalOpen,
 }) {
@@ -385,6 +386,7 @@ export function buildHomePageProps({
     fetchProfileAndEnquiries,
     setActiveMenu,
     setSelectedProperty,
+    setActiveDestinationInfo,
     setContactStep,
     setContactModalOpen,
   };
@@ -396,6 +398,13 @@ export function buildGuestModalsProps({
   currentImageIndex,
   setCurrentImageIndex,
   setIsGalleryOpen,
+
+  activeDestinationInfo,
+  setActiveDestinationInfo,
+  allProperties,
+  mapDbProperties,
+  setSelectedProperty,
+  setActiveMenu,
 
   authModalOpen,
   setAuthModalOpen,
@@ -474,6 +483,13 @@ export function buildGuestModalsProps({
     currentImageIndex,
     setCurrentImageIndex,
     setIsGalleryOpen,
+
+    activeDestinationInfo,
+    setActiveDestinationInfo,
+    allProperties,
+    mapDbProperties,
+    setSelectedProperty,
+    setActiveMenu,
 
     authModalOpen,
     setAuthModalOpen,

@@ -14,6 +14,7 @@ export default function DestinationMaster() {
     countryId: '',
     coverImageUrl: '',
     propertyTypesOffered: ['Villa'],
+    propertiesCount: 0,
     description: '',
     status: 'Active'
   });
@@ -101,6 +102,7 @@ export default function DestinationMaster() {
       if (formData.countryId) dataToSend.append('countryId', formData.countryId);
       dataToSend.append('description', formData.description);
       dataToSend.append('status', formData.status);
+      dataToSend.append('propertiesCount', formData.propertiesCount);
       dataToSend.append('propertyTypesOffered', JSON.stringify(formData.propertyTypesOffered));
 
       if (selectedFile) {
@@ -143,6 +145,7 @@ export default function DestinationMaster() {
         countryId: countries.length > 0 ? countries[0]._id : '',
         coverImageUrl: '',
         propertyTypesOffered: ['Villa'],
+        propertiesCount: 0,
         description: '',
         status: 'Active'
       });
@@ -161,6 +164,7 @@ export default function DestinationMaster() {
       countryId: destObj.countryId?._id || destObj.countryId || (countries.length > 0 ? countries[0]._id : ''),
       coverImageUrl: destObj.coverImageUrl || '',
       propertyTypesOffered: destObj.propertyTypesOffered || ['Villa'],
+      propertiesCount: destObj.propertiesCount || 0,
       description: destObj.description || '',
       status: destObj.status || 'Active'
     });
@@ -340,8 +344,23 @@ export default function DestinationMaster() {
             </div>
           </div>
 
-          <div className="form-group" style={{ marginBottom: 0 }}>
-            <label className="form-label">Destination Description*</label>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', marginBottom: 20 }}>
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Total Properties Count*</label>
+              <input
+                type="number"
+                name="propertiesCount"
+                value={formData.propertiesCount}
+                onChange={handleChange}
+                placeholder="e.g. 15"
+                min="0"
+                className="form-input"
+                required
+              />
+            </div>
+            
+            <div className="form-group" style={{ marginBottom: 0 }}>
+              <label className="form-label">Destination Description*</label>
             <textarea 
               name="description"
               value={formData.description}
@@ -352,6 +371,7 @@ export default function DestinationMaster() {
               required
             />
           </div>
+        </div>
 
           {isEditing && (
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
@@ -359,7 +379,7 @@ export default function DestinationMaster() {
                 type="button" 
                 onClick={() => {
                   setIsEditing(false);
-                  setFormData({ id: '', destinationName: '', stateId: states.length > 0 ? states[0]._id : '', countryId: countries.length > 0 ? countries[0]._id : '', coverImageUrl: '', propertyTypesOffered: ['Villa'], description: '', status: 'Active' });
+                  setFormData({ id: '', destinationName: '', stateId: states.length > 0 ? states[0]._id : '', countryId: countries.length > 0 ? countries[0]._id : '', coverImageUrl: '', propertyTypesOffered: ['Villa'], propertiesCount: 0, description: '', status: 'Active' });
                 }}
                 className="btn-outline-green"
                 style={{ cursor: 'pointer', padding: '8px 16px', fontSize: 12 }}

@@ -3,6 +3,7 @@ import AuthModal from './AuthModal';
 import ContactHostModal from './ContactHostModal';
 import ReviewModal from './ReviewModal';
 import EditProfileModal from './EditProfileModal';
+import DestinationInfoModal from './DestinationInfoModal';
 
 export default function GuestModals(props) {
   return (
@@ -12,6 +13,7 @@ export default function GuestModals(props) {
       <ContactHostModal {...props} />
       <ReviewModal {...props} />
       <EditProfileModal {...props} />
+      <DestinationInfoModal {...props} />
     </>
   );
 }

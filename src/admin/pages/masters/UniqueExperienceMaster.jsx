@@ -20,6 +20,7 @@ export default function UniqueExperienceMaster() {
     representingIcon: 'TreePine',
     description: '',
     themeCoverImageUrl: '',
+    propertiesCount: 0,
     status: 'Active'
   });
   const [isEditing, setIsEditing] = useState(false);
@@ -72,6 +73,7 @@ export default function UniqueExperienceMaster() {
       dataToSend.append('experienceName', formData.experienceName);
       dataToSend.append('representingIcon', formData.representingIcon);
       dataToSend.append('description', formData.description);
+      dataToSend.append('propertiesCount', formData.propertiesCount);
       dataToSend.append('status', formData.status);
 
       if (selectedFile) {
@@ -113,6 +115,7 @@ export default function UniqueExperienceMaster() {
         representingIcon: 'TreePine',
         description: '',
         themeCoverImageUrl: '',
+        propertiesCount: 0,
         status: 'Active'
       });
       setSelectedFile(null);
@@ -129,6 +132,7 @@ export default function UniqueExperienceMaster() {
       representingIcon: expObj.representingIcon || expObj.icon || 'TreePine',
       description: expObj.description || '',
       themeCoverImageUrl: expObj.themeCoverImageUrl || '',
+      propertiesCount: expObj.propertiesCount || 0,
       status: expObj.status || 'Active'
     });
     setSelectedFile(null);
@@ -187,7 +191,7 @@ export default function UniqueExperienceMaster() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', marginBottom: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: 20 }}>
             <div className="form-group">
               <label className="form-label">Experience Name*</label>
               <input 
@@ -226,6 +230,19 @@ export default function UniqueExperienceMaster() {
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
+            </div>
+            <div className="form-group">
+              <label className="form-label">Total Properties Count*</label>
+              <input 
+                type="number" 
+                name="propertiesCount"
+                value={formData.propertiesCount}
+                onChange={handleChange}
+                placeholder="e.g. 15"
+                min="0"
+                className="form-input"
+                required
+              />
             </div>
           </div>
 
@@ -298,7 +315,7 @@ export default function UniqueExperienceMaster() {
                 type="button" 
                 onClick={() => {
                   setIsEditing(false);
-                  setFormData({ id: '', experienceName: '', representingIcon: 'TreePine', description: '', themeCoverImageUrl: '', status: 'Active' });
+                  setFormData({ id: '', experienceName: '', representingIcon: 'TreePine', description: '', themeCoverImageUrl: '', propertiesCount: 0, status: 'Active' });
                 }}
                 className="btn-outline-green"
                 style={{ cursor: 'pointer', padding: '8px 16px', fontSize: 12 }}
