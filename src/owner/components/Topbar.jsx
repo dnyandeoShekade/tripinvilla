@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Bell, Calendar, ChevronDown, Plus } from 'lucide-react';
+import { Bell, Calendar, ChevronDown, Plus, Menu } from 'lucide-react';
 
 const PAGE_TITLES = {
   '/owner/dashboard':  'Dashboard Analytics',
@@ -17,7 +17,7 @@ function formatMonthYear(dateStr) {
   return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 }
 
-export default function Topbar() {
+export default function Topbar({ onToggleSidebar }) {
   const location = useLocation();
   const navigate = useNavigate();
   const title = PAGE_TITLES[location.pathname] || 'My Properties';
@@ -39,7 +39,10 @@ export default function Topbar() {
   return (
     <header className="topbar" style={{ padding: '0 39px 0 39px' }}>
       {/* Left – page title */}
-      <div className="topbar-left">
+      <div className="topbar-left" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <button className="mobile-menu-btn" onClick={onToggleSidebar} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', color: '#111827' }}>
+          <Menu size={24} />
+        </button>
         <h1 className="topbar-title" style={{ fontSize: '20px', fontFamily: '"Outfit", sans-serif', fontWeight: 600 }}>{title}</h1>
       </div>
 

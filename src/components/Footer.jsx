@@ -15,21 +15,21 @@ export default function Footer({ token, onNavigate, onRequireAuth }) {
         <div className="footer-line-divider" />
 
         <div className="footer-nav-row">
-          <a href="#home" onClick={() => onNavigate('Home')}>Home</a>
+          <a style={{cursor: 'pointer'}} onClick={(e) => { e.preventDefault(); window.scrollTo(0,0); onNavigate('Home'); }}>Home</a>
           <div className="footer-vertical-divider" />
-          <a href="#properties" onClick={() => onNavigate('Properties')}>Properties</a>
+          <a style={{cursor: 'pointer'}} onClick={(e) => { e.preventDefault(); window.scrollTo(0,0); onNavigate('Properties'); }}>Properties</a>
           <div className="footer-vertical-divider" />
-          <a href="#wishlist" onClick={() => { if (!token) { onRequireAuth(); return; } onNavigate('Wishlist'); }}>Wishlist</a>
+          <a style={{cursor: 'pointer'}} onClick={(e) => { e.preventDefault(); window.scrollTo(0,0); if (!token) { onRequireAuth(); return; } onNavigate('Wishlist'); }}>Wishlist</a>
           <div className="footer-vertical-divider" />
-          <a href="#bookings" onClick={() => { if (!token) { onRequireAuth(); return; } onNavigate('Profile'); }}>My Bookings</a>
+          <a style={{cursor: 'pointer'}} onClick={(e) => { e.preventDefault(); window.scrollTo(0,0); if (!token) { onRequireAuth(); return; } onNavigate('Profile'); }}>My Bookings</a>
           <div className="footer-vertical-divider" />
-          <a href="#about" onClick={() => onNavigate('About Us')}>About Us</a>
+          <a style={{cursor: 'pointer'}} onClick={(e) => { e.preventDefault(); window.scrollTo(0,0); onNavigate('About Us'); }}>About Us</a>
           <div className="footer-vertical-divider" />
-          <a href="#contact" onClick={() => onNavigate('Contact')}>Contact Us</a>
+          <a style={{cursor: 'pointer'}} onClick={(e) => { e.preventDefault(); window.scrollTo(0,0); onNavigate('Contact'); }}>Contact Us</a>
           <div className="footer-vertical-divider" />
-          <a href="#terms" onClick={() => onNavigate('Terms')}>Terms & Conditions</a>
+          <a style={{cursor: 'pointer'}} onClick={(e) => { e.preventDefault(); window.scrollTo(0,0); onNavigate('Terms'); }}>Terms & Conditions</a>
           <div className="footer-vertical-divider" />
-          <a href="#privacy" onClick={() => onNavigate('Privacy')}>Privacy Policy</a>
+          <a style={{cursor: 'pointer'}} onClick={(e) => { e.preventDefault(); window.scrollTo(0,0); onNavigate('Privacy'); }}>Privacy Policy</a>
         </div>
 
         <div className="footer-line-divider" />

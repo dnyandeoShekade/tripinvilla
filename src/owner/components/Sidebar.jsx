@@ -40,9 +40,9 @@ const NAV_SECTIONS = [
   },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ className = '' }) {
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${className}`}>
       {/* ── Logo Container ─────────── */}
       <div className="sidebar-logo">
         <img

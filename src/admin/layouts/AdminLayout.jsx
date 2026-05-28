@@ -8,6 +8,8 @@ export default function AdminLayout() {
   const navigate = useNavigate();
   const token = localStorage.getItem('admin_token');
 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   useEffect(() => {
     if (!token) {
       navigate('/admin/login', { replace: true });
@@ -20,9 +22,14 @@ export default function AdminLayout() {
 
   return (
     <div className="admin-theme admin-layout">
-      <Sidebar />
+      {isSidebarOpen && (
+        <div className="sidebar-overlay open" onClick={() => setIsSidebarOpen(false)}></div>
+      )}
+      <div className={`sidebar-container ${isSidebarOpen ? 'open' : ''}`}>
+        <Sidebar className={isSidebarOpen ? 'open' : ''} />
+      </div>
       <div className="admin-main">
-        <Topbar />
+        <Topbar onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
         <main className="admin-content">
           <Outlet />
         </main>
