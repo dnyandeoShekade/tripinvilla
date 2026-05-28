@@ -111,6 +111,7 @@ export default function MyProperties() {
   const [statsData, setStatsData] = useState(null);
   const [enquiryCounts, setEnquiryCounts] = useState({});
   const [loading, setLoading] = useState(false);
+  const [actionMenu, setActionMenu] = useState(null);
 
   // ─── Filters ──────────────────────────────────────────────
   const [filterType, setFilterType] = useState('');
@@ -657,7 +658,7 @@ export default function MyProperties() {
   const selectStyle = { ...inputStyle, cursor: 'pointer', appearance: 'auto' };
 
   return (
-    <div className="fade-in">
+    <div className="fade-in" onClick={() => setActionMenu(null)}>
       <div style={{ height: '16px' }} />
       {/* Breadcrumb */}
       <div className="props-breadcrumb" style={{ margin: '0 39px 12px', fontSize: '13px', color: '#6B7280', fontFamily: '"Outfit", sans-serif' }}>
@@ -1373,12 +1374,21 @@ export default function MyProperties() {
                         <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'currentColor', display: 'inline-block' }} /> {p.status}
                       </span>
                     </td>
-                    <td style={{ padding: '14px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <button type="button" onClick={() => handleEdit(p)} style={{ color: '#58A429', background: 'none', border: 'none', cursor: 'pointer' }}><Edit2 size={14} /></button>
-                        <button type="button" onClick={() => handleDelete(p._id)} style={{ color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer' }}><Trash2 size={14} /></button>
-                      </div>
-                    </td>
+                      <td style={{ padding: '14px', position: 'relative' }} onClick={(e) => e.stopPropagation()}>
+                        <button type="button" onClick={() => setActionMenu(actionMenu === p._id ? null : p._id)} style={{ color: '#6B7280', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', padding: 4 }}>
+                          <MoreVertical size={16} />
+                        </button>
+                        {actionMenu === p._id && (
+                          <div style={{ position: 'absolute', right: 16, top: 36, background: '#fff', border: '1px solid #E5E7EB', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 100, minWidth: 140 }}>
+                            <button type="button" onClick={() => { setActionMenu(null); handleEdit(p); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                              ✎ Edit Property
+                            </button>
+                            <button type="button" onClick={() => { setActionMenu(null); handleDelete(p._id); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 16px', fontSize: 13, color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer' }}>
+                              ⊘ Delete
+                            </button>
+                          </div>
+                        )}
+                      </td>
                   </tr>
                 )) : (
                   <tr><td colSpan="11" style={{ textAlign: 'center', padding: '40px 0', color: '#9CA3AF', fontSize: '13px' }}>No properties found.</td></tr>

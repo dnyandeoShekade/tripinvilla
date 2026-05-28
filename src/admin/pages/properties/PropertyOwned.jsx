@@ -10,6 +10,8 @@ export default function PropertyOwned() {
   const [searchQuery, setSearchQuery] = useState('');
   const [dateFrom, setDateFrom] = useState('');
   const [propertyType, setPropertyType] = useState('');
+  const [actionMenu, setActionMenu] = useState(null);
+  const [viewPropertiesOwner, setViewPropertiesOwner] = useState(null);
 
   const fetchOwners = async () => {
     setLoading(true);
@@ -63,7 +65,7 @@ export default function PropertyOwned() {
   const filteredOwners = owners;
 
   return (
-    <div className="fade-in">
+    <div className="fade-in" onClick={() => setActionMenu(null)}>
       {/* Breadcrumb */}
       <div className="props-breadcrumb" style={{ margin: '0 39px 12px' }}>
         Property Management &gt; <span>Property Owners</span>
@@ -191,12 +193,29 @@ export default function PropertyOwned() {
                           <span className={`status-pill ${o.status === 'Active' ? 'active' : 'inactive'}`}>{o.status}</span>
                         </button>
                       </td>
-                      <td>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <button onClick={() => toggleStatus(o._id, o.status)} style={{ color: '#58A429', background: 'none', border: 'none', cursor: 'pointer', display: 'flex' }}><Edit2 size={15} strokeWidth={2} /></button>
-                          <button onClick={() => handleDelete(o._id)} style={{ color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', display: 'flex' }}><Trash2 size={15} strokeWidth={2} /></button>
-                          <button className="action-dots" onClick={() => toggleStatus(o._id, o.status)}><MoreVertical size={14} /></button>
-                        </div>
+                      <td style={{ position: 'relative' }} onClick={(e) => e.stopPropagation()}>
+                        <button className="action-dots" onClick={() => setActionMenu(actionMenu === o._id ? null : o._id)}>
+                          <MoreVertical size={14} />
+                        </button>
+                        {actionMenu === o._id && (
+                          <div style={{ position: 'absolute', right: 8, top: 32, background: '#fff', border: '1px solid #E5E7EB', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 100, minWidth: 160 }}>
+                            <button onClick={() => { setActionMenu(null); navigate(`/admin/properties/owned/edit/${o._id}`); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                              ✎ Edit Owner
+                            </button>
+                            <button onClick={() => { setActionMenu(null); setViewPropertiesOwner(o); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                              👁 View All Properties
+                            </button>
+                            <button onClick={() => { setActionMenu(null); toggleStatus(o._id, o.status); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: o.status === 'Active' ? '#EF4444' : '#58A429', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                              {o.status === 'Active' ? '⊘ Deactivate' : '✓ Activate'}
+                            </button>
+                            <button onClick={() => { setActionMenu(null); handleDelete(o._id); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                              ⊘ Delete Owner
+                            </button>
+                            <button onClick={() => setActionMenu(null)} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer' }}>
+                              ✕ Close
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))
@@ -207,6 +226,34 @@ export default function PropertyOwned() {
         </div>
 
       </div>
+
+      {viewPropertiesOwner && (
+        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 20 }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(4px)' }} onClick={() => setViewPropertiesOwner(null)} />
+          <div style={{ position: 'relative', width: '100%', maxWidth: 400, background: '#fff', borderRadius: 16, overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)' }}>
+            <div style={{ padding: '16px 20px', borderBottom: '1px solid #E5E7EB', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F9FAFB' }}>
+              <h3 style={{ margin: 0, fontSize: 16, fontWeight: 600, color: '#111827' }}>Properties Owned</h3>
+              <button onClick={() => setViewPropertiesOwner(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, borderRadius: '50%' }}>✕</button>
+            </div>
+            <div style={{ padding: 20, maxHeight: 400, overflowY: 'auto' }}>
+              <div style={{ fontSize: 13, color: '#6B7280', marginBottom: 12 }}>
+                Showing properties for <strong>{viewPropertiesOwner.ownerName}</strong>
+              </div>
+              {(!viewPropertiesOwner.properties || viewPropertiesOwner.properties.length === 0) ? (
+                <div style={{ color: '#9CA3AF', fontSize: 14, textAlign: 'center', padding: '20px 0' }}>No properties assigned</div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {viewPropertiesOwner.properties.map((p, i) => (
+                    <div key={i} style={{ padding: '10px 14px', background: '#F3F4F6', borderRadius: 8, fontSize: 14, color: '#374151', fontWeight: 500 }}>
+                      {i + 1}. {p}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
