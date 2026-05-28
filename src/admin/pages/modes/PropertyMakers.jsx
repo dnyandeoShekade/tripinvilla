@@ -724,13 +724,15 @@ export default function PropertyMakers() {
             <div className="form-group">
               <label className="form-label">Owner Contact*</label>
               <input
-                type="text"
+                type="tel"
                 name="ownerContact"
                 value={formData.ownerContact}
-                onChange={handleChange}
+                onChange={(e) => setFormData({ ...formData, ownerContact: e.target.value.replace(/[^0-9+ \-]/g, '') })}
                 placeholder="e.g. +91 9988776655"
                 className="form-input"
                 required
+                pattern="[0-9+ \-]+"
+                title="Please enter a valid phone number"
               />
             </div>
             <div className="form-group" style={{ gridColumn: "span 2" }}>
