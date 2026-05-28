@@ -48,6 +48,7 @@ export default function AdminApp() {
         <Route path="properties/owned/add" element={<AddPropertyOwner />} />
         <Route path="properties/offers" element={<OffersbyDate />} />
         <Route path="properties/offers/add" element={<AddOffer />} />
+        <Route path="properties/offers/edit/:id" element={<AddOffer />} />
         {/* Modes */}
         <Route path="modes/property-makers" element={<PropertyMakers />} />
         <Route path="modes/location-makers" element={<LocationMakers />} />

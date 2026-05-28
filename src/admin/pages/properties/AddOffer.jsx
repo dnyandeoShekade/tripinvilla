@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 export default function AddOffer() {
   const navigate = useNavigate();
+  const { id } = useParams();
+  const isEditMode = Boolean(id);
+
   const [properties, setProperties] = useState([]);
   const [selectedPropertyId, setSelectedPropertyId] = useState('');
   const [availableRooms, setAvailableRooms] = useState([]);
@@ -20,29 +23,64 @@ export default function AddOffer() {
     date: new Date().toISOString().split('T')[0],
     time: '9:00 AM',
     offerPercent: '20% Off',
-    description: 'Special early bird discount offer',
+    description: '',
     status: 'Active'
   });
 
   useEffect(() => {
-    const fetchProperties = async () => {
+    const fetchPropertiesAndOffer = async () => {
       setLoadingProperties(true);
       try {
-        const res = await fetch(`${import.meta.env.VITE_API_BASE}/properties?limit=1000`);
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          setProperties(data);
-        } else if (data && Array.isArray(data.properties)) {
-          setProperties(data.properties);
+        const resProps = await fetch(`${import.meta.env.VITE_API_BASE}/properties?limit=1000`);
+        const dataProps = await resProps.json();
+        let propsArray = [];
+        if (Array.isArray(dataProps)) {
+          propsArray = dataProps;
+        } else if (dataProps && Array.isArray(dataProps.properties)) {
+          propsArray = dataProps.properties;
+        }
+        setProperties(propsArray);
+
+        if (isEditMode) {
+          const resOffer = await fetch(`${import.meta.env.VITE_API_BASE}/offers/${id}`);
+          if (resOffer.ok) {
+            const offerData = await resOffer.json();
+            setSelectedPropertyId(offerData.property_id || offerData.propertyId || '');
+            const offerDate = offerData.offer_date ? new Date(offerData.offer_date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+            setFormData(prev => ({
+              ...prev,
+              category: offerData.category || 'Homestay',
+              room: offerData.room_type || offerData.room || 'Deluxe Room',
+              foods: offerData.food_type || offerData.foods || 'Pure Veg',
+              amenities: offerData.amenities ? (Array.isArray(offerData.amenities) ? offerData.amenities.join(', ') : offerData.amenities) : '',
+              price: offerData.price ? `₹${offerData.price} per night` : '',
+              date: offerDate,
+              time: offerData.offer_time || '9:00 AM',
+              offerPercent: offerData.offer_percent || offerData.offerPercent || '20% Off',
+              description: offerData.description || '',
+              status: offerData.status ? offerData.status.charAt(0).toUpperCase() + offerData.status.slice(1) : 'Active'
+            }));
+            
+            // Re-fetch property details to populate available rooms
+            if (offerData.property_id || offerData.propertyId) {
+              const propId = offerData.property_id || offerData.propertyId;
+              const resProp = await fetch(`${import.meta.env.VITE_API_BASE}/properties/${propId}`);
+              if (resProp.ok) {
+                const prop = await resProp.json();
+                const rooms = Array.isArray(prop.rooms) && prop.rooms.length > 0 ? prop.rooms : [{ roomType: 'Deluxe Room' }];
+                setAvailableRooms(rooms);
+              }
+            }
+          }
         }
       } catch (err) {
-        console.error('Error fetching properties:', err);
+        console.error('Error fetching data:', err);
       } finally {
         setLoadingProperties(false);
       }
     };
-    fetchProperties();
-  }, []);
+    fetchPropertiesAndOffer();
+  }, [id, isEditMode]);
 
   const handlePropertyChange = async (propertyId) => {
     setSelectedPropertyId(propertyId);
@@ -91,8 +129,13 @@ export default function AddOffer() {
     setSubmitting(true);
     try {
       const token = localStorage.getItem('admin_token');
-      const res = await fetch(`${import.meta.env.VITE_API_BASE}/offers`, {
-        method: 'POST',
+      const method = isEditMode ? 'PUT' : 'POST';
+      const url = isEditMode 
+        ? `${import.meta.env.VITE_API_BASE}/offers/${id}` 
+        : `${import.meta.env.VITE_API_BASE}/offers`;
+        
+      const res = await fetch(url, {
+        method,
         headers: { 
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -103,18 +146,19 @@ export default function AddOffer() {
           offer_date: formData.date,
           offer_time: formData.time,
           offer_percent: formData.offerPercent,
-          description: formData.description
+          description: formData.description,
+          status: formData.status
         })
       });
       if (res.ok) {
-        alert('Promotional offer created successfully!');
+        alert(`Promotional offer ${isEditMode ? 'updated' : 'created'} successfully!`);
         navigate('/admin/properties/offers');
       } else {
         const errorData = await res.json().catch(() => ({}));
         alert(errorData.message || 'Failed to save offer');
       }
     } catch (err) {
-      console.error('Error adding offer:', err);
+      console.error('Error adding/updating offer:', err);
       alert('Network error while saving offer');
     } finally {
       setSubmitting(false);
@@ -125,15 +169,23 @@ export default function AddOffer() {
     <div className="fade-in">
       {/* Breadcrumb */}
       <div className="props-breadcrumb" style={{ margin: '0 39px 12px' }}>
-        Property Management &gt; <span>Offers by Date</span>
+        Property Management &gt; <span onClick={() => navigate('/admin/properties/offers')} style={{ cursor: 'pointer' }}>Offers by Date</span> &gt; <span>{isEditMode ? 'Edit Offer' : 'Add Offer'}</span>
       </div>
 
       {/* Form Section */}
       <div className="dash-section" style={{ marginBottom: 24 }}>
         <form onSubmit={handleSubmit} className="master-form-card" style={{ margin: 0, width: '100%' }}>
           <div className="master-form-header">
-            <div className="master-form-title">Add Offer by Date</div>
+            <div className="master-form-title">{isEditMode ? 'Edit Offer by Date' : 'Add Offer by Date'}</div>
             <div className="master-form-actions">
+              <button 
+                type="button" 
+                className="btn-outline-green" 
+                onClick={() => navigate('/admin/properties/offers')}
+                style={{ cursor: 'pointer', padding: '8px 24px', marginRight: '12px' }}
+              >
+                Cancel
+              </button>
               <button 
                 type="submit" 
                 className="btn-solid-green" 

@@ -11,6 +11,7 @@ export default function OffersbyDate() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [filterLocation, setFilterLocation] = useState('');
+  const [actionMenu, setActionMenu] = useState(null);
 
   const fetchOffers = async () => {
     setLoading(true);
@@ -222,11 +223,21 @@ export default function OffersbyDate() {
                           <span className="status-pill inactive">{o.status}</span>
                         )}
                       </td>
-                      <td style={{ padding: '14px' }}>
+                      <td style={{ padding: '14px', position: 'relative' }} onClick={(e) => e.stopPropagation()}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                           <button onClick={() => handleDelete(o._id)} style={{ color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', display: 'flex' }}><Trash2 size={15} strokeWidth={2} /></button>
-                          <button className="action-dots"><MoreVertical size={14} /></button>
+                          <button className="action-dots" onClick={() => setActionMenu(actionMenu === o._id ? null : o._id)}><MoreVertical size={14} /></button>
                         </div>
+                        {actionMenu === o._id && (
+                          <div style={{ position: 'absolute', right: 8, top: 32, background: '#fff', border: '1px solid #E5E7EB', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 100, minWidth: 160 }}>
+                            <button onClick={() => { setActionMenu(null); navigate(`/admin/properties/offers/edit/${o._id}`); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                              👁 View Details
+                            </button>
+                            <button onClick={() => { setActionMenu(null); navigate(`/admin/properties/offers/edit/${o._id}`); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                              ✎ Edit Offer
+                            </button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   ))
