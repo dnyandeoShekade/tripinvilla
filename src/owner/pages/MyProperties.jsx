@@ -88,6 +88,7 @@ export default function MyProperties() {
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
   const [locations, setLocations] = useState([]);
+  const [allLocations, setAllLocations] = useState([]);
   const [locLoading, setLocLoading] = useState(false);
 
   // ─── Manual Location Input ────────────────────────────────
@@ -255,9 +256,11 @@ export default function MyProperties() {
     try {
       const res = await fetch(`${API_BASE}/masters/locations/active?city_id=${cityId}`);
       const data = await res.json();
-      setLocations(Array.isArray(data) ? data : data.locations || []);
+      const locs = Array.isArray(data) ? data : data.locations || [];
+      if (locs.length === 0) setLocations(allLocations);
+      else setLocations(locs);
     } catch {
-      setLocations([]);
+      setLocations(allLocations);
     }
   };
 
@@ -268,6 +271,14 @@ export default function MyProperties() {
     fetchAmenitiesForType('Homestay');
     fetchExperiences();
     fetchCountries();
+    const fetchAllLocs = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/masters/locations/active`);
+        const data = await res.json();
+        setAllLocations(Array.isArray(data) ? data : data.locations || []);
+      } catch {}
+    };
+    fetchAllLocs();
   }, []);
 
   // ─── Handlers ─────────────────────────────────────────────
@@ -687,10 +698,6 @@ export default function MyProperties() {
                 </p>
               </div>
               <div style={{ display: 'flex', gap: '12px' }}>
-                <button type="button" onClick={() => navigate('/owner/pricing-rules')}
-                  style={{ background: '#ffffff', color: '#58A429', border: '1.5px solid #58A429', borderRadius: '24px', padding: '8px 24px', fontWeight: 600, fontSize: '13px', cursor: 'pointer', fontFamily: '"Outfit", sans-serif' }}>
-                  Edit Pricing & Rules
-                </button>
                 <button type="button" onClick={handleSubmit} disabled={loading}
                   style={{ background: '#58A429', color: '#ffffff', border: 'none', borderRadius: '24px', padding: '8px 32px', fontWeight: 600, fontSize: '13px', cursor: 'pointer', fontFamily: '"Outfit", sans-serif', boxShadow: '0 2px 8px rgba(88,164,41,0.2)' }}>
                   {loading ? 'Saving...' : (editId ? 'Update Property' : 'Add Property')}
@@ -789,7 +796,12 @@ export default function MyProperties() {
                   )}
                 </div>
                 <div>
-                  <label style={labelStyle}>Area / Location</label>
+                  <label style={labelStyle}>
+                    Area / Location
+                    {!manualLocation.area && locations.length === 0 && allLocations.length > 0 && formData.cityId && (
+                      <span style={{ color: '#F59E0B', fontSize: 11, marginLeft: 6 }}>Showing all locations</span>
+                    )}
+                  </label>
                   {manualLocation.area ? (
                     <input type="text" style={inputStyle} placeholder="e.g. Parvati Valley"
                       value={manualValues.area}
@@ -798,7 +810,7 @@ export default function MyProperties() {
                     <select style={{ ...selectStyle, background: !formData.cityId ? '#F9FAFB' : '#fff', cursor: !formData.cityId ? 'not-allowed' : 'pointer' }}
                       value={formData.locationId} onChange={handleLocationChange} disabled={!formData.cityId}>
                       <option value="">Select Area</option>
-                      {locations.map(l => <option key={l._id} value={l._id}>{l.locationName}</option>)}
+                      {(locations.length > 0 ? locations : allLocations).map(l => <option key={l._id} value={l._id}>{l.locationName}</option>)}
                     </select>
                   )}
                 </div>
@@ -1259,16 +1271,9 @@ export default function MyProperties() {
               </div>
             </>)}
 
-            {/* ── SECTION 10: Property Rules ────────────────── */}
+            {/* ── SECTION 10: About Property ───────────────── */}
             {sectionWrap(<>
-              {sectionHeader('10. Property Rules', 'Rules shown on the Property Rules tab — add one rule per line with • bullet point')}
-              <textarea style={{ ...inputStyle, minHeight: '100px', resize: 'vertical' }} name="rules" value={formData.rules} onChange={handleChange}
-                placeholder="• Primary Guest should be atleast 18 years of age.&#10;• Passport, Aadhaar, Driving License accepted." />
-            </>)}
-
-            {/* ── SECTION 11: About Property ───────────────── */}
-            {sectionWrap(<>
-              {sectionHeader('11. About Property', 'Detailed description shown on the property listing — make it compelling!')}
+              {sectionHeader('10. About Property', 'Detailed description shown on the property listing — make it compelling!')}
               <textarea style={{ ...inputStyle, minHeight: '120px', resize: 'vertical' }} name="description" value={formData.description} onChange={handleChange}
                 placeholder="Experience a comfortable and refined stay at... describe your property in detail, mention nearby attractions, what makes it special..." required />
             </>)}
