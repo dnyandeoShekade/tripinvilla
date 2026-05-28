@@ -19,8 +19,9 @@ export function mapDbProperties(dbProps, defaultList, where) {
       _id: p._id || `mock-${idx}`,
       title: p.propertyName || p.name || p.title || 'Beautiful Stay',
       location: p.location || 'Kasol, HP, India',
-      rating: p.rating || '4.8',
-      reviews: p.reviews || '3,245 Genuine Reviews',
+      rating: p.rating || 0,
+      ratingLabel: p.rating >= 4.5 ? 'Excellent' : p.rating >= 4.0 ? 'Very Good' : p.rating >= 3.0 ? 'Good' : p.rating >= 2.0 ? 'Average' : p.rating > 0 ? 'Poor' : 'No Ratings',
+      reviews: p.reviewsCount !== undefined ? `${p.reviewsCount} Genuine Reviews` : (p.totalBookings > 0 ? `${p.totalBookings} Genuine Reviews` : '0 Genuine Reviews'),
       price: p.price
         ? String(p.price).startsWith('₹')
           ? p.price

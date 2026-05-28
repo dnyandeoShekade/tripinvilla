@@ -279,7 +279,7 @@ export default function SearchResultsPage(props) {
                           <div className="horiz-card-rating">
                             <span className="rating-badge">{property.rating || '4.8'}</span>
                             <span style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span style={{ color: '#4B5563', fontWeight: '500' }}>Excellent</span>
+                              <span style={{ color: '#4B5563', fontWeight: '500' }}>{property.ratingLabel || 'Excellent'}</span>
                               <span style={{ color: '#9CA3AF', fontSize: '13px' }}>{property.reviews || '3,245 Genuine Reviews'}</span>
                             </span>
                           </div>

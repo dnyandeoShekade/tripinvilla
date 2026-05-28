@@ -170,7 +170,7 @@ export default function HomePage(props) {
                           <span>{villa.rating}</span>
                         </div>
                         <div className="rating-text-stack">
-                          <span className="rating-desc-excellent">Excellent</span>
+                          <span className="rating-desc-excellent">{villa.ratingLabel || 'Excellent'}</span>
                           <span className="rating-reviews-count">{villa.reviews}</span>
                         </div>
                       </div>
@@ -242,7 +242,7 @@ export default function HomePage(props) {
                           <span>{item.rating}</span>
                         </div>
                         <div className="rating-text-stack">
-                          <span className="rating-desc-excellent">Excellent</span>
+                          <span className="rating-desc-excellent">{item.ratingLabel || 'Excellent'}</span>
                           <span className="rating-reviews-count">{item.reviews}</span>
                         </div>
                       </div>
