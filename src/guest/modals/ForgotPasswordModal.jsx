@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import './styles/ForgotPasswordModal.css';
 
 export default function ForgotPasswordModal({ isOpen, onClose }) {
@@ -71,7 +72,7 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
     }
   };
 
-  return (
+  return createPortal(
     <div className="modal-overlay">
       <div className="modal-content forgot-pwd-modal">
         <button className="modal-close" onClick={onClose}>&times;</button>
@@ -137,6 +138,7 @@ export default function ForgotPasswordModal({ isOpen, onClose }) {
           </form>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
