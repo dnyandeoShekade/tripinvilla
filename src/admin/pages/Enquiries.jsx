@@ -80,8 +80,8 @@ export default function Enquiries() {
       (e.query || e.message || '').toLowerCase().includes(search) ||
       (e.propertyName || '').toLowerCase().includes(search);
       
-    const matchType = propertyType === 'All Categories' ? true : e.propertyType === propertyType || (e.propertyName && e.propertyName.includes(propertyType)); // Simplified propertyType matching
-    const matchLocation = !location || (e.location || '').toLowerCase().includes(location.toLowerCase());
+    const matchType = propertyType === 'All Categories' ? true : e.propertyType === propertyType || (e.propertyName && e.propertyName.includes(propertyType));
+    const matchLocation = !location || (e.location || '').toLowerCase().includes(location.toLowerCase()) || (e.propertyName || '').toLowerCase().includes(location.toLowerCase());
     
     let matchDate = true;
     if (e.createdAt) {
