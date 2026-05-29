@@ -53,6 +53,8 @@ export default function Dashboard() {
     return `${d.toLocaleString('default', { month: 'short' })} ${d.getFullYear()}`;
   });
   const [actionMenu, setActionMenu] = useState(null);
+  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [selectedEnquiry, setSelectedEnquiry] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -238,7 +240,7 @@ export default function Dashboard() {
               <tbody>
                 {topProperties.length === 0 ? (
                   <tr><td colSpan="11" style={{ textAlign: 'center', padding: '30px 0', color: '#6B7280' }}>No properties found</td></tr>
-                ) : topProperties.map((p) => (
+                ) : topProperties.map((p, i) => (
                   <tr key={p.id || p.propertyNo}>
                     <td><span className="prop-id-link" onClick={() => navigate('/admin/properties/all')} style={{ cursor: 'pointer' }}>{p.propertyNo}</span></td>
                     <td>
@@ -262,7 +264,7 @@ export default function Dashboard() {
                       <button className="action-dots" onClick={() => setActionMenu(actionMenu === `prop_${p.id || p.propertyNo}` ? null : `prop_${p.id || p.propertyNo}`)} style={{ cursor: 'pointer' }}><MoreVertical size={14} /></button>
                       {actionMenu === `prop_${p.id || p.propertyNo}` && (
                         <div style={{ position: 'absolute', right: 8, top: i >= 3 ? "auto" : 32, bottom: i >= 3 ? 32 : "auto", background: '#fff', border: '1px solid #E5E7EB', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 100, minWidth: 160 }}>
-                          <button onClick={() => { setActionMenu(null); navigate('/admin/properties/all'); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                          <button onClick={() => { setActionMenu(null); setSelectedProperty(p); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
                             👁 View Details
                           </button>
                         </div>
@@ -320,7 +322,7 @@ export default function Dashboard() {
               <tbody>
                 {enquiries.length === 0 ? (
                   <tr><td colSpan="8" style={{ textAlign: 'center', padding: '30px 0', color: '#6B7280' }}>No enquiries yet</td></tr>
-                ) : enquiries.map((e) => (
+                ) : enquiries.map((e, i) => (
                   <tr key={e.enquiryNo || e.id}>
                     <td><span className="prop-id-link" onClick={() => navigate('/admin/enquiries')} style={{ cursor: 'pointer' }}>{e.enquiryNo || e.id}</span></td>
                     <td style={{ fontSize: 11, color: '#6B7280' }}>{e.datesAndTime}</td>
@@ -333,7 +335,7 @@ export default function Dashboard() {
                       <button className="action-dots" onClick={() => setActionMenu(actionMenu === `enq_${e.id || e.enquiryNo}` ? null : `enq_${e.id || e.enquiryNo}`)} style={{ cursor: 'pointer' }}><MoreVertical size={14} /></button>
                       {actionMenu === `enq_${e.id || e.enquiryNo}` && (
                         <div style={{ position: 'absolute', right: 8, top: i >= 3 ? "auto" : 32, bottom: i >= 3 ? 32 : "auto", background: '#fff', border: '1px solid #E5E7EB', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 100, minWidth: 160 }}>
-                          <button onClick={() => { setActionMenu(null); navigate('/admin/enquiries'); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                          <button onClick={() => { setActionMenu(null); setSelectedEnquiry(e); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
                             👁 View Details
                           </button>
                         </div>
@@ -346,6 +348,45 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+    {/* Modals */}
+      {selectedProperty && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
+          <div style={{ backgroundColor: '#fff', borderRadius: '16px', maxWidth: '500px', width: '100%', padding: '24px', position: 'relative' }}>
+            <button onClick={() => setSelectedProperty(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', fontSize: 20 }}>&times;</button>
+            <h3 style={{ margin: '0 0 16px 0', fontSize: 18, color: '#111827' }}>Property Details</h3>
+            <div style={{ display: 'grid', gap: 12, fontSize: 14 }}>
+              <div><strong>Property No:</strong> {selectedProperty.propertyNo || selectedProperty.id}</div>
+              <div><strong>Name:</strong> {selectedProperty.name}</div>
+              <div><strong>Location:</strong> {selectedProperty.location}</div>
+              <div><strong>Category:</strong> {selectedProperty.category}</div>
+              <div><strong>Best Room Rate:</strong> {selectedProperty.bestRoomRate}</div>
+              <div><strong>Rooms:</strong> {selectedProperty.rooms}</div>
+              <div><strong>Total Enquiries:</strong> {selectedProperty.totalEnquiries || 0}</div>
+              <div><strong>Rating:</strong> {selectedProperty.rating}</div>
+              <div><strong>Status:</strong> {selectedProperty.status}</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedEnquiry && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
+          <div style={{ backgroundColor: '#fff', borderRadius: '16px', maxWidth: '500px', width: '100%', padding: '24px', position: 'relative' }}>
+            <button onClick={() => setSelectedEnquiry(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', fontSize: 20 }}>&times;</button>
+            <h3 style={{ margin: '0 0 16px 0', fontSize: 18, color: '#111827' }}>Enquiry Details</h3>
+            <div style={{ display: 'grid', gap: 12, fontSize: 14 }}>
+              <div><strong>Enquiry No:</strong> {selectedEnquiry.enquiryNo || selectedEnquiry.id}</div>
+              <div><strong>Date & Time:</strong> {selectedEnquiry.datesAndTime}</div>
+              <div><strong>User Name:</strong> {selectedEnquiry.userName}</div>
+              <div><strong>Phone No:</strong> {selectedEnquiry.phoneNo}</div>
+              <div><strong>Email Address:</strong> {selectedEnquiry.email}</div>
+              <div><strong>Property:</strong> {selectedEnquiry.propertyName}</div>
+              <div><strong>Query:</strong> <p style={{ margin: '4px 0 0 0', whiteSpace: 'pre-wrap', color: '#4B5563' }}>{selectedEnquiry.query}</p></div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
