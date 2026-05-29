@@ -210,14 +210,14 @@ export default function Dashboard() {
 
       {/* ══ Section 3: Top Properties by Enquiries ══════ */}
       <div className="dash-section">
-        <div className="chart-card" style={{ padding: 0, overflow: 'visible' }}>
+        <div className="chart-card" style={{ padding: 0, overflow: 'hidden' }}>
           <div className="table-header" style={{ padding: '14px 20px' }}>
             <span className="table-title">Top 10 Most Enquired Properties</span>
             <div className="table-header-right">
               <button className="table-view-all" onClick={() => navigate('/admin/properties/all')} style={{ cursor: 'pointer' }}>View All</button>
             </div>
           </div>
-          <div style={{ overflowX: 'visible' }}>
+          <div style={{ overflowX: 'auto' }}>
             <table className="data-table">
               <thead>
                 <tr>
@@ -277,7 +277,7 @@ export default function Dashboard() {
 
       {/* ══ Section 4: Recent Enquiries ══════════ */}
       <div className="dash-section" style={{ marginBottom: 24 }}>
-        <div className="chart-card" style={{ padding: 0, overflow: 'visible' }}>
+        <div className="chart-card" style={{ padding: 0, overflow: 'hidden' }}>
           <div className="table-header" style={{ padding: '14px 20px' }}>
             <span className="table-title">Recent Enquiries</span>
             <div className="table-header-right" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -302,7 +302,7 @@ export default function Dashboard() {
 
             </div>
           </div>
-          <div style={{ overflowX: 'visible' }}>
+          <div style={{ overflowX: 'auto' }}>
             <table className="data-table">
               <thead>
                 <tr>

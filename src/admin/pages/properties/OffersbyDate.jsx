@@ -183,7 +183,7 @@ export default function OffersbyDate() {
             </div>
           </div>
 
-          <div style={{ overflowX: 'visible', width: '100%' }}>
+          <div style={{ overflowX: 'auto', width: '100%' }}>
             <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', whiteSpace: 'nowrap' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid #F3F4F6' }}>
