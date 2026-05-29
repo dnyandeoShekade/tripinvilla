@@ -1001,7 +1001,8 @@ export default function AllProperties() {
                             style={{
                               position: "absolute",
                               right: 8,
-                              top: 32,
+                              top: i >= paginated.length - 2 ? "auto" : 32,
+                              bottom: i >= paginated.length - 2 ? 32 : "auto",
                               background: "#fff",
                               border: "1px solid #E5E7EB",
                               borderRadius: 8,
