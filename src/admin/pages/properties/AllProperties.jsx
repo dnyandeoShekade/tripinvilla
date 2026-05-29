@@ -13,8 +13,8 @@ import {
   X,
   Upload,
 } from "lucide-react";
-import Pagination from '../components/Pagination';
-import ReadMore from '../components/ReadMore';
+import Pagination from '../../components/Pagination';
+import ReadMore from '../../components/ReadMore';
 
 const API = `${import.meta.env.VITE_API_BASE}`;
 import PropertyViewModal from './PropertyViewModal';
