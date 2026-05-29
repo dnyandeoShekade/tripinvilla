@@ -317,11 +317,11 @@ export default function AdminList() {
       ) : (
         <div className="admin-table-card" style={{ padding: '32px', background: '#FFFFFF', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-             <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 600, color: '#111827' }}>User Details</h3>
+             <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 600, color: '#111827' }}>{editingId ? 'Edit Admin Details' : 'Add New Admin'}</h3>
              <div style={{ display: 'flex', gap: '12px' }}>
                <button onClick={() => setShowAddModal(false)} style={{ background: '#F3F4F6', color: '#374151', border: 'none', padding: '10px 24px', borderRadius: '24px', fontWeight: 500, cursor: 'pointer' }}>Cancel</button>
                <button className="btn-solid-green" onClick={handleSubmit} disabled={submitting} style={{ padding: '10px 32px', borderRadius: '24px', opacity: submitting ? 0.7 : 1, cursor: submitting ? 'not-allowed' : 'pointer' }}>
-                 {submitting ? 'Adding...' : 'Add'}
+                 {submitting ? (editingId ? 'Updating...' : 'Adding...') : (editingId ? 'Save Changes' : 'Add')}
                </button>
              </div>
           </div>
@@ -371,15 +371,6 @@ export default function AdminList() {
           <div>
              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                 <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 600, color: '#111827' }}>Access List</h3>
-                <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                  <div className="admin-toolbar-search" style={{ width: '240px', background: '#FFFFFF', border: '1px solid #E5E7EB', padding: '8px 16px', borderRadius: '24px' }}>
-                    <input type="text" placeholder="Search" style={{ fontSize: '13px' }} />
-                    <Search size={14} color="#9CA3AF" />
-                  </div>
-                  <button className="admin-toolbar-btn" style={{ padding: '8px 16px', borderRadius: '24px', border: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#374151' }}>
-                    Filters <Filter size={14} />
-                  </button>
-                </div>
              </div>
              <table className="admin-table" style={{ border: 'none' }}>
                <thead>
@@ -389,7 +380,6 @@ export default function AdminList() {
                    <th style={{ color: '#6B7280', fontWeight: 500, padding: '16px 24px', borderBottom: '1px solid #F3F4F6', fontSize: '12px', width: '120px' }}>Add</th>
                    <th style={{ color: '#6B7280', fontWeight: 500, padding: '16px 24px', borderBottom: '1px solid #F3F4F6', fontSize: '12px', width: '120px' }}>Edit</th>
                    <th style={{ color: '#6B7280', fontWeight: 500, padding: '16px 24px', borderBottom: '1px solid #F3F4F6', fontSize: '12px', width: '120px' }}>Delete</th>
-                   <th style={{ borderBottom: '1px solid #F3F4F6', width: '40px' }}></th>
                  </tr>
                </thead>
                <tbody>
@@ -407,9 +397,6 @@ export default function AdminList() {
                          />
                        </td>
                      ))}
-                     <td style={{ padding: '16px 24px', textAlign: 'right' }}>
-                       <MoreVertical size={16} color="#9CA3AF" style={{ cursor: 'pointer' }} />
-                     </td>
                    </tr>
                  ))}
                </tbody>
