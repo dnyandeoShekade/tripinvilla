@@ -944,8 +944,7 @@ export default function AllProperties() {
                       </td>
                       <td style={{ color: "#6B7280" }}>
                         <ReadMore maxWords={2}>
-                          {p.city}
-                          {p.state ? `, ${p.state}` : ""}
+                          {p.full_address || p.location || (p.city + (p.state ? ', ' + p.state : ''))}
                         </ReadMore>
                       </td>
                       <td>

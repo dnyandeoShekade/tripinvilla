@@ -771,15 +771,7 @@ export default function MyProperties() {
             {sectionWrap(<>
               {sectionHeader('2. Property Location', 'Select country → state → city → area for accurate listing')}
               
-              {/* Toggle: Use Dropdowns vs Type Manually */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-                <span style={{ fontSize: 12, color: '#6B7280', fontFamily: '"Outfit", sans-serif' }}>Location not in list?</span>
-                <button type="button"
-                  onClick={() => setManualLocation(p => ({ country: !p.country, state: !p.state, city: !p.city, area: !p.area }))}
-                  style={{ fontSize: 12, color: '#58A429', background: 'none', border: '1px solid #58A429', borderRadius: 6, padding: '3px 10px', cursor: 'pointer', fontWeight: 600, fontFamily: '"Outfit", sans-serif' }}>
-                  {manualLocation.country ? '← Use Dropdowns' : 'Type Manually →'}
-                </button>
-              </div>
+
 
               {/* Cascading dropdowns */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
@@ -1389,8 +1381,8 @@ export default function MyProperties() {
                     <td style={{ color: '#111827', fontWeight: 600, padding: '14px', fontSize: '13px' }}>{p.name}</td>
                     <td style={{ padding: '14px' }}>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span style={{ fontWeight: 500, color: '#374151', fontSize: '12px' }}>{p.cityName || p.city}</span>
-                        <span style={{ fontSize: '11px', color: '#9CA3AF' }}>{p.stateName || p.state}</span>
+                        <span style={{ fontWeight: 500, color: '#374151', fontSize: '12px' }}>{p.full_address || p.location || (p.cityName || p.city)}</span>
+                        <span style={{ fontSize: '11px', color: '#9CA3AF' }}>{!p.full_address && !p.location ? (p.stateName || p.state) : ''}</span>
                       </div>
                     </td>
                     <td style={{ padding: '14px' }}>

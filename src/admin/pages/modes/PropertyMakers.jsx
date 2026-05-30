@@ -935,14 +935,7 @@ export default function PropertyMakers() {
             </label>
 
             {/* Toggle: Use Dropdowns vs Type Manually */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-              <span style={{ fontSize: 12, color: '#6B7280' }}>Location not in list?</span>
-              <button type="button"
-                onClick={() => setManualLocation(p => ({ country: !p.country, state: !p.state, city: !p.city, area: !p.area }))}
-                style={{ fontSize: 12, color: '#58A429', background: 'none', border: '1px solid #58A429', borderRadius: 6, padding: '3px 10px', cursor: 'pointer', fontWeight: 600 }}>
-                {manualLocation.country ? '← Use Dropdowns' : 'Type Manually →'}
-              </button>
-            </div>
+
 
             <div
               style={{
@@ -964,6 +957,9 @@ export default function PropertyMakers() {
                     onChange={(e) => {
                       const c = countries.find((x) => x._id === e.target.value);
                       setSelectedCountry(c ? { id: c._id, name: c.countryName } : { id: '', name: '' });
+                      setSelectedState({ id: '', name: '' });
+                      setSelectedCity({ id: '', name: '' });
+                      setSelectedArea({ id: '', name: '' });
                       if (c) fetchStates(c._id);
                     }}>
                     <option value="">Select Country</option>
@@ -984,6 +980,8 @@ export default function PropertyMakers() {
                     onChange={(e) => {
                       const s = states.find((x) => x._id === e.target.value);
                       setSelectedState(s ? { id: s._id, name: s.stateName } : { id: '', name: '' });
+                      setSelectedCity({ id: '', name: '' });
+                      setSelectedArea({ id: '', name: '' });
                       if (s) fetchCities(s._id);
                     }}
                     disabled={!manualLocation.state && !selectedCountry.id}>
@@ -1005,6 +1003,7 @@ export default function PropertyMakers() {
                     onChange={(e) => {
                       const c = cities.find((x) => x._id === e.target.value);
                       setSelectedCity(c ? { id: c._id, name: c.cityName } : { id: '', name: '' });
+                      setSelectedArea({ id: '', name: '' });
                       if (c) fetchAreas(c._id, c.cityName);
                     }}
                     disabled={!manualLocation.city && !selectedState.id}>
