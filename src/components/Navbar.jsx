@@ -23,38 +23,31 @@ export default function Navbar({
   const navItems = [
     {
       name: 'Home',
-      lucideIcon: <Home size={13} strokeWidth={2.5} />,
-      customIcon: homeIcon
+      lucideIcon: <Home size={13} strokeWidth={2.5} />
     },
     {
       name: 'Properties',
-      lucideIcon: <MapPin size={13} strokeWidth={2.5} />,
-      customIcon: propertiesIcon
+      lucideIcon: <MapPin size={13} strokeWidth={2.5} />
     },
     {
       name: 'Wishlist',
-      lucideIcon: <Heart size={13} strokeWidth={2.5} />,
-      customIcon: wishlistIcon
+      lucideIcon: <Heart size={13} strokeWidth={2.5} />
     },
     {
       name: 'My Enquiries',
-      lucideIcon: <Inbox size={13} strokeWidth={2.5} />,
-      customIcon: enquiriesIcon
+      lucideIcon: <Inbox size={13} strokeWidth={2.5} />
     },
     {
       name: 'About Us',
-      lucideIcon: <Info size={13} strokeWidth={2.5} />,
-      customIcon: aboutIcon
+      lucideIcon: <Info size={13} strokeWidth={2.5} />
     },
     {
       name: 'Recommend By Us',
-      lucideIcon: <ThumbsUp size={13} strokeWidth={2.5} />,
-      customIcon: recommendIcon
+      lucideIcon: <ThumbsUp size={13} strokeWidth={2.5} />
     },
     {
       name: 'List Your Place',
-      lucideIcon: <PlusCircle size={13} strokeWidth={2.5} />,
-      customIcon: listYourPlaceIcon
+      lucideIcon: <PlusCircle size={13} strokeWidth={2.5} />
     }
   ];
 
