@@ -195,10 +195,10 @@ export default function SupportAbuse() {
       {/* Video Overlay Modal */}
       {showVideoModal && activeVideo && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.7)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }} onClick={() => setShowVideoModal(false)}>
-          <div style={{ position: 'relative', maxWidth: '90vw', maxHeight: '90vh', background: '#000', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'center' }} onClick={e => e.stopPropagation()}>
+          <div style={{ position: 'relative', display: 'inline-block', maxWidth: '95vw', maxHeight: '90vh', background: '#000', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }} onClick={e => e.stopPropagation()}>
             <button 
               onClick={() => setShowVideoModal(false)}
-              style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(0,0,0,0.5)', border: 'none', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, color: 'white' }}
+              style={{ position: 'absolute', top: '12px', right: '12px', background: 'rgba(255,255,255,0.2)', backdropFilter: 'blur(4px)', border: 'none', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 10, color: 'white' }}
             >
               <X size={18} />
             </button>
@@ -206,7 +206,7 @@ export default function SupportAbuse() {
               src={activeVideo.videoUrl} 
               controls 
               autoPlay
-              style={{ maxWidth: '100%', maxHeight: '90vh', objectFit: 'contain' }}
+              style={{ display: 'block', maxWidth: '95vw', maxHeight: '90vh', width: 'auto', height: 'auto', objectFit: 'contain' }}
             />
           </div>
         </div>
