@@ -89,9 +89,10 @@ export default function AllProperties() {
   // ─── Rooms (for Hotel / Resort) ──────────────────────
   const [roomsList, setRoomsList] = useState([]);
   const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
+  const [customRoomType, setCustomRoomType] = useState('');
   const [roomTypes, setRoomTypes] = useState([]);
   const [propertyTypes, setPropertyTypes] = useState([]);
-
+  const [customPropertyType, setCustomPropertyType] = useState('');
   // Amenities list matching MyProperties.jsx
   const [selectedAmenitiesList, setSelectedAmenitiesList] = useState([]);
   const [availableAmenitiesList, setAvailableAmenitiesList] = useState([]);
@@ -563,7 +564,7 @@ export default function AllProperties() {
       }
 
       const payload = {
-        type: form.type,
+        type: form.type === 'Other' ? customPropertyType : form.type,
         name: form.name,
         roomType: form.roomType,
         ownerContact: form.ownerContact,
@@ -798,9 +799,7 @@ export default function AllProperties() {
                 >
                   <option value="">All Types</option>
                   {propertyTypes.map(pt => (
-                    <option key={pt._id} value={pt.name}>
-                      {pt.name}
-                    </option>
+                    <option key={pt._id} value={pt.name}>{pt.name}</option>
                   ))}
                   {propertyTypes.length === 0 && [
                     "Villa",
@@ -1227,6 +1226,7 @@ export default function AllProperties() {
                     value={form.type}
                     onChange={handleFormChange}
                   >
+                    <option value="">Select Property Type</option>
                     {propertyTypes.map(pt => (
                       <option key={pt._id} value={pt.name}>{pt.name}</option>
                     ))}
@@ -1238,7 +1238,19 @@ export default function AllProperties() {
                         <option value="Resort">Resort</option>
                       </>
                     )}
+                    <option value="Other">Other (Add Manually)</option>
                   </select>
+                  {form.type === 'Other' && (
+                    <input 
+                      style={{ marginTop: '8px' }} 
+                      type="text" 
+                      className="form-input"
+                      placeholder="Enter custom property type"
+                      value={customPropertyType}
+                      onChange={(e) => setCustomPropertyType(e.target.value)}
+                      required
+                    />
+                  )}
                 </div>
                 <div className="form-group">
                   <label
@@ -1493,7 +1505,11 @@ export default function AllProperties() {
                       <select className="form-control" value={roomForm.roomType} onChange={e => setRoomForm(p => ({ ...p, roomType: e.target.value }))}>
                         {roomTypes.map(rt => <option key={rt._id} value={rt.name}>{rt.name}</option>)}
                         {roomTypes.length === 0 && ['Standard', 'Deluxe', 'Suite', 'Executive', 'Premium', 'Presidential', 'Family Room', 'Double', 'Single', 'Twin'].map(t => <option key={t} value={t}>{t}</option>)}
+                        <option value="Other">Other (Add Manually)</option>
                       </select>
+                      {roomForm.roomType === 'Other' && (
+                        <input style={{ marginTop: '8px' }} type="text" className="form-control" value={customRoomType} onChange={e => setCustomRoomType(e.target.value)} placeholder="e.g. Penthouse" required />
+                      )}
                     </div>
                     <div>
                       <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Room Name</label>
@@ -1523,8 +1539,11 @@ export default function AllProperties() {
                   <button type="button"
                     onClick={() => {
                       if (!roomForm.roomName.trim() || !roomForm.pricePerNight) { alert('Please fill Room Name and Price.'); return; }
-                      setRoomsList(prev => [...prev, { ...roomForm, pricePerNight: Number(roomForm.pricePerNight), maxGuests: Number(roomForm.maxGuests), count: Number(roomForm.count) }]);
+                      const finalRoomType = roomForm.roomType === 'Other' ? customRoomType : roomForm.roomType;
+                      if (roomForm.roomType === 'Other' && !finalRoomType.trim()) { alert('Please enter custom room type.'); return; }
+                      setRoomsList(prev => [...prev, { ...roomForm, roomType: finalRoomType, pricePerNight: Number(roomForm.pricePerNight), maxGuests: Number(roomForm.maxGuests), count: Number(roomForm.count) }]);
                       setRoomForm({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
+                      setCustomRoomType('');
                     }}
                     style={{ padding: '8px 20px', background: '#58A429', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 600, marginBottom: 12 }}>
                     + Add Room Type

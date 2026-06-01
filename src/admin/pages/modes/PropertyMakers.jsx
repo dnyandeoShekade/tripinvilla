@@ -65,13 +65,14 @@ export default function PropertyMakers() {
   // Owners Data
   const [ownersList, setOwnersList] = useState([]);
   const [propertyTypes, setPropertyTypes] = useState([]);
-  const [propertyTypes, setPropertyTypes] = useState([]);
+  const [customPropertyType, setCustomPropertyType] = useState('');
 
   // Upload/images state
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
   const [roomsList, setRoomsList] = useState([]);
   const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
+  const [customRoomType, setCustomRoomType] = useState('');
   const [roomTypes, setRoomTypes] = useState([]);
   const fileInputRef = React.useRef(null);
 
@@ -471,8 +472,8 @@ export default function PropertyMakers() {
     try {
       const payload = {
         ...formData,
-        type: formData.propertyType,
-        propertyType: formData.propertyType,
+        type: formData.propertyType === 'Other' ? customPropertyType : formData.propertyType,
+        propertyType: formData.propertyType === 'Other' ? customPropertyType : formData.propertyType,
         countryId: selectedCountry.id || undefined,
         countryName: selectedCountry.name || undefined,
         stateId: selectedState.id || undefined,
@@ -692,7 +693,19 @@ export default function PropertyMakers() {
                       <option value="Hotel">Hotel</option>
                     </>
                   )}
+                  <option value="Other">Other (Add Manually)</option>
                 </select>
+                {formData.propertyType === 'Other' && (
+                  <input 
+                    style={{ marginTop: '8px' }} 
+                    type="text" 
+                    className="form-input"
+                    placeholder="Enter custom property type"
+                    value={customPropertyType}
+                    onChange={(e) => setCustomPropertyType(e.target.value)}
+                    required
+                  />
+                )}
               </div>
             </div>
             <div className="form-group">
@@ -1602,7 +1615,11 @@ export default function PropertyMakers() {
                 <select className="form-select" value={roomForm.roomType} onChange={e => setRoomForm(p => ({ ...p, roomType: e.target.value }))}>
                   {roomTypes.map(rt => <option key={rt._id} value={rt.name}>{rt.name}</option>)}
                   {roomTypes.length === 0 && ['Standard', 'Deluxe', 'Suite', 'Executive', 'Premium', 'Presidential', 'Family Room', 'Double', 'Single', 'Twin'].map(t => <option key={t} value={t}>{t}</option>)}
+                  <option value="Other">Other (Add Manually)</option>
                 </select>
+                {roomForm.roomType === 'Other' && (
+                  <input style={{ marginTop: '8px' }} type="text" className="form-input" value={customRoomType} onChange={e => setCustomRoomType(e.target.value)} placeholder="e.g. Penthouse" required />
+                )}
               </div>
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Room Name*</label>
@@ -1706,6 +1723,8 @@ export default function PropertyMakers() {
                 disabled={roomImageUploading}
                 onClick={async () => {
                   if (!roomForm.roomName.trim() || !roomForm.pricePerNight) { alert('Please fill Room Name and Price.'); return; }
+                  const finalRoomType = roomForm.roomType === 'Other' ? customRoomType : roomForm.roomType;
+                  if (roomForm.roomType === 'Other' && !finalRoomType.trim()) { alert('Please enter custom room type.'); return; }
 
                   let uploadedUrl = "";
                   if (roomImageFile) {
@@ -1736,6 +1755,7 @@ export default function PropertyMakers() {
                   const amenArr = (roomForm.amenitiesText || '').split(',').map(a => a.trim()).filter(Boolean);
                   setRoomsList(prev => [...prev, {
                     ...roomForm,
+                    roomType: finalRoomType,
                     imageUrl: uploadedUrl || roomForm.imageUrl,
                     room_image_url: uploadedUrl || roomForm.imageUrl,
                     amenities: amenArr,
@@ -1747,6 +1767,7 @@ export default function PropertyMakers() {
                   setRoomImageFile(null);
                   setRoomImagePreview("");
                   if (roomImageRef.current) roomImageRef.current.value = "";
+                  setCustomRoomType("");
                 }}
                 style={{ padding: '10px 32px', background: roomImageUploading ? '#9CA3AF' : '#58A429', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', cursor: roomImageUploading ? 'not-allowed' : 'pointer', fontWeight: 600 }}>
                 + Add Room
