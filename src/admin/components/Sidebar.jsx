@@ -46,6 +46,7 @@ const NAV_SECTIONS = [
     items: [
       { label: 'Property Masters',          icon: Layers,      to: '/admin/modes/property-makers' },
       { label: 'Property Type Master',      icon: Building2,   to: '/admin/masters/property-types' },
+      { label: 'Room Type Master',          icon: BedDouble,   to: '/admin/masters/room-types' },
       { label: 'Country Master',            icon: Globe,       to: '/admin/masters/country' },
       { label: 'State Master',              icon: Map,         to: '/admin/masters/state' },
       { label: 'City Master',               icon: Building2,   to: '/admin/masters/city' },

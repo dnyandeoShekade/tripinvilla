@@ -89,7 +89,8 @@ export default function AllProperties() {
   // ─── Rooms (for Hotel / Resort) ──────────────────────
   const [roomsList, setRoomsList] = useState([]);
   const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
-  const [customRoomType, setCustomRoomType] = useState('');
+  const [roomTypes, setRoomTypes] = useState([]);
+  const [propertyTypes, setPropertyTypes] = useState([]);
 
   // Amenities list matching MyProperties.jsx
   const [selectedAmenitiesList, setSelectedAmenitiesList] = useState([]);
@@ -286,9 +287,31 @@ export default function AllProperties() {
     }
   };
 
+  const fetchPropertyTypes = async () => {
+    try {
+      const res = await fetch(`${API}/master/property-types`);
+      const data = await res.json();
+      if (Array.isArray(data)) setPropertyTypes(data);
+    } catch (err) {
+      console.error("Error fetching property types:", err);
+    }
+  };
+
+  const fetchRoomTypes = async () => {
+    try {
+      const res = await fetch(`${API}/master/room-types`);
+      const data = await res.json();
+      if (Array.isArray(data)) setRoomTypes(data);
+    } catch (err) {
+      console.error("Error fetching room types:", err);
+    }
+  };
+
   useEffect(() => {
     fetchProperties();
     fetchOwners();
+    fetchPropertyTypes();
+    fetchRoomTypes();
   }, []);
 
   const openPanel = () => {
@@ -774,7 +797,12 @@ export default function AllProperties() {
                   }}
                 >
                   <option value="">All Types</option>
-                  {[
+                  {propertyTypes.map(pt => (
+                    <option key={pt._id} value={pt.name}>
+                      {pt.name}
+                    </option>
+                  ))}
+                  {propertyTypes.length === 0 && [
                     "Villa",
                     "Homestay",
                     "Resort",
@@ -1199,10 +1227,17 @@ export default function AllProperties() {
                     value={form.type}
                     onChange={handleFormChange}
                   >
-                    <option value="Homestay">Homestay</option>
-                    <option value="Villa">Villa</option>
-                    <option value="Apartment">Apartment</option>
-                    <option value="Resort">Resort</option>
+                    {propertyTypes.map(pt => (
+                      <option key={pt._id} value={pt.name}>{pt.name}</option>
+                    ))}
+                    {propertyTypes.length === 0 && (
+                      <>
+                        <option value="Homestay">Homestay</option>
+                        <option value="Villa">Villa</option>
+                        <option value="Apartment">Apartment</option>
+                        <option value="Resort">Resort</option>
+                      </>
+                    )}
                   </select>
                 </div>
                 <div className="form-group">
@@ -1456,12 +1491,9 @@ export default function AllProperties() {
                     <div>
                       <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Room Type</label>
                       <select className="form-control" value={roomForm.roomType} onChange={e => setRoomForm(p => ({ ...p, roomType: e.target.value }))}>
-                        {['Standard', 'Deluxe', 'Suite', 'Executive', 'Premium', 'Presidential', 'Family Room', 'Double', 'Single', 'Twin'].map(t => <option key={t} value={t}>{t}</option>)}
-                        <option value="Other">Other (Add Manually)</option>
+                        {roomTypes.map(rt => <option key={rt._id} value={rt.name}>{rt.name}</option>)}
+                        {roomTypes.length === 0 && ['Standard', 'Deluxe', 'Suite', 'Executive', 'Premium', 'Presidential', 'Family Room', 'Double', 'Single', 'Twin'].map(t => <option key={t} value={t}>{t}</option>)}
                       </select>
-                      {roomForm.roomType === 'Other' && (
-                        <input style={{ marginTop: '8px' }} type="text" className="form-control" value={customRoomType} onChange={e => setCustomRoomType(e.target.value)} placeholder="e.g. Penthouse" required />
-                      )}
                     </div>
                     <div>
                       <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Room Name</label>
@@ -1491,11 +1523,8 @@ export default function AllProperties() {
                   <button type="button"
                     onClick={() => {
                       if (!roomForm.roomName.trim() || !roomForm.pricePerNight) { alert('Please fill Room Name and Price.'); return; }
-                      const finalRoomType = roomForm.roomType === 'Other' ? customRoomType : roomForm.roomType;
-                      if (roomForm.roomType === 'Other' && !finalRoomType.trim()) { alert('Please enter custom room type.'); return; }
-                      setRoomsList(prev => [...prev, { ...roomForm, roomType: finalRoomType, pricePerNight: Number(roomForm.pricePerNight), maxGuests: Number(roomForm.maxGuests), count: Number(roomForm.count) }]);
+                      setRoomsList(prev => [...prev, { ...roomForm, pricePerNight: Number(roomForm.pricePerNight), maxGuests: Number(roomForm.maxGuests), count: Number(roomForm.count) }]);
                       setRoomForm({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
-                      setCustomRoomType('');
                     }}
                     style={{ padding: '8px 20px', background: '#58A429', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 600, marginBottom: 12 }}>
                     + Add Room Type
