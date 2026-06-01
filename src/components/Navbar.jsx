@@ -114,13 +114,13 @@ export default function Navbar({
       </div>
 
       {user ? (
-        <div className="nav-profile-block" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="nav-profile-block nav-pill-wrapper" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '0 12px' }}>
           <div
             onClick={() => onNavigate('Profile')}
             style={{
               background: 'var(--primary-green, #58A429)',
-              width: '40px',
-              height: '40px',
+              width: '38px',
+              height: '38px',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
@@ -128,7 +128,7 @@ export default function Navbar({
               color: '#ffffff',
               fontWeight: 700,
               cursor: 'pointer',
-              fontSize: '18px',
+              fontSize: '16px',
               fontFamily: '"Outfit", sans-serif'
             }}
           >
@@ -138,12 +138,14 @@ export default function Navbar({
             className="btn-login"
             style={{
               background: 'transparent',
-              color: (activeMenu === 'Detail') ? '#111827' : '#FFFFFF',
-              border: (activeMenu === 'Detail') ? '1px solid rgba(17,24,39,0.3)' : '1px solid rgba(255,255,255,0.5)',
+              color: '#FFFFFF',
+              border: '1px solid rgba(255,255,255,0.5)',
               padding: '6px 16px',
               fontSize: '13px',
               fontFamily: '"Outfit", sans-serif',
-              fontWeight: 600
+              fontWeight: 600,
+              borderRadius: '60px',
+              cursor: 'pointer'
             }}
             onClick={onLogout}
           >
