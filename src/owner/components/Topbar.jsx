@@ -9,6 +9,7 @@ const PAGE_TITLES = {
   '/owner/offers':     'Offers by Date',
   '/owner/enquiries':  'Enquiries',
   '/owner/premium':    'Upgrade to Premium',
+  '/owner/profile':    'My Profile',
   '/owner/logout':     'Log Out',
 };
 
@@ -68,8 +69,12 @@ export default function Topbar({ onToggleSidebar }) {
 
         {/* User block */}
         <div className="topbar-user" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 12px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#ffffff', position: 'relative' }}>
-          <div className="topbar-avatar" style={{ background: '#58A429', width: '32px', height: '32px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', fontWeight: 700, fontSize: '14px' }}>
-            {initials}
+          <div className="topbar-avatar" style={{ background: '#58A429', width: '32px', height: '32px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', fontWeight: 700, fontSize: '14px', overflow: 'hidden' }}>
+            {user.avatar ? (
+              <img src={user.avatar} alt="User Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              initials
+            )}
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div className="topbar-user-name" style={{ fontSize: '13px', fontWeight: 600, color: '#111827' }}>{user.name}</div>
@@ -80,6 +85,8 @@ export default function Topbar({ onToggleSidebar }) {
             onChange={(e) => {
               if (e.target.value === 'logout') {
                 navigate('/owner/logout');
+              } else if (e.target.value === 'profile') {
+                navigate('/owner/profile');
               }
             }}
             value=""
