@@ -465,31 +465,19 @@ export default function GuestApp() {
     }
   };
 
-  const mappedBest = featuredProperties.length > 0 ? mapDbProperties(featuredProperties, bestVillasList) : mapDbProperties(allProperties, bestVillasList).slice(0, 6);
+  const mappedBest = featuredProperties.length > 0 ? mapDbProperties(featuredProperties, []) : mapDbProperties(allProperties, []).slice(0, 6);
   let currentBestVillas = [...mappedBest];
-  if (currentBestVillas.length === 0) {
-    currentBestVillas = mapDbProperties([], bestVillasList.slice(0, 6));
-  }
+
 
   // Also map properties for Curated section (Section 3) instead of hardcoded curatedList
   let currentCuratedVillas = featuredProperties.length > 0 
-    ? mapDbProperties(featuredProperties.slice().reverse(), curatedList)
-    : mapDbProperties(allProperties.slice().reverse(), curatedList).slice(0, 6);
-  if (currentCuratedVillas.length === 0) {
-    currentCuratedVillas = mapDbProperties([], curatedList); // fallback to 3 mock items
-  }
+    ? mapDbProperties(featuredProperties.slice().reverse(), [])
+    : mapDbProperties(allProperties.slice().reverse(), []).slice(0, 6);
 
-  const mappedProps = mapDbProperties(liveProperties, propertiesVillasList);
+
+  const mappedProps = mapDbProperties(liveProperties, []);
   let currentPropertiesVillas = [...mappedProps];
-  if (liveProperties && liveProperties.length > 0 && currentPropertiesVillas.length < 8) {
-    // Only backfill when no active query search text is typed in
-    if (!where || where.trim() === '') {
-      const diff = 8 - currentPropertiesVillas.length;
-      const extraMockItems = propertiesVillasList.slice(currentPropertiesVillas.length, currentPropertiesVillas.length + diff);
-      const mappedExtra = mapDbProperties([], extraMockItems);
-      currentPropertiesVillas = [...currentPropertiesVillas, ...mappedExtra];
-    }
-  }
+
 
   const displayDestinations = liveDestinations.length > 0 ? liveDestinations.map(d => {
     const types = d.propertyTypesOffered || [];
