@@ -36,7 +36,13 @@ import {
 } from './props/pageProps';
 
 export default function GuestApp() {
-  const [activeMenu, setActiveMenu] = useState('Home');
+  const [activeMenu, setActiveMenu] = useState(() => {
+    return sessionStorage.getItem('activeMenu') || 'Home';
+  });
+
+  React.useEffect(() => {
+    sessionStorage.setItem('activeMenu', activeMenu);
+  }, [activeMenu]);
 
   // Handle browser back button
   React.useEffect(() => {
@@ -244,7 +250,25 @@ export default function GuestApp() {
   const [liveExperiences, setLiveExperiences] = useState([]);
   const [featuredProperties, setFeaturedProperties] = useState([]);
   const [homepageContent, setHomepageContent] = useState(null);
-  const [selectedProperty, setSelectedProperty] = useState(null);
+  const [selectedProperty, setSelectedProperty] = useState(() => {
+    const saved = sessionStorage.getItem('selectedProperty');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  });
+
+  React.useEffect(() => {
+    if (selectedProperty) {
+      sessionStorage.setItem('selectedProperty', JSON.stringify(selectedProperty));
+    } else {
+      sessionStorage.removeItem('selectedProperty');
+    }
+  }, [selectedProperty]);
 
   useGuestBootstrapData({
     API_BASE,
