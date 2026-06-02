@@ -1,3 +1,4 @@
+import React, { useEffect } from 'react';
 import { ChevronLeft, ChevronRight, CreditCard, Heart, MapPin, Percent } from 'lucide-react';
 import { rect32Img, rect33Img, rect35Img } from '../../assets';
 import { popularOffersList } from '../../data/mockData';
@@ -36,6 +37,22 @@ export default function HomePage(props) {
     setContactStep,
     setContactModalOpen,
   } = props;
+
+  // Auto-scroll curated properties
+  useEffect(() => {
+    if (activeMenu !== 'Home') return;
+    const interval = setInterval(() => {
+      const track = document.querySelector('.curated-horizontal-grid');
+      if (track) {
+        if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 10) {
+          track.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          track.scrollBy({ left: 400, behavior: 'smooth' });
+        }
+      }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [activeMenu]);
 
   return (
     <>

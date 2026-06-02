@@ -449,8 +449,11 @@ export default function GuestApp() {
     } else {
       document.title = `Tripinstays | ${activeMenu}`;
     }
-    window.scrollTo(0, 0);
   }, [activeMenu, activeDetailProp]);
+
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [activeMenu]);
 
   const toggleMockWishlist = (title) => {
     if (!token) {
