@@ -184,7 +184,7 @@ export default function AllProperties() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           experienceName: newCustomExp.trim(),
-          representingIcon: "✨",
+          representingIcon: "",
           status: "Active",
         }),
       });
@@ -1433,7 +1433,7 @@ export default function AllProperties() {
                             }}
                           >
                             <span>
-                              {exp.representingIcon || exp.icon || "✨"}
+
                             </span>
                             <span>{exp.experienceName || exp.name}</span>
                           </button>

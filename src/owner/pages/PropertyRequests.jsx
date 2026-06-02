@@ -59,7 +59,7 @@ export default function PropertyRequests() {
       const res = await fetch(`${API_ENDPOINT}/admin/experiences`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ experienceName: newCustomExp.trim(), representingIcon: '✨', status: 'Active' })
+        body: JSON.stringify({ experienceName: newCustomExp.trim(), representingIcon: '', status: 'Active' })
       });
       const data = await res.json();
       setAvailableExperiences(prev => [...prev, data]);
@@ -377,7 +377,7 @@ export default function PropertyRequests() {
                     return (
                       <button type="button" key={id} onClick={() => toggleExperience(id)}
                         style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '20px', border: isSelected ? '1.5px solid #58A429' : '1px solid #D1D5DB', background: isSelected ? '#ECFDF5' : '#fff', color: isSelected ? '#58A429' : '#374151', fontSize: '13px', fontWeight: 500, cursor: 'pointer' }}>
-                        <span>{exp.representingIcon || exp.icon || "✨"}</span>
+
                         <span>{exp.experienceName || exp.name}</span>
                       </button>
                     );

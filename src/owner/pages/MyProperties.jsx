@@ -203,7 +203,7 @@ export default function MyProperties() {
       const res = await fetch(`${API_ENDPOINT}/admin/experiences`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ experienceName: newCustomExp.trim(), representingIcon: '✨', status: 'Active' })
+        body: JSON.stringify({ experienceName: newCustomExp.trim(), representingIcon: '', status: 'Active' })
       });
       const data = await res.json();
       setAvailableExperiences(prev => [...prev, data]);
@@ -1289,7 +1289,7 @@ export default function MyProperties() {
                       <button key={id} type="button"
                         onClick={() => setSelectedExperiences(prev => prev.includes(id) ? prev.filter(e => e !== id) : [...prev, id])}
                         style={{ padding: '8px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: 500, border: isSelected ? '1.5px solid #58A429' : '1px solid #D1D5DB', background: isSelected ? '#ECFDF5' : '#fff', color: isSelected ? '#58A429' : '#374151', cursor: 'pointer', transition: 'all 0.15s', fontFamily: '"Outfit", sans-serif', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <span>{exp.representingIcon || exp.icon || "✨"}</span>
+
                         <span>{exp.experienceName || exp.name}</span>
                         {isSelected && <span style={{ fontSize: '11px' }}>✓</span>}
                       </button>

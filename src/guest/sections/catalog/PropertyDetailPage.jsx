@@ -258,7 +258,7 @@ export default function PropertyDetailPage(props) {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {activeDetailProp.experiences.map((exp, idx) => (
                 <div key={idx} style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '12px', padding: '14px 20px', display: 'flex', gap: '14px', alignItems: 'center' }}>
-                  <span style={{ fontSize: '28px', flexShrink: 0 }}>{exp.representingIcon || exp.icon || '✨'}</span>
+
                   <div>
                     <div style={{ fontSize: '14px', fontWeight: 700, color: '#065F46', fontFamily: '"Outfit", sans-serif' }}>
                       {exp.experienceName || exp.name}
