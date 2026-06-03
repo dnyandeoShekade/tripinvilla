@@ -76,7 +76,7 @@ export default function PropertyViewModal({ property, onClose }) {
 
           {/* Images gallery */}
           {images.length > 0 && (
-            <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '8px' }}>
+            <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '8px', flexShrink: 0, minHeight: '168px' }}>
               {images.map((img, idx) => (
                 <img
                   key={idx}
