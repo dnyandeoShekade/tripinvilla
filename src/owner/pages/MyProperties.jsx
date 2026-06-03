@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Search, Filter, Calendar, ChevronDown, CheckCircle2, XCircle, MoreVertical, Edit2, Trash2, ArrowUpRight, Upload, TrendingUp, TrendingDown } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { propertyService, dashboardService } from '../services/api';
+import PropertyViewModal from '../../admin/pages/properties/PropertyViewModal';
 
 const parseNumber = (val) => {
   if (typeof val === 'number') return val;
@@ -121,6 +122,7 @@ export default function MyProperties({ autoOpenForm = false }) {
   const [enquiryCounts, setEnquiryCounts] = useState({});
   const [loading, setLoading] = useState(false);
   const [actionMenu, setActionMenu] = useState(null);
+  const [viewingProperty, setViewingProperty] = useState(null);
   const [propertyTypes, setPropertyTypes] = useState([]);
   const [customPropertyType, setCustomPropertyType] = useState('');
 
@@ -704,6 +706,9 @@ export default function MyProperties({ autoOpenForm = false }) {
 
   return (
     <div className="fade-in" onClick={() => setActionMenu(null)}>
+      {viewingProperty && (
+        <PropertyViewModal property={viewingProperty} onClose={() => setViewingProperty(null)} />
+      )}
       <div style={{ height: '16px' }} />
       {/* Breadcrumb */}
       <div className="props-breadcrumb" style={{ margin: '0 39px 12px', fontSize: '13px', color: '#6B7280', fontFamily: '"Outfit", sans-serif' }}>
@@ -1503,6 +1508,9 @@ export default function MyProperties({ autoOpenForm = false }) {
                         </button>
                         {actionMenu === p._id && (
                           <div style={{ position: 'absolute', right: 16, top: 36, background: '#fff', border: '1px solid #E5E7EB', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 100, minWidth: 140 }}>
+                            <button type="button" onClick={() => { setActionMenu(null); setViewingProperty(p); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                              👁 View Details
+                            </button>
                             <button type="button" onClick={() => { setActionMenu(null); handleEdit(p); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
                               ✎ Edit Property
                             </button>

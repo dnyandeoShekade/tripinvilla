@@ -10,7 +10,7 @@ export default function PropertyViewModal({ property, onClose, inline = false })
       const fetchRooms = async () => {
         try {
           const token = localStorage.getItem("admin_token") || localStorage.getItem("owner_token");
-          const res = await fetch(`${import.meta.env.VITE_API_BASE}/property-requests/admin-direct/rooms?propertyId=${property._id}`, {
+          const res = await fetch(`${import.meta.env.VITE_API_BASE}/property-requests/property/${property._id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           if (res.ok) {
