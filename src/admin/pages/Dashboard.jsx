@@ -345,7 +345,11 @@ export default function Dashboard() {
                       <button className="action-dots" onClick={() => setActionMenu(actionMenu === `enq_${e.id || e.enquiryNo}` ? null : `enq_${e.id || e.enquiryNo}`)} style={{ cursor: 'pointer' }}><MoreVertical size={14} /></button>
                       {actionMenu === `enq_${e.id || e.enquiryNo}` && (
                         <div style={{ position: 'absolute', right: 8, top: i >= 3 ? "auto" : 32, bottom: i >= 3 ? 32 : "auto", background: '#fff', border: '1px solid #E5E7EB', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 100, minWidth: 160 }}>
-                          <button onClick={() => { setActionMenu(null); setSelectedEnquiry(e); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                          <button onClick={() => { 
+                            setActionMenu(null); 
+                            setSelectedEnquiry(e); 
+                            setTimeout(() => document.getElementById('enquiry-detail-div')?.scrollIntoView({ behavior: 'smooth' }), 100);
+                          }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
                             👁 View Details
                           </button>
                         </div>
@@ -365,8 +369,8 @@ export default function Dashboard() {
       )}
 
       {selectedEnquiry && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
-          <div style={{ backgroundColor: '#fff', borderRadius: '16px', maxWidth: '500px', width: '100%', padding: '24px', position: 'relative' }}>
+        <div id="enquiry-detail-div" style={{ position: 'relative', width: '100%', background: '#fff', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', marginTop: '24px' }}>
+          <div style={{ backgroundColor: '#fff', padding: '24px', position: 'relative' }}>
             <button onClick={() => setSelectedEnquiry(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', fontSize: 20 }}>&times;</button>
             <h3 style={{ margin: '0 0 16px 0', fontSize: 18, color: '#111827' }}>Enquiry Details</h3>
             <div style={{ display: 'grid', gap: 12, fontSize: 14 }}>
