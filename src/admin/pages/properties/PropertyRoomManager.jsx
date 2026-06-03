@@ -4,7 +4,7 @@ import { Plus, Trash2, Edit2, X, Check, Image, Tag } from 'lucide-react';
 const API_BASE = import.meta.env.VITE_API_BASE;
 
 const ROOM_TYPES = ['Deluxe Room', 'Super Deluxe Room', 'Suite', 'Premium Suite', 'Standard Room', 'Family Room', 'Studio', 'Penthouse', 'Cottage', 'Villa Wing', 'Other'];
-const BED_TYPES = ['King Bed', 'Queen Bed', 'Twin Beds', 'Double Bed', 'Bunk Beds', 'Single Bed', 'Sofa Bed'];
+const BED_TYPES = ['King Size', 'Queen Size', 'Twin Beds', 'Double Bed', 'Bunk Beds', 'Single Bed', 'Sofa Bed', 'King Size 1', 'King Size Bed', 'Queen Size Bed', 'Twin Bed'];
 const COMMON_AMENITIES = ['WiFi', 'AC', 'TV', 'Parking', 'Swimming Pool', 'Breakfast', 'Kitchen', 'Barbeque', 'Gym', 'Spa', 'Balcony', 'Garden View', 'Sea View', 'Mountain View', 'Jacuzzi', 'Room Service', 'Mini Bar', 'Safe', 'Desk', 'Wardrobe'];
 
 const emptyRoom = {
@@ -52,8 +52,14 @@ export default function PropertyRoomManager({ property, onClose }) {
     }
   };
 
+  const [roomTypesMaster, setRoomTypesMaster] = useState([]);
+
   useEffect(() => {
     fetchRooms();
+    fetch(`${API_BASE}/master/room-types`)
+      .then(r => r.json())
+      .then(data => { if(Array.isArray(data)) setRoomTypesMaster(data); })
+      .catch(console.error);
   }, [property?._id]);
 
   const handleImageChange = (idx, val) => {
@@ -242,7 +248,11 @@ export default function PropertyRoomManager({ property, onClose }) {
                 <label style={labelStyle}>Room Type *</label>
                 <select value={form.room_type} onChange={e => setForm(p => ({ ...p, room_type: e.target.value }))} style={inputStyle}>
                   <option value="">Select room type</option>
-                  {ROOM_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  {roomTypesMaster.map(t => <option key={t._id} value={t.name}>{t.name}</option>)}
+                  {roomTypesMaster.length === 0 && ROOM_TYPES.map(t => <option key={t} value={t}>{t}</option>)}
+                  {form.room_type && !roomTypesMaster.some(t => t.name === form.room_type) && (roomTypesMaster.length > 0 || !ROOM_TYPES.includes(form.room_type)) && (
+                    <option value={form.room_type}>{form.room_type}</option>
+                  )}
                 </select>
               </div>
               <div>
@@ -250,6 +260,9 @@ export default function PropertyRoomManager({ property, onClose }) {
                 <select value={form.bed_type} onChange={e => setForm(p => ({ ...p, bed_type: e.target.value }))} style={inputStyle}>
                   <option value="">Select bed type</option>
                   {BED_TYPES.map(b => <option key={b} value={b}>{b}</option>)}
+                  {form.bed_type && !BED_TYPES.includes(form.bed_type) && (
+                    <option value={form.bed_type}>{form.bed_type}</option>
+                  )}
                 </select>
               </div>
             </div>

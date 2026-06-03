@@ -683,6 +683,9 @@ export default function PropertyMakers() {
                   {propertyTypes.map(pt => (
                     <option key={pt._id} value={pt.name}>{pt.name}</option>
                   ))}
+                  {formData.propertyType && !propertyTypes.some(pt => pt.name === formData.propertyType) && (
+                    <option value={formData.propertyType}>{formData.propertyType}</option>
+                  )}
                   {propertyTypes.length === 0 && (
                     <>
                       <option value="Homestay">Homestay</option>
@@ -753,6 +756,20 @@ export default function PropertyMakers() {
                       {o.ownerName || o.name} ({o.email || o.phone})
                     </option>
                   ))}
+                  {formData.ownerId && !ownersList.some(o => o._id === formData.ownerId) && (() => {
+                    const adminUserStr = localStorage.getItem("admin_user");
+                    let isAdmin = false;
+                    try {
+                      if (adminUserStr) {
+                        const adminUser = JSON.parse(adminUserStr);
+                        if (adminUser.id === formData.ownerId || adminUser._id === formData.ownerId) isAdmin = true;
+                      }
+                    } catch (e) {}
+                    if (!isAdmin) {
+                      return <option value={formData.ownerId}>{formData.ownerName || 'Unknown Owner'}</option>;
+                    }
+                    return null;
+                  })()}
                 </select>
                 <ChevronDown
                   size={16}
@@ -1627,6 +1644,9 @@ export default function PropertyMakers() {
                 <select className="form-select" value={roomForm.roomType} onChange={e => setRoomForm(p => ({ ...p, roomType: e.target.value }))}>
                   {roomTypes.map(rt => <option key={rt._id} value={rt.name}>{rt.name}</option>)}
                   {roomTypes.length === 0 && ['Standard', 'Deluxe', 'Suite', 'Executive', 'Premium', 'Presidential', 'Family Room', 'Double', 'Single', 'Twin'].map(t => <option key={t} value={t}>{t}</option>)}
+                  {roomForm.roomType && roomForm.roomType !== 'Other' && !roomTypes.some(rt => rt.name === roomForm.roomType) && (roomTypes.length > 0 || !['Standard', 'Deluxe', 'Suite', 'Executive', 'Premium', 'Presidential', 'Family Room', 'Double', 'Single', 'Twin'].includes(roomForm.roomType)) && (
+                    <option value={roomForm.roomType}>{roomForm.roomType}</option>
+                  )}
                   <option value="Other">Other (Add Manually)</option>
                 </select>
                 {roomForm.roomType === 'Other' && (
@@ -1641,6 +1661,9 @@ export default function PropertyMakers() {
                 <label className="form-label">Bed Type*</label>
                 <select className="form-select" value={roomForm.bedType} onChange={e => setRoomForm(p => ({ ...p, bedType: e.target.value }))}>
                   {['Single Bed', 'Double Bed', 'Queen Size', 'King Size', 'King Size 1', 'Twin Beds', 'Bunk Beds'].map(t => <option key={t} value={t}>{t}</option>)}
+                  {roomForm.bedType && !['Single Bed', 'Double Bed', 'Queen Size', 'King Size', 'King Size 1', 'Twin Beds', 'Bunk Beds'].includes(roomForm.bedType) && (
+                    <option value={roomForm.bedType}>{roomForm.bedType}</option>
+                  )}
                 </select>
               </div>
               <div className="form-group" style={{ marginBottom: 0 }}>
