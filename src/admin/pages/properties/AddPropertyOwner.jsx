@@ -66,7 +66,7 @@ export default function AddPropertyOwner() {
           </div>
 
           {/* Row 1 */}
-          <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-2">
             <div className="form-group">
               <label className="form-label">Owner Name*</label>
               <input 
@@ -91,7 +91,7 @@ export default function AddPropertyOwner() {
             </div>
           </div>
 
-          <div className="form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-2">
             <div className="form-group">
               <label className="form-label">Contact Number*</label>
               <input 

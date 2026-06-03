@@ -89,7 +89,7 @@ export default function PropertyOwned() {
 
       {/* Stats Section */}
       <div className="dash-section" style={{ minHeight: 162, boxSizing: 'border-box', justifyContent: 'center', marginBottom: 16 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+        <div className="props-stats-row" style={{ gap: 16 }}>
           <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
             <div className="props-stat-icon-wrap blue"><ClipboardList strokeWidth={2.5} /></div>
             <div className="props-stat-content">

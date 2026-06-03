@@ -720,13 +720,7 @@ export default function AllProperties() {
           marginBottom: 16,
         }}
       >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: 16,
-          }}
-        >
+        <div className="props-stats-row">
           <div
             className="props-stat-card"
             style={{ margin: 0, borderRadius: 12 }}

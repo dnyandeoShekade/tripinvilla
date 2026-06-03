@@ -158,7 +158,7 @@ export default function PropertyRooms() {
           border: '1px solid #EFF6E6',
           boxShadow: '0 2px 12px rgba(0, 0, 0, 0.02)'
         }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+          <div className="props-stats-row" style={{ gap: 16 }}>
             <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
               <div className="props-stat-icon-wrap blue"><ClipboardList strokeWidth={2.5} /></div>
               <div className="props-stat-content">
