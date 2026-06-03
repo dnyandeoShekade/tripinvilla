@@ -180,7 +180,7 @@ export default function PropertyDetailPage(props) {
               {oldPriceString && (
                 <span className="old-strike-price">{oldPriceString}/night</span>
               )}
-              <span className="taxes-subtext">+{activeDetailProp.taxAmount || 212} taxes & fees per room per night</span>
+              <span className="taxes-subtext" style={{ textAlign: 'right' }}>+{activeDetailProp.taxAmount || 212} taxes & fees per<br />room per night</span>
               <div style={{ marginTop: '4px' }}>
                 <span className="highlight-green-detail">{priceString}/night</span>
               </div>
@@ -403,7 +403,7 @@ export default function PropertyDetailPage(props) {
 
                     <div className="room-card-pricing-col">
                       <div className="room-pricing-text-group">
-                        <span className="room-taxes-label">+{room.tax_amount || room.taxAmount || activeDetailProp.taxAmount || 212} taxes & fees per room per night</span>
+                        <span className="room-taxes-label">+{room.tax_amount || room.taxAmount || activeDetailProp.taxAmount || 212} taxes & fees per<br />room per night</span>
                         {roomOriginalPrice && (
                           <span className="room-old-strike">₹{Number(roomOriginalPrice).toLocaleString('en-IN')}/night</span>
                         )}
