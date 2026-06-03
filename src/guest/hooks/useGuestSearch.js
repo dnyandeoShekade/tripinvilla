@@ -59,10 +59,12 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
       const hasOwn = (key) => Object.prototype.hasOwnProperty.call(searchParams, key);
 
       // 1. Where / Search Text
+      // Sent as 'city' → backend searches city + state + location fields (broad match)
+      // Also sent as 'keyword' for name/description matching
       const searchVal = hasOwn('search') ? searchParams.search : where;
       const hasSearchText = searchVal && searchVal.trim() !== '';
       if (hasSearchText) {
-        query.append('keyword', searchVal.trim());
+        query.append('city', searchVal.trim());
       }
 
       // 2. Type / Category
