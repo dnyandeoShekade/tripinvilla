@@ -89,7 +89,8 @@ export default function DateRangeDropdown({
           borderRadius: 12,
           boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
           zIndex: 9999,
-          overflow: 'hidden'
+          overflow: 'hidden',
+          width: 'max-content'
         }}>
           <div style={{
             display: 'flex',

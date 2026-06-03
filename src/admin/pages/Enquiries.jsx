@@ -181,7 +181,7 @@ export default function Enquiries() {
               </div>
 
               {showDatePicker && (
-                <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', background: '#fff', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 50, padding: '16px', border: '1px solid #E5E7EB' }}>
+                <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '8px', background: '#fff', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 50, padding: '16px', border: '1px solid #E5E7EB', width: 'max-content' }}>
                   <div style={{ fontWeight: 600, fontSize: '15px', color: '#111827', marginBottom: '12px', paddingLeft: '8px' }}>Select dates</div>
                   <DateRange
                     ranges={[getSelectionRange()]}
