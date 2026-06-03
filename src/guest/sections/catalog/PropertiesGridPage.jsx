@@ -63,7 +63,13 @@ export default function PropertiesGridPage(props) {
       <div className="villas-around-section" style={{ marginTop: '40px' }}>
         <div className="section-title-wrap">
           <h2 className="section-main-headline">
-            {renderTitle(homepageContent?.section1?.title, <span>Best <span className="highlight-sharp-blue-box">{activePropCategory || 'Villas'}</span> Around You</span>, activePropCategory || 'Villas')}
+            {(() => {
+              const baseTitle = homepageContent?.section1?.title || 'Best Villas around you';
+              const dynamicTitle = baseTitle
+                .replace(/villas/gi, activePropCategory || 'Villas')
+                .replace(/villa/gi, activePropCategory || 'Villas');
+              return renderTitle(dynamicTitle, <span>Best <span className="highlight-sharp-blue-box">{activePropCategory || 'Villas'}</span> Around You</span>, activePropCategory || 'Villas');
+            })()}
           </h2>
           <p className="section-sub-headline">
             {homepageContent?.section1?.subText || 'Choose from homestays, villas, apartments, resorts and more.'}
