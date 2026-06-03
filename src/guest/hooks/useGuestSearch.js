@@ -68,30 +68,9 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
       }
 
       // 2. Type / Category
-      const typeOverride = hasOwn('type') ? searchParams.type : null;
-      const dbType = typeOverride !== null ? typeOverride : hasSearchText ? '' : activePropCategory;
-      if (dbType && dbType !== 'More+' && dbType !== 'Any' && dbType !== '') {
-        const typeMap = {
-          Apartments: 'Apartment',
-          Apartment: 'Apartment',
-          Homestays: 'Homestay',
-          Homestay: 'Homestay',
-          Resorts: 'Resort',
-          Resort: 'Resort',
-          Villas: 'Villa',
-          Villa: 'Villa',
-          Hotels: 'Hotel',
-          Hotel: 'Hotel',
-          Cottages: 'Cottage',
-          Cottage: 'Cottage',
-          Motels: 'Motel',
-          Motel: 'Motel',
-          Bungalows: 'Bungalow',
-          Bungalow: 'Bungalow',
-        };
-        const mapped = typeMap[dbType];
-        if (mapped) query.append('type', mapped);
-      }
+      // We rely on frontend filters (`filterSelectedTypes`) for property type filtering
+      // so we don't pass `type` to the backend query anymore. This allows the sidebar 
+      // filters to work correctly across all property types.
 
       // 3. Guests / Who
       const guestsVal = hasOwn('guests') ? searchParams.guests : guests;
@@ -216,10 +195,22 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
   const handleSearch = () => {
     if (setActiveMenu) setActiveMenu('Search');
     if (where && where.trim()) {
+      setFilterSelectedTypes([]);
       fetchProperties({ search: where, price, guests });
     } else if (activeSearchTab && activeSearchTab !== 'More+') {
       setActivePropCategory(activeSearchTab);
-      fetchProperties({ type: activeSearchTab, price, guests });
+      const typeMap = {
+        Apartments: 'Apartment',
+        Homestays: 'Homestay',
+        Resorts: 'Resort',
+        Villas: 'Villa',
+        Hotels: 'Hotel',
+        Cottages: 'Cottage',
+        Motels: 'Motel',
+        Bungalows: 'Bungalow',
+      };
+      setFilterSelectedTypes([typeMap[activeSearchTab] || activeSearchTab]);
+      fetchProperties({ price, guests });
     } else {
       fetchProperties({ price, guests });
     }

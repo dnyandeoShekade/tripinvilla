@@ -53,7 +53,7 @@ export default function PropertyViewModal({ property, onClose, inline = false })
   const amenities   = Array.isArray(property.amenities) && property.amenities.length > 0
                         ? property.amenities
                         : (Array.isArray(property.amenityTypes) ? property.amenityTypes : []);
-  const rules       = property.rules || '';
+  const rules       = property.rules && property.rules.trim() !== '' ? property.rules : '• Primary Guest should be at least 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).';
   const checkIn     = property.checkIn || '3:00 PM';
   const checkOut    = property.checkOut || '12:00 PM';
   const bedRooms    = property.bedRooms || property.bedrooms || 1;
@@ -62,9 +62,23 @@ export default function PropertyViewModal({ property, onClose, inline = false })
   const price       = property.price || property.price_per_night || property.bestRoomRate || 0;
   const originalPrice = property.originalPrice || 0;
   const taxAmount   = property.taxAmount || 0;
-  const ownerName   = property.ownerName || (property.owner?.name) || 'Unknown';
-  const ownerPhone  = property.ownerContact || (property.owner?.phone) || '';
-  const ownerEmail  = property.owner?.email || '';
+  const getOwnerName = () => {
+    if (property.ownerName && property.ownerName.trim() !== '') return property.ownerName;
+    if (property.owner && typeof property.owner === 'object' && property.owner.name) return property.owner.name;
+    return 'Unknown';
+  };
+  const getOwnerPhone = () => {
+    if (property.ownerContact && property.ownerContact.trim() !== '') return property.ownerContact;
+    if (property.owner && typeof property.owner === 'object' && property.owner.phone) return property.owner.phone;
+    return '';
+  };
+  const getOwnerEmail = () => {
+    if (property.owner && typeof property.owner === 'object' && property.owner.email) return property.owner.email;
+    return '';
+  };
+  const ownerName   = getOwnerName();
+  const ownerPhone  = getOwnerPhone();
+  const ownerEmail  = getOwnerEmail();
   const location    = property.location || property.full_address || city;
   const propertyNo  = property.propertyNo || property._id?.toString().slice(-6).toUpperCase() || '';
   // Rooms — actual rooms array (stored on model as `rooms`) combined with dynamically fetched rooms
@@ -241,15 +255,17 @@ export default function PropertyViewModal({ property, onClose, inline = false })
               {showRooms && (
                 <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                   {rooms.map((room, idx) => {
-                    const roomImg = room.imageUrl || room.room_image_url || room.img || (Array.isArray(room.room_images) && room.room_images[0]) || (Array.isArray(room.images) && room.images[0]) || '';
-                    const roomTitle = room.roomName || room.room_type || room.roomType || room.title || 'Standard Room';
-                    const roomBedType = room.bedType || room.bed_type || room.beds || 'King Size';
-                    const roomGuests = room.maxGuests || room.capacity || room.guests || 2;
-                    const roomCount = room.count || room.rooms || 1;
-                    const roomCheckIn = room.checkIn || room.checkin_time || '3:00 PM';
-                    const roomCheckOut = room.checkOut || room.checkout_time || '12:00 PM';
-                    const roomPrice = room.pricePerNight || room.price_per_room || room.price || 0;
-                    const roomAmenities = room.amenities || room.amenities_types || room.features || [];
+                    const getValid = (arr, fallback) => arr.find(v => v && String(v).trim() !== '' && String(v) !== '·') || fallback;
+                    const fallbackImg = images && images.length > 0 ? images[0] : 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80';
+                    const roomImg = getValid([room.imageUrl, room.room_image_url, room.img, Array.isArray(room.room_images) ? room.room_images[0] : null, Array.isArray(room.images) ? room.images[0] : null], fallbackImg);
+                    const roomTitle = getValid([room.roomName, room.room_type, room.roomType, room.title], 'Standard Room');
+                    const roomBedType = getValid([room.bedType, room.bed_type, room.beds], 'King Size');
+                    const roomGuests = getValid([room.maxGuests, room.capacity, room.guests], 2);
+                    const roomCount = getValid([room.count, room.rooms], 1);
+                    const roomCheckIn = getValid([room.checkIn, room.checkin_time], checkIn);
+                    const roomCheckOut = getValid([room.checkOut, room.checkout_time], checkOut);
+                    const roomPrice = Number(getValid([room.pricePerNight, room.price_per_room, room.price], price || 0));
+                    const roomAmenities = Array.isArray(room.amenities) && room.amenities.length > 0 ? room.amenities : (Array.isArray(room.amenities_types) && room.amenities_types.length > 0 ? room.amenities_types : (Array.isArray(room.features) && room.features.length > 0 ? room.features : amenities));
 
                     return (
                       <div key={idx} style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '16px' }}>
