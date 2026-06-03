@@ -86,7 +86,7 @@ export const locationService = {
 };
 
 export const experienceService = {
-  getActive: () => api.get('/admin/experiences/active'),
+  getActive: () => api.get('/master/experiences/active'),
 };
 
 export default api;

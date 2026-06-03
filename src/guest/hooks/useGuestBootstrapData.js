@@ -22,7 +22,7 @@ export default function useGuestBootstrapData({
           const d = await destRes.json();
           setLiveDestinations(d);
         }
-        const expRes = await fetch(`${API_BASE}/admin/experiences/active`);
+        const expRes = await fetch(`${API_BASE}/master/experiences/active`);
         if (expRes.ok) {
           const e = await expRes.json();
           setLiveExperiences(e);

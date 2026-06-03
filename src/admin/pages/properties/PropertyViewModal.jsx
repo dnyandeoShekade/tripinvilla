@@ -26,7 +26,7 @@ export default function PropertyViewModal({ property, onClose, inline = false })
       
       const fetchExperiences = async () => {
         try {
-          const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/experiences/active`);
+          const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/experiences/active`);
           if (res.ok) {
             const data = await res.json();
             if (Array.isArray(data)) setAllExperiences(data);

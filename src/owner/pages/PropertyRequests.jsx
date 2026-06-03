@@ -59,7 +59,7 @@ export default function PropertyRequests() {
     if (!newCustomExp.trim()) return;
     try {
       const API_ENDPOINT = typeof API !== 'undefined' ? API : `${import.meta.env.VITE_API_BASE}`;
-      const res = await fetch(`${API_ENDPOINT}/admin/experiences`, {
+      const res = await fetch(`${API_ENDPOINT}/master/experiences`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ experienceName: newCustomExp.trim(), representingIcon: '', status: 'Active' })
@@ -76,7 +76,7 @@ export default function PropertyRequests() {
   const fetchExperiences = async () => {
     setExperiencesLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/admin/experiences/active`);
+      const res = await fetch(`${API_BASE}/master/experiences/active`);
       const data = await res.json();
       if (Array.isArray(data)) setAvailableExperiences(data);
     } catch {

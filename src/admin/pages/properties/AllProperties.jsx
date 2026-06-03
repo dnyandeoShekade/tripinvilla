@@ -181,7 +181,7 @@ export default function AllProperties() {
     try {
       const API_ENDPOINT =
         typeof API !== "undefined" ? API : `${import.meta.env.VITE_API_BASE}`;
-      const res = await fetch(`${API_ENDPOINT}/admin/experiences`, {
+      const res = await fetch(`${API_ENDPOINT}/master/experiences`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -205,7 +205,7 @@ export default function AllProperties() {
   const fetchExperiences = async () => {
     setExperiencesLoading(true);
     try {
-      const res = await fetch(`${API}/admin/experiences/active`);
+      const res = await fetch(`${API}/master/experiences/active`);
       const data = await res.json();
       if (Array.isArray(data)) setAvailableExperiences(data);
     } catch (err) {
