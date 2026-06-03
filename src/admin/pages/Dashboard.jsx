@@ -1,3 +1,4 @@
+import { toast } from 'react-hot-toast';
 import ReadMore from '../components/ReadMore';
 import { useState, useEffect } from 'react';
 import {
@@ -262,7 +263,12 @@ export default function Dashboard() {
                       <button className="action-dots" onClick={() => setActionMenu(actionMenu === `prop_${p.id || p.propertyNo}` ? null : `prop_${p.id || p.propertyNo}`)} style={{ cursor: 'pointer' }}><MoreVertical size={14} /></button>
                       {actionMenu === `prop_${p.id || p.propertyNo}` && (
                         <div style={{ position: 'absolute', right: 8, top: i >= 3 ? "auto" : 32, bottom: i >= 3 ? 32 : "auto", background: '#fff', border: '1px solid #E5E7EB', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 100, minWidth: 160 }}>
-                          <button onClick={() => { setActionMenu(null); setSelectedProperty(p); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                          <button onClick={() => { 
+                            setActionMenu(null); 
+                            setSelectedProperty(p); 
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            toast.success('Viewing Details');
+                          }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
                             👁 View Details
                           </button>
                         </div>

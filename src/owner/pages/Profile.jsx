@@ -104,13 +104,13 @@ export default function Profile() {
 
   return (
     <div className="fade-in">
-      <div className="page-header" style={{ margin: '0 40px 12px' }}>
+      <div className="page-header">
         <div style={{ fontSize: '14px', color: '#6B7280' }}>
            <span style={{ color: '#111827', fontWeight: 600 }}>My Profile</span>
         </div>
       </div>
 
-      <div style={{ background: '#fff', borderRadius: '16px', padding: '32px', margin: '0 40px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+      <div style={{ background: '#fff', borderRadius: '16px', padding: '28px', margin: '0 24px 24px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
           <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#111827', margin: 0 }}>My Profile</h2>
           <button 
@@ -122,9 +122,9 @@ export default function Profile() {
           </button>
         </div>
 
-        <div style={{ display: 'flex', gap: '40px', alignItems: 'flex-start' }}>
+        <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
           
-          <form style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '24px' }}>
+          <form style={{ flex: 1, minWidth: 0, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '24px' }}>
             <div>
               <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px', fontWeight: 500 }}>Owner Name*</label>
               <input type="text" name="name" value={formData.name} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none' }} />
@@ -192,7 +192,7 @@ export default function Profile() {
           </form>
 
           {/* Right Side Avatar Display */}
-          <div style={{ width: '250px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#F9FAFB', padding: '32px 20px', borderRadius: '12px', border: '1px solid #F3F4F6' }}>
+          <div style={{ width: 'min(250px, 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#F9FAFB', padding: '32px 20px', borderRadius: '12px', border: '1px solid #F3F4F6', flexShrink: 0 }}>
             <div style={{
               width: 100,
               height: 100,

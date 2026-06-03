@@ -355,20 +355,7 @@ export default function DestinationMaster() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', marginBottom: 20 }}>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Total Properties Count*</label>
-              <input
-                type="number"
-                name="propertiesCount"
-                value={formData.propertiesCount}
-                onChange={handleChange}
-                placeholder="e.g. 15"
-                min="0"
-                className="form-input"
-                required
-              />
-            </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginBottom: 20 }}>
             
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Destination Description*</label>
@@ -452,9 +439,11 @@ export default function DestinationMaster() {
                     {dest.status || 'Active'}
                   </span>
 
-                  <span style={{ position: 'absolute', bottom: 12, left: 12, background: 'rgba(0,0,0,0.65)', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '4px 10px', borderRadius: 6 }}>
-                    {dest.propertiesCount ?? 0} Properties
-                  </span>
+                  {dest.propertiesCount > 0 && (
+                    <span style={{ position: 'absolute', bottom: 12, left: 12, background: 'rgba(0,0,0,0.65)', color: '#fff', fontSize: '11px', fontWeight: 700, padding: '4px 10px', borderRadius: 6 }}>
+                      {dest.propertiesCount} Properties
+                    </span>
+                  )}
                 </div>
 
                 <div style={{ padding: 16, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -521,7 +510,7 @@ export default function DestinationMaster() {
                     </div>
                   </td>
                   <td style={{ fontSize: '11.5px', color: '#6B7280', maxW: '180px', whiteSpace: 'normal' }}><ReadMore maxWords={2}>{dest.description}</ReadMore></td>
-                  <td style={{ textAlign: 'center', fontWeight: 700, color: 'var(--primary)' }}>{dest.propertiesCount ?? 0}</td>
+                  <td style={{ textAlign: 'center', fontWeight: 700, color: 'var(--primary)' }}>{dest.propertiesCount > 0 ? dest.propertiesCount : ''}</td>
                   <td>
                     <span className={`status-pill ${dest.status ? dest.status.toLowerCase() : 'active'}`}>
                       {dest.status || 'Active'}

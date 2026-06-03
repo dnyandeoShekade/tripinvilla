@@ -1,4 +1,4 @@
-import { Calendar, CheckCircle, MapPin, Phone, Mail, Search, Sparkles, Star, Maximize, Home, BedDouble, Users } from 'lucide-react';
+import { Calendar, CheckCircle, MapPin, Phone, Mail, Search, Sparkles, Star, Maximize, Home, BedDouble, Users, Utensils } from 'lucide-react';
 import { detailSubTabs, landmarks, roomOptions } from '../../../data/mockData';
 import './PropertyDetailPage.css';
 
@@ -108,6 +108,19 @@ export default function PropertyDetailPage(props) {
           <div className="detail-reservation-card">
             <h2 className="reservation-title">{activeDetailProp.title}</h2>
             
+            <div 
+              style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '14px', cursor: 'pointer', width: 'fit-content' }}
+              onClick={() => scrollToDetailSection('User Reviews')}
+            >
+              <Star size={16} fill="#F59E0B" color="#F59E0B" />
+              <span style={{ fontSize: '14px', fontWeight: '700', color: '#111827' }}>
+                {dynamicReviewStats?.avg || dynamicReviewStats?.average || '4.8'}
+              </span>
+              <span style={{ fontSize: '13px', color: '#6B7280', textDecoration: 'underline' }}>
+                ({dynamicReviewStats?.count || dynamicReviews?.length || 0} Reviews)
+              </span>
+            </div>
+            
             <div className="reservation-location">
               <MapPin size={14} color="#48BB78" />
               <span>{activeDetailProp.location}</span>
@@ -135,11 +148,21 @@ export default function PropertyDetailPage(props) {
 
             {/* Offer Display Block */}
             {(() => {
-              const currentOffer = popularOffers.find(o => 
+              let currentOffer = popularOffers.find(o => 
                 (o.property_id && o.property_id._id === activeDetailProp._id) || 
                 o.property_id === activeDetailProp._id ||
                 o.propertyId === activeDetailProp._id
               );
+              
+              if (!currentOffer && propertyRooms && propertyRooms.length > 0) {
+                 const roomWithOffer = propertyRooms.find(r => r.offers && r.offers.length > 0);
+                 if (roomWithOffer) {
+                    currentOffer = {
+                       offerPercent: roomWithOffer.offers[0],
+                       description: 'Special offer applicable on rooms in this property.'
+                    };
+                 }
+              }
               
               if (currentOffer) {
                 return (
@@ -154,7 +177,7 @@ export default function PropertyDetailPage(props) {
                     gap: '10px'
                   }}>
                     <div style={{ background: '#38A169', color: '#fff', padding: '4px 8px', borderRadius: '4px', fontWeight: 'bold', fontSize: '13px' }}>
-                      {currentOffer.offerPercent || currentOffer.offer_percent} OFF
+                      {currentOffer.offerPercent || currentOffer.offer_percent}
                     </div>
                     <span style={{ fontSize: '13px', color: '#276749', fontWeight: '500', lineHeight: 1.4 }}>
                       {currentOffer.description || 'Special offer applicable on this property.'}
@@ -166,7 +189,9 @@ export default function PropertyDetailPage(props) {
             })()}
 
             <div className="reservation-pricing-block">
-              <span className="old-strike-price">{oldPriceString}/night</span>
+              {oldPriceString && (
+                <span className="old-strike-price">{oldPriceString}/night</span>
+              )}
               <span className="taxes-subtext">+{activeDetailProp.taxAmount || 212} taxes & fees per room per night</span>
               <div style={{ marginTop: '4px' }}>
                 <span className="highlight-green-detail">{priceString}/night</span>
@@ -215,12 +240,20 @@ export default function PropertyDetailPage(props) {
               <span className="amenity-vertical-lbl">Area Size</span>
               <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600 }}>{activeDetailProp.area || `${(activeDetailProp.bedRooms || 2) * 150} sq. ft.`}</span>
             </div>
-            <div className="amenity-vertical-item">
+            <div 
+              className="amenity-vertical-item" 
+              onClick={() => scrollToDetailSection('Rooms')}
+              style={{ cursor: 'pointer', transition: 'transform 0.2s' }}
+              onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+              onMouseOut={e => e.currentTarget.style.transform = 'none'}
+            >
               <div className="amenity-vertical-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Home size={30} color="#58A429" strokeWidth={1.5} />
               </div>
               <span className="amenity-vertical-lbl">Rooms</span>
-              <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600 }}>{activeDetailProp.roomCountString || `${activeDetailProp.bedRooms || 1} Rooms`}</span>
+              <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600, textDecoration: 'underline' }}>
+                {activeDetailProp.roomCountString || `${activeDetailProp.bedRooms || 1} Rooms`}
+              </span>
             </div>
             <div className="amenity-vertical-item">
               <div className="amenity-vertical-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -248,27 +281,55 @@ export default function PropertyDetailPage(props) {
           </div>
         </div>
 
-        {/* Unique Experiences Section (Moved after amenities) */}
+        {/* Unique Experiences Section */}
         {activeDetailProp && activeDetailProp.experiences && activeDetailProp.experiences.length > 0 && (
           <div className="about-property-section">
             <h3 className="section-subtitle-title">Unique Experiences</h3>
             <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '16px', marginTop: '-4px' }}>
-              This property offers the following unique experiences for guests
+              This property offers handpicked experiences for an unforgettable stay
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              {activeDetailProp.experiences.map((exp, idx) => (
-                <div key={idx} style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '12px', padding: '14px 20px', display: 'flex', gap: '14px', alignItems: 'center' }}>
-
-                  <div>
-                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#065F46', fontFamily: '"Outfit", sans-serif' }}>
-                      {exp.experienceName || exp.name}
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#047857', marginTop: '2px' }}>
-                      This property with <strong>{exp.experienceName || exp.name}</strong> experience is available here
-                    </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+              {activeDetailProp.experiences.map((exp, idx) => {
+                const name = exp.experienceName || exp.name || 'Experience';
+                // Pick a consistent color from a palette based on index
+                const palettes = [
+                  { bg: '#EFF6FF', border: '#BFDBFE', text: '#1D4ED8', dot: '#3B82F6' },
+                  { bg: '#F0FDF4', border: '#BBF7D0', text: '#15803D', dot: '#22C55E' },
+                  { bg: '#FFF7ED', border: '#FED7AA', text: '#C2410C', dot: '#F97316' },
+                  { bg: '#FDF4FF', border: '#E9D5FF', text: '#7E22CE', dot: '#A855F7' },
+                  { bg: '#ECFDF5', border: '#A7F3D0', text: '#065F46', dot: '#10B981' },
+                  { bg: '#FFF1F2', border: '#FECDD3', text: '#BE123C', dot: '#F43F5E' },
+                ];
+                const c = palettes[idx % palettes.length];
+                return (
+                  <div key={idx} style={{
+                    display: 'flex', alignItems: 'center', gap: '10px',
+                    background: c.bg, border: `1.5px solid ${c.border}`,
+                    borderRadius: '24px', padding: '10px 18px',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                    transition: 'transform 0.15s, box-shadow 0.15s',
+                  }}
+                    onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.10)'; }}
+                    onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}
+                  >
+                    {/* Colored dot indicator */}
+                    <span style={{ width: 10, height: 10, borderRadius: '50%', background: c.dot, flexShrink: 0, display: 'inline-block' }} />
+                    {/* Experience image if available */}
+                    {(exp.themeCoverImageUrl || exp.coverImage) && (
+                      <img
+                        src={exp.themeCoverImageUrl || exp.coverImage}
+                        alt={name}
+                        onError={e => { e.target.style.display = 'none'; }}
+                        style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: `1px solid ${c.border}` }}
+                      />
+                    )}
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: c.text, fontFamily: '"Outfit", sans-serif', letterSpacing: '0.2px' }}>
+                      {name}
+                    </span>
+                    <Sparkles size={13} color={c.dot} style={{ flexShrink: 0 }} />
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
@@ -295,6 +356,12 @@ export default function PropertyDetailPage(props) {
               const roomTitle = room.room_type || room.title || room.name || room.type || 'Standard Room';
               const roomPrice = Number(String(room.price_per_room || room.price || room.rate || 1400).replace(/[^\d]/g, ''));
               const roomOriginalPrice = room.original_price || room.originalPrice || room.original_rate || Math.round(roomPrice * 1.2);
+              const currentOfferForRoom = popularOffers.find(o => 
+                (o.property_id && o.property_id._id === activeDetailProp._id) || 
+                o.property_id === activeDetailProp._id ||
+                o.propertyId === activeDetailProp._id
+              );
+              const roomFoodType = currentOfferForRoom ? (currentOfferForRoom.foods || currentOfferForRoom.food_type) : (activeDetailProp.foodPreference && activeDetailProp.foodPreference !== 'none' ? activeDetailProp.foodPreference : null);
 
               return (
                 <div key={idx} className="room-vertical-card">
@@ -336,12 +403,19 @@ export default function PropertyDetailPage(props) {
                           <span className="trait-name">Guests:</span>
                           <span className="trait-value" style={{ color: '#58A429', fontWeight: 600 }}>{room.guests || '3 Person'}</span>
                         </div>
+                        {roomFoodType && (
+                          <div className="trait-lbl-item">
+                            <Utensils size={16} color="#58A429" />
+                            <span className="trait-name">Food:</span>
+                            <span className="trait-value" style={{ color: '#58A429', fontWeight: 600, textTransform: 'capitalize' }}>{roomFoodType}</span>
+                          </div>
+                        )}
                       </div>
                     </div>
 
                     <div className="room-card-pricing-col">
                       <div className="room-pricing-text-group">
-                        <span className="room-taxes-label">+{room.taxAmount || activeDetailProp.taxAmount || 212} taxes & fees per room per night</span>
+                        <span className="room-taxes-label">+{room.tax_amount || room.taxAmount || activeDetailProp.taxAmount || 212} taxes & fees per room per night</span>
                         {roomOriginalPrice && (
                           <span className="room-old-strike">₹{Number(roomOriginalPrice).toLocaleString('en-IN')}/night</span>
                         )}
@@ -446,9 +520,9 @@ export default function PropertyDetailPage(props) {
             <div className="must-read-rules-block">
               <h4 className="rules-sub-hdr">Must Read Rules</h4>
               <ul className="rules-ul-list">
-                {typeof activeDetailProp?.rules === 'string' ? (
+                {typeof activeDetailProp?.rules === 'string' && activeDetailProp.rules.trim() !== '' ? (
                   activeDetailProp.rules.split('\n').map((rule, rIdx) => (
-                    <li key={rIdx}>{rule.replace(/^[•*-]\s*/, '')}</li>
+                    <li key={`prop-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
                   ))
                 ) : (
                   <>
@@ -458,6 +532,25 @@ export default function PropertyDetailPage(props) {
                 )}
               </ul>
             </div>
+            
+            {/* Dynamic Room Rules Sections */}
+            {propertyRooms && propertyRooms.length > 0 && propertyRooms.map((room, idx) => {
+              if (Array.isArray(room.rules) && room.rules.length > 0) {
+                return room.rules.map((sec, sIdx) => (
+                  <div className="must-read-rules-block" style={{ marginTop: '24px' }} key={`room-${idx}-sec-${sIdx}`}>
+                    <h4 className="rules-sub-hdr">
+                      {sec.title || 'Additional Rules'} {propertyRooms.length > 1 ? `(${room.room_type || room.roomName || room.name || 'Room'})` : ''}
+                    </h4>
+                    <ul className="rules-ul-list">
+                      {(sec.points || []).map((point, pIdx) => (
+                        <li key={pIdx}>{point}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ));
+              }
+              return null;
+            })}
         </div>
 
         {/* USER REVIEWS SECTION */}

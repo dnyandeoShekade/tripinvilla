@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Home,
+  PlusCircle,
   ClipboardList,
   Tag,
   MessageSquare,
@@ -21,6 +22,7 @@ const NAV_SECTIONS = [
     label: 'Property Management',
     items: [
       { label: 'My Properties', icon: Home, to: '/owner/properties' },
+      { label: 'Add Property', icon: PlusCircle, to: '/owner/add-property' },
       { label: 'Property Requests', icon: ClipboardList, to: '/owner/requests' },
       { label: 'Offers by Date', icon: Tag, to: '/owner/offers' },
     ],

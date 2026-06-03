@@ -1,4 +1,9 @@
-import { ChevronDown, Search, Sparkles } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { ChevronDown, Search, Sparkles, Calendar } from 'lucide-react';
+import { DateRange } from 'react-date-range';
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
+import { format, parse } from 'date-fns';
 import { heroBgImg } from '../../assets';
 
 export default function HeroSection(props) {
@@ -32,6 +37,41 @@ export default function HeroSection(props) {
     handleAISearch,
     aiSearchLoading,
   } = props;
+
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const datePickerRef = useRef(null);
+
+  // Close picker when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
+        setShowDatePicker(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const parseDate = (dateStr) => {
+    if (!dateStr) return new Date();
+    const parsed = parse(dateStr, 'yyyy-MM-dd', new Date());
+    return isNaN(parsed) ? new Date() : parsed;
+  };
+
+  const getSelectionRange = () => {
+    const parts = (dates || '').split(' to ');
+    return {
+      startDate: parts[0] ? parseDate(parts[0]) : new Date(),
+      endDate: parts[1] ? parseDate(parts[1]) : new Date(),
+      key: 'selection',
+    };
+  };
+
+  const handleSelect = (ranges) => {
+    const start = format(ranges.selection.startDate, 'yyyy-MM-dd');
+    const end = format(ranges.selection.endDate, 'yyyy-MM-dd');
+    setDates(`${start} to ${end}`);
+  };
 
   return (
     <>
@@ -98,30 +138,37 @@ export default function HeroSection(props) {
               </div>
 
               {/* Field 2: When */}
-              <div className="field-group">
+              <div className="field-group" style={{ position: 'relative' }} ref={datePickerRef}>
                 <span className="field-label">When</span>
-                <div className="field-control-wrap" style={{ display: 'flex', gap: '8px' }}>
-                  <input 
-                    type="date" 
-                    className="field-input" 
-                    title="Check-in Date"
-                    value={dates.split(' to ')[0] || ''}
-                    onChange={(e) => {
-                      const end = dates.split(' to ')[1] || '';
-                      setDates(end ? `${e.target.value} to ${end}` : `${e.target.value} to `);
-                    }}
-                  />
-                  <input 
-                    type="date" 
-                    className="field-input" 
-                    title="Check-out Date"
-                    value={dates.split(' to ')[1] || ''}
-                    onChange={(e) => {
-                      const start = dates.split(' to ')[0] || '';
-                      setDates(`${start} to ${e.target.value}`);
-                    }}
-                  />
+                <div 
+                  className="field-control-wrap" 
+                  style={{ display: 'flex', gap: '8px', cursor: 'pointer', padding: '10px 14px', background: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px', alignItems: 'center', height: '44px', boxSizing: 'border-box' }}
+                  onClick={() => setShowDatePicker(!showDatePicker)}
+                >
+                  <span style={{ flex: 1, fontSize: '14px', color: dates ? '#111827' : '#9CA3AF' }}>
+                    {dates ? `${dates.split(' to ')[0] || ''} - ${dates.split(' to ')[1] || ''}` : 'mm/dd/yyyy - mm/dd/yyyy'}
+                  </span>
+                  <Calendar size={16} color="#6B7280" />
                 </div>
+
+                {showDatePicker && (
+                  <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: '8px', background: '#fff', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 50, padding: '16px', border: '1px solid #E5E7EB' }}>
+                    <div style={{ fontWeight: 600, fontSize: '15px', color: '#111827', marginBottom: '12px', paddingLeft: '8px' }}>Select dates</div>
+                    <DateRange
+                      ranges={[getSelectionRange()]}
+                      onChange={handleSelect}
+                      months={2}
+                      direction="horizontal"
+                      showDateDisplay={false}
+                      minDate={new Date()}
+                      rangeColors={['#2563EB']}
+                    />
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px', borderTop: '1px solid #F3F4F6', paddingTop: '16px' }}>
+                      <button type="button" onClick={() => { setDates(''); setShowDatePicker(false); }} style={{ padding: '8px 16px', background: '#fff', border: '1px solid #D1D5DB', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 500, color: '#374151' }}>Cancel</button>
+                      <button type="button" onClick={() => setShowDatePicker(false)} style={{ padding: '8px 16px', background: '#2563EB', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 600, color: '#fff' }}>Filter</button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Field 3: Who */}

@@ -1,3 +1,4 @@
+import { toast } from 'react-hot-toast';
 import ReadMore from '../../components/ReadMore';
 import DateRangeDropdown from '../../../components/DateRangeDropdown';
 import { useState, useEffect } from 'react';
@@ -299,7 +300,11 @@ export default function PropertyRooms() {
                       </td>
                       <td style={{ padding: '14px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                          <button onClick={() => setSelectedRequest(p)} title="View Details" style={{ color: '#2563EB', background: '#DBEAFE', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }}>
+                          <button onClick={() => {
+                            setSelectedRequest(p);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            toast.success('Viewing Details');
+                          }} title="View Details" style={{ color: '#2563EB', background: '#DBEAFE', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }}>
                             <Eye size={15} strokeWidth={2.5} />
                           </button>
                           {p.status !== 'Accepted' && (

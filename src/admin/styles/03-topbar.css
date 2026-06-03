@@ -2,16 +2,18 @@
    TOPBAR
 ══════════════════════════════════════════════ */
 .topbar {
-  height: 97px;
+  min-height: 72px;
   background: #fff;
   border-bottom: none;
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 61px 0 39px;
+  padding: 12px 40px 12px 32px;
   flex-shrink: 0;
   border-radius: 16px 16px 0 0;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 .topbar-title { font-size: 15px; font-weight: 700; color: #111827; }
-.topbar-right { display: flex; align-items: center; gap: 22px; }
+.topbar-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 
 .topbar-date-btn {
   display: flex; align-items: center; gap: 6px;

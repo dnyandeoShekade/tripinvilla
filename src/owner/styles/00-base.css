@@ -1,5 +1,10 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Prevent layout shift from scrollbar width difference (Windows vs Linux) */
+html {
+  scrollbar-gutter: stable;
+}
+
 :root {
   --primary:        #58A429;
   --primary-light:  #F9FFEA;
@@ -57,4 +62,19 @@ h1 { font-size: inherit; font-weight: inherit; }
   to   { opacity: 1; transform: translateY(0); }
 }
 .fade-in { animation: fadeIn 0.3s ease forwards; }
+
+/* Mobile menu button — hidden by default, shown via media query */
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  cursor: pointer;
+  color: #374151;
+  flex-shrink: 0;
+}
 

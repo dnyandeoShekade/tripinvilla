@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar';
 import Topbar from '../components/Topbar';
+import { Toaster } from 'react-hot-toast';
 import '../admin.css';
 
 export default function AdminLayout() {
@@ -22,6 +23,7 @@ export default function AdminLayout() {
 
   return (
     <div className="admin-theme admin-layout">
+      <Toaster position="top-right" />
       {isSidebarOpen && (
         <div className="sidebar-overlay open" onClick={() => setIsSidebarOpen(false)}></div>
       )}

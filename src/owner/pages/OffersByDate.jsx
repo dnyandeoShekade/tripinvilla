@@ -166,7 +166,7 @@ export default function OffersByDate() {
       <div style={{ height: '16px' }} />
 
       {/* Breadcrumb */}
-      <div className="props-breadcrumb" style={{ margin: '0 39px 12px' }}>
+      <div className="props-breadcrumb" style={{ margin: '0 24px 12px' }}>
         Property Management &gt; <span>Offers by Date</span>
       </div>
 
@@ -326,8 +326,8 @@ export default function OffersByDate() {
       </div>
 
       {/* Search Filter Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 39px 12px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', background: '#ffffff', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '6px 12px', width: '320px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '0 24px 12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', background: '#ffffff', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '6px 12px', maxWidth: '100%', minWidth: '200px', flex: 1 }}>
           <Search size={16} style={{ color: '#9CA3AF', marginRight: '8px' }} />
           <input 
             type="text" 

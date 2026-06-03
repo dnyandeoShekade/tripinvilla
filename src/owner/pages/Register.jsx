@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Globe, Lock } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, Lock, Eye, EyeOff } from 'lucide-react';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -17,6 +17,7 @@ export default function Register() {
     password: ''
   });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   React.useEffect(() => {
     const checkAuthAndRedirect = async () => {
@@ -282,9 +283,12 @@ export default function Register() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               <label style={{ fontSize: '13px', fontWeight: 600, color: '#374151' }}>Phone Number*</label>
               <input
-                type="text"
+                type="tel"
                 placeholder="+91 98765 43210"
                 required
+                pattern="[0-9]{10}"
+                maxLength={10}
+                title="Phone number must be exactly 10 digits"
                 value={formData.phone}
                 onChange={e => setFormData({ ...formData, phone: e.target.value })}
                 style={{ padding: '12px 14px', border: '1px solid #D1D5DB', borderRadius: '10px', fontSize: '14px', outline: 'none' }}
@@ -343,14 +347,20 @@ export default function Register() {
           {/* Row 4: Password field */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <label style={{ fontSize: '13px', fontWeight: 600, color: '#374151' }}>Create Password*</label>
-            <input
-              type="password"
-              placeholder="••••••••"
-              required
-              value={formData.password}
-              onChange={e => setFormData({ ...formData, password: e.target.value })}
-              style={{ padding: '12px 14px', border: '1px solid #D1D5DB', borderRadius: '10px', fontSize: '14px', outline: 'none' }}
-            />
+            <div style={{ position: 'relative' }}>
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="Minimum 6 characters"
+                required
+                minLength={6}
+                value={formData.password}
+                onChange={e => setFormData({ ...formData, password: e.target.value })}
+                style={{ padding: '12px 14px', border: '1px solid #D1D5DB', borderRadius: '10px', fontSize: '14px', outline: 'none', width: '100%', boxSizing: 'border-box' }}
+              />
+              <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7280' }}>
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           {/* Submit Button */}

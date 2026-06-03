@@ -12,7 +12,7 @@ const parseNumber = (val) => {
 
 const API_BASE = import.meta.env.VITE_API_BASE || `${import.meta.env.VITE_API_BASE}`;
 
-export default function MyProperties() {
+export default function MyProperties({ autoOpenForm = false }) {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
@@ -109,7 +109,13 @@ export default function MyProperties() {
   // ─── UI State ─────────────────────────────────────────────
   const [editId, setEditId] = useState(null);
   const [formStep, setFormStep] = useState(1);
-  const [showForm, setShowForm] = useState(false);
+  // Auto-open form if coming from sidebar "Add Property" link
+  const [showForm, setShowForm] = useState(() => {
+    if (autoOpenForm) return true;
+    const flag = sessionStorage.getItem('owner_open_add_form');
+    if (flag) { sessionStorage.removeItem('owner_open_add_form'); return true; }
+    return false;
+  });
   const [myProps, setMyProps] = useState([]);
   const [statsData, setStatsData] = useState(null);
   const [enquiryCounts, setEnquiryCounts] = useState({});
@@ -390,75 +396,86 @@ export default function MyProperties() {
   const handleRemoveExistingImage = (idx) => setExistingImages(prev => prev.filter((_, i) => i !== idx));
 
   const handleEdit = async (p) => {
-    setEditId(p._id);
+    // First, fetch the full property details from backend to get all fields
+    let fullP = p;
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/properties/${p._id || p.id}`);
+      if (res.ok) {
+        const data = await res.json();
+        fullP = { ...p, ...data }; // merge — backend single property has all fields
+      }
+    } catch { /* use local data */ }
+
+    setEditId(fullP._id);
     setShowForm(true);
-    const pType = p.type || 'Homestay';
-    const amenitiesArr = Array.isArray(p.amenities)
-      ? p.amenities
-      : (p.amenities || '').split(',').map(a => a.trim()).filter(Boolean);
+    setFormStep(1); // Always start at step 1 when editing
+
+    const pType = fullP.type || 'Homestay';
+    const amenitiesArr = Array.isArray(fullP.amenities)
+      ? fullP.amenities
+      : (fullP.amenities || '').split(',').map(a => a.trim()).filter(Boolean);
     setSelectedAmenitiesList(amenitiesArr);
-    setSelectedExperiences(Array.isArray(p.experiences) ? p.experiences : []);
+    setSelectedExperiences(Array.isArray(fullP.experiences) ? fullP.experiences.map(e => e._id || e) : []);
     fetchAmenitiesForType(pType);
 
     // Load landmarks
     try {
-      const lmRes = await propertyService.getLandmarks(p._id);
-      setLandmarksList(lmRes.data);
+      const lmRes = await propertyService.getLandmarks(fullP._id);
+      setLandmarksList(lmRes.data || []);
     } catch { setLandmarksList([]); }
 
-      setIsEditing(true);
-    setExistingImages(Array.isArray(p.images) ? p.images : []);
+    setExistingImages(Array.isArray(fullP.images) ? fullP.images : []);
     setSelectedFiles([]);
-    setRoomsList(Array.isArray(p.rooms) ? p.rooms : []);
+    setRoomsList(Array.isArray(fullP.rooms) && typeof fullP.rooms[0] === 'object' ? fullP.rooms : []);
 
     // Load cascading location
-    if (p.countryId) {
-      await fetchStates(p.countryId);
-      if (p.stateId) {
-        await fetchCities(p.stateId);
-        if (p.cityId) await fetchLocations(p.cityId);
+    if (fullP.countryId) {
+      await fetchStates(fullP.countryId);
+      if (fullP.stateId) {
+        await fetchCities(fullP.stateId);
+        if (fullP.cityId) await fetchLocations(fullP.cityId);
       }
     }
 
     setHighlights({
-      breakfastIncluded: p.highlights?.breakfastIncluded || false,
-      freeCancellation: p.highlights?.freeCancellation || false,
-      freeCancellationHours: p.highlights?.freeCancellationHours || '24',
-      parkingAvailable: p.highlights?.parkingAvailable || false,
+      breakfastIncluded: fullP.highlights?.breakfastIncluded || false,
+      freeCancellation: fullP.highlights?.freeCancellation || false,
+      freeCancellationHours: fullP.highlights?.freeCancellationHours || '24',
+      parkingAvailable: fullP.highlights?.parkingAvailable || false,
     });
 
     setFormData({
       type: pType,
-      name: p.name || '',
-      ownerContact: p.ownerContact || '',
-      countryId: p.countryId || '',
-      countryName: p.countryName || '',
-      stateId: p.stateId || '',
-      stateName: p.stateName || p.state || '',
-      cityId: p.cityId || '',
-      cityName: p.cityName || p.city || '',
-      locationId: p.locationId || '',
-      locationName: p.locationName || '',
-      full_address: p.full_address || p.location || '',
-      latitude: parseNumber(p.latitude),
-      longitude: parseNumber(p.longitude),
-      originalPrice: parseNumber(p.originalPrice),
-      price: parseNumber(p.price_per_night !== undefined ? p.price_per_night : p.price),
-      taxAmount: parseNumber(p.taxAmount),
-      area: p.area || '31 sq. ft.',
-      bedRooms: p.bedRooms !== undefined ? p.bedRooms : 1,
-      beds: p.beds !== undefined ? p.beds : 2,
-      capacity: p.capacity !== undefined ? p.capacity : 3,
-      bathRooms: p.bathRooms !== undefined ? p.bathRooms : 1,
-      checkIn: p.checkIn || '3:00 PM',
-      checkOut: p.checkOut || '12:00 PM',
-      rules: p.rules || '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).',
-      description: p.description || '',
-      status: p.status || 'Active',
-      privatePool: p.privatePool || false, gardenArea: p.gardenArea || false, chefAvailable: p.chefAvailable || false, entirePropertyOnly: p.entirePropertyOnly || false, securityCCTV: p.securityCCTV || false, numberOfFloors: p.numberOfFloors || '', plotSize: p.plotSize || '',
-      restaurantOnSite: p.restaurantOnSite || false, spaWellness: p.spaWellness || false, conferenceRoom: p.conferenceRoom || false, roomService: p.roomService || false, receptionAllDay: p.receptionAllDay || false, liftElevator: p.liftElevator || false, starRating: p.starRating || '', totalRooms: p.totalRooms || '', totalFloors: p.totalFloors || '', activities: p.activities || [],
-      floorNumber: p.floorNumber || '', totalFloorsBuilding: p.totalFloorsBuilding || '', furnishedStatus: p.furnishedStatus || 'Fully Furnished', washingMachine: p.washingMachine || false, societyAmenities: p.societyAmenities || [],
-      bonfireArea: p.bonfireArea || false, viewType: p.viewType || 'Mountain', outdoorSeating: p.outdoorSeating || false, nearestHikingTrail: p.nearestHikingTrail || '', distanceFromCity: p.distanceFromCity || '',
+      name: fullP.name || fullP.propertyName || '',
+      ownerContact: fullP.ownerContact || '',
+      countryId: fullP.countryId || '',
+      countryName: fullP.countryName || '',
+      stateId: fullP.stateId || '',
+      stateName: fullP.stateName || fullP.state || '',
+      cityId: fullP.cityId || '',
+      cityName: fullP.cityName || fullP.city || '',
+      locationId: fullP.locationId || '',
+      locationName: fullP.locationName || '',
+      full_address: fullP.full_address || fullP.location || '',
+      latitude: parseNumber(fullP.latitude),
+      longitude: parseNumber(fullP.longitude),
+      originalPrice: parseNumber(fullP.originalPrice),
+      price: parseNumber(fullP.price_per_night !== undefined ? fullP.price_per_night : fullP.price),
+      taxAmount: parseNumber(fullP.taxAmount),
+      area: fullP.area || '31 sq. ft.',
+      bedRooms: fullP.bedRooms !== undefined ? fullP.bedRooms : 1,
+      beds: fullP.beds !== undefined ? fullP.beds : 2,
+      capacity: fullP.capacity !== undefined ? fullP.capacity : 3,
+      bathRooms: fullP.bathRooms !== undefined ? fullP.bathRooms : 1,
+      checkIn: fullP.checkIn || '3:00 PM',
+      checkOut: fullP.checkOut || '12:00 PM',
+      rules: fullP.rules || '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).',
+      description: fullP.description || '',
+      status: fullP.status || 'Active',
+      privatePool: fullP.privatePool || false, gardenArea: fullP.gardenArea || false, chefAvailable: fullP.chefAvailable || false, entirePropertyOnly: fullP.entirePropertyOnly || false, securityCCTV: fullP.securityCCTV || false, numberOfFloors: fullP.numberOfFloors || '', plotSize: fullP.plotSize || '',
+      restaurantOnSite: fullP.restaurantOnSite || false, spaWellness: fullP.spaWellness || false, conferenceRoom: fullP.conferenceRoom || false, roomService: fullP.roomService || false, receptionAllDay: fullP.receptionAllDay || false, liftElevator: fullP.liftElevator || false, starRating: fullP.starRating || '', totalRooms: fullP.totalRooms || '', totalFloors: fullP.totalFloors || '', activities: fullP.activities || [],
+      floorNumber: fullP.floorNumber || '', totalFloorsBuilding: fullP.totalFloorsBuilding || '', furnishedStatus: fullP.furnishedStatus || 'Fully Furnished', washingMachine: fullP.washingMachine || false, societyAmenities: fullP.societyAmenities || [],
+      bonfireArea: fullP.bonfireArea || false, viewType: fullP.viewType || 'Mountain', outdoorSeating: fullP.outdoorSeating || false, nearestHikingTrail: fullP.nearestHikingTrail || '', distanceFromCity: fullP.distanceFromCity || '',
     });
     setManualLocation({ country: false, state: false, city: false, area: false });
     setManualValues({ country: '', state: '', city: '', area: '' });
@@ -559,7 +576,7 @@ export default function MyProperties() {
         for (const lm of landmarksList) {
           await propertyService.addLandmark(newId, lm);
         }
-        alert('Property added successfully! Awaiting admin approval.');
+        alert('Property added successfully!\n\nNext step: Go to "Property Requests" from the sidebar, add your rooms, and submit a request. Your property will go live after admin approval of the room request.');
       }
 
       fetchMyProperties(); fetchStats();
@@ -822,7 +839,13 @@ export default function MyProperties() {
               {/* Cascading dropdowns */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                 <div>
-                  <label style={labelStyle}>Country *</label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                    <label style={labelStyle}>Country *</label>
+                    <button type="button" onClick={() => setManualLocation(p => ({ ...p, country: !p.country }))}
+                      style={{ fontSize: '10px', color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
+                      {manualLocation.country ? '← Use Dropdown' : 'Enter Manually'}
+                    </button>
+                  </div>
                   {manualLocation.country ? (
                     <input type="text" style={inputStyle} placeholder="e.g. India"
                       value={manualValues.country}
@@ -835,7 +858,13 @@ export default function MyProperties() {
                   )}
                 </div>
                 <div>
-                  <label style={labelStyle}>State *</label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                    <label style={labelStyle}>State *</label>
+                    <button type="button" onClick={() => setManualLocation(p => ({ ...p, state: !p.state }))}
+                      style={{ fontSize: '10px', color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
+                      {manualLocation.state ? '← Use Dropdown' : 'Enter Manually'}
+                    </button>
+                  </div>
                   {manualLocation.state ? (
                     <input type="text" style={inputStyle} placeholder="e.g. Himachal Pradesh"
                       value={manualValues.state}
@@ -849,7 +878,13 @@ export default function MyProperties() {
                   )}
                 </div>
                 <div>
-                  <label style={labelStyle}>City *</label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                    <label style={labelStyle}>City *</label>
+                    <button type="button" onClick={() => setManualLocation(p => ({ ...p, city: !p.city }))}
+                      style={{ fontSize: '10px', color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
+                      {manualLocation.city ? '← Use Dropdown' : 'Enter Manually'}
+                    </button>
+                  </div>
                   {manualLocation.city ? (
                     <input type="text" style={inputStyle} placeholder="e.g. Kasol"
                       value={manualValues.city}
@@ -863,12 +898,18 @@ export default function MyProperties() {
                   )}
                 </div>
                 <div>
-                  <label style={labelStyle}>
-                    Area / Location
-                    {!manualLocation.area && locations.length === 0 && allLocations.length > 0 && formData.cityId && (
-                      <span style={{ color: '#F59E0B', fontSize: 11, marginLeft: 6 }}>Showing all locations</span>
-                    )}
-                  </label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                    <label style={labelStyle}>
+                      Area / Location
+                      {!manualLocation.area && locations.length === 0 && allLocations.length > 0 && formData.cityId && (
+                        <span style={{ color: '#F59E0B', fontSize: 11, marginLeft: 6 }}>Showing all locations</span>
+                      )}
+                    </label>
+                    <button type="button" onClick={() => setManualLocation(p => ({ ...p, area: !p.area }))}
+                      style={{ fontSize: '10px', color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
+                      {manualLocation.area ? '← Use Dropdown' : 'Enter Manually'}
+                    </button>
+                  </div>
                   {manualLocation.area ? (
                     <input type="text" style={inputStyle} placeholder="e.g. Parvati Valley"
                       value={manualValues.area}

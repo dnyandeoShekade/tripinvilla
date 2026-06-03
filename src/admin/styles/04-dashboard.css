@@ -8,7 +8,7 @@
   background: var(--primary-light);
   border-radius: 16px;
   padding: 21px;
-  margin: 0 39px 16px;
+  margin: 0 24px 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -20,11 +20,11 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin: 0 39px 0;
+  margin: 0 24px 0;
   background: var(--primary-light);
   border-radius: 16px;
   padding: 15px 18px;
-  min-height: 231px;
+  min-height: auto;
 }
 .stat-card {
   background: #fff;

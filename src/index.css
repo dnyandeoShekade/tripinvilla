@@ -20,12 +20,19 @@
   --transition-medium: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   background-color: var(--bg-main);
   color: var(--text-dark);
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* Base styles and Animations */
@@ -96,6 +103,54 @@ input:focus, select:focus {
   max-width: 1320px;
   margin: 40px auto 80px;
   padding: 0 24px;
+}
+
+@media (max-width: 1100px) {
+  .search-results-layout {
+    grid-template-columns: 280px 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 900px) {
+  .search-results-layout {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    padding: 0 16px;
+  }
+
+  .search-sidebar {
+    position: static;
+    height: auto;
+    overflow-y: visible;
+  }
+
+  .horiz-card-img {
+    width: 200px;
+  }
+}
+
+@media (max-width: 640px) {
+  .horizontal-property-card {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .horiz-card-img {
+    width: 100%;
+    height: 200px;
+  }
+
+  .horiz-card-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .horiz-card-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
 }
 
 .search-sidebar {

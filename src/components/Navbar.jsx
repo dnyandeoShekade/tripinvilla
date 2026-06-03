@@ -135,11 +135,10 @@ export default function Navbar({
             {user.name ? user.name[0].toUpperCase() : 'U'}
           </div>
           <button
-            className="btn-login"
             style={{
               background: 'transparent',
               color: '#FFFFFF',
-              border: '1px solid rgba(255,255,255,0.5)',
+              border: 'none',
               padding: '6px 16px',
               fontSize: '13px',
               fontFamily: '"Outfit", sans-serif',

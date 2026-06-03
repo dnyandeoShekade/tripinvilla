@@ -1,3 +1,4 @@
+import { toast } from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import DateRangeDropdown from '../../../components/DateRangeDropdown';
 import { ChevronDown, Edit2, Trash2, MoreVertical, Calendar, Search, Filter } from 'lucide-react';
@@ -231,10 +232,20 @@ export default function OffersbyDate() {
                         </div>
                         {actionMenu === o._id && (
                           <div style={{ position: 'absolute', right: 8, top: i >= paginated.length - 2 ? "auto" : 32, bottom: i >= paginated.length - 2 ? 32 : "auto", background: '#fff', border: '1px solid #E5E7EB', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 100, minWidth: 160 }}>
-                            <button onClick={() => { setActionMenu(null); navigate(`/admin/properties/offers/edit/${o.id || o._id}`); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                            <button onClick={() => { 
+                              setActionMenu(null); 
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                              toast.success('Viewing Details');
+                              navigate(`/admin/properties/offers/edit/${o.id || o._id}`); 
+                            }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
                               👁 View Details
                             </button>
-                            <button onClick={() => { setActionMenu(null); navigate(`/admin/properties/offers/edit/${o.id || o._id}`); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                            <button onClick={() => { 
+                              setActionMenu(null); 
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                              toast.success('Editing mode enabled');
+                              navigate(`/admin/properties/offers/edit/${o.id || o._id}`); 
+                            }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
                               ✎ Edit Offer
                             </button>
                           </div>

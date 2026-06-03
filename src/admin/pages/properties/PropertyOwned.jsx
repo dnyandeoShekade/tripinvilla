@@ -1,3 +1,4 @@
+import { toast } from 'react-hot-toast';
 import { useState, useEffect } from 'react';
 import { ClipboardList, Clock, CheckCircle2, Calendar, ChevronDown, Filter, Search, Edit2, Trash2, MoreVertical, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -209,7 +210,12 @@ export default function PropertyOwned() {
                         </button>
                         {actionMenu === o._id && (
                           <div style={{ position: 'absolute', right: 8, top: i >= paginated.length - 2 ? "auto" : 32, bottom: i >= paginated.length - 2 ? 32 : "auto", background: '#fff', border: '1px solid #E5E7EB', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 100, minWidth: 160 }}>
-                            <button onClick={() => { setActionMenu(null); setViewPropertiesOwner(o); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                            <button onClick={() => { 
+                              setActionMenu(null); 
+                              setViewPropertiesOwner(o); 
+                              window.scrollTo({ top: 0, behavior: 'smooth' });
+                              toast.success('Viewing Details');
+                            }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
                               View Details
                             </button>
                             <button onClick={() => { setActionMenu(null); updateStatus(o._id, 'Active'); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#58A429', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>

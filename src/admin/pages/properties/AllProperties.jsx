@@ -1,3 +1,4 @@
+import { toast } from 'react-hot-toast';
 import { useState, useEffect, useRef } from "react";
 import {
   Search,
@@ -89,6 +90,7 @@ export default function AllProperties() {
   // ─── Rooms (for Hotel / Resort) ──────────────────────
   const [roomsList, setRoomsList] = useState([]);
   const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
+  const [editingRoomIdx, setEditingRoomIdx] = useState(null); // index of room being edited
   const [customRoomType, setCustomRoomType] = useState('');
   const [roomTypes, setRoomTypes] = useState([]);
   const [propertyTypes, setPropertyTypes] = useState([]);
@@ -316,6 +318,8 @@ export default function AllProperties() {
   }, []);
 
   const openPanel = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast.success('Add Property mode enabled');
     fetchOwners();
     fetchExperiences();
     fetchCountries();
@@ -331,6 +335,8 @@ export default function AllProperties() {
 
   const openEditPanel = (p) => {
     setEditingPropertyId(p._id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    toast.success('Editing mode enabled');
     fetchOwners();
     fetchExperiences();
     fetchCountries();
@@ -369,7 +375,9 @@ export default function AllProperties() {
 
     setExistingImages(p.images || []);
     setSelectedFiles([]);
-    setRoomsList(Array.isArray(p.rooms) ? p.rooms : []);
+    setRoomsList(Array.isArray(p.rooms) && typeof p.rooms[0] === 'object' ? p.rooms : []);
+    setEditingRoomIdx(null);
+    setRoomForm({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
     setSelectedAmenitiesList(p.amenities || []);
     setSelectedExperiences(p.experiences || []);
     setLandmarksList([]); // Will need separate fetch if editing landmarks
@@ -409,6 +417,7 @@ export default function AllProperties() {
     setSelectedFiles([]);
     setExistingImages([]);
     setRoomsList([]);
+    setEditingRoomIdx(null);
     setRoomForm({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
     setSelectedAmenitiesList([]);
     setLandmarksList([]);
@@ -841,7 +850,7 @@ export default function AllProperties() {
           className="chart-card"
           style={{ padding: 0, overflow: "visible", borderRadius: 12 }}
         >
-          <div style={{ overflowX: "visible" }}>
+          <div style={{ overflowX: "auto" }}>
             <table className="data-table" style={{ whiteSpace: "nowrap" }}>
               <thead>
                 <tr>
@@ -1020,7 +1029,12 @@ export default function AllProperties() {
                                 : "✓ Activate"}
                             </button>
                             <button
-                              onClick={() => { setActionMenu(null); setViewingProperty(p); }}
+                              onClick={() => { 
+                                setActionMenu(null); 
+                                setViewingProperty(p); 
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                toast.success('Viewing Details');
+                              }}
                               style={{
                                 display: "block",
                                 width: "100%",
@@ -1536,28 +1550,52 @@ export default function AllProperties() {
                       </div>
                     </div>
                   </div>
-                  <button type="button"
-                    onClick={() => {
-                      if (!roomForm.roomName.trim() || !roomForm.pricePerNight) { alert('Please fill Room Name and Price.'); return; }
-                      const finalRoomType = roomForm.roomType === 'Other' ? customRoomType : roomForm.roomType;
-                      if (roomForm.roomType === 'Other' && !finalRoomType.trim()) { alert('Please enter custom room type.'); return; }
-                      setRoomsList(prev => [...prev, { ...roomForm, roomType: finalRoomType, pricePerNight: Number(roomForm.pricePerNight), maxGuests: Number(roomForm.maxGuests), count: Number(roomForm.count) }]);
-                      setRoomForm({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
-                      setCustomRoomType('');
-                    }}
-                    style={{ padding: '8px 20px', background: '#58A429', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 600, marginBottom: 12 }}>
-                    + Add Room Type
-                  </button>
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 12, flexWrap: 'wrap' }}>
+                    <button type="button"
+                      onClick={() => {
+                        if (!roomForm.roomName.trim() || !roomForm.pricePerNight) { alert('Please fill Room Name and Price.'); return; }
+                        const finalRoomType = roomForm.roomType === 'Other' ? customRoomType : roomForm.roomType;
+                        if (roomForm.roomType === 'Other' && !finalRoomType.trim()) { alert('Please enter custom room type.'); return; }
+                        const newRoom = { ...roomForm, roomType: finalRoomType, pricePerNight: Number(roomForm.pricePerNight), maxGuests: Number(roomForm.maxGuests), count: Number(roomForm.count) };
+                        if (editingRoomIdx !== null) {
+                          // Update existing room
+                          setRoomsList(prev => prev.map((r, i) => i === editingRoomIdx ? newRoom : r));
+                          setEditingRoomIdx(null);
+                        } else {
+                          setRoomsList(prev => [...prev, newRoom]);
+                        }
+                        setRoomForm({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
+                        setCustomRoomType('');
+                      }}
+                      style={{ padding: '8px 20px', background: editingRoomIdx !== null ? '#2563EB' : '#58A429', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 600 }}>
+                      {editingRoomIdx !== null ? '✓ Update Room' : '+ Add Room Type'}
+                    </button>
+                    {editingRoomIdx !== null && (
+                      <button type="button"
+                        onClick={() => { setEditingRoomIdx(null); setRoomForm({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] }); setCustomRoomType(''); }}
+                        style={{ padding: '8px 16px', background: '#F3F4F6', color: '#374151', border: '1px solid #D1D5DB', borderRadius: '8px', fontSize: '13px', cursor: 'pointer', fontWeight: 500 }}>
+                        Cancel Edit
+                      </button>
+                    )}
+                  </div>
                   {roomsList.length > 0 && (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                       {roomsList.map((room, idx) => (
-                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 8, padding: '10px 14px' }}>
+                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 12, background: editingRoomIdx === idx ? '#EFF6FF' : '#F0FDF4', border: `1px solid ${editingRoomIdx === idx ? '#93C5FD' : '#BBF7D0'}`, borderRadius: 8, padding: '10px 14px' }}>
                           <div style={{ flex: 1 }}>
                             <span style={{ fontWeight: 700, color: '#111827', fontSize: 13 }}>{room.roomName || room.roomType}</span>
-                            <span style={{ color: '#6B7280', fontSize: 12, marginLeft: 8 }}>{room.roomType} · {room.bedType} bed · {room.maxGuests} guests · {room.count} rooms</span>
+                            <span style={{ color: '#6B7280', fontSize: 12, marginLeft: 8 }}>{room.roomType} · {room.bedType} bed · {room.maxGuests} guests · {room.count} room{room.count > 1 ? 's' : ''}</span>
                             <span style={{ color: '#58A429', fontWeight: 600, fontSize: 13, marginLeft: 8 }}>₹{room.pricePerNight}/night</span>
                           </div>
-                          <button type="button" onClick={() => setRoomsList(prev => prev.filter((_, i) => i !== idx))}
+                          {/* Edit button */}
+                          <button type="button"
+                            onClick={() => {
+                              setEditingRoomIdx(idx);
+                              setRoomForm({ roomType: room.roomType, roomName: room.roomName || '', pricePerNight: room.pricePerNight, maxGuests: room.maxGuests, bedType: room.bedType, count: room.count, amenities: room.amenities || [] });
+                            }}
+                            style={{ background: 'none', border: '1px solid #93C5FD', borderRadius: 6, color: '#2563EB', cursor: 'pointer', fontSize: 12, padding: '3px 10px', fontWeight: 600 }}>Edit</button>
+                          {/* Delete button */}
+                          <button type="button" onClick={() => { setRoomsList(prev => prev.filter((_, i) => i !== idx)); if (editingRoomIdx === idx) { setEditingRoomIdx(null); setRoomForm({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] }); } }}
                             style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: 18, lineHeight: 1 }}>×</button>
                         </div>
                       ))}

@@ -12,6 +12,7 @@ import Premium from './pages/Premium';
 import LogOut from './pages/LogOut';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import AddProperty from './pages/AddProperty';
 import './owner.css';
 
 const ProtectedRoute = ({ children }) => {
@@ -38,6 +39,7 @@ export default function OwnerApp() {
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="bookings" element={<Bookings />} />
         <Route path="properties" element={<MyProperties />} />
+        <Route path="add-property" element={<AddProperty />} />
         <Route path="profile" element={<Profile />} />
         <Route path="requests" element={<PropertyRequests />} />
         <Route path="offers" element={<OffersByDate />} />

@@ -11,8 +11,7 @@ const emptyRoom = () => ({
   bed_type: 'King Size',
   original_price: '',
   price_per_room: '',
-  checkin_time: '09:00 AM',
-  checkout_time: '12:00 PM',
+  tax_amount: '',
 });
 
 export default function PropertyRequests() {
@@ -21,9 +20,13 @@ export default function PropertyRequests() {
   const [loading, setLoading] = useState(false);
   const [propertyId, setPropertyId] = useState('');
   const [formData, setFormData] = useState(emptyRoom());
+  const [roomTypes, setRoomTypes] = useState([]);
+  const [editingRoomId, setEditingRoomId] = useState(null);
   const [rulesSections, setRulesSections] = useState(defaultRules);
   const [currentOffer, setCurrentOffer] = useState('');
   const [offersList, setOffersList] = useState(['20% Off']);
+  const [manualRoomType, setManualRoomType] = useState(false);
+  const fallbackRoomTypes = ['Standard Room', 'Deluxe Room', 'Super Deluxe Room', 'Executive Suite', 'Presidential Suite', 'Family Suite', 'Dormitory', 'Tent', 'Cottage', 'Villa'];
   const [selectedRoomImage, setSelectedRoomImage] = useState(null);
   const [roomImagePreview, setRoomImagePreview] = useState('');
   const [selectedAmenities, setSelectedAmenities] = useState([]);
@@ -100,6 +103,14 @@ export default function PropertyRequests() {
       fetchAmenities('All');
     }
     fetchExperiences();
+    
+    try {
+      const rtRes = await fetch(`${API_BASE}/master/room-types`);
+      const rtData = await rtRes.json();
+      if (Array.isArray(rtData)) setRoomTypes(rtData);
+    } catch {
+      // fallback handled in render
+    }
   };
 
   useEffect(() => { fetchData(); }, []);
@@ -168,8 +179,7 @@ export default function PropertyRequests() {
         bed_type: formData.bed_type,
         original_price: formData.original_price ? Number(formData.original_price) : undefined,
         price_per_room: Number(formData.price_per_room),
-        checkin_time: formData.checkin_time,
-        checkout_time: formData.checkout_time,
+        tax_amount: formData.tax_amount ? Number(formData.tax_amount) : undefined,
         room_image_url: roomImageUrl,
         amenities_types: [...selectedAmenities],
         experiences: [...selectedExperiences],
@@ -178,7 +188,19 @@ export default function PropertyRequests() {
         _preview_img: roomImagePreview,
       };
 
-      setRoomQueue(prev => [...prev, roomEntry]);
+      if (editingRoomId) {
+        const token = localStorage.getItem('owner_token');
+        await fetch(`${API_BASE}/property-requests/${editingRoomId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify(roomEntry)
+        });
+        alert('Room updated successfully!');
+        setEditingRoomId(null);
+        fetchData();
+      } else {
+        setRoomQueue(prev => [...prev, roomEntry]);
+      }
       resetRoomForm();
     } catch (err) {
       alert('Error preparing room: ' + (err.response?.data?.message || err.message));
@@ -215,6 +237,42 @@ export default function PropertyRequests() {
     catch { alert('Error deleting'); }
   };
 
+  const handleEditRoom = (r) => {
+    setEditingRoomId(r.id || r._id);
+    setPropertyId(r.property_id || r.property?._id);
+    
+    // Check if it's a fallback room type or custom
+    if (!fallbackRoomTypes.includes(r.room_type) && !roomTypes.some(rt => rt.name === r.room_type)) {
+      setManualRoomType(true);
+    } else {
+      setManualRoomType(false);
+    }
+
+    setFormData({
+      room_type: r.room_type || '',
+      bed_type: r.bed_type || '',
+      original_price: r.original_price || '',
+      price_per_room: r.price_per_room || '',
+      tax_amount: r.tax_amount || r.taxAmount || ''
+    });
+    
+    setRoomImagePreview(r.room_image_url || r.image || '');
+    setSelectedAmenities(r.amenities_types || []);
+    setSelectedExperiences(r.experiences || []);
+    setOffersList(r.offers && r.offers.length > 0 ? r.offers : []);
+    
+    if (Array.isArray(r.rules) && r.rules.length > 0) {
+      setRulesSections(r.rules.map(rule => ({
+        title: rule.title || '',
+        text: Array.isArray(rule.points) ? rule.points.join('\n') : (rule.points || rule.text || '')
+      })));
+    } else {
+      setRulesSections(defaultRules);
+    }
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   const selectedProperty = properties.find(p => p._id === propertyId);
   const categoryValue = selectedProperty ? selectedProperty.type : 'N/A';
 
@@ -242,13 +300,16 @@ export default function PropertyRequests() {
                 Configure Room Pricing &amp; Rules
               </h3>
               <div style={{ display: 'flex', gap: '10px' }}>
+                {editingRoomId && (
+                  <button type="button" onClick={() => { setEditingRoomId(null); resetRoomForm(); }} style={{ padding: '8px 16px', background: '#F3F4F6', color: '#374151', border: '1px solid #D1D5DB', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '12.5px' }}>Cancel Edit</button>
+                )}
                 <button
                   type="button"
                   onClick={handleAddToQueue}
                   disabled={loading}
                   style={{ cursor: 'pointer', padding: '8px 20px', fontSize: '12.5px', background: '#2563EB', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}
                 >
-                  <Plus size={14} /> {loading ? 'Uploading...' : 'Add Room'}
+                  {loading ? 'Processing...' : (editingRoomId ? 'Update Room' : <><Plus size={14} /> Add Room</>)}
                 </button>
                 {roomQueue.length > 0 && (
                   <button
@@ -276,8 +337,23 @@ export default function PropertyRequests() {
                 <input type="text" className="form-input" value={categoryValue} disabled style={{ background: '#F3F4F6', color: '#4B5563', cursor: 'not-allowed' }} />
               </div>
               <div className="form-group">
-                <label className="form-label">Room Type*</label>
-                <input type="text" className="form-input" name="room_type" value={formData.room_type} onChange={handleInputChange} placeholder="e.g. Deluxe Room 1, Semi Deluxe 2" required />
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label className="form-label" style={{ marginBottom: 0 }}>Room Type*</label>
+                  <button type="button" onClick={() => { setManualRoomType(!manualRoomType); setFormData({ ...formData, room_type: '' }); }} style={{ background: 'none', border: 'none', color: '#2563EB', fontSize: '12px', cursor: 'pointer', fontWeight: 600 }}>
+                    {manualRoomType ? '← Use Dropdown' : 'Enter Manually'}
+                  </button>
+                </div>
+                {manualRoomType ? (
+                  <input type="text" className="form-input" name="room_type" value={formData.room_type} onChange={handleInputChange} placeholder="e.g. Penthouse Suite" required style={{ marginTop: '6px' }} />
+                ) : (
+                  <select className="form-select" name="room_type" value={formData.room_type} onChange={handleInputChange} required style={{ marginTop: '6px' }}>
+                    <option value="">Select Room Type</option>
+                    {roomTypes.length > 0 
+                      ? roomTypes.map(rt => <option key={rt._id || rt.name} value={rt.name}>{rt.name}</option>)
+                      : fallbackRoomTypes.map(t => <option key={t} value={t}>{t}</option>)
+                    }
+                  </select>
+                )}
               </div>
             </div>
 
@@ -311,16 +387,8 @@ export default function PropertyRequests() {
                 <input type="number" className="form-input" name="price_per_room" value={formData.price_per_room} onChange={handleInputChange} placeholder="₹ Amount" required />
               </div>
               <div className="form-group">
-                <label className="form-label">Check-in Time*</label>
-                <select className="form-select" name="checkin_time" value={formData.checkin_time} onChange={handleInputChange}>
-                  {['09:00 AM','10:00 AM','11:00 AM','12:00 PM','01:00 PM','02:00 PM'].map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label">Check-out Time*</label>
-                <select className="form-select" name="checkout_time" value={formData.checkout_time} onChange={handleInputChange}>
-                  {['10:00 AM','11:00 AM','12:00 PM','01:00 PM','02:00 PM'].map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
+                <label className="form-label">Tax Amount (₹)</label>
+                <input type="number" className="form-input" name="tax_amount" value={formData.tax_amount} onChange={handleInputChange} placeholder="e.g. 212" />
               </div>
             </div>
 
@@ -456,7 +524,7 @@ export default function PropertyRequests() {
                 <table className="data-table" style={{ whiteSpace: 'nowrap' }}>
                   <thead>
                     <tr>
-                      {['Property', 'Category', 'Room Type', 'Bed', 'Amenities', 'Price', 'Rules', 'Check-in / Out', 'Offers', 'Status', 'Actions'].map((h, i) => (
+                      {['Property', 'Category', 'Room Type', 'Bed', 'Amenities', 'Price', 'Rules', 'Offers', 'Status', 'Actions'].map((h, i) => (
                         <th key={i} style={{ color: '#374151', fontWeight: 600, padding: '14px 16px', textAlign: 'left' }}>{h}</th>
                       ))}
                     </tr>
@@ -480,7 +548,6 @@ export default function PropertyRequests() {
                           <td style={{ color: '#6B7280', padding: '14px 16px' }}>{r.amenities_types?.length > 0 ? r.amenities_types.join(', ') : 'None'}</td>
                           <td style={{ color: '#111827', fontWeight: 600, padding: '14px 16px' }}>₹{r.price_per_room}</td>
                           <td style={{ color: '#6B7280', padding: '14px 16px' }}>{Array.isArray(r.rules) ? `${r.rules.length} section(s)` : (r.rules?.length > 35 ? `${r.rules.substring(0, 35)}...` : r.rules)}</td>
-                          <td style={{ color: '#6B7280', padding: '14px 16px' }}>{r.checkin_time} - {r.checkout_time}</td>
                           <td style={{ color: '#111827', fontWeight: 600, padding: '14px 16px' }}>{r.offers?.length > 0 ? r.offers.join(', ') : 'None'}</td>
                           <td style={{ padding: '14px 16px' }}>
                             <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600, background: statusBg, color: statusColor }}>
@@ -488,9 +555,14 @@ export default function PropertyRequests() {
                             </span>
                           </td>
                           <td style={{ padding: '14px 16px' }}>
-                            <button type="button" onClick={() => handleDelete(r._id)} style={{ color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer' }}>
-                              <Trash2 size={14} />
-                            </button>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                              <button type="button" onClick={() => handleEditRoom(r)} style={{ color: '#2563EB', background: '#EFF6FF', border: 'none', borderRadius: 6, padding: 6, cursor: 'pointer' }}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                              </button>
+                              <button type="button" onClick={() => handleDelete(r._id)} style={{ color: '#EF4444', background: '#FEE2E2', border: 'none', borderRadius: 6, padding: 6, cursor: 'pointer' }}>
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       );

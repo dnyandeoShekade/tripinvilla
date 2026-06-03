@@ -61,7 +61,7 @@ export default function Dashboard() {
     <div className="fade-in">
       <div style={{ height: '16px' }} />
       {/* Breadcrumb */}
-      <div className="props-breadcrumb" style={{ margin: '0 39px 12px', fontSize: '13px', color: '#6B7280', fontFamily: '"Outfit", sans-serif' }}>
+      <div className="props-breadcrumb" style={{ fontSize: '13px', color: '#6B7280', fontFamily: '"Outfit", sans-serif' }}>
         Dashboard &gt; <span style={{ color: '#111827', fontWeight: 600 }}>Dashboard Analytics</span>
       </div>
 
@@ -122,7 +122,7 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Section */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '32px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '32px' }}>
           
           {/* Card 1: Total Enquiries */}
           <div style={{ background: '#ffffff', borderRadius: '12px', padding: '24px', border: '1px solid #EFF6E6', display: 'flex', flexDirection: 'column', gap: '6px' }}>

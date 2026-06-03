@@ -3,18 +3,21 @@
 ══════════════════════════════════════════════ */
 .sidebar {
   width: var(--sidebar-w);
-  height: 1651px;
+  min-height: calc(100vh - 40px);
   background: #ffffff;
   display: flex;
   flex-direction: column;
-  position: absolute; /* stands tall on the page layout */
+  position: fixed;
   left: 20px;
   top: 20px;
+  bottom: 20px;
   z-index: 100;
   border-radius: 16px;
   border: 1px solid #EAEAEA;
   box-shadow: 0px 4px 40px 0px rgba(0, 61, 92, 0.04);
   padding: 11px 0 24px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 /* Scrollbar for sidebar if content overflows */

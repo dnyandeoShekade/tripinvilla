@@ -71,7 +71,7 @@ export default function PropertyMakers() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
   const [roomsList, setRoomsList] = useState([]);
-  const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
+  const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
   const [customRoomType, setCustomRoomType] = useState('');
   const [roomTypes, setRoomTypes] = useState([]);
   const fileInputRef = React.useRef(null);
@@ -457,7 +457,7 @@ export default function PropertyMakers() {
     setManualLocation({ country: false, state: false, city: false, area: false });
     setManualValues({ country: '', state: '', city: '', area: '' });
     setExistingImages([]); setRoomsList([]);
-    setRoomForm({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
+    setRoomForm({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
     setSelectedFiles([]); setLandmarksList([]);
     setRulesSections([{ title: 'Must Read Rules', text: '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s)' }]);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -1694,18 +1694,6 @@ export default function PropertyMakers() {
             {/* Row 3 */}
             <div className="form-grid-3" style={{ marginBottom: 12 }}>
               <div className="form-group">
-                <label className="form-label">Check-in*</label>
-                <select className="form-select" value={roomForm.checkIn} onChange={e => setRoomForm(p => ({ ...p, checkIn: e.target.value }))}>
-                  {['12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '9:00 AM', '10:00 AM', '11:00 AM'].map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label">Check-out*</label>
-                <select className="form-select" value={roomForm.checkOut} onChange={e => setRoomForm(p => ({ ...p, checkOut: e.target.value }))}>
-                  {['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM'].map(t => <option key={t} value={t}>{t}</option>)}
-                </select>
-              </div>
-              <div className="form-group">
                 <label className="form-label">Max Guests &amp; Count</label>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
                   <input type="number" className="form-input" min={1} value={roomForm.maxGuests} onChange={e => setRoomForm(p => ({ ...p, maxGuests: e.target.value }))} placeholder="Guests" />
@@ -1780,7 +1768,7 @@ export default function PropertyMakers() {
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
                   <thead>
                     <tr style={{ background: '#F3F4F6' }}>
-                      {['Room Image', 'Room Name', 'Type', 'Bed', 'Amenities', 'Price/Night', 'Check-in', 'Check-out', 'Offer', 'Guests', 'Count', ''].map(h => (
+                      {['Room Image', 'Room Name', 'Type', 'Bed', 'Amenities', 'Price/Night', 'Offer', 'Guests', 'Count', ''].map(h => (
                         <th key={h} style={{ padding: '8px 12px', textAlign: 'left', color: '#6B7280', fontWeight: 500, whiteSpace: 'nowrap' }}>{h}</th>
                       ))}
                     </tr>
@@ -1796,8 +1784,6 @@ export default function PropertyMakers() {
                         <td style={{ padding: '8px 12px', color: '#6B7280' }}>{room.bedType}</td>
                         <td style={{ padding: '8px 12px', color: '#6B7280' }}>{Array.isArray(room.amenities) ? room.amenities.join(', ') : room.amenitiesText || '—'}</td>
                         <td style={{ padding: '8px 12px', color: '#111827', fontWeight: 600 }}>₹{room.pricePerNight}/night</td>
-                        <td style={{ padding: '8px 12px', color: '#6B7280' }}>{room.checkIn}</td>
-                        <td style={{ padding: '8px 12px', color: '#6B7280' }}>{room.checkOut}</td>
                         <td style={{ padding: '8px 12px', color: '#6B7280' }}>{room.offer || '—'}</td>
                         <td style={{ padding: '8px 12px', color: '#6B7280' }}>{room.maxGuests}</td>
                         <td style={{ padding: '8px 12px', color: '#6B7280' }}>{room.count}</td>

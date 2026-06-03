@@ -128,13 +128,34 @@ export default function HomePage(props) {
           <div className="villas-around-section">
             
             {/* Keyword-highlighted headline block */}
-            <div className="section-title-wrap">
-              <h2 className="section-main-headline">
-                {renderTitle(homepageContent?.section1?.title, <span>Best <span className="highlight-sharp-blue-box">Villas</span> Around You</span>, "Villas")}
-              </h2>
-              <p className="section-sub-headline">
-                {homepageContent?.section1?.subText || 'Choose from homestays, villas, apartments, resorts and more—stays that fit your travel style.'}
-              </p>
+            <div className="section-title-wrap" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px' }}>
+              <div>
+                <h2 className="section-main-headline">
+                  {renderTitle(homepageContent?.section1?.title, <span>Best <span className="highlight-sharp-blue-box">Villas</span> Around You</span>, "Villas")}
+                </h2>
+                <p className="section-sub-headline">
+                  {homepageContent?.section1?.subText || 'Choose from homestays, villas, apartments, resorts and more—stays that fit your travel style.'}
+                </p>
+              </div>
+              <button 
+                onClick={() => setActiveMenu('Properties')}
+                style={{
+                  padding: '10px 24px',
+                  backgroundColor: '#f3f4f6',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '4px',
+                  fontSize: '14px',
+                  fontWeight: 600,
+                  color: '#374151',
+                  cursor: 'pointer',
+                  marginBottom: '10px',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e5e7eb'}
+                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
+              >
+                View All
+              </button>
             </div>
 
             {/* 3-column Grid layout */}

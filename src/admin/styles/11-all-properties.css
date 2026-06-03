@@ -4,8 +4,8 @@
 .props-page-container {
   background: var(--primary-light);
   border-radius: 16px;
-  margin: 0 39px 16px;
-  padding: 24px 23px;
+  margin: 0 24px 16px;
+  padding: 24px;
   min-height: calc(100vh - 120px);
 }
 .props-breadcrumb {

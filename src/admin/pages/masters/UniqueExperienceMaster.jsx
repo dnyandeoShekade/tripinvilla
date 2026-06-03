@@ -202,7 +202,7 @@ export default function UniqueExperienceMaster() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: 20 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', marginBottom: 20 }}>
             <div className="form-group">
               <label className="form-label">Experience Name*</label>
               <input 
@@ -241,19 +241,6 @@ export default function UniqueExperienceMaster() {
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
-            </div>
-            <div className="form-group">
-              <label className="form-label">Total Properties Count*</label>
-              <input 
-                type="number" 
-                name="propertiesCount"
-                value={formData.propertiesCount}
-                onChange={handleChange}
-                placeholder="e.g. 15"
-                min="0"
-                className="form-input"
-                required
-              />
             </div>
           </div>
 
@@ -386,7 +373,7 @@ export default function UniqueExperienceMaster() {
                         <img src={getFullImageUrl(exp.themeCoverImageUrl)} alt="cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </div>
                     </td>
-                    <td style={{ textAlign: 'center', fontWeight: 700, color: 'var(--primary)' }}>{exp.propertiesCount ?? 0}</td>
+                    <td style={{ textAlign: 'center', fontWeight: 700, color: 'var(--primary)' }}>{exp.propertiesCount > 0 ? exp.propertiesCount : ''}</td>
                     <td>
                       <span className={`status-pill ${exp.status ? exp.status.toLowerCase() : 'active'}`}>
                         {exp.status || 'Active'}

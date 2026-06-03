@@ -119,7 +119,7 @@ export default function Premium() {
       <div style={{ height: '16px' }} />
 
       {/* Breadcrumb */}
-      <div className="props-breadcrumb" style={{ margin: '0 39px 12px' }}>
+      <div className="props-breadcrumb">
         User Access &gt; <span>Upgrade to Premium</span>
       </div>
 
@@ -143,7 +143,7 @@ export default function Premium() {
         )}
 
         {/* Pricing Cards Row */}
-        <div style={{ display: 'flex', gap: '32px', width: '100%', maxWidth: '780px', justifyContent: 'center', alignItems: 'stretch' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', width: '100%', maxWidth: '780px', justifyContent: 'center', alignItems: 'stretch' }}>
           
           {/* Card 1: Normal */}
           <div style={{ 

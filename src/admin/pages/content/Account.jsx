@@ -127,13 +127,12 @@ export default function Account() {
             <input type="text" name="contactNumber" value={formData.contactNumber} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
           </div>
           <div>
-            <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Email Address*</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
-          </div>
-          
-          <div style={{ gridColumn: '3' }}>
              <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Location*</label>
              <input type="text" name="location" value={formData.location} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Email Address*</label>
+            <input type="email" name="email" value={formData.email} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
           </div>
         </form>
       </div>

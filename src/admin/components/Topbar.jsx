@@ -52,8 +52,8 @@ export default function Topbar({ onToggleSidebar }) {
     <header className="topbar">
       {/* Left – page title */}
       <div className="topbar-left" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <button className="mobile-menu-btn" onClick={onToggleSidebar} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', color: '#111827' }}>
-          <Menu size={24} />
+        <button className="mobile-menu-btn" onClick={onToggleSidebar} aria-label="Toggle sidebar">
+          <Menu size={22} />
         </button>
         <h1 className="topbar-title">{title}</h1>
       </div>

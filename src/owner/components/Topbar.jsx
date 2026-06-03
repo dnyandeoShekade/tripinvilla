@@ -38,11 +38,11 @@ export default function Topbar({ onToggleSidebar }) {
   };
 
   return (
-    <header className="topbar" style={{ padding: '0 39px 0 39px' }}>
+    <header className="topbar">
       {/* Left – page title */}
       <div className="topbar-left" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <button className="mobile-menu-btn" onClick={onToggleSidebar} style={{ display: 'none', background: 'none', border: 'none', cursor: 'pointer', color: '#111827' }}>
-          <Menu size={24} />
+        <button className="mobile-menu-btn" onClick={onToggleSidebar} aria-label="Toggle sidebar">
+          <Menu size={22} />
         </button>
         <h1 className="topbar-title" style={{ fontSize: '20px', fontFamily: '"Outfit", sans-serif', fontWeight: 600 }}>{title}</h1>
       </div>

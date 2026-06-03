@@ -63,7 +63,7 @@ export default function AuthModal(props) {
                 <div className="auth-form-group">
                   <label className="auth-input-label">Choose Password*</label>
                   <div style={{ position: 'relative' }}>
-                    <input type={showPassword ? "text" : "password"} className="auth-input-field" placeholder="Minimum 8 characters" value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} required autoComplete="off" />
+                    <input type={showPassword ? "text" : "password"} className="auth-input-field" placeholder="Minimum 6 characters" minLength={6} value={signupPassword} onChange={(e) => setSignupPassword(e.target.value)} required autoComplete="off" />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7280' }}>
                       {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
@@ -76,7 +76,7 @@ export default function AuthModal(props) {
                 </div>
                 <div className="auth-form-group">
                   <label className="auth-input-label">Phone Number*</label>
-                  <input type="tel" className="auth-input-field" placeholder="Enter your phone number" value={signupPhone} onChange={(e) => setSignupPhone(e.target.value)} required autoComplete="off" />
+                  <input type="tel" className="auth-input-field" placeholder="Enter your 10-digit phone number" pattern="[0-9]{10}" maxLength={10} title="Phone number must be exactly 10 digits" value={signupPhone} onChange={(e) => setSignupPhone(e.target.value)} required autoComplete="off" />
                 </div>
                 <div className="auth-form-group">
                   <label className="auth-input-label">Country of Residence*</label>
@@ -161,7 +161,7 @@ export default function AuthModal(props) {
                     <span>Password*</span>
                   </label>
                   <div style={{ position: 'relative' }}>
-                    <input type={showPassword ? "text" : "password"} className="auth-input-field" placeholder="••••••••" value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required autoComplete="off" />
+                    <input type={showPassword ? "text" : "password"} className="auth-input-field" placeholder="••••••••" minLength={6} value={loginPassword} onChange={(e) => setLoginPassword(e.target.value)} required autoComplete="off" />
                     <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#6B7280' }}>
                       {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                     </button>
