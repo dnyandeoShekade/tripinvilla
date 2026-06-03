@@ -4,6 +4,7 @@ import { X, MapPin, Bed, Bath, Users, IndianRupee, Clock, CheckCircle2, Home, Ph
 export default function PropertyViewModal({ property, onClose, inline = false }) {
   const [dynamicRooms, setDynamicRooms] = React.useState([]);
   const [allExperiences, setAllExperiences] = React.useState([]);
+  const [showRooms, setShowRooms] = React.useState(false);
 
   React.useEffect(() => {
     if (property && property._id) {
@@ -229,36 +230,61 @@ export default function PropertyViewModal({ property, onClose, inline = false })
 
           {/* Room Types (for Hotel/Resort type properties) */}
           {rooms.length > 0 && (
-            <div>
-              <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 10px 0' }}>Room Types</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {rooms.map((room, idx) => (
-                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '16px', background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '10px', padding: '12px 16px' }}>
-                    {(room.imageUrl || (Array.isArray(room.room_images) && room.room_images[0])) && (
-                      <img
-                        src={room.imageUrl || room.room_images[0]}
-                        alt=""
-                        onError={e => { e.target.style.display = 'none'; }}
-                        style={{ width: 64, height: 48, objectFit: 'cover', borderRadius: 8, flexShrink: 0 }}
-                      />
-                    )}
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: 700, color: '#111827', fontSize: '14px' }}>{room.roomName || room.room_type || room.roomType}</div>
-                      <div style={{ fontSize: '12px', color: '#6B7280', marginTop: 2 }}>
-                        {room.roomType || room.room_type} · {room.bedType || room.bed_type || ''} bed · {room.maxGuests || room.capacity || 2} guests · {room.count || 1} room{(room.count || 1) > 1 ? 's' : ''}
-                      </div>
-                      {(room.amenities?.length > 0 || room.amenities_types?.length > 0) && (
-                        <div style={{ fontSize: '11px', color: '#6B7280', marginTop: 2 }}>
-                          Amenities: {(room.amenities || room.amenities_types).join(', ')}
+            <div style={{ marginBottom: '24px' }}>
+              <button 
+                onClick={() => setShowRooms(!showRooms)}
+                style={{ width: '100%', padding: '12px', background: '#58A429', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', fontSize: '15px' }}
+              >
+                <Bed size={18} /> {showRooms ? 'Hide Room Details' : `View Room Details (${rooms.length} Rooms)`}
+              </button>
+              
+              {showRooms && (
+                <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  {rooms.map((room, idx) => (
+                    <div key={idx} style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '16px' }}>
+                      <div style={{ display: 'flex', gap: '16px', flexDirection: 'row', flexWrap: 'wrap' }}>
+                        {(room.imageUrl || (Array.isArray(room.room_images) && room.room_images[0])) && (
+                          <img
+                            src={room.imageUrl || room.room_images[0]}
+                            alt=""
+                            onError={e => { e.target.style.display = 'none'; }}
+                            style={{ width: 140, height: 100, objectFit: 'cover', borderRadius: '8px', flexShrink: 0 }}
+                          />
+                        )}
+                        <div style={{ flex: 1, minWidth: '250px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
+                            <div>
+                              <h4 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', margin: '0 0 4px 0' }}>{room.roomName || room.room_type || room.roomType}</h4>
+                              <div style={{ fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>
+                                {room.roomType || room.room_type} · {room.bedType || room.bed_type || ''} bed · {room.maxGuests || room.capacity || 2} guests · {room.count || 1} room{(room.count || 1) > 1 ? 's' : ''}
+                              </div>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                              <div style={{ fontSize: '18px', fontWeight: 700, color: '#10B981' }}>
+                                ₹{Number(room.pricePerNight || room.price_per_room || 0).toLocaleString()}
+                              </div>
+                              <div style={{ fontSize: '12px', color: '#6B7280' }}>per night</div>
+                            </div>
+                          </div>
+                          
+                          {(room.amenities?.length > 0 || room.amenities_types?.length > 0) && (
+                            <div style={{ marginTop: '12px' }}>
+                              <div style={{ fontSize: '12px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Room Amenities</div>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                {(room.amenities || room.amenities_types).map((am, i) => (
+                                  <span key={i} style={{ padding: '4px 10px', background: '#E0E7FF', color: '#4338CA', borderRadius: '6px', fontSize: '11px', fontWeight: 600 }}>
+                                    {am}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                      )}
+                      </div>
                     </div>
-                    <div style={{ fontWeight: 700, color: '#58A429', fontSize: '15px', flexShrink: 0 }}>
-                      ₹{Number(room.pricePerNight || room.price_per_room || 0).toLocaleString()}/night
-                    </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
