@@ -157,7 +157,7 @@
   align-items: baseline;
   gap: 6px;
   font-family: 'Lato', sans-serif;
-  margin-top: 2px;
+  margin-top: auto;
 }
 
 .villa-card-price-row .price-label {
