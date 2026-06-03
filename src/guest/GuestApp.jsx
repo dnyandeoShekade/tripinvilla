@@ -232,7 +232,7 @@ export default function GuestApp() {
 
   // Recommended Page Wishlist toggled list
   const [recWishlist, setRecWishlist] = useState([0, 2]);
-  const [mockWishlistedTitles, setMockWishlistedTitles] = useState([]);
+
 
   // List Your Place Page Collapsible FAQ Active Index
   const [activeFaq, setActiveFaq] = useState(0);
@@ -455,17 +455,17 @@ export default function GuestApp() {
     window.scrollTo(0, 0);
   }, [activeMenu]);
 
-  const toggleMockWishlist = (title) => {
+  const toggleWishlist = async (propertyId, e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
     if (!token) {
       setAuthMode('login');
       setAuthModalOpen(true);
       return;
     }
-    if (mockWishlistedTitles.includes(title)) {
-      setMockWishlistedTitles(mockWishlistedTitles.filter(t => t !== title));
-    } else {
-      setMockWishlistedTitles([...mockWishlistedTitles, title]);
-    }
+    try {
+      const res = await fetch(`${API_BASE}/users/wishlist/${propertyId}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } });
+      if (res.ok) fetchProfileAndEnquiries(token);
+    } catch (err) { console.error(err); }
   };
 
   const mappedBest = featuredProperties.length > 0 ? mapDbProperties(featuredProperties, []) : mapDbProperties(allProperties, []).slice(0, 6);
@@ -693,8 +693,7 @@ export default function GuestApp() {
     allProperties,
     getFilteredProperties,
     popularOffers,
-    mockWishlistedTitles,
-    toggleMockWishlist,
+    toggleWishlist,
     mapDbProperties,
     activeDestinationInfo,
     setActiveDestinationInfo,

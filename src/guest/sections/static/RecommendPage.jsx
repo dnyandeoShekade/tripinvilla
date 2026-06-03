@@ -4,7 +4,7 @@ import { areaIcon, bedIcon, filterIcon, guestIcon, recommendHeroImg, roomIcon } 
 import './RecommendPage.css';
 
 export default function RecommendPage(props) {
-  const { setSelectedProperty, setActiveMenu, isRecommendFilterOpen, setIsRecommendFilterOpen, recommendSearchQuery, setRecommendSearchQuery, recWishlist, setRecWishlist, API_BASE } = props;
+  const { setSelectedProperty, setActiveMenu, isRecommendFilterOpen, setIsRecommendFilterOpen, recommendSearchQuery, setRecommendSearchQuery, toggleWishlist, user, API_BASE } = props;
 
   const [recommendedItems, setRecommendedItems] = useState([]);
 
@@ -52,12 +52,13 @@ export default function RecommendPage(props) {
 
         <div className="recommend-cards-grid">
           {filtered.map((item) => {
-            const isLiked = recWishlist.includes(item.id);
+            const propertyId = item._id || item.id;
+            const isLiked = user && user.wishlist && user.wishlist.some(w => w._id === propertyId || w === propertyId);
             return (
-              <div key={item.id} className="recommend-property-card">
+              <div key={propertyId} className="recommend-property-card">
                 <div className="recommend-card-img-wrap">
                   <img src={item.img} alt={item.name} />
-                  <button className={`recommend-heart-circle ${isLiked ? 'liked' : ''}`} onClick={(e) => { e.stopPropagation(); setRecWishlist(isLiked ? recWishlist.filter(id => id !== item.id) : [...recWishlist, item.id]); }}>
+                  <button className={`recommend-heart-circle ${isLiked ? 'liked' : ''}`} onClick={(e) => toggleWishlist(propertyId, e)}>
                     <Heart size={16} fill={isLiked ? '#EF4444' : 'none'} color={isLiked ? '#EF4444' : '#FFFFFF'} />
                   </button>
                 </div>

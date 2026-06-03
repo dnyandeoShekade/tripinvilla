@@ -12,7 +12,7 @@ export default function PropertiesGridPage(props) {
     setActiveMenu,
     setSelectedProperty,
     setContactStep, setContactModalOpen,
-    mockWishlistedTitles, toggleMockWishlist,
+    toggleWishlist, user, token,
     homepageContent, renderTitle,
     mapDbProperties,
     allProperties,
@@ -70,12 +70,12 @@ export default function PropertiesGridPage(props) {
 
         <div className="villas-grid">
           {mappedVillas.map((villa, idx) => {
-            const isLiked = mockWishlistedTitles.includes(villa.title);
+            const isLiked = user && user.wishlist && user.wishlist.some(w => w._id === villa._id || w === villa._id);
             return (
               <div key={idx} className="recommend-property-card">
                 <div className="recommend-card-img-wrap">
                   <img src={villa.img} alt={villa.title} />
-                  <button className={`recommend-heart-circle ${isLiked ? 'liked' : ''}`} onClick={() => toggleMockWishlist(villa.title)}>
+                  <button className={`recommend-heart-circle ${isLiked ? 'liked' : ''}`} onClick={(e) => toggleWishlist(villa._id, e)}>
                     <Heart size={16} fill={isLiked ? '#EF4444' : 'none'} color={isLiked ? '#EF4444' : '#FFFFFF'} />
                   </button>
                 </div>
@@ -117,12 +117,12 @@ export default function PropertiesGridPage(props) {
 
         <div className="villas-grid">
           {mappedHomestays.map((homestay, idx) => {
-            const isLiked = mockWishlistedTitles.includes(homestay.title);
+            const isLiked = user && user.wishlist && user.wishlist.some(w => w._id === homestay._id || w === homestay._id);
             return (
               <div key={idx} className="recommend-property-card">
                 <div className="recommend-card-img-wrap">
                   <img src={homestay.img} alt={homestay.title} />
-                  <button className={`recommend-heart-circle ${isLiked ? 'liked' : ''}`} onClick={() => toggleMockWishlist(homestay.title)}>
+                  <button className={`recommend-heart-circle ${isLiked ? 'liked' : ''}`} onClick={(e) => toggleWishlist(homestay._id, e)}>
                     <Heart size={16} fill={isLiked ? '#EF4444' : 'none'} color={isLiked ? '#EF4444' : '#FFFFFF'} />
                   </button>
                 </div>

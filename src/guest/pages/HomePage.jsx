@@ -36,6 +36,7 @@ export default function HomePage(props) {
     setActiveDestinationInfo,
     setContactStep,
     setContactModalOpen,
+    toggleWishlist,
   } = props;
 
   // Auto-scroll curated properties
@@ -262,8 +263,15 @@ export default function HomePage(props) {
                   <div key={idx} className="curated-horizontal-card">
                     <div className="curated-card-img-wrap">
                       <img src={item.img} alt={item.title} />
-                      <button className="recommend-heart-circle">
-                        <Heart size={16} fill="none" color="#111827" />
+                      <button 
+                        className="recommend-heart-circle" 
+                        onClick={(e) => toggleWishlist(item._id, e)}
+                      >
+                        <Heart 
+                          size={16} 
+                          fill={user && user.wishlist && user.wishlist.some(w => w._id === item._id || w === item._id) ? '#EF4444' : 'none'} 
+                          color={user && user.wishlist && user.wishlist.some(w => w._id === item._id || w === item._id) ? '#EF4444' : '#111827'} 
+                        />
                       </button>
                     </div>
 
