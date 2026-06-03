@@ -11,9 +11,19 @@ export default function WishlistTab(props) {
     mapDbProperties, API_BASE, fetchProfileAndEnquiries,
     setAuthMode, setAuthModalOpen,
     setSelectedProperty, setContactStep, setContactModalOpen,
+    allProperties,
   } = props;
 
-  const wishlistProps = user && user.wishlist ? mapDbProperties(user.wishlist, []) : [];
+  const resolvedWishlist = (user && user.wishlist ? user.wishlist : [])
+    .map(item => {
+      if (!item) return null;
+      if (typeof item === 'object' && item._id) return item;
+      const found = allProperties && allProperties.find(p => p && (p._id || '').toString() === item.toString());
+      return found || null;
+    })
+    .filter(item => item !== null);
+
+  const wishlistProps = mapDbProperties(resolvedWishlist, []);
   const filtered = wishlistProps.filter(villa => {
     const matchesSearch = !wishlistSearchQuery ||
       (villa.title && villa.title.toLowerCase().includes(wishlistSearchQuery.toLowerCase())) ||

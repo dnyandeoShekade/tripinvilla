@@ -86,6 +86,7 @@ export function buildAccountPagesProps({
   setReviewsRatingFilter,
   userReviews,
   toggleWishlist,
+  allProperties,
 }) {
   return {
     activeMenu,
@@ -121,6 +122,7 @@ export function buildAccountPagesProps({
     setReviewsRatingFilter,
     userReviews,
     toggleWishlist,
+    allProperties,
   };
 }
 

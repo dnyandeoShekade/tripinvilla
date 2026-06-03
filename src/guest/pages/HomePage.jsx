@@ -153,7 +153,7 @@ export default function HomePage(props) {
             <div className="section-title-wrap" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px' }}>
               <div>
                 <h2 className="section-main-headline">
-                  <span>Best <span className="highlight-sharp-blue-box">{activeCategory}</span> Around You</span>
+                  {renderTitle(homepageContent?.section1?.title, <span>Best <span className="highlight-sharp-blue-box">Villas</span> Around You</span>, 'Villas')}
                 </h2>
                 <p className="section-sub-headline">
                   {homepageContent?.section1?.subText || 'Choose from homestays, villas, apartments, resorts and more—stays that fit your travel style.'}
