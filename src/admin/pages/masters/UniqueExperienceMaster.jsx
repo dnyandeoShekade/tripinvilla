@@ -202,7 +202,7 @@ export default function UniqueExperienceMaster() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', marginBottom: 20 }}>
+          <div className="unique-form-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px', marginBottom: 20 }}>
             <div className="form-group">
               <label className="form-label">Experience Name*</label>
               <input 
@@ -244,7 +244,7 @@ export default function UniqueExperienceMaster() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: 0 }}>
+          <div className="unique-form-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', marginBottom: 0 }}>
             <div className="form-group">
               <label className="form-label">
                 Theme Cover Image <span style={{ color: '#6B7280', fontSize: 11, fontWeight: 400, marginLeft: 4 }}>(Upload image or paste URL)</span>

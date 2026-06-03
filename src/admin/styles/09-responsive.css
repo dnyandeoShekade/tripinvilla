@@ -113,6 +113,43 @@
   /* Collapse form grids */
   .form-grid-3, .form-grid-2 { grid-template-columns: 1fr; }
 
+  /* Masters page form grids & layouts */
+  .amenities-form-grid,
+  .city-form-grid,
+  .unique-form-grid-3,
+  .unique-form-grid-2,
+  .dest-form-grid-4,
+  .dest-form-grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .dest-header-wrapper {
+    margin: 24px 16px 12px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .dest-header-wrapper > div {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+  .dest-header-wrapper .props-search-wrap {
+    width: 100% !important;
+  }
+  .dest-header-wrapper .props-search-wrap input {
+    width: 100% !important;
+  }
+  .amenities-tabs-wrapper {
+    margin: 0 16px 16px !important;
+    width: auto !important;
+    max-width: 100% !important;
+  }
+  .destinations-grid {
+    margin: 0 16px 32px !important;
+  }
+
   /* Stats row in All Properties */
   .props-stats-row { grid-template-columns: 1fr; }
   .props-stat-card { height: auto; padding: 20px 24px; }

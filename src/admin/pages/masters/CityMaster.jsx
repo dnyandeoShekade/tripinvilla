@@ -184,7 +184,7 @@ export default function CityMaster() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+          <div className="city-form-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
             <div className="form-group">
               <label className="form-label">City Name*</label>
               <input 

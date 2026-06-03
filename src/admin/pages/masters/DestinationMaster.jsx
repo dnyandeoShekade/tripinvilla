@@ -232,7 +232,7 @@ export default function DestinationMaster() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: 20 }}>
+          <div className="dest-form-grid-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: 20 }}>
             <div className="form-group">
               <label className="form-label">Destination Name*</label>
               <input
@@ -288,7 +288,7 @@ export default function DestinationMaster() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', marginBottom: 20 }}>
+          <div className="dest-form-grid-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px', marginBottom: 20 }}>
             <div className="form-group">
               <label className="form-label">
                 Cover Image <span style={{ color: '#6B7280', fontSize: 11, fontWeight: 400, marginLeft: 4 }}>(Upload image or paste URL)</span>
@@ -355,7 +355,7 @@ export default function DestinationMaster() {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginBottom: 20 }}>
+          <div className="dest-form-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginBottom: 20 }}>
 
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Destination Description*</label>
@@ -390,7 +390,7 @@ export default function DestinationMaster() {
       </div>
 
       {/* Grid Cards & Table toggler Row */}
-      <div style={{ margin: '24px 39px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div className="dest-header-wrapper" style={{ margin: '24px 39px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: 0 }}>Destination Catalog ({filteredDestinations.length})</h3>
 
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
@@ -424,7 +424,7 @@ export default function DestinationMaster() {
 
       {/* Grid Mode */}
       {viewMode === 'grid' ? (
-        <div style={{ margin: '0 39px 32px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
+        <div className="destinations-grid" style={{ margin: '0 39px 32px', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '20px' }}>
           {loading ? (
             <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: 40, color: '#6B7280' }}>Loading destinations...</div>
           ) : filteredDestinations.length === 0 ? (

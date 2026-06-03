@@ -222,7 +222,7 @@ export default function AmenitiesMaster() {
           </div>
 
           {/* Form Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr', gap: 16, marginBottom: 0 }}>
+          <div className="amenities-form-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr', gap: 16, marginBottom: 0 }}>
             {/* Name */}
             <div className="form-group">
               <label className="form-label">Amenity Name *</label>
@@ -266,7 +266,7 @@ export default function AmenitiesMaster() {
       </div>
 
       {/* ─── Category Filter Tabs ──────────────────── */}
-      <div style={{
+      <div className="amenities-tabs-wrapper" style={{
         margin: '0 39px 16px',
         display: 'flex', flexWrap: 'wrap', gap: 6,
         background: '#fff', padding: '8px 12px',
