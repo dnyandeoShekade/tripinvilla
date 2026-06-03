@@ -1452,7 +1452,7 @@ export default function MyProperties({ autoOpenForm = false }) {
         <div style={{ border: '1px solid #EFF6E6', borderRadius: '12px', padding: '24px', background: '#ffffff' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'nowrap', gap: '8px', minWidth: 0 }}>
             <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif', whiteSpace: 'nowrap', flexShrink: 0 }}>My Property List</h3>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', minWidth: 0, overflowX: 'auto' }}>
               {[{ val: filterDateFrom, set: setFilterDateFrom }, { val: filterDateTo, set: setFilterDateTo }].map((f, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '5px 8px', background: '#ffffff', flexShrink: 0 }}>
                   <Calendar size={14} style={{ color: '#9CA3AF' }} />

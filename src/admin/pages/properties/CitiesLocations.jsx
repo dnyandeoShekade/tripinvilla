@@ -85,7 +85,7 @@ export default function CitiesLocations() {
           <div className="props-table-toolbar" style={{ margin: 0, borderBottom: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'nowrap', minWidth: 0 }}>
             <div className="props-table-title" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>Cities &amp; Locations</div>
             
-            <div className="props-table-actions" style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'nowrap', minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
+            <div className="props-table-actions" style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'nowrap', minWidth: 0, overflowX: 'auto' }}>
               <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0 }}>
                 <DateRangeDropdown 
                   startDate={dateFrom}

@@ -121,7 +121,7 @@ export default function PropertyOwned() {
         <div className="chart-card" style={{ padding: '12px 16px', borderRadius: 12 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'nowrap', minWidth: 0 }}>
             <div className="props-table-title" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>Property Owners</div>
-            <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'nowrap', minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'nowrap', minWidth: 0, overflowX: 'auto' }}>
               {/* Date Range */}
               <div style={{ flexShrink: 0 }}>
                 <DateRangeDropdown 

@@ -140,7 +140,7 @@ export default function Enquiries() {
               Enquiries Inbox
             </div>
 
-            <div className="props-table-actions" style={{ gap: '10px', display: 'flex', flexWrap: 'nowrap', alignItems: 'center', minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
+            <div className="props-table-actions" style={{ gap: '10px', display: 'flex', flexWrap: 'nowrap', alignItems: 'center', minWidth: 0, overflowX: 'auto' }}>
               {/* Date Range Picker */}
               <div style={{ position: 'relative', flexShrink: 0 }} ref={datePickerRef}>
                 <div 

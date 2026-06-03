@@ -770,7 +770,7 @@ export default function AllProperties() {
             style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'nowrap', minWidth: 0 }}
           >
             <div className="props-table-title" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>All Properties</div>
-            <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'nowrap', minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'nowrap', minWidth: 0, overflowX: 'auto' }}>
               <div style={{ flexShrink: 0 }}>
                 <DateRangeDropdown 
                   startDate={dateFrom}

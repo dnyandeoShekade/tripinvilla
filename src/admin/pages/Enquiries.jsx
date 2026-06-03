@@ -167,7 +167,7 @@ export default function Enquiries() {
       <div className="admin-table-card">
         <div className="admin-table-header" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap', gap: '12px', minWidth: 0 }}>
           <h2 className="admin-table-title" style={{ margin: 0, fontSize: '18px', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>Enquiries</h2>
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'nowrap', minWidth: 0 }}>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'nowrap', minWidth: 0, overflowX: 'auto' }}>
             <div style={{ position: 'relative' }} ref={datePickerRef}>
               <div 
                 onClick={() => setShowDatePicker(!showDatePicker)}

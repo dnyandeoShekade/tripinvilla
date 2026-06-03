@@ -88,6 +88,10 @@
   box-sizing: border-box;
 }
 
+.nav-pill-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
 .nav-pill-item {
   display: flex;
   align-items: center;
@@ -492,7 +496,7 @@
     position: static;
     transform: none;
     width: 100%;
-    justify-content: flex-start;
+    justify-content: center;
     margin-bottom: 24px;
     flex-wrap: wrap;
     gap: 12px;
@@ -504,7 +508,7 @@
   .hero-headline { font-size: 58px; }
   .hero-headline-span { font-size: 58px; width: 360px; height: 90px; }
   
-  .nav-pill-wrapper { padding: 8px; gap: 4px; flex-wrap: wrap; height: auto; border-radius: 40px; justify-content: center; }
+  .nav-pill-wrapper { padding: 8px; gap: 4px; flex-wrap: nowrap; overflow-x: auto; height: auto; border-radius: 40px; justify-content: center; }
   .nav-pill-item { font-size: 11px; padding: 4px 6px; }
 }
 
@@ -516,8 +520,8 @@
   .hero-headline-span { font-size: 44px; width: auto; height: auto; padding: 10px 20px; }
   .search-card-wrapper { position: static; transform: none; max-width: calc(100% - 32px); margin: 24px auto 0; }
   .search-fields-grid { grid-template-columns: repeat(2, 1fr); margin-top: 16px; }
-  .tabs-row { position: static; transform: none; width: 100%; margin-bottom: 8px; justify-content: flex-start; flex-wrap: wrap; }
-  .nav-pill-wrapper { flex-wrap: wrap; height: auto; padding: 8px 14px; gap: 4px; border-radius: 40px; }
+  .tabs-row { position: static; transform: none; width: 100%; margin-bottom: 8px; justify-content: center; flex-wrap: wrap; }
+  .nav-pill-wrapper { flex-wrap: nowrap; overflow-x: auto; height: auto; padding: 8px 14px; gap: 4px; border-radius: 40px; }
   .nav-pill-item { font-size: 12px; padding: 4px 6px; }
 }
 
