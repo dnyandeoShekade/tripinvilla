@@ -7,6 +7,7 @@ import {
 } from 'recharts';
 import { TrendingUp, TrendingDown, ChevronDown, Calendar, MoreVertical, ChevronsUpDown, MessageSquare, Building2, Users, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import PropertyViewModal from './properties/PropertyViewModal';
 
 const CAT_COLORS = ['#9DC8B0', '#E8D5A0', '#2D6A6A', '#F09565', '#F0A0B0', '#C8C8C8'];
 
@@ -266,7 +267,7 @@ export default function Dashboard() {
                           <button onClick={() => { 
                             setActionMenu(null); 
                             setSelectedProperty(p); 
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            setTimeout(() => document.getElementById('property-detail-div')?.scrollIntoView({ behavior: 'smooth' }), 100);
                             toast.success('Viewing Details');
                           }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '9px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
                             👁 View Details
@@ -360,23 +361,7 @@ export default function Dashboard() {
 
     {/* Modals */}
       {selectedProperty && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
-          <div style={{ backgroundColor: '#fff', borderRadius: '16px', maxWidth: '500px', width: '100%', padding: '24px', position: 'relative' }}>
-            <button onClick={() => setSelectedProperty(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer', fontSize: 20 }}>&times;</button>
-            <h3 style={{ margin: '0 0 16px 0', fontSize: 18, color: '#111827' }}>Property Details</h3>
-            <div style={{ display: 'grid', gap: 12, fontSize: 14 }}>
-              <div><strong>Property No:</strong> {selectedProperty.propertyNo || selectedProperty.id}</div>
-              <div><strong>Name:</strong> {selectedProperty.name}</div>
-              <div><strong>Location:</strong> {selectedProperty.location}</div>
-              <div><strong>Category:</strong> {selectedProperty.category}</div>
-              <div><strong>Best Room Rate:</strong> {selectedProperty.bestRoomRate}</div>
-              <div><strong>Rooms:</strong> {selectedProperty.rooms}</div>
-              <div><strong>Total Enquiries:</strong> {selectedProperty.totalEnquiries || 0}</div>
-              <div><strong>Rating:</strong> {selectedProperty.rating}</div>
-              <div><strong>Status:</strong> {selectedProperty.status}</div>
-            </div>
-          </div>
-        </div>
+        <PropertyViewModal property={selectedProperty} onClose={() => setSelectedProperty(null)} inline={true} />
       )}
 
       {selectedEnquiry && (

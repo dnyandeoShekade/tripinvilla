@@ -1,7 +1,7 @@
 import React from 'react';
 import { X, MapPin, Bed, Bath, Users, IndianRupee, Clock, CheckCircle2, Home, Phone, Mail, Hash } from 'lucide-react';
 
-export default function PropertyViewModal({ property, onClose }) {
+export default function PropertyViewModal({ property, onClose, inline = false }) {
   if (!property) return null;
 
   // Normalize field names — the API spreads pObj so all raw model fields are available
@@ -44,11 +44,12 @@ export default function PropertyViewModal({ property, onClose }) {
     fontWeight: 600, borderRadius: '12px', display: 'inline-block'
   });
 
-  return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }} onClick={onClose} />
+  const containerStyle = inline 
+    ? { position: 'relative', width: '100%', background: '#fff', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', marginTop: '24px' }
+    : { position: 'relative', width: '100%', maxWidth: '860px', maxHeight: '90vh', background: '#fff', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.3)' };
 
-      <div style={{ position: 'relative', width: '100%', maxWidth: '860px', maxHeight: '90vh', background: '#fff', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.3)' }}>
+  const content = (
+    <div id={inline ? "property-detail-div" : ""} style={containerStyle}>
 
         {/* ── Header ── */}
         <div style={{ padding: '18px 24px', borderBottom: '1px solid #E5E7EB', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: '#F9FAFB', flexShrink: 0 }}>
@@ -240,9 +241,18 @@ export default function PropertyViewModal({ property, onClose }) {
               </div>
             </div>
           )}
-
         </div>
-      </div>
+    </div>
+  );
+
+  if (inline) {
+    return content;
+  }
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
+      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }} onClick={onClose} />
+      {content}
     </div>
   );
 }

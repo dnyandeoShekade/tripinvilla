@@ -367,7 +367,7 @@ export default function UniqueExperienceMaster() {
                       </div>
                     </td>
                     <td style={{ fontWeight: 700, color: '#111827' }}>{exp.experienceName || exp.name}</td>
-                    <td style={{ fontSize: '11.5px', color: '#6B7280', whiteSpace: 'normal', maxW: '240px', lineHeight: 1.4 }}><ReadMore maxWords={2}>{exp.description}</ReadMore></td>
+                    <td style={{ fontSize: '11.5px', color: '#6B7280', whiteSpace: 'normal', maxWidth: '240px', lineHeight: 1.4 }}><ReadMore maxWords={2}>{exp.description}</ReadMore></td>
                     <td>
                       <div style={{ width: 44, height: 32, borderRadius: 4, overflow: 'hidden', border: '1px solid #E5E7EB' }}>
                         <img src={getFullImageUrl(exp.themeCoverImageUrl)} alt="cover" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -419,7 +419,7 @@ export default function UniqueExperienceMaster() {
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', items: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 16 }}>
           <div style={{ backgroundColor: '#fff', borderRadius: '16px', maxWidth: '400px', width: '100%', padding: '24px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', border: '1px solid #E5E7EB', margin: 'auto' }}>
             <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
               <div style={{ padding: '10px', backgroundColor: '#FEE2E2', borderRadius: '50%', color: '#EF4444', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

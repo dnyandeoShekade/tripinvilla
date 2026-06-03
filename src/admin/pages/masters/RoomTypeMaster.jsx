@@ -146,17 +146,19 @@ export default function RoomTypeMaster() {
             <thead>
               <tr>
                 <th>Type Name</th>
+                <th style={{ textAlign: 'center' }}>Properties Count</th>
                 <th>Status</th>
                 <th style={{ textAlign: 'right', paddingRight: '24px' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan="3" style={{ textAlign: 'center', padding: '24px', color: '#6B7280' }}>Loading types...</td></tr>
+                <tr><td colSpan="4" style={{ textAlign: 'center', padding: '24px', color: '#6B7280' }}>Loading types...</td></tr>
               ) : filteredTypes.length > 0 ? (
                 paginated.map((type) => (
                   <tr key={type._id}>
                     <td style={{ fontWeight: 600, color: '#111827' }}>{type.name}</td>
+                    <td style={{ textAlign: 'center', fontWeight: 700, color: 'var(--primary)' }}>{type.propertiesCount > 0 ? type.propertiesCount : ''}</td>
                     <td>
                       <span className={`status-pill ${type.status ? type.status.toLowerCase() : 'active'}`}>
                         {type.status || 'Active'}
@@ -175,7 +177,7 @@ export default function RoomTypeMaster() {
                   </tr>
                 ))
               ) : (
-                <tr><td colSpan="3" style={{ textAlign: 'center', padding: '24px', color: '#9CA3AF' }}>No property types found.</td></tr>
+                <tr><td colSpan="4" style={{ textAlign: 'center', padding: '24px', color: '#9CA3AF' }}>No room types found.</td></tr>
               )}
             </tbody>
           </table>

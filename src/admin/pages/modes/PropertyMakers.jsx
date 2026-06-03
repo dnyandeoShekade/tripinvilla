@@ -972,7 +972,14 @@ export default function PropertyMakers() {
                 marginBottom: "12px",
               }}
             >
-              Location Details
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>Location Details</span>
+                {formData.propertyName && (
+                  <div style={{ fontSize: '13px', color: '#4B5563', background: '#E5E7EB', padding: '4px 10px', borderRadius: '6px', fontWeight: 500 }}>
+                    <span style={{ color: '#111827' }}>Property:</span> {formData.propertyName} &nbsp;|&nbsp; <span style={{ color: '#111827' }}>Type:</span> {formData.propertyType} &nbsp;|&nbsp; <span style={{ color: '#111827' }}>Owner:</span> {formData.ownerName || 'Admin'}
+                  </div>
+                )}
+              </div>
             </label>
 
             {/* Toggle: Use Dropdowns vs Type Manually */}
@@ -1606,6 +1613,11 @@ export default function PropertyMakers() {
               <label className="form-label" style={{ fontFamily: '"Outfit", sans-serif', fontSize: 15, color: '#111827', margin: 0 }}>
                 Add Rooms / Pricing &amp; Rules
               </label>
+              {formData.propertyName && (
+                <div style={{ fontSize: '13px', color: '#4B5563', background: '#E5E7EB', padding: '4px 10px', borderRadius: '6px', fontWeight: 500 }}>
+                  <span style={{ color: '#111827' }}>Property:</span> {formData.propertyName} &nbsp;|&nbsp; <span style={{ color: '#111827' }}>Type:</span> {formData.propertyType} &nbsp;|&nbsp; <span style={{ color: '#111827' }}>Owner:</span> {formData.ownerName || 'Admin'}
+                </div>
+              )}
             </div>
 
             {/* Row 1 */}
@@ -1788,8 +1800,19 @@ export default function PropertyMakers() {
                         <td style={{ padding: '8px 12px', color: '#6B7280' }}>{room.maxGuests}</td>
                         <td style={{ padding: '8px 12px', color: '#6B7280' }}>{room.count}</td>
                         <td style={{ padding: '8px 12px' }}>
-                          <button type="button" onClick={() => setRoomsList(prev => prev.filter((_, i) => i !== idx))}
-                            style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: 18 }}>×</button>
+                          <div style={{ display: 'flex', gap: '12px' }}>
+                            <button type="button" onClick={() => {
+                              setRoomForm({
+                                ...room,
+                                amenitiesText: Array.isArray(room.amenities) ? room.amenities.join(', ') : room.amenitiesText
+                              });
+                              setRoomImagePreview(room.imageUrl || room.room_image_url || '');
+                              setCustomRoomType(roomTypes.some(rt => rt.name === room.roomType) || ['Standard', 'Deluxe', 'Suite', 'Executive', 'Premium', 'Presidential', 'Family Room', 'Double', 'Single', 'Twin'].includes(room.roomType) ? '' : room.roomType);
+                              setRoomsList(prev => prev.filter((_, i) => i !== idx)); // remove from list so it can be added again
+                            }} style={{ background: 'none', border: 'none', color: '#3B82F6', cursor: 'pointer', fontSize: 13, textDecoration: 'underline' }}>Edit</button>
+                            <button type="button" onClick={() => setRoomsList(prev => prev.filter((_, i) => i !== idx))}
+                              style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: 18 }}>×</button>
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -1815,7 +1838,8 @@ export default function PropertyMakers() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 24, borderTop: '1px solid #E5E7EB', paddingTop: 16 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24, borderTop: '1px solid #E5E7EB', paddingTop: 16 }}>
+            <button type="button" onClick={() => { setFormStep(2); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ padding: '12px 24px', background: '#fff', color: '#374151', border: '1px solid #D1D5DB', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>&larr; Back</button>
             <button type="button" onClick={() => { setFormStep(4); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ padding: '12px 32px', background: '#58A429', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>Next Step &rarr;</button>
           </div>
           </>
@@ -1838,6 +1862,11 @@ export default function PropertyMakers() {
             <label className="form-label" style={{ fontSize: "15px", color: "#111827", margin: 0 }}>
               Dynamic Rules Sections
             </label>
+            {formData.propertyName && (
+              <div style={{ fontSize: '13px', color: '#4B5563', background: '#E5E7EB', padding: '4px 10px', borderRadius: '6px', fontWeight: 500, marginRight: 'auto', marginLeft: '16px' }}>
+                <span style={{ color: '#111827' }}>Property:</span> {formData.propertyName} &nbsp;|&nbsp; <span style={{ color: '#111827' }}>Type:</span> {formData.propertyType} &nbsp;|&nbsp; <span style={{ color: '#111827' }}>Owner:</span> {formData.ownerName || 'Admin'}
+              </div>
+            )}
             <button
               type="button"
               onClick={handleAddRuleSection}

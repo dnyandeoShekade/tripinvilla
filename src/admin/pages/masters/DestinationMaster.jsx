@@ -10,7 +10,7 @@ export default function DestinationMaster() {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  
+
   const [formData, setFormData] = useState({
     id: '',
     destinationName: '',
@@ -198,16 +198,16 @@ export default function DestinationMaster() {
   const getStateName = (sObj) => sObj?.stateName || states.find(s => s._id === sObj)?.stateName || 'Maharashtra';
   const getCountryName = (cObj) => cObj?.countryName || countries.find(c => c._id === cObj)?.countryName || 'India';
 
-    useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm]);
 
-  const filteredDestinations = destinations.filter(d => 
+  const filteredDestinations = destinations.filter(d =>
     (d.destinationName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
     (d.description || '').toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-    const totalItems = filteredDestinations.length;
+  const totalItems = filteredDestinations.length;
   const paginated = filteredDestinations.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
@@ -235,12 +235,12 @@ export default function DestinationMaster() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: 20 }}>
             <div className="form-group">
               <label className="form-label">Destination Name*</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 name="destinationName"
                 value={formData.destinationName}
                 onChange={handleChange}
-                placeholder="e.g. Goa" 
+                placeholder="e.g. Goa"
                 className="form-input"
                 required
               />
@@ -248,7 +248,7 @@ export default function DestinationMaster() {
 
             <div className="form-group">
               <label className="form-label">State*</label>
-              <select 
+              <select
                 name="stateId"
                 value={formData.stateId}
                 onChange={handleChange}
@@ -262,7 +262,7 @@ export default function DestinationMaster() {
 
             <div className="form-group">
               <label className="form-label">Country*</label>
-              <select 
+              <select
                 name="countryId"
                 value={formData.countryId}
                 onChange={handleChange}
@@ -276,7 +276,7 @@ export default function DestinationMaster() {
 
             <div className="form-group">
               <label className="form-label">Status*</label>
-              <select 
+              <select
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
@@ -295,8 +295,8 @@ export default function DestinationMaster() {
               </label>
               <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                 <div className="file-upload-wrapper" style={{ flex: 1 }}>
-                  <input 
-                    type="file" 
+                  <input
+                    type="file"
                     accept=".jpg,.jpeg,.png"
                     onChange={(e) => {
                       const file = e.target.files[0];
@@ -309,12 +309,12 @@ export default function DestinationMaster() {
                       setSelectedFile(file);
                       setFilePreviewUrl(URL.createObjectURL(file));
                     }}
-                    className="file-upload-input" 
+                    className="file-upload-input"
                     style={{ padding: '8px' }}
                   />
                 </div>
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   name="coverImageUrl"
                   value={formData.coverImageUrl}
                   onChange={(e) => {
@@ -324,7 +324,7 @@ export default function DestinationMaster() {
                       setFilePreviewUrl(e.target.value);
                     }
                   }}
-                  placeholder="Or paste image URL..." 
+                  placeholder="Or paste image URL..."
                   className="form-input"
                   style={{ flex: 1 }}
                 />
@@ -342,8 +342,8 @@ export default function DestinationMaster() {
               <div style={{ display: 'flex', gap: '20px', background: '#fff', border: '1px solid #E5E7EB', borderRadius: 8, padding: '11px 16px', alignItems: 'center', height: '46px' }}>
                 {['Villa', 'Hotel', 'Homestay'].map(type => (
                   <label key={type} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#4B5563', cursor: 'pointer' }}>
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={formData.propertyTypesOffered.includes(type)}
                       onChange={() => handleCheckboxChange(type)}
                       style={{ cursor: 'pointer', accentColor: 'var(--primary)', width: 15, height: 15 }}
@@ -356,25 +356,25 @@ export default function DestinationMaster() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px', marginBottom: 20 }}>
-            
+
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Destination Description*</label>
-            <textarea 
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="e.g. Beaches, vibrant shacks, and rich heritage." 
-              className="form-textarea"
-              style={{ minHeight: 46 }}
-              required
-            />
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="e.g. Beaches, vibrant shacks, and rich heritage."
+                className="form-textarea"
+                style={{ minHeight: 46 }}
+                required
+              />
+            </div>
           </div>
-        </div>
 
           {isEditing && (
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 onClick={() => {
                   setIsEditing(false);
                   setFormData({ id: '', destinationName: '', stateId: states.length > 0 ? states[0]._id : '', countryId: countries.length > 0 ? countries[0]._id : '', coverImageUrl: '', propertyTypesOffered: ['Villa'], propertiesCount: 0, description: '', status: 'Active' });
@@ -392,16 +392,16 @@ export default function DestinationMaster() {
       {/* Grid Cards & Table toggler Row */}
       <div style={{ margin: '24px 39px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: 0 }}>Destination Catalog ({filteredDestinations.length})</h3>
-        
+
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <div style={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '4px', display: 'flex', gap: '4px' }}>
-            <button 
+            <button
               onClick={() => setViewMode('grid')}
               style={{ padding: '6px 12px', fontSize: '11.5px', fontWeight: 'bold', border: 'none', borderRadius: '6px', cursor: 'pointer', background: viewMode === 'grid' ? 'var(--primary)' : 'transparent', color: viewMode === 'grid' ? '#fff' : '#6B7280' }}
             >
               Grid View
             </button>
-            <button 
+            <button
               onClick={() => setViewMode('table')}
               style={{ padding: '6px 12px', fontSize: '11.5px', fontWeight: 'bold', border: 'none', borderRadius: '6px', cursor: 'pointer', background: viewMode === 'table' ? 'var(--primary)' : 'transparent', color: viewMode === 'table' ? '#fff' : '#6B7280' }}
             >
@@ -411,9 +411,9 @@ export default function DestinationMaster() {
 
           <div className="props-search-wrap">
             <Search size={16} />
-            <input 
-              type="text" 
-              placeholder="Search destination..." 
+            <input
+              type="text"
+              placeholder="Search destination..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{ width: 180 }}
@@ -434,7 +434,7 @@ export default function DestinationMaster() {
               <div key={dest._id} style={{ background: '#fff', borderRadius: '16px', overflow: 'hidden', border: '1px solid #EAEAEA', boxShadow: '0 2px 8px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column', height: 320 }}>
                 <div style={{ height: 160, position: 'relative', background: '#FAFAFA' }}>
                   <img src={dest.coverImageUrl} alt={dest.destinationName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  
+
                   <span className={`status-pill ${dest.status ? dest.status.toLowerCase() : 'active'}`} style={{ position: 'absolute', top: 12, right: 12, background: '#fff', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
                     {dest.status || 'Active'}
                   </span>
@@ -473,71 +473,77 @@ export default function DestinationMaster() {
             ))
           )}
         </div>
+
       ) : (
         /* List Table Mode */
         <>
           <div className="table-section">
             <table className="data-table">
-            <thead>
-              <tr>
-                <th style={{ width: '80px' }}>Image</th>
-                <th>Destination Name</th>
-                <th>State / Country</th>
-                <th>Offered Types</th>
-                <th>Short Description</th>
-                <th style={{ textAlign: 'center' }}>Count</th>
-                <th>Status</th>
-                <th style={{ textAlign: 'right', paddingRight: '24px' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr><td colSpan="8" style={{ textAlign: 'center', padding: '24px', color: '#6B7280' }}>Loading destinations...</td></tr>
-              ) : paginated.map(dest => (
-                <tr key={dest._id}>
-                  <td>
-                    <div style={{ width: 44, height: 32, borderRadius: 4, overflow: 'hidden', border: '1px solid #E5E7EB' }}>
-                      <img src={getFullImageUrl(dest.coverImageUrl)} alt={dest.destinationName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    </div>
-                  </td>
-                  <td style={{ fontWeight: 700, color: '#111827' }}>{dest.destinationName}</td>
-                  <td style={{ fontWeight: 500, fontSize: '11.5px' }}>{getStateName(dest.stateId)}, {getCountryName(dest.countryId)}</td>
-                  <td>
-                    <div style={{ display: 'flex', gap: 4 }}>
-                      {(dest.propertyTypesOffered || []).map(t => (
-                        <span key={t} style={{ background: 'var(--primary-light)', color: 'var(--primary)', fontSize: '9px', fontWeight: 700, padding: '2px 6px', borderRadius: 4 }}>{t}</span>
-                      ))}
-                    </div>
-                  </td>
-                  <td style={{ fontSize: '11.5px', color: '#6B7280', maxW: '180px', whiteSpace: 'normal' }}><ReadMore maxWords={2}>{dest.description}</ReadMore></td>
-                  <td style={{ textAlign: 'center', fontWeight: 700, color: 'var(--primary)' }}>{dest.propertiesCount > 0 ? dest.propertiesCount : ''}</td>
-                  <td>
-                    <span className={`status-pill ${dest.status ? dest.status.toLowerCase() : 'active'}`}>
-                      {dest.status || 'Active'}
-                    </span>
-                  </td>
-                  <td style={{ textAlign: 'right', paddingRight: '24px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-                      <button onClick={() => handleEdit(dest)} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', padding: 4 }}>
-                        <Edit2 size={14} />
-                      </button>
-                      <button onClick={() => triggerDelete(dest._id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', padding: 4 }}>
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  </td>
+              <thead>
+                <tr>
+                  <th style={{ width: '80px' }}>Image</th>
+                  <th>Destination Name</th>
+                  <th>State / Country</th>
+                  <th>Offered Types</th>
+                  <th>Short Description</th>
+                  <th style={{ textAlign: 'center' }}>Count</th>
+                  <th>Status</th>
+                  <th style={{ textAlign: 'right', paddingRight: '24px' }}>Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <Pagination 
-          currentPage={currentPage} 
-          totalItems={totalItems} 
-          itemsPerPage={itemsPerPage} 
-          onPageChange={setCurrentPage} 
-        />
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr><td colSpan="8" style={{ textAlign: 'center', padding: '24px', color: '#6B7280' }}>Loading destinations...</td></tr>
+                ) : paginated.map(dest => (
+                  <tr key={dest._id}>
+                    <td>
+                      <div style={{ width: 44, height: 32, borderRadius: 4, overflow: 'hidden', border: '1px solid #E5E7EB' }}>
+                        <img src={getFullImageUrl(dest.coverImageUrl)} alt={dest.destinationName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </div>
+                    </td>
+                    <td style={{ fontWeight: 700, color: '#111827' }}>{dest.destinationName}</td>
+                    <td style={{ fontWeight: 500, fontSize: '11.5px' }}>{getStateName(dest.stateId)}, {getCountryName(dest.countryId)}</td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 4 }}>
+                        {(dest.propertyTypesOffered || []).map(t => (
+                          <span key={t} style={{ background: 'var(--primary-light)', color: 'var(--primary)', fontSize: '9px', fontWeight: 700, padding: '2px 6px', borderRadius: 4 }}>{t}</span>
+                        ))}
+                      </div>
+                    </td>
+                    <td style={{ fontSize: '11.5px', color: '#6B7280', maxWidth: '180px', whiteSpace: 'normal' }}><ReadMore maxWords={2}>{dest.description}</ReadMore></td>
+                    <td style={{ textAlign: 'center', fontWeight: 700, color: 'var(--primary)' }}>{dest.propertiesCount > 0 ? dest.propertiesCount : ''}</td>
+                    <td>
+                      <span className={`status-pill ${dest.status ? dest.status.toLowerCase() : 'active'}`}>
+                        {dest.status || 'Active'}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: 'right', paddingRight: '24px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+                        <button onClick={() => handleEdit(dest)} style={{ background: 'none', border: 'none', color: 'var(--primary)', cursor: 'pointer', padding: 4 }}>
+                          <Edit2 size={14} />
+                        </button>
+                        <button onClick={() => triggerDelete(dest._id)} style={{ background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', padding: 4 }}>
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>
+      )}
+  
+
+      {/* Pagination applies to both views */}
+      {totalItems > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+        />
       )}
 
       {/* Delete Confirmation Modal */}
@@ -556,14 +562,14 @@ export default function DestinationMaster() {
               </div>
             </div>
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px' }}>
-              <button 
+              <button
                 onClick={() => setShowDeleteModal(false)}
                 className="btn-outline-green"
                 style={{ cursor: 'pointer', padding: '8px 16px', fontSize: 13 }}
               >
                 Cancel
               </button>
-              <button 
+              <button
                 onClick={confirmDelete}
                 style={{ cursor: 'pointer', backgroundColor: '#EF4444', color: '#fff', border: 'none', borderRadius: '8px', padding: '8px 16px', fontSize: 13, fontWeight: 600 }}
               >

@@ -157,7 +157,7 @@ export default function HeroSection(props) {
                     <DateRange
                       ranges={[getSelectionRange()]}
                       onChange={handleSelect}
-                      months={2}
+                      months={1}
                       direction="horizontal"
                       showDateDisplay={false}
                       minDate={new Date()}

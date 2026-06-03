@@ -8,7 +8,7 @@
   margin: 0;
   border-radius: 0px;
   /* Sharp bottom corners as requested */
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
 }
 
