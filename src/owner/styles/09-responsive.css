@@ -1,31 +1,54 @@
 /* ══════════════════════════════════════════════
    RESPONSIVE  —  Owner Dashboard
-   Breakpoints: 1200px | 900px | 640px | 480px
+   Breakpoints: 1366px | 1200px | 900px | 640px | 480px
 ══════════════════════════════════════════════ */
 
 /* ─── Large desktop ─── */
-@media (min-width: 1201px) {
+@media (min-width: 1367px) {
   .stats-grid { grid-template-columns: repeat(3, 1fr); }
   .charts-row { grid-template-columns: 1003fr 421fr; }
+}
+
+/* ─── Mid desktop (1280px–1366px) — shrink sidebar to fit content ─── */
+@media (max-width: 1366px) {
+  :root {
+    --sidebar-w:    250px;
+    --main-left:    286px; /* 250 + 20 + 16 */
+  }
+
+  .stats-grid      { grid-template-columns: repeat(3, 1fr); margin: 0 20px 0; }
+  .charts-row      { grid-template-columns: 1003fr 421fr; }
+
+  .stat-card-value { font-size: 30px; }
+  .stat-card       { padding: 16px 20px; }
+
+  .dash-section         { margin: 0 20px 16px; padding: 18px; }
+  .table-section        { margin: 0 20px 16px; }
+  .content-card         { margin: 0 20px 16px; }
+  .page-header          { padding: 18px 20px 0; }
+  .props-page-container { margin: 0 20px 16px; }
+  .admin-table-card     { margin: 0 20px 24px; }
+  .props-breadcrumb     { margin: 0 20px 12px !important; }
 }
 
 /* ─── Tablet (1024px–1200px) ─── */
 @media (max-width: 1200px) {
   :root {
-    --sidebar-w:    260px;
-    --main-left:    296px;
+    --sidebar-w:    240px;
+    --main-left:    276px;
   }
 
-  .stats-grid       { grid-template-columns: repeat(2, 1fr); margin: 0 24px 0; }
+  .stats-grid       { grid-template-columns: repeat(2, 1fr); margin: 0 20px 0; }
   .charts-row       { grid-template-columns: 1fr; gap: 16px; }
-  .dash-section     { margin: 0 24px 16px; }
-  .table-section    { margin: 0 24px 16px; }
-  .content-card     { margin: 0 24px 16px; }
-  .page-header      { padding: 20px 24px 0; }
-  .props-page-container { margin: 0 24px 16px; }
-  .admin-table-card { margin: 0 24px 24px; }
+  .dash-section     { margin: 0 20px 16px; }
+  .table-section    { margin: 0 20px 16px; }
+  .content-card     { margin: 0 20px 16px; }
+  .page-header      { padding: 20px 20px 0; }
+  .props-page-container { margin: 0 20px 16px; }
+  .admin-table-card { margin: 0 20px 24px; }
+  .props-breadcrumb { margin: 0 20px 12px !important; }
 
-  .form-grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .form-grid-3     { grid-template-columns: repeat(2, 1fr); }
   .props-stats-row { grid-template-columns: repeat(2, 1fr); }
 }
 
@@ -80,6 +103,7 @@
   .master-form-card { padding: 20px; margin: 0 16px 16px; }
   .props-page-container { margin: 0 16px 16px; padding: 16px; }
   .admin-table-card { margin: 0 16px 16px; padding: 16px; }
+  .props-breadcrumb { margin: 0 16px 12px !important; }
 
   .data-table, .admin-table { min-width: 600px; }
 

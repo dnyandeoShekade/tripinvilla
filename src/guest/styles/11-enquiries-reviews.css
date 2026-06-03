@@ -77,3 +77,41 @@
   margin: 0;
 }
 
+/* ==========================================================================
+   RESPONSIVE LAYOUTS FOR DASHBOARD LIST CARDS
+   ========================================================================== */
+
+/* ─── Tablet Portrait (900px) ─── */
+@media (max-width: 900px) {
+  .dashboard-list-card {
+    flex-direction: column;
+  }
+  .list-card-img-wrap {
+    width: 100%;
+    height: 200px;
+    margin: 0;
+    border-radius: 12px 12px 0 0;
+  }
+  .list-card-details {
+    padding: 20px;
+  }
+}
+
+/* ─── Mobile (640px) ─── */
+@media (max-width: 640px) {
+  .list-card-img-wrap {
+    height: 160px;
+  }
+  .list-card-details {
+    padding: 16px;
+  }
+  .list-card-title {
+    font-size: 16px;
+  }
+  .list-card-location {
+    font-size: 12px;
+  }
+  .list-card-question {
+    font-size: 13px;
+  }
+}
