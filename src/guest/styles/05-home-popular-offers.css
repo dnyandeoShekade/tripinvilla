@@ -11,8 +11,8 @@
 
 .popular-offers-grid {
   display: grid;
-  grid-template-columns: repeat(2, 580px);
-  /* Sized beautifully to 580px */
+  grid-template-columns: repeat(2, 1fr);
+  /* Responsive grid columns */
   grid-gap: 24px 54px;
   /* Reduced vertical row gap, preserved elegant column spacing */
   justify-content: start;
@@ -30,7 +30,7 @@
   /* Elegant, spacious padding */
   box-sizing: border-box;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  width: 580px;
+  width: 100%;
   /* Restored beautiful larger width */
   height: 250px;
   /* Restored beautiful larger height */

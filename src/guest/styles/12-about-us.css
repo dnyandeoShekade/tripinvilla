@@ -112,13 +112,15 @@
 
 .about-right-col {
   position: relative;
-  width: 525px;
-  /* Exact Figma width spec */
+  width: 100%;
+  max-width: 525px;
+  /* Responsive Figma width spec */
 }
 
 .about-master-image-box {
-  width: 525px;
-  /* Exact Figma width spec */
+  width: 100%;
+  max-width: 525px;
+  /* Responsive Figma width spec */
   height: 672px;
   /* Exact Figma height spec: 672.73px scaled down */
   border-radius: 24px;
