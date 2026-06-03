@@ -190,28 +190,7 @@ export default function HomePage(props) {
                       <img src={villa.img} alt={villa.title} />
                       <button 
                         className={`wishlist-btn-circle ${isWishlisted ? 'active' : ''}`}
-                        onClick={async (e) => {
-                          e.stopPropagation();
-                          if (!token) {
-                            setAuthMode('login');
-                            setAuthModalOpen(true);
-                            return;
-                          }
-                          try {
-                            const res = await fetch(`${API_BASE}/users/wishlist/${villa._id}`, {
-                              method: 'POST',
-                              headers: {
-                                'Content-Type': 'application/json',
-                                Authorization: `Bearer ${token}`
-                              }
-                            });
-                            if (res.ok) {
-                              fetchProfileAndEnquiries(token);
-                            }
-                          } catch (err) {
-                            console.error(err);
-                          }
-                        }}
+                        onClick={(e) => toggleWishlist(villa._id, e)}
                       >
                         <Heart size={16} fill={isWishlisted ? '#EF4444' : 'none'} color={isWishlisted ? '#EF4444' : '#111827'} />
                       </button>

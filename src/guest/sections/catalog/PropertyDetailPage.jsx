@@ -1,4 +1,4 @@
-import { Calendar, Clock, CheckCircle, MapPin, Phone, Mail, Search, Sparkles, Star, Maximize, Home, BedDouble, Users, Utensils, Wifi, Car, Waves, Wind, Flame, Tv, ChefHat, Coffee, Dumbbell, Flower2, Shield, Monitor } from 'lucide-react';
+import { Calendar, Clock, CheckCircle, MapPin, Phone, Mail, Search, Sparkles, Star, Maximize, Home, BedDouble, Users, Utensils, Wifi, Car, Waves, Wind, Flame, Tv, ChefHat, Coffee, Dumbbell, Flower2, Shield, Monitor, Heart } from 'lucide-react';
 import { detailSubTabs, landmarks, roomOptions } from '../../../data/mockData';
 import './PropertyDetailPage.css';
 
@@ -38,6 +38,7 @@ export default function PropertyDetailPage(props) {
     reviewPage,
     API_BASE,
     fetchProfileAndEnquiries,
+    toggleWishlist,
   } = props;
 
   const propImages =
@@ -106,7 +107,19 @@ export default function PropertyDetailPage(props) {
 
           {/* Right Information Reservation Box */}
           <div className="detail-reservation-card">
-            <h2 className="reservation-title">{activeDetailProp.title}</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+              <h2 className="reservation-title" style={{ margin: 0 }}>{activeDetailProp.title}</h2>
+              <button 
+                onClick={(e) => toggleWishlist(activeDetailProp._id, e)}
+                style={{ 
+                  background: user && user.wishlist && user.wishlist.some(w => w._id === activeDetailProp._id || w === activeDetailProp._id) ? '#FEE2E2' : '#F3F4F6',
+                  border: 'none', cursor: 'pointer', padding: '8px', display: 'flex', 
+                  alignItems: 'center', justifyContent: 'center', borderRadius: '50%', flexShrink: 0, marginTop: '2px'
+                }}
+              >
+                <Heart size={20} fill={user && user.wishlist && user.wishlist.some(w => w._id === activeDetailProp._id || w === activeDetailProp._id) ? '#EF4444' : 'none'} color={user && user.wishlist && user.wishlist.some(w => w._id === activeDetailProp._id || w === activeDetailProp._id) ? '#EF4444' : '#6B7280'} />
+              </button>
+            </div>
             
 
             <div className="reservation-location">

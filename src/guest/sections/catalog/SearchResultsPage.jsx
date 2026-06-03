@@ -23,6 +23,7 @@ export default function SearchResultsPage(props) {
     getFilteredProperties,
     handleClearAll,
     API_BASE,
+    toggleWishlist,
     fetchProfileAndEnquiries,
     setSelectedProperty,
     setContactStep, setContactModalOpen,
@@ -265,14 +266,7 @@ export default function SearchResultsPage(props) {
                               <h3>{property.title || property.propertyName} {idx === 0 && <span className="premium-badge"><Star size={10} fill="white" /> Premium</span>}</h3>
                               <p><MapPin size={14} color="#9CA3AF" /> {property.location}</p>
                             </div>
-                            <button className={`fav-btn ${isWishlisted ? 'active' : ''}`} onClick={async (e) => {
-                              e.stopPropagation();
-                              if (!token) { setAuthMode('login'); setAuthModalOpen(true); return; }
-                              try {
-                                const res = await fetch(`${API_BASE}/users/wishlist/${property._id}`, { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } });
-                                if (res.ok) fetchProfileAndEnquiries(token);
-                              } catch (err) { console.error(err); }
-                            }}>
+                            <button className={`fav-btn ${isWishlisted ? 'active' : ''}`} onClick={(e) => toggleWishlist(property._id, e)}>
                               <Heart size={18} fill={isWishlisted ? '#EF4444' : 'none'} color={isWishlisted ? '#EF4444' : '#6B7280'} />
                             </button>
                           </div>
