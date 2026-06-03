@@ -55,6 +55,8 @@ export default function Dashboard() {
   const [actionMenu, setActionMenu] = useState(null);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
+  const [enqDateFrom, setEnqDateFrom] = useState('');
+  const [enqDateTo, setEnqDateTo] = useState('');
 
   const fetchData = async () => {
     try {
@@ -63,7 +65,9 @@ export default function Dashboard() {
         fetch(`${import.meta.env.VITE_API_BASE}/dashboard/enquiries-chart?year=${selectedYear}`).then(r => r.json()),
         fetch(`${import.meta.env.VITE_API_BASE}/dashboard/property-categories`).then(r => r.json()),
         fetch(`${import.meta.env.VITE_API_BASE}/dashboard/top-properties`).then(r => r.json()),
-        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/recent-enquiries?year=${selectedEnquiryRaw ? selectedEnquiryRaw.split('-')[0] : ''}&month=${selectedEnquiryRaw ? selectedEnquiryRaw.split('-')[1] : ''}`).then(r => r.json())
+        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/recent-enquiries?dateFrom=${enqDateFrom}&dateTo=${enqDateTo}`, {
+          headers: { Authorization: `Bearer ${localStorage.getItem('admin_token') || ''}` }
+        }).then(r => r.json())
       ]);
 
       if (statsRes && statsRes.activeProperties !== undefined) setStats(statsRes);
@@ -78,7 +82,7 @@ export default function Dashboard() {
     }
   };
 
-  useEffect(() => { fetchData(); }, [selectedYear, selectedEnquiryRaw]);
+  useEffect(() => { fetchData(); }, [selectedYear, enqDateFrom, enqDateTo]);
 
 
 
@@ -288,31 +292,33 @@ export default function Dashboard() {
         <div className="chart-card" style={{ padding: 0, overflow: 'hidden' }}>
           <div className="table-header" style={{ padding: '14px 20px' }}>
             <span className="table-title">Recent Enquiries</span>
-            <div className="table-header-right" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+            <div className="table-header-right" style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
               <button className="table-view-all" onClick={() => navigate('/admin/enquiries')} style={{ cursor: 'pointer' }}>View All</button>
               
-              <div style={{ position: 'relative' }}>
-                <button className="chart-filter" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Calendar size={14} /> {selectedEnquiryMonth} <ChevronDown size={14} />
-                </button>
-                <input 
-                  type="month"
-                  value={selectedEnquiryRaw}
-                  style={{ position: 'absolute', opacity: 0, top: 0, left: 0, width: '100%', height: '100%', cursor: 'pointer', zIndex: 10 }}
-                  onChange={(e) => {
-                    if (e.target.value) {
-                      const [year, month] = e.target.value.split('-');
-                      const d = new Date(year, month - 1);
-                      setSelectedEnquiryMonth(`${d.toLocaleString('default', { month: 'short' })} ${d.getFullYear()}`);
-                      setSelectedEnquiryRaw(e.target.value);
-                    } else {
-                      setSelectedEnquiryMonth('All Time');
-                      setSelectedEnquiryRaw('');
-                    }
-                  }}
-                />
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <label style={{ fontSize: '10px', fontWeight: 600, color: '#6B7280' }}>From</label>
+                  <input
+                    type="date"
+                    value={enqDateFrom}
+                    onChange={(e) => setEnqDateFrom(e.target.value)}
+                    style={{ padding: '4px 8px', border: '1px solid #E5E7EB', borderRadius: '6px', fontSize: '12px', outline: 'none', cursor: 'pointer', color: '#374151' }}
+                  />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                  <label style={{ fontSize: '10px', fontWeight: 600, color: '#6B7280' }}>To</label>
+                  <input
+                    type="date"
+                    value={enqDateTo}
+                    min={enqDateFrom || undefined}
+                    onChange={(e) => setEnqDateTo(e.target.value)}
+                    style={{ padding: '4px 8px', border: '1px solid #E5E7EB', borderRadius: '6px', fontSize: '12px', outline: 'none', cursor: 'pointer', color: '#374151' }}
+                  />
+                </div>
+                {(enqDateFrom || enqDateTo) && (
+                  <button onClick={() => { setEnqDateFrom(''); setEnqDateTo(''); }} style={{ fontSize: '11px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', marginTop: '14px' }}>Clear</button>
+                )}
               </div>
-
             </div>
           </div>
           <div style={{ overflowX: 'auto' }}>
