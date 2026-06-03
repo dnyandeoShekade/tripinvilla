@@ -20,6 +20,7 @@ export function mapDbProperties(dbProps, defaultList, where) {
       title: p.propertyName || p.name || p.title || 'Beautiful Stay',
       location: p.location || 'Kasol, HP, India',
       rating: p.rating || 0,
+      reviewsCount: p.reviewsCount !== undefined ? Number(p.reviewsCount) : 0,
       ratingLabel: p.rating >= 4.5 ? 'Excellent' : p.rating >= 4.0 ? 'Very Good' : p.rating >= 3.0 ? 'Good' : p.rating >= 2.0 ? 'Average' : p.rating > 0 ? 'Poor' : 'No Ratings',
       reviews: p.reviewsCount !== undefined ? `${p.reviewsCount} Genuine Reviews` : (p.totalBookings > 0 ? `${p.totalBookings} Genuine Reviews` : '0 Genuine Reviews'),
       price: p.price

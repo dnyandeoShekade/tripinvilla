@@ -226,13 +226,22 @@ export default function HomePage(props) {
                       </div>
 
                       <div className="villa-card-rating-row">
-                        <div className="rating-pill">
-                          <span>{villa.rating}</span>
-                        </div>
-                        <div className="rating-text-stack">
-                          <span className="rating-desc-excellent">{villa.ratingLabel || 'Excellent'}</span>
-                          <span className="rating-reviews-count">{villa.reviews}</span>
-                        </div>
+                        {villa.reviewsCount > 0 ? (
+                          <>
+                            <div className="rating-pill">
+                              <span>{villa.rating}</span>
+                            </div>
+                            <div className="rating-text-stack">
+                              <span className="rating-desc-excellent">{villa.ratingLabel}</span>
+                              <span className="rating-reviews-count">{villa.reviews}</span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="rating-text-stack">
+                            <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>Not Rated Yet</span>
+                            <span className="rating-reviews-count">0 Genuine Reviews</span>
+                          </div>
+                        )}
                       </div>
 
                       <div className="villa-card-price-row">
@@ -305,13 +314,22 @@ export default function HomePage(props) {
                       </div>
 
                       <div className="curated-card-rating-row">
-                        <div className="rating-pill">
-                          <span>{item.rating}</span>
-                        </div>
-                        <div className="rating-text-stack">
-                          <span className="rating-desc-excellent">{item.ratingLabel || 'Excellent'}</span>
-                          <span className="rating-reviews-count">{item.reviews}</span>
-                        </div>
+                        {item.reviewsCount > 0 ? (
+                          <>
+                            <div className="rating-pill">
+                              <span>{item.rating}</span>
+                            </div>
+                            <div className="rating-text-stack">
+                              <span className="rating-desc-excellent">{item.ratingLabel}</span>
+                              <span className="rating-reviews-count">{item.reviews}</span>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="rating-text-stack">
+                            <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>Not Rated Yet</span>
+                            <span className="rating-reviews-count">0 Genuine Reviews</span>
+                          </div>
+                        )}
                       </div>
 
                       <div className="curated-card-price-row">
