@@ -255,8 +255,12 @@ export default function PropertyViewModal({ property, onClose, inline = false })
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
                             <div>
                               <h4 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', margin: '0 0 4px 0' }}>{room.roomName || room.room_type || room.roomType}</h4>
-                              <div style={{ fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>
+                              <div style={{ fontSize: '13px', color: '#4B5563', marginBottom: '4px' }}>
                                 {room.roomType || room.room_type} · {room.bedType || room.bed_type || ''} bed · {room.maxGuests || room.capacity || 2} guests · {room.count || 1} room{(room.count || 1) > 1 ? 's' : ''}
+                              </div>
+                              <div style={{ fontSize: '12px', color: '#6B7280', marginBottom: '8px', display: 'flex', gap: '12px' }}>
+                                <span><Clock size={12} style={{ display: 'inline', marginRight: 4, transform: 'translateY(2px)' }}/> Check In: {room.checkIn || room.checkin_time || '3:00 PM'}</span>
+                                <span><Clock size={12} style={{ display: 'inline', marginRight: 4, transform: 'translateY(2px)' }}/> Check Out: {room.checkOut || room.checkout_time || '12:00 PM'}</span>
                               </div>
                             </div>
                             <div style={{ textAlign: 'right' }}>
