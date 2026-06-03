@@ -468,14 +468,16 @@ export default function GuestApp() {
     } catch (err) { console.error(err); }
   };
 
-  // Filter by active category for the homepage "Best X Around You" section
+  // Strictly filter by active category for the homepage "Best X Around You" section
+  // No fallback to allProperties — only show properties matching the selected category
   const catTypeMap = { Apartments: 'Apartment', Homestays: 'Homestay', Resorts: 'Resort', Motels: 'Motel', Cottages: 'Cottage', Bungalows: 'Bungalow', Villas: 'Villa' };
   const activeCatType = catTypeMap[activePropCategory] || activePropCategory || 'Villa';
   const categoryFilteredProps = allProperties.filter(p =>
     (p?.type || '').toLowerCase() === activeCatType.toLowerCase() ||
     (p?.category || '').toLowerCase() === activeCatType.toLowerCase()
   );
-  const mappedBest = mapDbProperties(categoryFilteredProps.length > 0 ? categoryFilteredProps : allProperties, []).slice(0, 3);
+  // Show up to 6 — if only 3 Villas exist, only 3 will show. Never show wrong category.
+  const mappedBest = mapDbProperties(categoryFilteredProps, []).slice(0, 6);
   let currentBestVillas = [...mappedBest];
 
 

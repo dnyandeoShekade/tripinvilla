@@ -48,8 +48,8 @@ export default function HomePage(props) {
 
   const typeMap = { Apartments: 'Apartment', Homestays: 'Homestay', Resorts: 'Resort', Motels: 'Motel', Cottages: 'Cottage', Bungalows: 'Bungalow', Villas: 'Villa' };
   const activeCategory = activePropCategory || 'Villas';
-  // Only show 3 properties in the homepage section
-  const homepageBestVillas = currentBestVillas.slice(0, 3);
+  // currentBestVillas is already strictly filtered by category and capped at 6 in GuestApp
+  const homepageBestVillas = currentBestVillas;
 
   const handleViewAll = () => {
     if (setActivePropCategory) setActivePropCategory(activeCategory);
