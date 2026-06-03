@@ -1450,27 +1450,27 @@ export default function MyProperties({ autoOpenForm = false }) {
       {/* ── Property List Table ───────────────────────────────── */}
       <div className="dash-section" style={{ borderRadius: '18px', border: '1px solid #EFF6E6', padding: '36px', boxSizing: 'border-box' }}>
         <div style={{ border: '1px solid #EFF6E6', borderRadius: '12px', padding: '24px', background: '#ffffff' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '16px' }}>
-            <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif' }}>My Property List</h3>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'nowrap', gap: '8px', minWidth: 0 }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif', whiteSpace: 'nowrap', flexShrink: 0 }}>My Property List</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
               {[{ val: filterDateFrom, set: setFilterDateFrom }, { val: filterDateTo, set: setFilterDateTo }].map((f, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '6px 12px', background: '#ffffff' }}>
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '5px 8px', background: '#ffffff', flexShrink: 0 }}>
                   <Calendar size={14} style={{ color: '#9CA3AF' }} />
-                  <input type="date" value={f.val} onChange={e => f.set(e.target.value)} style={{ border: 'none', outline: 'none', fontSize: '12px', color: '#374151', width: '105px' }} />
+                  <input type="date" value={f.val} onChange={e => f.set(e.target.value)} style={{ border: 'none', outline: 'none', fontSize: '11px', color: '#374151', width: '95px' }} />
                 </div>
               ))}
-              <select value={filterType} onChange={e => setFilterType(e.target.value)} style={{ padding: '8px 12px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '12px', color: '#374151', outline: 'none', background: '#ffffff', cursor: 'pointer' }}>
+              <select value={filterType} onChange={e => setFilterType(e.target.value)} style={{ padding: '5px 8px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '11px', color: '#374151', outline: 'none', background: '#ffffff', cursor: 'pointer', flexShrink: 0, maxWidth: '100px' }}>
                 <option value="">Property Type</option>
                 {['Homestay','Villa','Apartment','Resort','Cottage','Hotel'].map(t => <option key={t} value={t}>{t}</option>)}
               </select>
               <button onClick={() => { setFilterType(''); setFilterSearch(''); setFilterDateFrom(''); setFilterDateTo(''); }}
-                style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 16px', border: '1px solid #58A429', color: '#58A429', borderRadius: '8px', fontWeight: 600, fontSize: '12px', background: '#FAFDF2', cursor: 'pointer' }}>
-                <Filter size={14} /> Clear
+                style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '5px 10px', border: '1px solid #58A429', color: '#58A429', borderRadius: '8px', fontWeight: 600, fontSize: '11px', background: '#FAFDF2', cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}>
+                <Filter size={12} /> Clear
               </button>
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                <Search size={14} style={{ position: 'absolute', left: '12px', color: '#9CA3AF' }} />
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center', flexShrink: 1, minWidth: '80px', maxWidth: '140px' }}>
+                <Search size={14} style={{ position: 'absolute', left: '8px', color: '#9CA3AF' }} />
                 <input type="text" value={filterSearch} onChange={e => setFilterSearch(e.target.value)} placeholder="Search"
-                  style={{ padding: '8px 12px 8px 34px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '12px', width: '150px', outline: 'none', background: '#ffffff' }} />
+                  style={{ padding: '6px 8px 6px 26px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '11px', width: '100%', outline: 'none', background: '#ffffff' }} />
               </div>
             </div>
           </div>
