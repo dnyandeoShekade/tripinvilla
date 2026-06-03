@@ -50,15 +50,13 @@
 
 .curated-horizontal-grid {
   display: flex;
-  /* Flex layout to support horizontal scrolling row */
   gap: 30px;
   overflow-x: auto;
   scroll-behavior: smooth;
   scrollbar-width: none;
-  /* Hide scrollbar for Firefox */
   padding: 12px 0;
-  /* Vertical breathing room for card shadows */
   box-sizing: border-box;
+  scroll-snap-type: x mandatory;
 }
 
 .curated-horizontal-grid::-webkit-scrollbar {
@@ -69,25 +67,27 @@
 .curated-horizontal-card {
   background: #FFFFFF;
   border-radius: 25px;
-  /* Dimensions provided by user */
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
   border: 1px solid #F3F4F6;
   display: flex;
   padding: 16px;
-  /* Slightly reduced padding for smaller card bounds */
   box-sizing: border-box;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  width: 600px;
-  /* Scaled down width for standard desktop viewports */
+  width: calc(50% - 15px); /* Exactly fits two cards per view */
   height: 300px;
-  /* Scaled down height */
   flex-shrink: 0;
-  /* Prevent horizontal compression inside scrolling layout */
+  scroll-snap-align: start;
 }
 
 .curated-horizontal-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+
+@media (max-width: 900px) {
+  .curated-horizontal-card {
+    width: 100%; /* Exactly fits one card per view */
+  }
 }
 
 .curated-card-img-wrap {
