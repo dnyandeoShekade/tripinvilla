@@ -118,11 +118,12 @@ export default function PropertyOwned() {
       <div className="dash-section" style={{ marginBottom: 24, gap: 16 }}>
         
         {/* Toolbar */}
-        <div className="chart-card" style={{ padding: '16px 20px', borderRadius: 12 }}>
-          <div className="props-table-toolbar" style={{ margin: 0, borderBottom: 'none' }}>
-            <div className="props-table-title">Property Owners</div>
-            <div className="props-table-actions">
-              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+        <div className="chart-card" style={{ padding: '12px 16px', borderRadius: 12 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'nowrap', minWidth: 0 }}>
+            <div className="props-table-title" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>Property Owners</div>
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'nowrap', minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
+              {/* Date Range */}
+              <div style={{ flexShrink: 0 }}>
                 <DateRangeDropdown 
                   startDate={dateFrom}
                   endDate={dateTo}
@@ -131,15 +132,16 @@ export default function PropertyOwned() {
                     setDateTo(end);
                   }}
                 />
-                {(dateFrom || dateTo) && (
-                  <button onClick={() => { setDateFrom(''); setDateTo(''); }} style={{ fontSize: '11px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer' }}>Clear</button>
-                )}
               </div>
-              <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', border: '1px solid #E5E7EB', borderRadius: 8 }}>
+              {(dateFrom || dateTo) && (
+                <button onClick={() => { setDateFrom(''); setDateTo(''); }} style={{ fontSize: '11px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}>Clear</button>
+              )}
+              {/* Type dropdown */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '5px 8px', border: '1px solid #E5E7EB', borderRadius: 8, flexShrink: 0 }}>
                 <select 
                   value={propertyType}
                   onChange={(e) => setPropertyType(e.target.value)}
-                  style={{ border: 'none', background: 'transparent', outline: 'none', color: '#374151', fontSize: 13, cursor: 'pointer' }}
+                  style={{ border: 'none', background: 'transparent', outline: 'none', color: '#374151', fontSize: 12, cursor: 'pointer', maxWidth: 90 }}
                 >
                   <option value="">All Types</option>
                   {["Villa", "Homestay", "Resort", "Apartment", "Cottage", "Others"].map(t => (
@@ -147,32 +149,36 @@ export default function PropertyOwned() {
                   ))}
                 </select>
               </div>
-              <div style={{ width: 160, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', background: '#fff' }}>
+              {/* Location */}
+              <div style={{ width: 110, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, padding: '5px 8px', background: '#fff', flexShrink: 0 }}>
                 <input 
                   type="text" 
                   placeholder="Location..." 
                   value={location}
                   onChange={e => setLocation(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && fetchOwners()}
-                  style={{ border: 'none', outline: 'none', width: '100%', fontSize: 13, padding: 0, background: 'transparent' }}
+                  style={{ border: 'none', outline: 'none', width: '100%', fontSize: 12, padding: 0, background: 'transparent' }}
                 />
               </div>
-              <button className="props-btn-filter" onClick={fetchOwners} style={{ cursor: 'pointer', border: '1px solid #58A429', background: '#fff', color: '#58A429', padding: '6px 16px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}>
-                <Filter size={14} /> Filter
+              {/* Filter button */}
+              <button className="props-btn-filter" onClick={fetchOwners} style={{ cursor: 'pointer', border: '1px solid #58A429', background: '#fff', color: '#58A429', padding: '5px 12px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 4, fontWeight: 600, fontSize: 12, flexShrink: 0, whiteSpace: 'nowrap' }}>
+                <Filter size={13} /> Filter
               </button>
-              <div style={{ width: 260, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', background: '#fff' }}>
-                <Search size={14} style={{ color: '#9CA3AF' }} />
+              {/* Search */}
+              <div style={{ width: 160, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, padding: '5px 8px', background: '#fff', flexShrink: 1, minWidth: 100 }}>
+                <Search size={13} style={{ color: '#9CA3AF', flexShrink: 0 }} />
                 <input 
                   type="text" 
                   placeholder="Search owners..." 
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && fetchOwners()}
-                  style={{ border: 'none', outline: 'none', width: '100%', fontSize: 13, padding: 0, background: 'transparent' }}
+                  style={{ border: 'none', outline: 'none', width: '100%', fontSize: 12, padding: 0, background: 'transparent' }}
                 />
               </div>
-              <button className="props-btn-add" onClick={() => navigate('/admin/properties/owned/add')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
-                <Plus size={16} /> Add Owner
+              {/* Add Owner */}
+              <button className="props-btn-add" onClick={() => navigate('/admin/properties/owned/add')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, padding: '5px 12px', flexShrink: 0, whiteSpace: 'nowrap' }}>
+                <Plus size={14} /> Add Owner
               </button>
             </div>
           </div>

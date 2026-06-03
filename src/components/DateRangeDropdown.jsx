@@ -58,23 +58,26 @@ export default function DateRangeDropdown({
         style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 8,
-          padding: '8px 14px',
+          gap: 6,
+          padding: '5px 10px',
           background: '#FFFFFF',
           border: '1px solid #E5E7EB',
           borderRadius: 8,
           cursor: 'pointer',
-          minWidth: 240,
+          minWidth: 170,
+          maxWidth: 200,
           color: '#374151',
-          fontSize: 13,
-          fontFamily: '"Outfit", sans-serif'
+          fontSize: 12,
+          fontFamily: '"Outfit", sans-serif',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden'
         }}
       >
-        <Calendar size={14} style={{ color: '#6B7280' }} />
-        <span>
-          {startDate ? format(new Date(startDate), 'MMM dd, yyyy') : 'Start Date'} 
+        <Calendar size={13} style={{ color: '#6B7280', flexShrink: 0 }} />
+        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          {startDate ? format(new Date(startDate), 'dd MMM yy') : 'Start Date'} 
           {' - '}
-          {endDate ? format(new Date(endDate), 'MMM dd, yyyy') : 'End Date'}
+          {endDate ? format(new Date(endDate), 'dd MMM yy') : 'End Date'}
         </span>
       </div>
 

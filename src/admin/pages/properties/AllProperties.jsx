@@ -764,29 +764,31 @@ export default function AllProperties() {
       <div className="dash-section" style={{ marginBottom: 24, gap: 16 }}>
         <div
           className="chart-card"
-          style={{ padding: "16px 20px", borderRadius: 12 }}
+          style={{ padding: "12px 16px", borderRadius: 12 }}
         >
           <div
-            className="props-table-toolbar"
-            style={{ margin: 0, borderBottom: "none" }}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'nowrap', minWidth: 0 }}
           >
-            <div className="props-table-title">All Properties</div>
-            <div className="props-table-actions">
-              <DateRangeDropdown 
-                startDate={dateFrom}
-                endDate={dateTo}
-                onChange={(start, end) => {
-                  setDateFrom(start);
-                  setDateTo(end);
-                }}
-              />
+            <div className="props-table-title" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>All Properties</div>
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'nowrap', minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
+              <div style={{ flexShrink: 0 }}>
+                <DateRangeDropdown 
+                  startDate={dateFrom}
+                  endDate={dateTo}
+                  onChange={(start, end) => {
+                    setDateFrom(start);
+                    setDateTo(end);
+                  }}
+                />
+              </div>
               <div
                 className="props-filter-select"
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 6,
-                  padding: "6px 12px",
+                  gap: 4,
+                  padding: "5px 8px",
+                  flexShrink: 0
                 }}
               >
                 <select
@@ -797,8 +799,9 @@ export default function AllProperties() {
                     background: "transparent",
                     outline: "none",
                     color: "#374151",
-                    fontSize: 13,
+                    fontSize: 12,
                     cursor: "pointer",
+                    maxWidth: 90
                   }}
                 >
                   <option value="">All Types</option>
@@ -822,12 +825,12 @@ export default function AllProperties() {
               <button
                 className="props-btn-filter"
                 onClick={fetchProperties}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: "pointer", fontSize: 12, padding: '5px 12px', flexShrink: 0, whiteSpace: 'nowrap' }}
               >
-                <Filter size={14} /> Filter
+                <Filter size={13} /> Filter
               </button>
-              <div className="props-search-wrap">
-                <Search size={14} />
+              <div className="props-search-wrap" style={{ flexShrink: 1, minWidth: 100 }}>
+                <Search size={13} />
                 <input
                   type="text"
                   placeholder="Search properties..."
@@ -836,7 +839,6 @@ export default function AllProperties() {
                   onKeyDown={(e) => e.key === "Enter" && fetchProperties()}
                 />
               </div>
-
             </div>
           </div>
         </div>

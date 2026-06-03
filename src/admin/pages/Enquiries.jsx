@@ -165,19 +165,19 @@ export default function Enquiries() {
       </div>
 
       <div className="admin-table-card">
-        <div className="admin-table-header" style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-          <h2 className="admin-table-title" style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>Enquiries</h2>
-          <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <div className="admin-table-header" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap', gap: '12px', minWidth: 0 }}>
+          <h2 className="admin-table-title" style={{ margin: 0, fontSize: '18px', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>Enquiries</h2>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'nowrap', minWidth: 0 }}>
             <div style={{ position: 'relative' }} ref={datePickerRef}>
               <div 
                 onClick={() => setShowDatePicker(!showDatePicker)}
-                style={{ display: 'flex', alignItems: 'center', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '8px 12px', background: '#FFFFFF', cursor: 'pointer', height: '36px', boxSizing: 'border-box' }}
+                style={{ display: 'flex', alignItems: 'center', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '5px 10px', background: '#FFFFFF', cursor: 'pointer', height: '32px', boxSizing: 'border-box', minWidth: 160, maxWidth: 195, overflow: 'hidden' }}
               >
-                <Calendar size={14} color="#6B7280" style={{ marginRight: '8px' }} />
-                <span style={{ fontSize: '13px', color: (dateFrom && dateTo) ? '#374151' : '#9CA3AF', minWidth: '150px' }}>
-                  {(dateFrom && dateTo) ? `${dateFrom} - ${dateTo}` : 'Start Date - End Date'}
+                <Calendar size={13} color="#6B7280" style={{ marginRight: '6px', flexShrink: 0 }} />
+                <span style={{ fontSize: '12px', color: (dateFrom && dateTo) ? '#374151' : '#9CA3AF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {(dateFrom && dateTo) ? `${dateFrom} → ${dateTo}` : 'Start – End Date'}
                 </span>
-                <ChevronDown size={14} color="#6B7280" style={{ marginLeft: '4px' }} />
+                <ChevronDown size={13} color="#6B7280" style={{ marginLeft: '4px', flexShrink: 0 }} />
               </div>
 
               {showDatePicker && (
@@ -239,20 +239,20 @@ export default function Enquiries() {
               <ChevronDown size={14} color="#9CA3AF" style={{ position: 'absolute', right: '12px', pointerEvents: 'none' }} />
             </div>
 
-            <input type="text" placeholder="Location" value={location} onChange={e => setLocation(e.target.value)} style={{ padding: '8px 12px', fontSize: '13px', border: '1px solid #E5E7EB', borderRadius: '8px', width: '100px', outline: 'none', color: '#9CA3AF' }} />
+            <input type="text" placeholder="Location" value={location} onChange={e => setLocation(e.target.value)} style={{ padding: '5px 10px', fontSize: '12px', border: '1px solid #E5E7EB', borderRadius: '8px', width: '90px', outline: 'none', color: '#9CA3AF' }} />
 
-            <button onClick={fetchEnquiries} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 16px', border: '1px solid #58A429', borderRadius: '8px', color: '#58A429', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: 500 }}>
-              <Filter size={14} /> Filter
+            <button onClick={fetchEnquiries} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '5px 12px', border: '1px solid #58A429', borderRadius: '8px', color: '#58A429', background: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0 }}>
+              <Filter size={13} /> Filter
             </button>
 
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-              <Search size={14} color="#9CA3AF" style={{ position: 'absolute', left: '12px' }} />
+              <Search size={13} color="#9CA3AF" style={{ position: 'absolute', left: '10px' }} />
               <input 
                 type="text" 
                 placeholder="Search" 
                 value={searchText}
                 onChange={e => setSearchText(e.target.value)}
-                style={{ padding: '8px 12px 8px 32px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none', fontSize: '13px', width: '160px', color: '#9CA3AF' }} 
+                style={{ padding: '5px 10px 5px 28px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none', fontSize: '12px', width: '140px', color: '#9CA3AF' }} 
               />
             </div>
           </div>
