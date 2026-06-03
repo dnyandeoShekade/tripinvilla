@@ -60,7 +60,7 @@ export default function Enquiries() {
     setLoading(true);
     try {
       const token = getToken();
-      const res = await fetch(`${API_BASE}/enquiries`, {
+      const res = await fetch(`${API_BASE}/enquiries/owner`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();

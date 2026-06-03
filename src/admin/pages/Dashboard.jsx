@@ -9,6 +9,7 @@ import { TrendingUp, TrendingDown, ChevronDown, Calendar, MoreVertical, Chevrons
 import { useNavigate } from 'react-router-dom';
 import PropertyViewModal from './properties/PropertyViewModal';
 import DateRangeDropdown from '../../components/DateRangeDropdown';
+import Pagination from '../components/Pagination';
 
 const CAT_COLORS = ['#9DC8B0', '#E8D5A0', '#2D6A6A', '#F09565', '#F0A0B0', '#C8C8C8'];
 
@@ -58,6 +59,8 @@ export default function Dashboard() {
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
   const [enqDateFrom, setEnqDateFrom] = useState('');
   const [enqDateTo, setEnqDateTo] = useState('');
+  const [enqCurrentPage, setEnqCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const fetchData = async () => {
     try {
@@ -83,7 +86,10 @@ export default function Dashboard() {
     }
   };
 
-  useEffect(() => { fetchData(); }, [selectedYear, enqDateFrom, enqDateTo]);
+  useEffect(() => { 
+    fetchData(); 
+    setEnqCurrentPage(1);
+  }, [selectedYear, enqDateFrom, enqDateTo]);
 
 
 
@@ -328,7 +334,7 @@ export default function Dashboard() {
               <tbody>
                 {enquiries.length === 0 ? (
                   <tr><td colSpan="8" style={{ textAlign: 'center', padding: '30px 0', color: '#6B7280' }}>No enquiries yet</td></tr>
-                ) : enquiries.map((e, i) => (
+                ) : enquiries.slice((enqCurrentPage - 1) * itemsPerPage, enqCurrentPage * itemsPerPage).map((e, i) => (
                   <tr key={e.enquiryNo || e.id}>
                     <td><span className="prop-id-link" onClick={() => navigate('/admin/enquiries')} style={{ cursor: 'pointer' }}>{e.enquiryNo || e.id}</span></td>
                     <td style={{ fontSize: 11, color: '#6B7280' }}>{e.datesAndTime}</td>
@@ -355,6 +361,14 @@ export default function Dashboard() {
                 ))}
               </tbody>
             </table>
+            {enquiries.length > 0 && (
+              <Pagination 
+                currentPage={enqCurrentPage} 
+                totalItems={enquiries.length} 
+                itemsPerPage={itemsPerPage} 
+                onPageChange={setEnqCurrentPage} 
+              />
+            )}
           </div>
         </div>
       </div>
