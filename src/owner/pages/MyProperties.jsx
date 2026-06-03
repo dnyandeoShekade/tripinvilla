@@ -799,6 +799,10 @@ export default function MyProperties({ autoOpenForm = false }) {
                         <option value="Hotel">Hotel</option>
                       </>
                     )}
+                    {/* Fallback for existing value not in list */}
+                    {formData.type && formData.type !== 'Other' && !propertyTypes.some(pt => pt.name === formData.type) && propertyTypes.length > 0 && (
+                      <option value={formData.type}>{formData.type}</option>
+                    )}
                     <option value="Other">Other (Add Manually)</option>
                   </select>
                   {formData.type === 'Other' && (

@@ -348,6 +348,7 @@ export default function AllProperties() {
       roomType: p.roomType || "",
       ownerContact: p.ownerContact || "",
       ownerId: typeof p.owner === 'object' ? (p.owner?._id || "") : (p.owner || ""),
+      ownerName: typeof p.owner === 'object' ? (p.owner?.ownerName || p.owner?.name || "") : (p.ownerName || ""),
       location: p.location || "",
       full_address: p.full_address || p.location || "",
       latitude: parseNumber(p.latitude),
@@ -1222,6 +1223,14 @@ export default function AllProperties() {
                       {o.ownerName || o.name} ({o.email})
                     </option>
                   ))}
+                  {form.ownerId && !owners.some(o => o._id === form.ownerId) && (() => {
+                    // Check if it's the admin themselves
+                    try {
+                      const adminUser = JSON.parse(localStorage.getItem('admin_user') || '{}');
+                      if (adminUser.id === form.ownerId || adminUser._id === form.ownerId) return null;
+                    } catch(e) {}
+                    return <option value={form.ownerId}>{form.ownerName || 'Unknown Owner'}</option>;
+                  })()}
                 </select>
               </div>
 
@@ -1251,6 +1260,9 @@ export default function AllProperties() {
                         <option value="Apartment">Apartment</option>
                         <option value="Resort">Resort</option>
                       </>
+                    )}
+                    {form.type && form.type !== 'Other' && !propertyTypes.some(pt => pt.name === form.type) && propertyTypes.length > 0 && (
+                      <option value={form.type}>{form.type}</option>
                     )}
                     <option value="Other">Other (Add Manually)</option>
                   </select>
