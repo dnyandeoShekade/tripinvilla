@@ -510,7 +510,7 @@ export default function GuestApp() {
       count: `${d.propertiesCount || 0} ${suffix}`,
       originalObj: d
     };
-  }) : carouselDestinations;
+  }) : [];
   
   const activeExperiences = liveExperiences.filter(e => e.propertiesCount > 0);
   const displayExperiences = activeExperiences.length > 0 ? activeExperiences.map(e => ({
@@ -518,7 +518,7 @@ export default function GuestApp() {
     name: e.experienceName || e.name,
     count: `${e.propertiesCount || 0} properties`,
     originalObj: e
-  })) : carouselExperiences;
+  })) : [];
 
   const getFilteredProperties = () => {
     const hasFilters = (sidebarSearchText && sidebarSearchText.trim() !== '') || (where && where.trim() !== '') || filterSelectedTypes.length > 0 || filterSelectedAmenities.length > 0 || filterMinPrice !== '' || filterMaxPrice !== '' || filterMinRating > 0 || filterInstantBook || filterCancellationPolicy || filterHomestays;

@@ -15,6 +15,8 @@ export default function PropertyRooms() {
   const [filterDateFrom, setFilterDateFrom] = useState('');
   const [filterDateTo, setFilterDateTo] = useState('');
   const [filterLocation, setFilterLocation] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   const getAuthHeaders = (method = 'GET') => {
     const token = localStorage.getItem('admin_token');
@@ -128,6 +130,9 @@ export default function PropertyRooms() {
     
     return matchQuery && matchCat && matchStatus && matchLocation && matchesDate;
   });
+
+  const totalPages = Math.ceil(filteredRequests.length / itemsPerPage);
+  const paginatedRequests = filteredRequests.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <div className="fade-in">
@@ -271,10 +276,10 @@ export default function PropertyRooms() {
               <tbody>
                 {loading ? (
                   <tr><td colSpan="10" style={{ textAlign: 'center', padding: '40px 0', color: '#6B7280' }}>Loading requests...</td></tr>
-                ) : filteredRequests.length === 0 ? (
+                ) : paginatedRequests.length === 0 ? (
                   <tr><td colSpan="10" style={{ textAlign: 'center', padding: '40px 0', color: '#6B7280' }}>No requests found</td></tr>
                 ) : (
-                  filteredRequests.map((p, i) => (
+                  paginatedRequests.map((p, i) => (
                     <tr key={p._id || i} style={{ borderBottom: '1px solid #F3F4F6' }}>
                       <td style={{ color: '#58A429', fontWeight: 600, padding: '14px', cursor: 'pointer' }} onClick={() => setSelectedRequest(p)}>{p.requestNo || `REQ-${3000 + i}`}</td>
                       <td onClick={() => setSelectedRequest(p)} style={{ cursor: 'pointer', padding: '14px' }}>
@@ -328,6 +333,34 @@ export default function PropertyRooms() {
               </tbody>
             </table>
           </div>
+
+          {totalPages > 1 && (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginTop: '20px' }}>
+              <button 
+                disabled={currentPage === 1} 
+                onClick={() => setCurrentPage(p => p - 1)}
+                style={{ padding: '6px 12px', border: '1px solid #E5E7EB', borderRadius: '6px', background: currentPage === 1 ? '#F3F4F6' : '#fff', color: currentPage === 1 ? '#9CA3AF' : '#374151', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+              >
+                Previous
+              </button>
+              {Array.from({ length: totalPages }).map((_, idx) => (
+                <button 
+                  key={idx}
+                  onClick={() => setCurrentPage(idx + 1)}
+                  style={{ padding: '6px 12px', border: 'none', borderRadius: '6px', background: currentPage === idx + 1 ? '#58A429' : '#F3F4F6', color: currentPage === idx + 1 ? '#fff' : '#374151', cursor: 'pointer', fontWeight: 600 }}
+                >
+                  {idx + 1}
+                </button>
+              ))}
+              <button 
+                disabled={currentPage === totalPages} 
+                onClick={() => setCurrentPage(p => p + 1)}
+                style={{ padding: '6px 12px', border: '1px solid #E5E7EB', borderRadius: '6px', background: currentPage === totalPages ? '#F3F4F6' : '#fff', color: currentPage === totalPages ? '#9CA3AF' : '#374151', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

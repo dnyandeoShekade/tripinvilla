@@ -1,4 +1,4 @@
-import { Calendar, Clock, CheckCircle, MapPin, Phone, Mail, Search, Sparkles, Star, Maximize, Home, BedDouble, Users, Utensils } from 'lucide-react';
+import { Calendar, Clock, CheckCircle, MapPin, Phone, Mail, Search, Sparkles, Star, Maximize, Home, BedDouble, Users, Utensils, Wifi, Car, Waves, Wind, Flame, Tv, ChefHat, Coffee, Dumbbell, Flower2, Shield, Monitor } from 'lucide-react';
 import { detailSubTabs, landmarks, roomOptions } from '../../../data/mockData';
 import './PropertyDetailPage.css';
 
@@ -257,15 +257,33 @@ export default function PropertyDetailPage(props) {
               <span className="amenity-vertical-lbl">Guests</span>
               <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600 }}>{activeDetailProp.guests || `${activeDetailProp.capacity || 3} Persons`}</span>
             </div>
-            {(activeDetailProp.amenities || []).map((amenity, idx) => (
-              <div key={idx} className="amenity-vertical-item">
-                <div className="amenity-vertical-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <CheckCircle size={30} color="#58A429" strokeWidth={1.5} />
+            {(activeDetailProp.amenities || []).map((amenity, idx) => {
+              const amName = typeof amenity === 'object' ? amenity.name || amenity.amenitiesName : amenity;
+              const lName = (amName || '').toLowerCase();
+              let Icon = CheckCircle;
+              if (lName.includes('wifi') || lName.includes('internet')) Icon = Wifi;
+              else if (lName.includes('park') || lName.includes('garage')) Icon = Car;
+              else if (lName.includes('pool') || lName.includes('swim')) Icon = Waves;
+              else if (lName.includes('ac') || lName.includes('air con') || lName.includes('cool')) Icon = Wind;
+              else if (lName.includes('heat') || lName.includes('fire')) Icon = Flame;
+              else if (lName.includes('tv') || lName.includes('television')) Icon = Tv;
+              else if (lName.includes('kitchen') || lName.includes('cook')) Icon = ChefHat;
+              else if (lName.includes('breakfast') || lName.includes('meal') || lName.includes('food')) Icon = Coffee;
+              else if (lName.includes('gym') || lName.includes('fitness')) Icon = Dumbbell;
+              else if (lName.includes('garden') || lName.includes('lawn')) Icon = Flower2;
+              else if (lName.includes('security') || lName.includes('cctv') || lName.includes('safe')) Icon = Shield;
+              else if (lName.includes('workspace') || lName.includes('desk')) Icon = Monitor;
+              
+              return (
+                <div key={idx} className="amenity-vertical-item">
+                  <div className="amenity-vertical-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Icon size={30} color="#58A429" strokeWidth={1.5} />
+                  </div>
+                  <span className="amenity-vertical-lbl">{amName}</span>
+                  <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600 }}>Available</span>
                 </div>
-                <span className="amenity-vertical-lbl">{typeof amenity === 'object' ? amenity.name || amenity.amenitiesName : amenity}</span>
-                <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600 }}>Available</span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
