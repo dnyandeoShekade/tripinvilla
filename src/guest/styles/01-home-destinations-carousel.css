@@ -10,10 +10,10 @@
   border: 1px solid #E5E7EB;
   border-radius: 15px;
   margin: 80px auto 40px auto;
-  /* Increased spacing to allow both components to breathe comfortably */
   box-sizing: border-box;
   opacity: 1;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  overflow: hidden;
 }
 
 .carousel-header {
@@ -92,7 +92,8 @@
 .carousel-card-item {
   flex: 0 0 calc((100% - 100px) / 6);
   /* Perfectly fits 6 items on wide desktops */
-  min-width: 180px;
+  min-width: 160px;
+  max-width: 200px;
   /* Ensures items preserve size and scroll on smaller screen widths */
   display: flex;
   flex-direction: column;
@@ -100,6 +101,7 @@
   text-align: center;
   cursor: pointer;
   transition: transform 0.2s ease;
+  overflow: hidden;
 }
 
 .carousel-card-item:hover {
@@ -127,10 +129,19 @@
 
 .carousel-city-title {
   font-family: 'Lato', sans-serif;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 700;
   color: #111827;
   margin: 0 0 4px 0;
+  /* Clamp to 2 lines — prevents long names from blowing up the card */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+  max-height: 2.6em;
+  word-break: break-word;
 }
 
 .carousel-city-sub {
