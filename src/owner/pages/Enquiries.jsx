@@ -1,3 +1,4 @@
+import ReadMore from '../../admin/components/ReadMore';
 import React, { useEffect, useState } from 'react';
 import { Search, Filter as FilterIcon, Calendar, ChevronDown, MoreVertical } from 'lucide-react';
 import { DateRange } from 'react-date-range';
@@ -261,7 +262,7 @@ export default function Enquiries() {
                       <div>{e.name}</div>
                       <div style={{ fontSize: '11px', color: '#9CA3AF', fontWeight: 400 }}>{e.phone}</div>
                     </td>
-                    <td style={{ color: '#6B7280', padding: '14px 16px', textOverflow: 'ellipsis', overflow: 'hidden', maxWidth: '280px' }}>{e.query}</td>
+                    <td style={{ color: '#6B7280', padding: '14px 16px', textOverflow: 'ellipsis', overflow: 'hidden', maxWidth: '280px' }}><ReadMore maxWords={6}>{e.query}</ReadMore></td>
                     <td style={{ padding: '14px 16px' }}>
                       <span style={{
                         padding: '4px 10px',

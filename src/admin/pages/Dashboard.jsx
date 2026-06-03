@@ -339,7 +339,7 @@ export default function Dashboard() {
                     <td>{e.phoneNo}</td>
                     <td style={{ color: '#2563EB' }}>{e.email}</td>
                     <td style={{ fontSize: 12, color: '#4B5563' }}><ReadMore maxWords={2}>{e.propertyName}</ReadMore></td>
-                    <td style={{ maxWidth: 200, whiteSpace: 'normal', fontSize: 11, color: '#6B7280', lineHeight: 1.4 }}>{e.query}</td>
+                    <td style={{ maxWidth: 200, whiteSpace: 'normal', fontSize: 11, color: '#6B7280', lineHeight: 1.4 }}><ReadMore maxWords={6}>{e.query}</ReadMore></td>
                     <td style={{ position: 'relative' }}>
                       <button className="action-dots" onClick={() => setActionMenu(actionMenu === `enq_${e.id || e.enquiryNo}` ? null : `enq_${e.id || e.enquiryNo}`)} style={{ cursor: 'pointer' }}><MoreVertical size={14} /></button>
                       {actionMenu === `enq_${e.id || e.enquiryNo}` && (
