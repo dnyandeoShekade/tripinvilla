@@ -507,7 +507,7 @@ export default function GuestApp() {
   const getFilteredProperties = () => {
     const hasFilters = (sidebarSearchText && sidebarSearchText.trim() !== '') || (where && where.trim() !== '') || filterSelectedTypes.length > 0 || filterSelectedAmenities.length > 0 || filterMinPrice !== '' || filterMaxPrice !== '' || filterMinRating > 0 || filterInstantBook || filterCancellationPolicy || filterHomestays;
 
-    if (!hasFilters) return [];
+    if (!hasFilters) return currentPropertiesVillas;
 
     let displayList = [...currentPropertiesVillas];
 
