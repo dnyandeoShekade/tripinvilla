@@ -240,55 +240,68 @@ export default function PropertyViewModal({ property, onClose, inline = false })
               
               {showRooms && (
                 <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                  {rooms.map((room, idx) => (
-                    <div key={idx} style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '16px' }}>
-                      <div style={{ display: 'flex', gap: '16px', flexDirection: 'row', flexWrap: 'wrap' }}>
-                        {(room.imageUrl || (Array.isArray(room.room_images) && room.room_images[0])) && (
-                          <img
-                            src={room.imageUrl || room.room_images[0]}
-                            alt=""
-                            onError={e => { e.target.style.display = 'none'; }}
-                            style={{ width: 140, height: 100, objectFit: 'cover', borderRadius: '8px', flexShrink: 0 }}
-                          />
-                        )}
-                        <div style={{ flex: 1, minWidth: '250px' }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
-                            <div>
-                              <h4 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', margin: '0 0 4px 0' }}>{room.roomName || room.room_type || room.roomType}</h4>
-                              <div style={{ fontSize: '13px', color: '#4B5563', marginBottom: '4px' }}>
-                                {room.roomType || room.room_type} · {room.bedType || room.bed_type || ''} bed · {room.maxGuests || room.capacity || 2} guests · {room.count || 1} room{(room.count || 1) > 1 ? 's' : ''}
-                              </div>
-                              <div style={{ fontSize: '12px', color: '#6B7280', marginBottom: '8px', display: 'flex', gap: '12px' }}>
-                                <span><Clock size={12} style={{ display: 'inline', marginRight: 4, transform: 'translateY(2px)' }}/> Check In: {room.checkIn || room.checkin_time || '3:00 PM'}</span>
-                                <span><Clock size={12} style={{ display: 'inline', marginRight: 4, transform: 'translateY(2px)' }}/> Check Out: {room.checkOut || room.checkout_time || '12:00 PM'}</span>
-                              </div>
-                            </div>
-                            <div style={{ textAlign: 'right' }}>
-                              <div style={{ fontSize: '18px', fontWeight: 700, color: '#10B981' }}>
-                                ₹{Number(room.pricePerNight || room.price_per_room || 0).toLocaleString()}
-                              </div>
-                              <div style={{ fontSize: '12px', color: '#6B7280' }}>per night</div>
-                            </div>
-                          </div>
-                          
-                          {(room.amenities?.length > 0 || room.amenities_types?.length > 0) && (
-                            <div style={{ marginTop: '12px' }}>
-                              <div style={{ fontSize: '12px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Room Amenities</div>
-                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                                {(room.amenities || room.amenities_types).map((am, i) => (
-                                  <span key={i} style={{ padding: '4px 10px', background: '#E0E7FF', color: '#4338CA', borderRadius: '6px', fontSize: '11px', fontWeight: 600 }}>
-                                    {am}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
+                  {rooms.map((room, idx) => {
+                    const roomImg = room.imageUrl || room.room_image_url || room.img || (Array.isArray(room.room_images) && room.room_images[0]) || (Array.isArray(room.images) && room.images[0]) || '';
+                    const roomTitle = room.roomName || room.room_type || room.roomType || room.title || 'Standard Room';
+                    const roomBedType = room.bedType || room.bed_type || room.beds || 'King Size';
+                    const roomGuests = room.maxGuests || room.capacity || room.guests || 2;
+                    const roomCount = room.count || room.rooms || 1;
+                    const roomCheckIn = room.checkIn || room.checkin_time || '3:00 PM';
+                    const roomCheckOut = room.checkOut || room.checkout_time || '12:00 PM';
+                    const roomPrice = room.pricePerNight || room.price_per_room || room.price || 0;
+                    const roomAmenities = room.amenities || room.amenities_types || room.features || [];
+
+                    return (
+                      <div key={idx} style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '16px' }}>
+                        <div style={{ display: 'flex', gap: '16px', flexDirection: 'row', flexWrap: 'wrap' }}>
+                          {roomImg && (
+                            <img
+                              src={roomImg}
+                              alt={roomTitle}
+                              onError={e => { e.target.style.display = 'none'; }}
+                              style={{ width: 140, height: 100, objectFit: 'cover', borderRadius: '8px', flexShrink: 0 }}
+                            />
                           )}
+                          <div style={{ flex: 1, minWidth: '250px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
+                              <div>
+                                <h4 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', margin: '0 0 4px 0' }}>{roomTitle}</h4>
+                                <div style={{ fontSize: '13px', color: '#4B5563', marginBottom: '4px' }}>
+                                  {roomBedType} bed · {roomGuests} guests · {roomCount} room{(roomCount > 1 || typeof roomCount === 'string') ? 's' : ''}
+                                </div>
+                                <div style={{ fontSize: '12px', color: '#6B7280', marginBottom: '8px', display: 'flex', gap: '12px' }}>
+                                  <span><Clock size={12} style={{ display: 'inline', marginRight: 4, transform: 'translateY(2px)' }}/> Check In: {roomCheckIn}</span>
+                                  <span><Clock size={12} style={{ display: 'inline', marginRight: 4, transform: 'translateY(2px)' }}/> Check Out: {roomCheckOut}</span>
+                                </div>
+                              </div>
+                              <div style={{ textAlign: 'right' }}>
+                                <div style={{ fontSize: '18px', fontWeight: 700, color: '#10B981' }}>
+                                  ₹{Number(roomPrice).toLocaleString()}
+                                </div>
+                                <div style={{ fontSize: '12px', color: '#6B7280' }}>per night</div>
+                              </div>
+                            </div>
+                            
+                            {roomAmenities.length > 0 && (
+                              <div style={{ marginTop: '12px' }}>
+                                <div style={{ fontSize: '12px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Room Amenities</div>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                  {roomAmenities.map((am, i) => (
+                                    <span key={i} style={{ padding: '4px 10px', background: '#E0E7FF', color: '#4338CA', borderRadius: '6px', fontSize: '11px', fontWeight: 600 }}>
+                                      {am}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
+
             </div>
           )}
 
