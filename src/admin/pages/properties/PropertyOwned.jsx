@@ -4,6 +4,7 @@ import { ClipboardList, Clock, CheckCircle2, Calendar, ChevronDown, Filter, Sear
 import { useNavigate } from 'react-router-dom';
 import Pagination from '../../components/Pagination';
 import ReadMore from '../../components/ReadMore';
+import DateRangeDropdown from '../../../components/DateRangeDropdown';
 
 export default function PropertyOwned() {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export default function PropertyOwned() {
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
   const [propertyType, setPropertyType] = useState('');
   const [actionMenu, setActionMenu] = useState(null);
   const [viewPropertiesOwner, setViewPropertiesOwner] = useState(null);
@@ -24,7 +26,8 @@ export default function PropertyOwned() {
       const params = new URLSearchParams();
       if (searchQuery) params.append("search", searchQuery);
       if (propertyType) params.append("type", propertyType);
-      if (dateFrom) params.append("date", dateFrom);
+      if (dateFrom) params.append("dateFrom", dateFrom);
+      if (dateTo) params.append("dateTo", dateTo);
 
       const res = await fetch(`${import.meta.env.VITE_API_BASE}/owners?${params.toString()}`);
       const data = await res.json();
@@ -117,14 +120,18 @@ export default function PropertyOwned() {
           <div className="props-table-toolbar" style={{ margin: 0, borderBottom: 'none' }}>
             <div className="props-table-title">Property Owners</div>
             <div className="props-table-actions">
-              <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', border: '1px solid #E5E7EB', borderRadius: 8 }}>
-                <Calendar size={14} style={{ color: '#6B7280' }} />
-                <input 
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  style={{ border: 'none', background: 'transparent', outline: 'none', color: '#374151', fontSize: 13, cursor: 'pointer' }}
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                <DateRangeDropdown 
+                  startDate={dateFrom}
+                  endDate={dateTo}
+                  onChange={(start, end) => {
+                    setDateFrom(start);
+                    setDateTo(end);
+                  }}
                 />
+                {(dateFrom || dateTo) && (
+                  <button onClick={() => { setDateFrom(''); setDateTo(''); }} style={{ fontSize: '11px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer' }}>Clear</button>
+                )}
               </div>
               <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px', border: '1px solid #E5E7EB', borderRadius: 8 }}>
                 <select 

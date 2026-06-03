@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, Search, MoreVertical, Calendar, Filter } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import DateRangeDropdown from '../../../components/DateRangeDropdown';
 
 export default function CitiesLocations() {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
   const [propertyType, setPropertyType] = useState('');
   const [selectedState, setSelectedState] = useState('');
   const navigate = useNavigate();
@@ -84,14 +86,18 @@ export default function CitiesLocations() {
             <div className="props-table-title">Cities &amp; Locations</div>
             
             <div className="props-table-actions">
-              <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px' }}>
-                <Calendar size={14} style={{ color: '#6B7280' }} />
-                <input 
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  style={{ border: 'none', background: 'transparent', outline: 'none', color: '#374151', fontSize: 13, cursor: 'pointer' }}
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+                <DateRangeDropdown 
+                  startDate={dateFrom}
+                  endDate={dateTo}
+                  onChange={(start, end) => {
+                    setDateFrom(start);
+                    setDateTo(end);
+                  }}
                 />
+                {(dateFrom || dateTo) && (
+                  <button onClick={() => { setDateFrom(''); setDateTo(''); }} style={{ fontSize: '11px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer' }}>Clear</button>
+                )}
               </div>
               <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px' }}>
                 <select 

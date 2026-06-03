@@ -8,6 +8,7 @@ import {
 import { TrendingUp, TrendingDown, ChevronDown, Calendar, MoreVertical, ChevronsUpDown, MessageSquare, Building2, Users, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import PropertyViewModal from './properties/PropertyViewModal';
+import DateRangeDropdown from '../../components/DateRangeDropdown';
 
 const CAT_COLORS = ['#9DC8B0', '#E8D5A0', '#2D6A6A', '#F09565', '#F0A0B0', '#C8C8C8'];
 
@@ -296,27 +297,16 @@ export default function Dashboard() {
               <button className="table-view-all" onClick={() => navigate('/admin/enquiries')} style={{ cursor: 'pointer' }}>View All</button>
               
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <label style={{ fontSize: '10px', fontWeight: 600, color: '#6B7280' }}>From</label>
-                  <input
-                    type="date"
-                    value={enqDateFrom}
-                    onChange={(e) => setEnqDateFrom(e.target.value)}
-                    style={{ padding: '4px 8px', border: '1px solid #E5E7EB', borderRadius: '6px', fontSize: '12px', outline: 'none', cursor: 'pointer', color: '#374151' }}
-                  />
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <label style={{ fontSize: '10px', fontWeight: 600, color: '#6B7280' }}>To</label>
-                  <input
-                    type="date"
-                    value={enqDateTo}
-                    min={enqDateFrom || undefined}
-                    onChange={(e) => setEnqDateTo(e.target.value)}
-                    style={{ padding: '4px 8px', border: '1px solid #E5E7EB', borderRadius: '6px', fontSize: '12px', outline: 'none', cursor: 'pointer', color: '#374151' }}
-                  />
-                </div>
+                <DateRangeDropdown 
+                  startDate={enqDateFrom}
+                  endDate={enqDateTo}
+                  onChange={(start, end) => {
+                    setEnqDateFrom(start);
+                    setEnqDateTo(end);
+                  }}
+                />
                 {(enqDateFrom || enqDateTo) && (
-                  <button onClick={() => { setEnqDateFrom(''); setEnqDateTo(''); }} style={{ fontSize: '11px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', marginTop: '14px' }}>Clear</button>
+                  <button onClick={() => { setEnqDateFrom(''); setEnqDateTo(''); }} style={{ fontSize: '11px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer' }}>Clear</button>
                 )}
               </div>
             </div>

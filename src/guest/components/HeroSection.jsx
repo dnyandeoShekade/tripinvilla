@@ -152,8 +152,8 @@ export default function HeroSection(props) {
                 </div>
 
                 {showDatePicker && (
-                  <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: '8px', background: '#fff', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 50, padding: '16px', border: '1px solid #E5E7EB' }}>
-                    <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                  <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: '8px', background: '#fff', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 50, padding: '16px', border: '1px solid #E5E7EB', width: 'max-content' }}>
+                    <div style={{ display: 'flex', gap: '24px', flexWrap: 'nowrap' }}>
                       {/* From Calendar */}
                       <div>
                         <div style={{ fontWeight: 600, fontSize: '15px', color: '#111827', marginBottom: '8px', paddingLeft: '8px' }}>From</div>
