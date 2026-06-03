@@ -45,8 +45,7 @@ export default function PropertyMakers() {
     beds: 2,
     capacity: 3,
     bathRooms: 1,
-    rules:
-      "• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).",
+    rules: "",
     highlights: {
       breakfastIncluded: false,
       parkingAvailable: false,
@@ -71,7 +70,7 @@ export default function PropertyMakers() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
   const [roomsList, setRoomsList] = useState([]);
-  const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
+  const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], offer: '', rules: '' });
   const [customRoomType, setCustomRoomType] = useState('');
   const [roomTypes, setRoomTypes] = useState([]);
   const fileInputRef = React.useRef(null);
@@ -89,7 +88,7 @@ export default function PropertyMakers() {
 
   // Dynamic Rules Sections
   const [rulesSections, setRulesSections] = useState([
-    { title: 'Must Read Rules', text: '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s)' }
+    { title: 'Must Read Rules', text: '' }
   ]);
   const handleAddRuleSection = () => setRulesSections(p => [...p, { title: '', text: '' }]);
   const handleRemoveRuleSection = (idx) => setRulesSections(p => p.filter((_, i) => i !== idx));
@@ -446,7 +445,7 @@ export default function PropertyMakers() {
       propertyPrice: "", originalPrice: "", taxAmount: "", imagesUrl: "", videosUrl: "",
       aboutProperty: "", status: "Active", checkIn: "3:00 PM", checkOut: "12:00 PM",
       area: "31 sq. ft.", bedRooms: 1, beds: 2, capacity: 3, bathRooms: 1,
-      rules: "• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).",
+      rules: "",
       highlights: { breakfastIncluded: false, parkingAvailable: false, freeCancellation: false, freeCancellationHours: "24" },
     });
     setSelectedExperiences([]);
@@ -457,9 +456,9 @@ export default function PropertyMakers() {
     setManualLocation({ country: false, state: false, city: false, area: false });
     setManualValues({ country: '', state: '', city: '', area: '' });
     setExistingImages([]); setRoomsList([]);
-    setRoomForm({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
+    setRoomForm({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], offer: '', rules: '' });
     setSelectedFiles([]); setLandmarksList([]);
-    setRulesSections([{ title: 'Must Read Rules', text: '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s)' }]);
+    setRulesSections([{ title: 'Must Read Rules', text: '' }]);
     if (fileInputRef.current) fileInputRef.current.value = "";
     setIsEditing(false);
     setFormStep(1);
@@ -582,9 +581,7 @@ export default function PropertyMakers() {
       beds: p.beds || 2,
       capacity: p.capacity || 3,
       bathRooms: p.bathRooms || 1,
-      rules:
-        p.rules ||
-        "• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).",
+      rules: p.rules || "",
       highlights: p.highlights || {
         breakfastIncluded: false,
         parkingAvailable: false,
@@ -599,7 +596,7 @@ export default function PropertyMakers() {
     );
     setExistingImages(Array.isArray(p.images) ? p.images : []);
     setLandmarksList(Array.isArray(p.landmarks) ? p.landmarks : []);
-    setRulesSections(Array.isArray(p.otherDetails) && p.otherDetails.length > 0 ? p.otherDetails : [{ title: 'Must Read Rules', text: '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s)' }]);
+    setRulesSections(Array.isArray(p.otherDetails) && p.otherDetails.length > 0 ? p.otherDetails : [{ title: 'Must Read Rules', text: '' }]);
     if (p.countryId) {
       setSelectedCountry({ id: p.countryId, name: p.countryName || p.country });
       fetchStates(p.countryId);
@@ -1785,7 +1782,7 @@ export default function PropertyMakers() {
                     maxGuests: Number(roomForm.maxGuests),
                     count: Number(roomForm.count)
                   }]);
-                  setRoomForm({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], amenitiesText: '', checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '• Primary Guest should be atleast 18 years of age.' });
+                  setRoomForm({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], amenitiesText: '', checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '' });
                   setRoomImageFile(null);
                   setRoomImagePreview("");
                   if (roomImageRef.current) roomImageRef.current.value = "";

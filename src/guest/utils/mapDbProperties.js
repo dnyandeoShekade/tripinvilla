@@ -67,9 +67,7 @@ export function mapDbProperties(dbProps, defaultList, where) {
       description: p.description || '',
       checkIn: p.checkIn || '3:00 PM',
       checkOut: p.checkOut || '12:00 PM',
-      rules:
-        p.rules ||
-        '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).',
+      rules: p.rules || '',
       category: category,
       type: category,
       experiences: p.experiences || [],
