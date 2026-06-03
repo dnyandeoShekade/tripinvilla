@@ -497,7 +497,8 @@ export default function GuestApp() {
     };
   }) : carouselDestinations;
   
-  const displayExperiences = liveExperiences.length > 0 ? liveExperiences.map(e => ({
+  const activeExperiences = liveExperiences.filter(e => e.propertiesCount > 0);
+  const displayExperiences = activeExperiences.length > 0 ? activeExperiences.map(e => ({
     img: e.themeCoverImageUrl ? (e.themeCoverImageUrl.startsWith('http') ? e.themeCoverImageUrl : `${import.meta.env.VITE_API_BASE.replace('/api', '')}${e.themeCoverImageUrl}`) : 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?auto=format&fit=crop&w=300&q=80',
     name: e.experienceName || e.name,
     count: `${e.propertiesCount || 0} properties`,
