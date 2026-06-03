@@ -375,7 +375,20 @@ export default function HomePage(props) {
 
             {/* 2x2 Grid Layout */}
             <div className="popular-offers-grid">
-              {(popularOffers?.length > 0 ? popularOffers : popularOffersList).slice(0, 4).map((offer, idx) => {
+              {(() => {
+                const source = popularOffers?.length > 0 ? popularOffers : popularOffersList;
+                const uniqueOffers = [];
+                const seenIds = new Set();
+                for (const o of source) {
+                  const pId = typeof o.property_id === 'object' ? o.property_id?._id : o.property_id;
+                  const key = String(pId || o.propertyName || o.title || '').trim().toLowerCase();
+                  if (key && !seenIds.has(key)) {
+                    seenIds.add(key);
+                    uniqueOffers.push(o);
+                  }
+                }
+                return uniqueOffers.slice(0, 4);
+              })().map((offer, idx) => {
                 const isDynamic = offer.property_id || offer.propertyName;
                 const title = isDynamic ? `${offer.propertyName || offer.property_id?.name} - ${offer.room_type || offer.room || 'Deluxe Room'}` : offer.title;
                 const subtitle = isDynamic ? `${offer.category} | ${offer.food_type || offer.foods} | ${offer.description || ''}` : offer.subtitle;

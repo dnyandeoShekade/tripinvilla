@@ -155,8 +155,8 @@ export default function Bookings() {
                     <td style={{ fontWeight: 500 }}>{booking.property?.propertyName || booking.property?.name}</td>
                     <td style={{ fontWeight: 500, color: '#111827' }}>{booking.user?.name || 'Guest'}</td>
                     <td>{booking.user?.phone || 'N/A'}</td>
-                    <td>{new Date(booking.checkIn).toLocaleDateString()}</td>
-                    <td>{new Date(booking.checkOut).toLocaleDateString()}</td>
+                    <td>{new Date(booking.checkIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+                    <td>{new Date(booking.checkOut).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
                     <td>{Math.ceil((new Date(booking.checkOut) - new Date(booking.checkIn)) / (1000 * 60 * 60 * 24))}</td>
                     <td style={{ fontWeight: 600, color: '#111827' }}>₹{booking.totalPrice}</td>
                     <td>

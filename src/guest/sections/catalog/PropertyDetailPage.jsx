@@ -620,7 +620,7 @@ export default function PropertyDetailPage(props) {
                     </div>
                     <div className="review-user-info">
                       <span className="review-user-name">{rev.reviewer_name || rev.guestName || rev.name}</span>
-                      <span className="review-user-role">{rev.reviewer_role || rev.role || (rev.createdAt ? new Date(rev.createdAt).toLocaleDateString() : 'Verified Guest')}</span>
+                      <span className="review-user-role">{rev.reviewer_role || rev.role || (rev.createdAt ? new Date(rev.createdAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'Verified Guest')}</span>
                     </div>
                   </div>
 

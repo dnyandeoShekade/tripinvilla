@@ -4,7 +4,7 @@
 .contact-page-wrapper {
   background-color: #FCF9EA;
   padding-top: 0;
-  padding-bottom: 30px;
+  padding-bottom: 0px;
 }
 
 .contact-main-row {
@@ -185,7 +185,7 @@
 .contact-details-wrapper {
   width: 1280px;
   max-width: calc(100% - 160px);
-  margin: 24px auto 0 auto;
+  margin: 24px auto -20px auto;
   background: transparent;
   padding: 0;
   display: grid;

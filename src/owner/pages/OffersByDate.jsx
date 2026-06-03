@@ -25,7 +25,7 @@ export default function OffersByDate() {
 
   const mapOffer = (o) => {
     const od = o.offer_date ? new Date(o.offer_date) : (o.dateFrom ? new Date(o.dateFrom) : null);
-    const dateFormatted = od ? od.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A';
+    const dateFormatted = od ? od.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : 'N/A';
     const timeFormatted = o.offer_time || 'N/A';
 
     return {

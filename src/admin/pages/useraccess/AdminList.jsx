@@ -241,7 +241,7 @@ export default function AdminList() {
                     {paginated.map((a, i) => (
                       <tr key={a._id || a.id || i}>
                         <td style={{ color: '#58A429', fontWeight: 500 }}>
-                          {a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-GB', {day: 'numeric', month: 'short'}) + ' - 12 PM' : '20 May - 12 PM'}
+                          {a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'}) + ' - 12 PM' : '20 May 2026 - 12 PM'}
                         </td>
                         <td style={{ color: '#111827', fontWeight: 500 }}><ReadMore maxWords={2}>{a.name || 'Rahul Sharma'}</ReadMore></td>
                         <td style={{ color: '#0C6DC4', fontWeight: 500 }}>{a.role || 'Admin'}</td>

@@ -212,7 +212,7 @@ export default function Dashboard() {
                 <tbody>
                   {recentEnquiries.length > 0 ? (
                     recentEnquiries.map((e, i) => {
-                      const dateStr = new Date(e.createdAt || Date.now()).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+                      const dateStr = new Date(e.createdAt || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
                       return (
                         <tr key={e._id || i} style={{ borderBottom: '1px solid #F3F4F6' }}>
                           <td style={{ fontWeight: 600, color: '#58A429', padding: '14px', fontSize: '13px' }}>
