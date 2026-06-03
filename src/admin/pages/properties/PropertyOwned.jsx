@@ -15,6 +15,7 @@ export default function PropertyOwned() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [propertyType, setPropertyType] = useState('');
+  const [location, setLocation] = useState('');
   const [actionMenu, setActionMenu] = useState(null);
   const [viewPropertiesOwner, setViewPropertiesOwner] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -26,6 +27,7 @@ export default function PropertyOwned() {
       const params = new URLSearchParams();
       if (searchQuery) params.append("search", searchQuery);
       if (propertyType) params.append("type", propertyType);
+      if (location) params.append("location", location);
       if (dateFrom) params.append("dateFrom", dateFrom);
       if (dateTo) params.append("dateTo", dateTo);
 
@@ -73,7 +75,7 @@ export default function PropertyOwned() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, dateFrom, propertyType]);
+  }, [searchQuery, dateFrom, propertyType, location]);
 
   const totalItems = filteredOwners.length;
   const paginated = filteredOwners.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -144,6 +146,16 @@ export default function PropertyOwned() {
                     <option key={t} value={t}>{t}</option>
                   ))}
                 </select>
+              </div>
+              <div className="props-search-wrap" style={{ width: 160, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px' }}>
+                <input 
+                  type="text" 
+                  placeholder="Location..." 
+                  value={location}
+                  onChange={e => setLocation(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && fetchOwners()}
+                  style={{ border: 'none', outline: 'none', width: '100%', fontSize: 13 }}
+                />
               </div>
               <button className="props-btn-filter" onClick={fetchOwners} style={{ cursor: 'pointer', border: '1px solid #58A429', background: '#fff', color: '#58A429', padding: '6px 16px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}>
                 <Filter size={14} /> Filter

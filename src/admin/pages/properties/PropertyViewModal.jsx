@@ -3,6 +3,7 @@ import { X, MapPin, Bed, Bath, Users, IndianRupee, Clock, CheckCircle2, Home, Ph
 
 export default function PropertyViewModal({ property, onClose, inline = false }) {
   const [dynamicRooms, setDynamicRooms] = React.useState([]);
+  const [allExperiences, setAllExperiences] = React.useState([]);
 
   React.useEffect(() => {
     if (property && property._id) {
@@ -21,6 +22,19 @@ export default function PropertyViewModal({ property, onClose, inline = false })
         }
       };
       fetchRooms();
+      
+      const fetchExperiences = async () => {
+        try {
+          const res = await fetch(`${import.meta.env.VITE_API_BASE}/admin/experiences/active`);
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) setAllExperiences(data);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      };
+      fetchExperiences();
     }
   }, [property]);
 
@@ -195,11 +209,20 @@ export default function PropertyViewModal({ property, onClose, inline = false })
             <div>
               <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 10px 0' }}>Unique Experiences</h3>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                {experiences.map((exp, i) => (
-                  <span key={i} style={{ padding: '4px 12px', background: '#EFF6FF', color: '#2563EB', borderRadius: '20px', fontSize: '12px', fontWeight: 500 }}>
-                    {exp.experienceName || exp.name || exp}
-                  </span>
-                ))}
+                {experiences.map((exp, i) => {
+                  let expName = exp.experienceName || exp.name;
+                  if (!expName && typeof exp === 'string') {
+                    const matched = allExperiences.find(x => x._id === exp || x.id === exp);
+                    expName = matched ? matched.experienceName : exp;
+                  } else if (!expName) {
+                    expName = exp;
+                  }
+                  return (
+                    <span key={i} style={{ padding: '4px 12px', background: '#EFF6FF', color: '#2563EB', borderRadius: '20px', fontSize: '12px', fontWeight: 500 }}>
+                      {expName}
+                    </span>
+                  );
+                })}
               </div>
             </div>
           )}
