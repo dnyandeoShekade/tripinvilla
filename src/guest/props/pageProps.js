@@ -85,6 +85,7 @@ export function buildAccountPagesProps({
   reviewsRatingFilter,
   setReviewsRatingFilter,
   userReviews,
+  toggleWishlist,
 }) {
   return {
     activeMenu,
@@ -119,6 +120,7 @@ export function buildAccountPagesProps({
     reviewsRatingFilter,
     setReviewsRatingFilter,
     userReviews,
+    toggleWishlist,
   };
 }
 
@@ -151,6 +153,7 @@ export function buildStaticPagesProps({
   homepageContent,
   renderTitle,
   API_BASE,
+  toggleWishlist,
 }) {
   return {
     API_BASE,
@@ -181,6 +184,7 @@ export function buildStaticPagesProps({
     setActiveFaq,
     homepageContent,
     renderTitle,
+    toggleWishlist,
   };
 }
 
@@ -228,6 +232,7 @@ export function buildCatalogPagesProps({
   getFilteredProperties,
   handleClearAll,
   API_BASE,
+  toggleWishlist,
   fetchProfileAndEnquiries,
   setSelectedProperty,
   mapDbProperties,
@@ -308,6 +313,7 @@ export function buildCatalogPagesProps({
     getFilteredProperties,
     handleClearAll,
     API_BASE,
+    toggleWishlist,
     fetchProfileAndEnquiries,
     setSelectedProperty,
     mapDbProperties,
@@ -368,6 +374,7 @@ export function buildHomePageProps({
   setActiveDestinationInfo,
   setContactStep,
   setContactModalOpen,
+  toggleWishlist,
 }) {
   return {
     activeMenu,
@@ -391,6 +398,7 @@ export function buildHomePageProps({
     setActiveDestinationInfo,
     setContactStep,
     setContactModalOpen,
+    toggleWishlist,
   };
 }
 
