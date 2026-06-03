@@ -2128,20 +2128,6 @@ export default function PropertyMakers() {
           )}
         </div>
 
-        <div className="form-grid-1" style={{ marginBottom: 16 }}>
-          <div className="form-group">
-            <label className="form-label">Property Rules*</label>
-            <textarea
-              name="rules"
-              value={formData.rules}
-              onChange={handleChange}
-              placeholder="Enter rules separated by newlines"
-              className="form-textarea"
-              required
-            ></textarea>
-          </div>
-        </div>
-
         <div className="form-grid-1" style={{ marginBottom: 0 }}>
           <div className="form-group">
             <label className="form-label">About Property*</label>

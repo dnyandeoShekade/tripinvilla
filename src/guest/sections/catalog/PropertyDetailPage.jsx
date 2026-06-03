@@ -108,19 +108,7 @@ export default function PropertyDetailPage(props) {
           <div className="detail-reservation-card">
             <h2 className="reservation-title">{activeDetailProp.title}</h2>
             
-            <div 
-              style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '14px', cursor: 'pointer', width: 'fit-content' }}
-              onClick={() => scrollToDetailSection('User Reviews')}
-            >
-              <Star size={16} fill="#F59E0B" color="#F59E0B" />
-              <span style={{ fontSize: '14px', fontWeight: '700', color: '#111827' }}>
-                {dynamicReviewStats?.avg || dynamicReviewStats?.average || '4.8'}
-              </span>
-              <span style={{ fontSize: '13px', color: '#6B7280', textDecoration: 'underline' }}>
-                ({dynamicReviewStats?.count || dynamicReviews?.length || 0} Reviews)
-              </span>
-            </div>
-            
+
             <div className="reservation-location">
               <MapPin size={14} color="#48BB78" />
               <span>{activeDetailProp.location}</span>
@@ -515,23 +503,35 @@ export default function PropertyDetailPage(props) {
               <span>Check Out : {activeDetailProp.checkOut || '12:00 PM'}</span>
             </div>
           </div>
-
-
-            <div className="must-read-rules-block">
-              <h4 className="rules-sub-hdr">Must Read Rules</h4>
-              <ul className="rules-ul-list">
-                {typeof activeDetailProp?.rules === 'string' && activeDetailProp.rules.trim() !== '' ? (
-                  activeDetailProp.rules.split('\n').map((rule, rIdx) => (
-                    <li key={`prop-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
-                  ))
-                ) : (
-                  <>
-                    <li>Primary Guest should be atleast 18 years of age.</li>
-                    <li>Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).</li>
-                  </>
-                )}
-              </ul>
-            </div>
+            {/* Dynamic Property Rules */}
+            {activeDetailProp?.otherDetails && activeDetailProp.otherDetails.length > 0 ? (
+              activeDetailProp.otherDetails.map((sec, sIdx) => (
+                <div className="must-read-rules-block" style={{ marginTop: sIdx > 0 ? '24px' : '0' }} key={`prop-rule-${sIdx}`}>
+                  <h4 className="rules-sub-hdr">{sec.title || 'Rules'}</h4>
+                  <ul className="rules-ul-list">
+                    {sec.text ? sec.text.split('\n').map((rule, rIdx) => (
+                      <li key={`prop-rule-${sIdx}-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
+                    )) : null}
+                  </ul>
+                </div>
+              ))
+            ) : (
+              <div className="must-read-rules-block">
+                <h4 className="rules-sub-hdr">Must Read Rules</h4>
+                <ul className="rules-ul-list">
+                  {typeof activeDetailProp?.rules === 'string' && activeDetailProp.rules.trim() !== '' ? (
+                    activeDetailProp.rules.split('\n').map((rule, rIdx) => (
+                      <li key={`prop-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
+                    ))
+                  ) : (
+                    <>
+                      <li>Primary Guest should be atleast 18 years of age.</li>
+                      <li>Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).</li>
+                    </>
+                  )}
+                </ul>
+              </div>
+            )}
             
             {/* Dynamic Room Rules Sections */}
             {propertyRooms && propertyRooms.length > 0 && propertyRooms.map((room, idx) => {
