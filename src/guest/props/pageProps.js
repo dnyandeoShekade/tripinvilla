@@ -375,6 +375,11 @@ export function buildHomePageProps({
   setContactStep,
   setContactModalOpen,
   toggleWishlist,
+  activePropCategory,
+  setActivePropCategory,
+  fetchProperties,
+  setFilterSelectedTypes,
+  setWhere,
 }) {
   return {
     activeMenu,
@@ -399,6 +404,11 @@ export function buildHomePageProps({
     setContactStep,
     setContactModalOpen,
     toggleWishlist,
+    activePropCategory,
+    setActivePropCategory,
+    fetchProperties,
+    setFilterSelectedTypes,
+    setWhere,
   };
 }
 

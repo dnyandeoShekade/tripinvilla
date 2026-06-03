@@ -37,7 +37,28 @@ export default function HomePage(props) {
     setContactStep,
     setContactModalOpen,
     toggleWishlist,
+
+    // Category
+    activePropCategory,
+    setActivePropCategory,
+    fetchProperties,
+    setFilterSelectedTypes,
+    setWhere,
   } = props;
+
+  const typeMap = { Apartments: 'Apartment', Homestays: 'Homestay', Resorts: 'Resort', Motels: 'Motel', Cottages: 'Cottage', Bungalows: 'Bungalow', Villas: 'Villa' };
+  const activeCategory = activePropCategory || 'Villas';
+  // Only show 3 properties in the homepage section
+  const homepageBestVillas = currentBestVillas.slice(0, 3);
+
+  const handleViewAll = () => {
+    if (setActivePropCategory) setActivePropCategory(activeCategory);
+    if (setFilterSelectedTypes) setFilterSelectedTypes([typeMap[activeCategory] || activeCategory]);
+    if (setWhere) setWhere('');
+    if (fetchProperties) fetchProperties({ type: activeCategory, search: '' });
+    setActiveMenu('Properties');
+  };
+
 
   // Auto-scroll curated properties
   useEffect(() => {
@@ -125,21 +146,21 @@ export default function HomePage(props) {
 
           </div>
 
-          {/* ══ SECTION 2: BEST VILLAS AROUND YOU (Figma Specifications) ══ */}
+          {/* ══ SECTION 2: BEST [CATEGORY] AROUND YOU ══ */}
           <div className="villas-around-section">
             
             {/* Keyword-highlighted headline block */}
             <div className="section-title-wrap" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '16px' }}>
               <div>
                 <h2 className="section-main-headline">
-                  {renderTitle(homepageContent?.section1?.title, <span>Best <span className="highlight-sharp-blue-box">Villas</span> Around You</span>, "Villas")}
+                  <span>Best <span className="highlight-sharp-blue-box">{activeCategory}</span> Around You</span>
                 </h2>
                 <p className="section-sub-headline">
                   {homepageContent?.section1?.subText || 'Choose from homestays, villas, apartments, resorts and more—stays that fit your travel style.'}
                 </p>
               </div>
               <button 
-                onClick={() => setActiveMenu('Properties')}
+                onClick={handleViewAll}
                 style={{
                   padding: '10px 24px',
                   backgroundColor: '#f3f4f6',
@@ -159,9 +180,9 @@ export default function HomePage(props) {
               </button>
             </div>
 
-            {/* 3-column Grid layout */}
+            {/* 3-column Grid layout - show only 3 */}
             <div className="villas-grid">
-              {currentBestVillas.map((villa, idx) => {
+              {homepageBestVillas.map((villa, idx) => {
                 const isWishlisted = user && user.wishlist && user.wishlist.some(w => w._id === villa._id || w === villa._id);
                 return (
                   <div key={idx} className="villa-card">

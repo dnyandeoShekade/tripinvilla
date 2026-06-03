@@ -468,7 +468,14 @@ export default function GuestApp() {
     } catch (err) { console.error(err); }
   };
 
-  const mappedBest = featuredProperties.length > 0 ? mapDbProperties(featuredProperties, []) : mapDbProperties(allProperties, []).slice(0, 6);
+  // Filter by active category for the homepage "Best X Around You" section
+  const catTypeMap = { Apartments: 'Apartment', Homestays: 'Homestay', Resorts: 'Resort', Motels: 'Motel', Cottages: 'Cottage', Bungalows: 'Bungalow', Villas: 'Villa' };
+  const activeCatType = catTypeMap[activePropCategory] || activePropCategory || 'Villa';
+  const categoryFilteredProps = allProperties.filter(p =>
+    (p?.type || '').toLowerCase() === activeCatType.toLowerCase() ||
+    (p?.category || '').toLowerCase() === activeCatType.toLowerCase()
+  );
+  const mappedBest = mapDbProperties(categoryFilteredProps.length > 0 ? categoryFilteredProps : allProperties, []).slice(0, 3);
   let currentBestVillas = [...mappedBest];
 
 
