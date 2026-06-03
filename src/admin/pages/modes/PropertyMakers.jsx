@@ -960,9 +960,8 @@ export default function PropertyMakers() {
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24, borderTop: '1px solid #E5E7EB', paddingTop: 16 }}>
-            <button type="button" onClick={() => { setFormStep(1); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ padding: '12px 24px', background: '#fff', color: '#374151', border: '1px solid #D1D5DB', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>&larr; Back</button>
-            <button type="button" onClick={() => { setFormStep(3); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ padding: '12px 32px', background: '#58A429', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>Next Step &rarr;</button>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 24, borderTop: '1px solid #E5E7EB', paddingTop: 16 }}>
+            <button type="button" onClick={() => { setFormStep(2); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ padding: '12px 32px', background: '#58A429', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>Next Step &rarr;</button>
           </div>
           </>
           )}
@@ -1616,8 +1615,8 @@ export default function PropertyMakers() {
           </div>
           
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24, borderTop: '1px solid #E5E7EB', paddingTop: 16 }}>
-            <button type="button" onClick={() => { setFormStep(2); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ padding: '12px 24px', background: '#fff', color: '#374151', border: '1px solid #D1D5DB', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>&larr; Back</button>
-            <button type="button" onClick={() => { setFormStep(4); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ padding: '12px 32px', background: '#58A429', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>Next Step &rarr;</button>
+            <button type="button" onClick={() => { setFormStep(1); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ padding: '12px 24px', background: '#fff', color: '#374151', border: '1px solid #D1D5DB', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>&larr; Back</button>
+            <button type="button" onClick={() => { setFormStep(3); window.scrollTo({ top: 0, behavior: "smooth" }); }} style={{ padding: '12px 32px', background: '#58A429', color: '#fff', border: 'none', borderRadius: 8, cursor: 'pointer', fontWeight: 600, fontSize: 14 }}>Next Step &rarr;</button>
           </div>
           </>
           )}

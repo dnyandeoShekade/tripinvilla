@@ -2,6 +2,28 @@ import React from 'react';
 import { X, MapPin, Bed, Bath, Users, IndianRupee, Clock, CheckCircle2, Home, Phone, Mail, Hash } from 'lucide-react';
 
 export default function PropertyViewModal({ property, onClose, inline = false }) {
+  const [dynamicRooms, setDynamicRooms] = React.useState([]);
+
+  React.useEffect(() => {
+    if (property && property._id) {
+      const fetchRooms = async () => {
+        try {
+          const token = localStorage.getItem("admin_token") || localStorage.getItem("owner_token");
+          const res = await fetch(`${import.meta.env.VITE_API_BASE}/property-requests/admin-direct/rooms?propertyId=${property._id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setDynamicRooms(data);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      };
+      fetchRooms();
+    }
+  }, [property]);
+
   if (!property) return null;
 
   // Normalize field names — the API spreads pObj so all raw model fields are available
@@ -30,11 +52,13 @@ export default function PropertyViewModal({ property, onClose, inline = false })
   const ownerEmail  = property.owner?.email || '';
   const location    = property.location || property.full_address || city;
   const propertyNo  = property.propertyNo || property._id?.toString().slice(-6).toUpperCase() || '';
-  // Rooms — actual rooms array (stored on model as `rooms`)
-  const rooms       = Array.isArray(property.roomsList) ? property.roomsList
+  // Rooms — actual rooms array (stored on model as `rooms`) combined with dynamically fetched rooms
+  const baseRooms       = Array.isArray(property.roomsList) ? property.roomsList
                       : (Array.isArray(property.rooms) && property.rooms.length > 0 && typeof property.rooms[0] === 'object'
                           ? property.rooms
                           : []);
+  const allRooms = [...baseRooms, ...dynamicRooms];
+  const rooms = Array.from(new Map(allRooms.map(r => [r._id || Math.random(), r])).values());
   const experiences = Array.isArray(property.experiences) ? property.experiences : [];
   const latitude    = property.latitude;
   const longitude   = property.longitude;
