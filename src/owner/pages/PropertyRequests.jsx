@@ -433,53 +433,7 @@ export default function PropertyRequests() {
                   )}
             </div>
 
-            {/* Unique Experiences */}
-            <div style={{ marginBottom: '16px' }}>
-              <label className="form-label" style={{ marginBottom: '4px', display: 'block' }}>Unique Experiences for this Room Type</label>
-              <span style={{ display: 'block', fontSize: '11px', color: '#6B7280', marginBottom: '8px' }}>Tag special experiences this room offers</span>
-              {experiencesLoading ? <div style={{ color: '#9CA3AF', fontSize: 13 }}>Loading experiences...</div> : (
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {availableExperiences.map(exp => {
-                    const id = exp._id || exp.experienceName || exp.name;
-                    const isSelected = selectedExperiences.includes(id);
-                    return (
-                      <button type="button" key={id} onClick={() => toggleExperience(id)}
-                        style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '6px 14px', borderRadius: '20px', border: isSelected ? '1.5px solid #58A429' : '1px solid #D1D5DB', background: isSelected ? '#ECFDF5' : '#fff', color: isSelected ? '#58A429' : '#374151', fontSize: '13px', fontWeight: 500, cursor: 'pointer' }}>
 
-                        <span>{exp.experienceName || exp.name}</span>
-                      </button>
-                    );
-                  })}
-                  {availableExperiences.length === 0 && <span style={{ fontSize: '12px', color: '#9CA3AF' }}>No experiences found.</span>}
-                      <div style={{ display: 'flex', gap: 8, marginTop: 12, alignItems: 'center' }}>
-                        <input type="text" value={newCustomExp} onChange={e => setNewCustomExp(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddCustomExperience(); } }} placeholder="Add custom experience" style={{ padding: '6px 12px', fontSize: 13, border: '1px solid #D1D5DB', borderRadius: 6, flex: 1, maxWidth: 200 }} />
-                        <button type="button" onClick={handleAddCustomExperience} style={{ padding: '6px 12px', background: '#58A429', color: '#fff', border: 'none', borderRadius: 6, fontSize: 13, cursor: 'pointer' }}>Add</button>
-                      </div>
-                    </div>
-                  )}
-            </div>
-
-            {/* Dynamic Rules */}
-            <div>
-              <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                <span>Dynamic Rules Sections</span>
-                <button type="button" onClick={handleAddRuleSection} style={{ padding: '4px 12px', background: '#F3F4F6', border: '1px solid #D1D5DB', borderRadius: '6px', fontSize: '12px', fontWeight: 600, color: '#374151', cursor: 'pointer' }}>
-                  + Add Section
-                </button>
-              </label>
-              {rulesSections.map((sec, idx) => (
-                <div key={idx} style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '14px', marginBottom: '12px', position: 'relative' }}>
-                  {rulesSections.length > 1 && (
-                    <button type="button" onClick={() => handleRemoveRuleSection(idx)} style={{ position: 'absolute', top: '10px', right: '10px', background: '#FEE2E2', color: '#EF4444', border: 'none', borderRadius: '4px', width: '22px', height: '22px', cursor: 'pointer', fontSize: '14px', fontWeight: 'bold' }}>&times;</button>
-                  )}
-                  <input type="text" placeholder="Section Title (e.g. Must Read Rules)" className="form-input" value={sec.title}
-                    onChange={e => handleRuleSectionChange(idx, 'title', e.target.value)} style={{ marginBottom: '8px', fontWeight: 600 }} />
-                  <textarea className="form-textarea" rows={3} value={sec.text}
-                    onChange={e => handleRuleSectionChange(idx, 'text', e.target.value)}
-                    placeholder="Each new line becomes a bullet point..." />
-                </div>
-              ))}
-            </div>
           </div>
 
           {/* ─── ROOM QUEUE PREVIEW ─── */}
