@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChevronDown, Search, Sparkles, Calendar } from 'lucide-react';
-import { DateRange } from 'react-date-range';
+import { ChevronDown, Search, Sparkles, Calendar as CalendarIcon } from 'lucide-react';
+import { DateRange, Calendar } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { format, parse } from 'date-fns';
@@ -148,21 +148,47 @@ export default function HeroSection(props) {
                   <span style={{ flex: 1, fontSize: '14px', color: dates ? '#111827' : '#9CA3AF' }}>
                     {dates ? `${dates.split(' to ')[0] || ''} - ${dates.split(' to ')[1] || ''}` : 'mm/dd/yyyy - mm/dd/yyyy'}
                   </span>
-                  <Calendar size={16} color="#6B7280" />
+                  <CalendarIcon size={16} color="#6B7280" />
                 </div>
 
                 {showDatePicker && (
                   <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: '8px', background: '#fff', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 50, padding: '16px', border: '1px solid #E5E7EB' }}>
-                    <div style={{ fontWeight: 600, fontSize: '15px', color: '#111827', marginBottom: '12px', paddingLeft: '8px' }}>Select dates</div>
-                    <DateRange
-                      ranges={[getSelectionRange()]}
-                      onChange={handleSelect}
-                      months={1}
-                      direction="horizontal"
-                      showDateDisplay={false}
-                      minDate={new Date()}
-                      rangeColors={['#2563EB']}
-                    />
+                    <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                      {/* From Calendar */}
+                      <div>
+                        <div style={{ fontWeight: 600, fontSize: '15px', color: '#111827', marginBottom: '8px', paddingLeft: '8px' }}>From</div>
+                        <Calendar
+                          date={getSelectionRange().startDate}
+                          onChange={(date) => {
+                            const start = format(date, 'yyyy-MM-dd');
+                            const { endDate } = getSelectionRange();
+                            setDates(`${start} to ${format(endDate, 'yyyy-MM-dd')}`);
+                          }}
+                          minDate={new Date()}
+                          color="#2563EB"
+                        />
+                      </div>
+                      
+                      {/* To Calendar */}
+                      <div>
+                        <div style={{ fontWeight: 600, fontSize: '15px', color: '#111827', marginBottom: '8px', paddingLeft: '8px' }}>To</div>
+                        <Calendar
+                          date={getSelectionRange().endDate}
+                          onChange={(date) => {
+                            const { startDate } = getSelectionRange();
+                            const end = format(date, 'yyyy-MM-dd');
+                            // Ensure endDate is not before startDate
+                            if (date < startDate) {
+                                setDates(`${format(date, 'yyyy-MM-dd')} to ${format(date, 'yyyy-MM-dd')}`);
+                            } else {
+                                setDates(`${format(startDate, 'yyyy-MM-dd')} to ${end}`);
+                            }
+                          }}
+                          minDate={getSelectionRange().startDate}
+                          color="#2563EB"
+                        />
+                      </div>
+                    </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px', borderTop: '1px solid #F3F4F6', paddingTop: '16px' }}>
                       <button type="button" onClick={() => { setDates(''); setShowDatePicker(false); }} style={{ padding: '8px 16px', background: '#fff', border: '1px solid #D1D5DB', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 500, color: '#374151' }}>Cancel</button>
                       <button type="button" onClick={() => setShowDatePicker(false)} style={{ padding: '8px 16px', background: '#2563EB', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 600, color: '#fff' }}>Filter</button>
