@@ -58,6 +58,12 @@
   gap: 24px;
   margin-bottom: 24px;
 }
+.form-grid-5 {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
 
 .form-group {
   display: flex;

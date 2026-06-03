@@ -130,7 +130,7 @@ export default function Contacts() {
 
           {/* Banner */}
           <SectionLabel text="Banner" />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title*</label>
               <input type="text" className="form-input" value={formData.banner.title} onChange={e => handleChange(e, 'banner.title')} />
@@ -144,7 +144,7 @@ export default function Contacts() {
           <SectionLabel text="Section 1" />
           
           {/* Row 1 */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title*</label>
               <input type="text" className="form-input" value={formData.section1.title} onChange={e => handleChange(e, 'section1.title')} />
@@ -156,7 +156,7 @@ export default function Contacts() {
           </div>
 
           {/* Row 2 */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title 2*</label>
               <input type="text" className="form-input" value={formData.section1.title2} onChange={e => handleChange(e, 'section1.title2')} />
@@ -168,7 +168,7 @@ export default function Contacts() {
           </div>
 
           {/* Address Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-3">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Highlight 1*</label>
               <input type="text" className="form-input" value={formData.section1.address.highlight} onChange={e => handleChange(e, 'section1.address.highlight')} />
@@ -181,7 +181,7 @@ export default function Contacts() {
           </div>
 
           {/* Email Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-3">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Highlight 2*</label>
               <input type="text" className="form-input" value={formData.section1.email.highlight} onChange={e => handleChange(e, 'section1.email.highlight')} />
@@ -194,7 +194,7 @@ export default function Contacts() {
           </div>
 
           {/* Call Row */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 0 }}>
+          <div className="form-grid-3" style={{ marginBottom: 0 }}>
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Highlight 3*</label>
               <input type="text" className="form-input" value={formData.section1.call.highlight} onChange={e => handleChange(e, 'section1.call.highlight')} />

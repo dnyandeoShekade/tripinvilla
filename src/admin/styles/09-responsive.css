@@ -111,7 +111,7 @@
   }
 
   /* Collapse form grids */
-  .form-grid-3, .form-grid-2 { grid-template-columns: 1fr; }
+  .form-grid-3, .form-grid-2, .form-grid-5 { grid-template-columns: 1fr; }
 
   /* Masters page form grids & layouts */
   .amenities-form-grid,

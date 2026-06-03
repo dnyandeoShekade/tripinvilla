@@ -156,7 +156,7 @@ export default function AboutUs() {
 
           {/* Banner */}
           <SectionLabel text="Banner" />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Banner Title*</label>
               <input type="text" className="form-input" value={formData.banner.title} onChange={e => handleChange(e, 'banner.title')} />
@@ -168,7 +168,7 @@ export default function AboutUs() {
 
           {/* Section 1 */}
           <SectionLabel text="Section 1" />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
               <input type="text" className="form-input" value={formData.section1.title} onChange={e => handleChange(e, 'section1.title')} />
@@ -178,7 +178,7 @@ export default function AboutUs() {
               <input type="text" className="form-input" value={formData.section1.subText} onChange={e => handleChange(e, 'section1.subText')} />
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Point 1*</label>
               <input type="text" className="form-input" value={formData.section1.point1} onChange={e => handleChange(e, 'section1.point1')} />
@@ -188,7 +188,7 @@ export default function AboutUs() {
               <input type="text" className="form-input" value={formData.section1.point2} onChange={e => handleChange(e, 'section1.point2')} />
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-3">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Mission Title*</label>
               <input type="text" className="form-input" value={formData.section1.highlights[0].title} onChange={e => handleChange(e, 'section1.highlights.0.title')} />
@@ -199,7 +199,7 @@ export default function AboutUs() {
             </div>
             <FileUpload label="Mission Icon*" name="section1.highlights.0.icon" onChange={e => handleFileChange(e, 'section1.highlights.0.icon')} fileValue={getFileDisplay('section1.highlights.0.icon')} />
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-3">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Vision Title*</label>
               <input type="text" className="form-input" value={formData.section1.highlights[1].title} onChange={e => handleChange(e, 'section1.highlights.1.title')} />
@@ -210,7 +210,7 @@ export default function AboutUs() {
             </div>
             <FileUpload label="Vision Icon*" name="section1.highlights.1.icon" onChange={e => handleFileChange(e, 'section1.highlights.1.icon')} fileValue={getFileDisplay('section1.highlights.1.icon')} />
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Experience Title*</label>
               <input type="text" className="form-input" value={formData.section1.experience.title} onChange={e => handleChange(e, 'section1.experience.title')} />
@@ -228,7 +228,7 @@ export default function AboutUs() {
 
           {/* Section 2 */}
           <SectionLabel text="Section 2 (Services)" />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Main Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
               <input type="text" className="form-input" value={formData.section2.title} onChange={e => handleChange(e, 'section2.title')} />
@@ -239,7 +239,7 @@ export default function AboutUs() {
             </div>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-3">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Row 1 Title*</label>
               <input type="text" className="form-input" value={formData.section2.row1.title} onChange={e => handleChange(e, 'section2.row1.title')} />
@@ -253,7 +253,7 @@ export default function AboutUs() {
               <input type="text" className="form-input" value={formData.section2.row1Desc} onChange={e => handleChange(e, 'section2.row1Desc')} />
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-3">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Row 2 Title*</label>
               <input type="text" className="form-input" value={formData.section2.row2.title} onChange={e => handleChange(e, 'section2.row2.title')} />
@@ -289,7 +289,7 @@ export default function AboutUs() {
 
           {/* Section 3: Testimonials */}
           <SectionLabel text="Section 3 (Testimonials)" />
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, marginBottom: 24 }}>
+          <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
               <input type="text" className="form-input" value={formData.section3.title} onChange={e => handleChange(e, 'section3.title')} />
@@ -301,7 +301,7 @@ export default function AboutUs() {
           </div>
 
           {formData.section3.testimonials.map((t, i) => (
-            <div key={i} style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 16, marginBottom: i === 3 ? 0 : 24 }}>
+            <div key={i} className="form-grid-5" style={{ marginBottom: i === 3 ? 0 : 24 }}>
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Text {i + 1}*</label>
                 <input type="text" className="form-input" value={t.text} onChange={e => handleChange(e, `section3.testimonials.${i}.text`)} />
