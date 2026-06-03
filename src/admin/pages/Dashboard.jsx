@@ -116,7 +116,7 @@ export default function Dashboard() {
 
       {/* ══ Section 1: Stat Cards ════════ */}
       <div className="dash-section">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+        <div className="stats-grid">
           <StatCard
             icon={MessageSquare}
             label="Total Enquiries (Today)"

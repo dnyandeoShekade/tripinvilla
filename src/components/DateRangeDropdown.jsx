@@ -54,6 +54,7 @@ export default function DateRangeDropdown({
       {/* Trigger Input */}
       <div 
         onClick={() => setIsOpen(!isOpen)}
+        className="daterange-trigger"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -79,7 +80,7 @@ export default function DateRangeDropdown({
 
       {/* Dropdown Modal */}
       {isOpen && (
-        <div style={{
+        <div className="daterange-dropdown-popup" style={{
           position: 'absolute',
           top: '100%',
           right: 0,
@@ -104,7 +105,7 @@ export default function DateRangeDropdown({
           </div>
 
           <div style={{ padding: '16px' }}>
-            <div style={{ display: 'flex', gap: '24px' }}>
+            <div className="daterange-calendars-wrapper" style={{ display: 'flex', gap: '24px' }}>
               <div>
                 <div style={{ fontWeight: 600, fontSize: '15px', color: '#111827', marginBottom: '8px', paddingLeft: '8px' }}>From</div>
                 <ReactCalendar

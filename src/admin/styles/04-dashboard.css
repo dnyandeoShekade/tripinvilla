@@ -20,10 +20,6 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  margin: 0 24px 0;
-  background: var(--primary-light);
-  border-radius: 16px;
-  padding: 15px 18px;
   min-height: auto;
 }
 .stat-card {
