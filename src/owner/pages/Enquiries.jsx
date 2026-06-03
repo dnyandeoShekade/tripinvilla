@@ -135,24 +135,24 @@ export default function Enquiries() {
 
         {/* Card 1: Toolbar Filters */}
         <div className="chart-card" style={{ padding: '16px 20px', borderRadius: 12, border: 'none', boxShadow: 'none' }}>
-          <div className="props-table-toolbar" style={{ margin: 0, borderBottom: 'none' }}>
-            <div className="props-table-title" style={{ fontSize: '15px', fontWeight: 700, color: '#111827', fontFamily: '"Outfit", sans-serif' }}>
+          <div className="props-table-toolbar" style={{ margin: 0, borderBottom: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'nowrap', minWidth: 0 }}>
+            <div className="props-table-title" style={{ fontSize: '15px', fontWeight: 700, color: '#111827', fontFamily: '"Outfit", sans-serif', whiteSpace: 'nowrap', flexShrink: 0 }}>
               Enquiries Inbox
             </div>
 
-            <div className="props-table-actions" style={{ gap: '10px', display: 'flex', flexWrap: 'wrap', alignItems: 'center' }}>
+            <div className="props-table-actions" style={{ gap: '10px', display: 'flex', flexWrap: 'nowrap', alignItems: 'center', minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
               {/* Date Range Picker */}
-              <div style={{ position: 'relative' }} ref={datePickerRef}>
+              <div style={{ position: 'relative', flexShrink: 0 }} ref={datePickerRef}>
                 <div 
                   onClick={() => setShowDatePicker(!showDatePicker)}
                   className="props-filter-select"
-                  style={{ padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', border: '1px solid #E5E7EB', borderRadius: '6px', background: '#ffffff', minWidth: '180px' }}
+                  style={{ padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', border: '1px solid #E5E7EB', borderRadius: '6px', background: '#ffffff', minWidth: '150px', maxWidth: '200px' }}
                 >
-                  <Calendar size={13} style={{ color: '#6B7280' }} />
-                  <span style={{ fontSize: '12px', color: (dateFrom && dateTo) ? '#374151' : '#9CA3AF', flex: 1 }}>
+                  <Calendar size={13} style={{ color: '#6B7280', flexShrink: 0 }} />
+                  <span style={{ fontSize: '12px', color: (dateFrom && dateTo) ? '#374151' : '#9CA3AF', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {(dateFrom && dateTo) ? `${dateFrom} - ${dateTo}` : 'Start Date - End Date'}
                   </span>
-                  <ChevronDown size={13} style={{ color: '#6B7280' }} />
+                  <ChevronDown size={13} style={{ color: '#6B7280', flexShrink: 0 }} />
                 </div>
 
                 {showDatePicker && (
@@ -206,7 +206,7 @@ export default function Enquiries() {
                 value={propertyType}
                 onChange={(e) => setPropertyType(e.target.value)}
                 className="props-filter-select"
-                style={{ border: '1px solid #E5E7EB', outline: 'none', fontSize: '12px', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', background: '#ffffff' }}
+                style={{ border: '1px solid #E5E7EB', outline: 'none', fontSize: '12px', padding: '6px 12px', borderRadius: '6px', cursor: 'pointer', background: '#ffffff', flexShrink: 0, maxWidth: 120 }}
               >
                 <option value="All">All Categories</option>
                 <option value="Homestay">Homestay</option>
@@ -217,7 +217,7 @@ export default function Enquiries() {
               </select>
 
               {/* Location Input */}
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center', flexShrink: 0, maxWidth: 110 }}>
                 <input
                   type="text"
                   placeholder="Location"
@@ -228,7 +228,7 @@ export default function Enquiries() {
                     fontSize: '12px',
                     border: '1px solid #E5E7EB',
                     borderRadius: '6px',
-                    width: '110px',
+                    width: '100%',
                     background: '#ffffff',
                     outline: 'none'
                   }}
@@ -239,20 +239,20 @@ export default function Enquiries() {
               <button
                 onClick={() => fetchEnquiries()}
                 className="props-btn-filter"
-                style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}
+                style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', flexShrink: 0, whiteSpace: 'nowrap' }}
               >
                 <FilterIcon size={13} style={{ color: '#58A429' }} /> Filter
               </button>
 
               {/* Search Bar */}
-              <div className="props-search-wrap">
-                <Search size={14} />
+              <div className="props-search-wrap" style={{ flexShrink: 1, minWidth: 80, maxWidth: 200 }}>
+                <Search size={14} style={{ flexShrink: 0 }} />
                 <input
                   type="text"
                   placeholder="Search name/email/query..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  style={{ outline: 'none' }}
+                  style={{ outline: 'none', width: '100%', minWidth: 0 }}
                 />
               </div>
             </div>

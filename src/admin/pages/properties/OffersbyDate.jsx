@@ -118,24 +118,26 @@ export default function OffersbyDate() {
           flexDirection: 'column',
           gap: '24px'
         }}>
-          <div className="props-table-toolbar" style={{ margin: 0, borderBottom: 'none', padding: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div className="props-table-title" style={{ fontSize: '18px', fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif' }}>Offers by Date</div>
+          <div className="props-table-toolbar" style={{ margin: 0, borderBottom: 'none', padding: 0, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap', gap: '16px', minWidth: 0 }}>
+            <div className="props-table-title" style={{ fontSize: '18px', fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif', whiteSpace: 'nowrap', flexShrink: 0 }}>Offers by Date</div>
             
-            <div className="props-table-actions" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-              <DateRangeDropdown 
-                startDate={dateFrom}
-                endDate={dateTo}
-                onChange={(start, end) => {
-                  setDateFrom(start);
-                  setDateTo(end);
-                }}
-              />
+            <div className="props-table-actions" style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'nowrap', minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
+              <div style={{ flexShrink: 0 }}>
+                <DateRangeDropdown 
+                  startDate={dateFrom}
+                  endDate={dateTo}
+                  onChange={(start, end) => {
+                    setDateFrom(start);
+                    setDateTo(end);
+                  }}
+                />
+              </div>
 
-              <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid #E5E7EB', borderRadius: '8px', padding: '6px 12px', background: '#ffffff' }}>
+              <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid #E5E7EB', borderRadius: '8px', padding: '6px 12px', background: '#ffffff', flexShrink: 0, maxWidth: 140 }}>
                 <select 
                   value={selectedCategory} 
                   onChange={e => setSelectedCategory(e.target.value)}
-                  style={{ border: 'none', background: 'transparent', outline: 'none', color: '#374151', fontSize: 13, cursor: 'pointer', fontFamily: '"Outfit", sans-serif' }}
+                  style={{ border: 'none', background: 'transparent', outline: 'none', color: '#374151', fontSize: 13, cursor: 'pointer', fontFamily: '"Outfit", sans-serif', maxWidth: '100%' }}
                 >
                   <option value="">Property Type</option>
                   <option value="Villa">Villa</option>
@@ -146,7 +148,7 @@ export default function OffersbyDate() {
                 </select>
               </div>
 
-              <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid #E5E7EB', borderRadius: '8px', padding: '6px 12px', background: '#ffffff', width: 140 }}>
+              <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid #E5E7EB', borderRadius: '8px', padding: '6px 12px', background: '#ffffff', width: 140, flexShrink: 0 }}>
                 <input 
                   type="text"
                   placeholder="Location"
@@ -156,19 +158,19 @@ export default function OffersbyDate() {
                 />
               </div>
 
-              <button className="props-btn-filter" onClick={fetchOffers} style={{ cursor: 'pointer', border: '1px solid #58A429', background: '#fff', color: '#58A429', padding: '6px 16px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}>
+              <button className="props-btn-filter" onClick={fetchOffers} style={{ cursor: 'pointer', border: '1px solid #58A429', background: '#fff', color: '#58A429', padding: '6px 16px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600, flexShrink: 0, whiteSpace: 'nowrap' }}>
                 <Filter size={13} /> Filter
               </button>
 
-              <div className="props-search-wrap" style={{ width: 240, margin: 0, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px' }}>
-                <Search size={14} style={{ color: '#9CA3AF' }} />
+              <div className="props-search-wrap" style={{ minWidth: 80, maxWidth: 240, margin: 0, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', flexShrink: 1 }}>
+                <Search size={14} style={{ color: '#9CA3AF', flexShrink: 0 }} />
                 <input 
                   type="text" 
                   placeholder="Search properties..." 
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && fetchOffers()}
-                  style={{ border: 'none', outline: 'none', width: '100%', fontSize: 13 }}
+                  style={{ border: 'none', outline: 'none', width: '100%', minWidth: 0, fontSize: 13 }}
                 />
               </div>
             </div>

@@ -82,11 +82,11 @@ export default function CitiesLocations() {
         
         {/* Toolbar */}
         <div className="chart-card" style={{ padding: '16px 20px', borderRadius: 12 }}>
-          <div className="props-table-toolbar" style={{ margin: 0, borderBottom: 'none' }}>
-            <div className="props-table-title">Cities &amp; Locations</div>
+          <div className="props-table-toolbar" style={{ margin: 0, borderBottom: 'none', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'nowrap', minWidth: 0 }}>
+            <div className="props-table-title" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>Cities &amp; Locations</div>
             
-            <div className="props-table-actions">
-              <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <div className="props-table-actions" style={{ display: 'flex', gap: 6, alignItems: 'center', flexWrap: 'nowrap', minWidth: 0, flex: 1, justifyContent: 'flex-end' }}>
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0 }}>
                 <DateRangeDropdown 
                   startDate={dateFrom}
                   endDate={dateTo}
@@ -96,14 +96,14 @@ export default function CitiesLocations() {
                   }}
                 />
                 {(dateFrom || dateTo) && (
-                  <button onClick={() => { setDateFrom(''); setDateTo(''); }} style={{ fontSize: '11px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer' }}>Clear</button>
+                  <button onClick={() => { setDateFrom(''); setDateTo(''); }} style={{ fontSize: '11px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', whiteSpace: 'nowrap' }}>Clear</button>
                 )}
               </div>
-              <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px' }}>
+              <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 8px', flexShrink: 0, maxWidth: 100 }}>
                 <select 
                   value={selectedState}
                   onChange={(e) => setSelectedState(e.target.value)}
-                  style={{ border: 'none', background: 'transparent', outline: 'none', color: '#374151', fontSize: 13, cursor: 'pointer' }}
+                  style={{ border: 'none', background: 'transparent', outline: 'none', color: '#374151', fontSize: 12, cursor: 'pointer', maxWidth: 80 }}
                 >
                   <option value="">All States</option>
                   {uniqueStates.map(s => (
@@ -111,11 +111,11 @@ export default function CitiesLocations() {
                   ))}
                 </select>
               </div>
-              <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 12px' }}>
+              <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 8px', flexShrink: 0, maxWidth: 90 }}>
                 <select 
                   value={propertyType}
                   onChange={(e) => setPropertyType(e.target.value)}
-                  style={{ border: 'none', background: 'transparent', outline: 'none', color: '#374151', fontSize: 13, cursor: 'pointer' }}
+                  style={{ border: 'none', background: 'transparent', outline: 'none', color: '#374151', fontSize: 12, cursor: 'pointer', maxWidth: 70 }}
                 >
                   <option value="">All Types</option>
                   {["Villa", "Homestay", "Resort", "Apartment", "Cottage", "Others"].map(t => (
@@ -123,17 +123,18 @@ export default function CitiesLocations() {
                   ))}
                 </select>
               </div>
-              <button className="props-btn-filter" onClick={fetchCities} style={{ cursor: 'pointer' }}>
-                <Filter size={14} /> Filter
+              <button className="props-btn-filter" onClick={fetchCities} style={{ cursor: 'pointer', flexShrink: 0, padding: '5px 10px', fontSize: 12, whiteSpace: 'nowrap' }}>
+                <Filter size={12} /> Filter
               </button>
-              <div className="props-search-wrap">
-                <Search size={14} />
+              <div className="props-search-wrap" style={{ flexShrink: 1, minWidth: 80, maxWidth: 140 }}>
+                <Search size={14} style={{ flexShrink: 0 }} />
                 <input 
                   type="text" 
                   placeholder="Search city or state..." 
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && fetchCities()}
+                  style={{ width: '100%', minWidth: 0, padding: '4px 0' }}
                 />
               </div>
             </div>
