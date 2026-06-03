@@ -147,20 +147,20 @@ export default function PropertyOwned() {
                   ))}
                 </select>
               </div>
-              <div className="props-search-wrap" style={{ width: 160, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px' }}>
+              <div style={{ width: 160, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', background: '#fff' }}>
                 <input 
                   type="text" 
                   placeholder="Location..." 
                   value={location}
                   onChange={e => setLocation(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && fetchOwners()}
-                  style={{ border: 'none', outline: 'none', width: '100%', fontSize: 13 }}
+                  style={{ border: 'none', outline: 'none', width: '100%', fontSize: 13, padding: 0, background: 'transparent' }}
                 />
               </div>
               <button className="props-btn-filter" onClick={fetchOwners} style={{ cursor: 'pointer', border: '1px solid #58A429', background: '#fff', color: '#58A429', padding: '6px 16px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6, fontWeight: 600 }}>
                 <Filter size={14} /> Filter
               </button>
-              <div className="props-search-wrap" style={{ width: 260, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px' }}>
+              <div style={{ width: 260, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', background: '#fff' }}>
                 <Search size={14} style={{ color: '#9CA3AF' }} />
                 <input 
                   type="text" 
@@ -168,7 +168,7 @@ export default function PropertyOwned() {
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && fetchOwners()}
-                  style={{ border: 'none', outline: 'none', width: '100%', fontSize: 13 }}
+                  style={{ border: 'none', outline: 'none', width: '100%', fontSize: 13, padding: 0, background: 'transparent' }}
                 />
               </div>
               <button className="props-btn-add" onClick={() => navigate('/admin/properties/owned/add')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}>
