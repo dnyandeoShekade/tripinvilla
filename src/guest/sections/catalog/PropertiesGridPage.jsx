@@ -76,7 +76,7 @@ export default function PropertiesGridPage(props) {
                 <div className="recommend-card-img-wrap">
                   <img src={villa.img} alt={villa.title} />
                   <button className={`recommend-heart-circle ${isLiked ? 'liked' : ''}`} onClick={(e) => toggleWishlist(villa._id, e)}>
-                    <Heart size={16} fill={isLiked ? '#EF4444' : 'none'} color={isLiked ? '#EF4444' : '#FFFFFF'} />
+                    <Heart size={16} fill={isLiked ? '#EF4444' : 'none'} color={isLiked ? '#EF4444' : '#111827'} />
                   </button>
                 </div>
                 <div className="recommend-card-info-col">
@@ -123,7 +123,7 @@ export default function PropertiesGridPage(props) {
                 <div className="recommend-card-img-wrap">
                   <img src={homestay.img} alt={homestay.title} />
                   <button className={`recommend-heart-circle ${isLiked ? 'liked' : ''}`} onClick={(e) => toggleWishlist(homestay._id, e)}>
-                    <Heart size={16} fill={isLiked ? '#EF4444' : 'none'} color={isLiked ? '#EF4444' : '#FFFFFF'} />
+                    <Heart size={16} fill={isLiked ? '#EF4444' : 'none'} color={isLiked ? '#EF4444' : '#111827'} />
                   </button>
                 </div>
                 <div className="recommend-card-info-col">

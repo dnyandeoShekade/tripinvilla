@@ -59,7 +59,7 @@ export default function RecommendPage(props) {
                 <div className="recommend-card-img-wrap">
                   <img src={item.img} alt={item.name} />
                   <button className={`recommend-heart-circle ${isLiked ? 'liked' : ''}`} onClick={(e) => toggleWishlist(propertyId, e)}>
-                    <Heart size={16} fill={isLiked ? '#EF4444' : 'none'} color={isLiked ? '#EF4444' : '#FFFFFF'} />
+                    <Heart size={16} fill={isLiked ? '#EF4444' : 'none'} color={isLiked ? '#EF4444' : '#111827'} />
                   </button>
                 </div>
                 <div className="recommend-card-info-col">
