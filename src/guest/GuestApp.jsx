@@ -505,6 +505,10 @@ export default function GuestApp() {
   })) : carouselExperiences;
 
   const getFilteredProperties = () => {
+    const hasFilters = (sidebarSearchText && sidebarSearchText.trim() !== '') || (where && where.trim() !== '') || filterSelectedTypes.length > 0 || filterSelectedAmenities.length > 0 || filterMinPrice !== '' || filterMaxPrice !== '' || filterMinRating > 0 || filterInstantBook || filterCancellationPolicy || filterHomestays;
+
+    if (!hasFilters) return [];
+
     let displayList = [...currentPropertiesVillas];
 
     // 1. Sidebar Search text filter

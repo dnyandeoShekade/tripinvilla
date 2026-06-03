@@ -524,10 +524,7 @@ export default function PropertyDetailPage(props) {
                       <li key={`prop-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
                     ))
                   ) : (
-                    <>
-                      <li>Primary Guest should be atleast 18 years of age.</li>
-                      <li>Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).</li>
-                    </>
+                    <li>No special rules provided by the owner.</li>
                   )}
                 </ul>
               </div>
@@ -563,10 +560,10 @@ export default function PropertyDetailPage(props) {
               <div className="reviews-score-card">
                 <div className="score-top-row">
                   <div className="score-pill-large">
-                    <span>{dynamicReviewStats.avg || dynamicReviewStats.average || '4.8'}</span>
+                    <span>{dynamicReviewStats.count > 0 ? (dynamicReviewStats.avg || dynamicReviewStats.average || '5.0') : 'N/A'}</span>
                   </div>
                   <div className="score-lbl-wrap">
-                    <span className="score-main-lbl">{dynamicReviewStats.label || 'Excellent'}</span>
+                    <span className="score-main-lbl">{dynamicReviewStats.count > 0 ? (dynamicReviewStats.label || 'Excellent') : 'No Reviews'}</span>
                     <span className="score-sub-lbl">{dynamicReviewStats.count || dynamicReviews.length || 0} Genuine Reviews</span>
                   </div>
                 </div>
@@ -574,15 +571,15 @@ export default function PropertyDetailPage(props) {
                 <div className="rating-progress-stack" style={{ margin: '24px 0' }}>
                   {[5, 4, 3, 2, 1].map(star => {
                     const count = dynamicReviewStats.breakdown?.[star] || 0;
-                    const total = dynamicReviews.length || 1;
-                    const percentage = Math.round((count / total) * 100);
+                    const total = dynamicReviewStats.count || dynamicReviews.length || 0;
+                    const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
                     return (
                       <div key={star} className="progress-row">
                         <span>{star} Star</span>
                         <div className="progress-bar-bg">
-                          <div className="progress-bar-fill" style={{ width: `${percentage || (star === 5 ? 70 : star === 4 ? 20 : 0)}%` }} />
+                          <div className="progress-bar-fill" style={{ width: `${percentage}%` }} />
                         </div>
-                        <span>{percentage || (star === 5 ? 70 : star === 4 ? 20 : 0)}%</span>
+                        <span>{percentage}%</span>
                       </div>
                     );
                   })}
