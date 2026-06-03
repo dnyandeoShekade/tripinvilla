@@ -15,6 +15,11 @@
   animation: fadeIn 0.35s ease forwards;
 }
 
+.dash-section > div,
+.dash-section > div > div {
+  min-width: 0;
+}
+
 /* Stat cards row */
 .stats-grid {
   display: grid;
