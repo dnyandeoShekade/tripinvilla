@@ -152,12 +152,14 @@ export default function PropertyViewModal({ property, onClose, inline = false })
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
 
             {/* Owner */}
-            <div style={{ padding: '14px 16px', background: '#F3F4F6', borderRadius: '12px' }}>
-              <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '6px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Owner Details</div>
-              <div style={{ fontSize: '14px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>{ownerName}</div>
-              {ownerPhone && <div style={{ fontSize: '12px', color: '#4B5563', display: 'flex', alignItems: 'center', gap: 4 }}><Phone size={11} />{ownerPhone}</div>}
-              {ownerEmail && <div style={{ fontSize: '12px', color: '#4B5563', display: 'flex', alignItems: 'center', gap: 4 }}><Mail size={11} />{ownerEmail}</div>}
-            </div>
+            {ownerName !== 'Unknown' && (
+              <div style={{ padding: '14px 16px', background: '#F3F4F6', borderRadius: '12px' }}>
+                <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '6px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Owner Details</div>
+                <div style={{ fontSize: '14px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>{ownerName}</div>
+                {ownerPhone && <div style={{ fontSize: '12px', color: '#4B5563', display: 'flex', alignItems: 'center', gap: 4 }}><Phone size={11} />{ownerPhone}</div>}
+                {ownerEmail && <div style={{ fontSize: '12px', color: '#4B5563', display: 'flex', alignItems: 'center', gap: 4 }}><Mail size={11} />{ownerEmail}</div>}
+              </div>
+            )}
 
             {/* Pricing */}
             <div style={{ padding: '14px 16px', background: '#F3F4F6', borderRadius: '12px' }}>
