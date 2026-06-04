@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { DateRange, Calendar as ReactCalendar } from 'react-date-range';
 import { format } from 'date-fns';
 import { Calendar, X } from 'lucide-react';
@@ -19,6 +20,8 @@ export default function DateRangeDropdown({
     }
   ]);
   const wrapperRef = useRef(null);
+  const popupRef = useRef(null);
+  const [dropdownCoords, setDropdownCoords] = useState(null);
 
   useEffect(() => {
     setTempRange([{
@@ -29,14 +32,45 @@ export default function DateRangeDropdown({
   }, [startDate, endDate]);
 
   useEffect(() => {
+    function updatePosition() {
+      if (isOpen && wrapperRef.current) {
+        const rect = wrapperRef.current.getBoundingClientRect();
+        // Calculate right alignment if possible, otherwise left align
+        const popupWidth = 600; // approximate max width of the dual calendar
+        let leftPos = rect.right - popupWidth + window.scrollX;
+        if (leftPos < 0) leftPos = rect.left + window.scrollX;
+        
+        setDropdownCoords({
+          top: rect.bottom + window.scrollY + 8,
+          left: leftPos,
+        });
+      }
+    }
+
+    if (isOpen) {
+      updatePosition();
+      window.addEventListener('resize', updatePosition);
+      window.addEventListener('scroll', updatePosition, true);
+    }
+    
+    return () => {
+      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', updatePosition, true);
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
     function handleClickOutside(event) {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
+      if (
+        wrapperRef.current && !wrapperRef.current.contains(event.target) &&
+        (!popupRef.current || !popupRef.current.contains(event.target))
+      ) {
         setIsOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [wrapperRef]);
+  }, [wrapperRef, popupRef]);
 
   const handleSelect = (ranges) => {
     setTempRange([ranges.selection]);
@@ -81,13 +115,12 @@ export default function DateRangeDropdown({
         </span>
       </div>
 
-      {/* Dropdown Modal */}
-      {isOpen && (
-        <div className="daterange-dropdown-popup" style={{
+      {/* Dropdown Modal via Portal */}
+      {isOpen && typeof document !== 'undefined' && createPortal(
+        <div ref={popupRef} className="daterange-dropdown-popup" style={{
           position: 'absolute',
-          top: '100%',
-          right: 0,
-          marginTop: 8,
+          top: dropdownCoords?.top || 0,
+          left: dropdownCoords?.left || 0,
           background: '#FFFFFF',
           border: '1px solid #E5E7EB',
           borderRadius: 12,
@@ -183,7 +216,8 @@ export default function DateRangeDropdown({
               Filter
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

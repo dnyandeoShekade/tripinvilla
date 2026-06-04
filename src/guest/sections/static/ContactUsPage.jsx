@@ -91,12 +91,23 @@ export default function ContactUsPage(props) {
             content.section1.address,
             content.section1.email,
             content.section1.call,
-          ].map((item, i) => (
-            <div key={i} className="details-pill-card">
-              <div className="details-icon-avatar"><img src={(item.icon && (item.icon.startsWith('http') || item.icon.startsWith('/uploads'))) ? item.icon : [contactAddressIcon, contactEmailIcon, contactCallIcon][i]} alt={item.highlight} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /></div>
-              <div className="details-texts-col"><span className="details-card-lbl">{item.highlight}</span><span className="details-card-val">{item.title}</span></div>
-            </div>
-          ))}
+          ].map((item, i) => {
+            const isEmail = item.highlight?.toLowerCase().includes('email');
+            const isCall = item.highlight?.toLowerCase().includes('call');
+            let href = null;
+            if (isEmail) href = `mailto:${item.title}`;
+            if (isCall) href = `tel:${item.title.replace(/[^\d+]/g, '')}`;
+
+            const CardTag = href ? 'a' : 'div';
+            const extraProps = href ? { href, style: { textDecoration: 'none', color: 'inherit', cursor: 'pointer' } } : {};
+
+            return (
+              <CardTag key={i} className="details-pill-card" {...extraProps}>
+                <div className="details-icon-avatar"><img src={(item.icon && (item.icon.startsWith('http') || item.icon.startsWith('/uploads'))) ? item.icon : [contactAddressIcon, contactEmailIcon, contactCallIcon][i]} alt={item.highlight} style={{ width: '100%', height: '100%', objectFit: 'contain' }} /></div>
+                <div className="details-texts-col"><span className="details-card-lbl">{item.highlight}</span><span className="details-card-val">{item.title}</span></div>
+              </CardTag>
+            );
+          })}
         </div>
       </div>
     </div>

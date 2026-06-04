@@ -239,7 +239,7 @@ export default function PropertyDetailPage(props) {
                 <Maximize size={30} color="#58A429" strokeWidth={1.5} />
               </div>
               <span className="amenity-vertical-lbl">Area Size</span>
-              <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600 }}>{activeDetailProp.area || `${(activeDetailProp.bedRooms || 2) * 150} sq. ft.`}</span>
+              <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600 }}>{activeDetailProp.area}</span>
             </div>
             <div 
               className="amenity-vertical-item" 
@@ -253,7 +253,7 @@ export default function PropertyDetailPage(props) {
               </div>
               <span className="amenity-vertical-lbl">Rooms</span>
               <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600, textDecoration: 'underline' }}>
-                {activeDetailProp.roomCountString || `${activeDetailProp.bedRooms || 1} Rooms`}
+                {activeDetailProp.roomCountString}
               </span>
             </div>
             <div className="amenity-vertical-item">
@@ -261,14 +261,14 @@ export default function PropertyDetailPage(props) {
                 <BedDouble size={30} color="#58A429" strokeWidth={1.5} />
               </div>
               <span className="amenity-vertical-lbl">Beds</span>
-              <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600 }}>{activeDetailProp.beds || `${activeDetailProp.bedRooms || 2} Beds`}</span>
+              <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600 }}>{activeDetailProp.beds}</span>
             </div>
             <div className="amenity-vertical-item">
               <div className="amenity-vertical-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Users size={30} color="#58A429" strokeWidth={1.5} />
               </div>
               <span className="amenity-vertical-lbl">Guests</span>
-              <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600 }}>{activeDetailProp.guests || `${activeDetailProp.capacity || 3} Persons`}</span>
+              <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600 }}>{activeDetailProp.guests}</span>
             </div>
             {(activeDetailProp.amenities || []).map((amenity, idx) => {
               const amName = typeof amenity === 'object' ? amenity.name || amenity.amenitiesName : amenity;

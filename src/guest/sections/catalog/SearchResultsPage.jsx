@@ -271,16 +271,27 @@ export default function SearchResultsPage(props) {
                             </button>
                           </div>
                           <div className="horiz-card-rating">
-                            <span className="rating-badge">{property.rating || '4.8'}</span>
-                            <span style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span style={{ color: '#4B5563', fontWeight: '500' }}>{property.ratingLabel || 'Excellent'}</span>
-                              <span style={{ color: '#9CA3AF', fontSize: '13px' }}>{property.reviews || '3,245 Genuine Reviews'}</span>
-                            </span>
+                            {property.reviewsCount > 0 ? (
+                              <>
+                                <span className="rating-badge">{property.rating}</span>
+                                <span style={{ display: 'flex', flexDirection: 'column' }}>
+                                  <span style={{ color: '#4B5563', fontWeight: '500' }}>{property.ratingLabel}</span>
+                                  <span style={{ color: '#9CA3AF', fontSize: '13px' }}>{property.reviews}</span>
+                                </span>
+                              </>
+                            ) : (
+                              <span style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ color: '#9CA3AF', fontWeight: '500', fontStyle: 'italic' }}>Not Rated Yet</span>
+                                <span style={{ color: '#9CA3AF', fontSize: '13px' }}>0 Genuine Reviews</span>
+                              </span>
+                            )}
                           </div>
                           <div className="horiz-card-inclusions">
-                            <span className="inclusion-item"><CheckCircle size={16} fill="#0C6DC4" color="white" /> Breakfast Included</span>
-                            <span className="inclusion-item"><CheckCircle size={16} fill="#0C6DC4" color="white" /> Free cancellation till 24 hrs before check in</span>
-                            <span className="inclusion-item"><CheckCircle size={16} fill="#0C6DC4" color="white" /> Parking Available</span>
+                            {(property.highlights && property.highlights.length > 0) ? property.highlights.slice(0, 3).map((hl, i) => (
+                              <span key={i} className="inclusion-item"><CheckCircle size={16} fill="#0C6DC4" color="white" /> {hl}</span>
+                            )) : (
+                              <span className="inclusion-item" style={{ color: '#9CA3AF', fontStyle: 'italic' }}>No special highlights listed</span>
+                            )}
                           </div>
                           <div className="horiz-card-footer">
                             <div className="horiz-card-price">

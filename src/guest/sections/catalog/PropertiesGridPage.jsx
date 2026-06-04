@@ -65,9 +65,7 @@ export default function PropertiesGridPage(props) {
           <h2 className="section-main-headline">
             {(() => {
               const baseTitle = homepageContent?.section1?.title || 'Best Villas around you';
-              const dynamicTitle = baseTitle
-                .replace(/villas/gi, activePropCategory || 'Villas')
-                .replace(/villa/gi, activePropCategory || 'Villas');
+              const dynamicTitle = baseTitle.replace(/villas?/gi, activePropCategory || 'Villas');
               return renderTitle(dynamicTitle, <span>Best <span className="highlight-sharp-blue-box">{activePropCategory || 'Villas'}</span> Around You</span>, activePropCategory || 'Villas');
             })()}
           </h2>
@@ -96,10 +94,10 @@ export default function PropertiesGridPage(props) {
                     <h3 className="recommend-card-name-text">{propData.title}</h3>
                     <div className="recommend-card-location-row"><span>{propData.location}</span><MapPin size={13} color="#9CA3AF" /></div>
                     <div className="recommend-specs-2x2-grid">
-                      <div className="recommend-spec-pill"><img src={areaIcon} alt="Area" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Area Size: {(propData.bedRooms || 2) * 150} sq. ft.</span></div>
-                      <div className="recommend-spec-pill"><img src={bedIcon} alt="Beds" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Beds: {propData.bedRooms || 2} Beds</span></div>
-                      <div className="recommend-spec-pill"><img src={roomIcon} alt="Rooms" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Rooms: {propData.bedRooms || 1} Room</span></div>
-                      <div className="recommend-spec-pill"><img src={guestIcon} alt="Guests" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Guests: {propData.capacity || 3} Person</span></div>
+                      <div className="recommend-spec-pill"><img src={areaIcon} alt="Area" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Area Size: {propData.area}</span></div>
+                      <div className="recommend-spec-pill"><img src={bedIcon} alt="Beds" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Beds: {propData.beds}</span></div>
+                      <div className="recommend-spec-pill"><img src={roomIcon} alt="Rooms" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Rooms: {propData.roomCountString}</span></div>
+                      <div className="recommend-spec-pill"><img src={guestIcon} alt="Guests" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Guests: {propData.guests}</span></div>
                     </div>
                     <div className="recommend-price-tag-row">
                       <span className="price-label">Starting from</span>

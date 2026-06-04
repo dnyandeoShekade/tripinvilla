@@ -99,10 +99,10 @@ export default function WishlistTab(props) {
                   <h3 className="recommend-card-name-text">{villa.title}</h3>
                   <div className="recommend-card-location-row"><span>{villa.location}</span><MapPin size={13} color="#9CA3AF" /></div>
                   <div className="recommend-specs-2x2-grid">
-                    <div className="recommend-spec-pill"><img src={areaIcon} alt="Area" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Area Size: {(villa.bedRooms || 2) * 150} sq. ft.</span></div>
-                    <div className="recommend-spec-pill"><img src={bedIcon} alt="Beds" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Beds: {villa.bedRooms || 2} Beds</span></div>
-                    <div className="recommend-spec-pill"><img src={roomIcon} alt="Rooms" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Rooms: {villa.bedRooms || 1} Room</span></div>
-                    <div className="recommend-spec-pill"><img src={guestIcon} alt="Guests" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Guests: {villa.capacity || 3} Person</span></div>
+                    <div className="recommend-spec-pill"><img src={areaIcon} alt="Area" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Area Size: {villa.area}</span></div>
+                    <div className="recommend-spec-pill"><img src={bedIcon} alt="Beds" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Beds: {villa.beds}</span></div>
+                    <div className="recommend-spec-pill"><img src={roomIcon} alt="Rooms" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Rooms: {villa.roomCountString}</span></div>
+                    <div className="recommend-spec-pill"><img src={guestIcon} alt="Guests" style={{ width: '14px', height: '14px', objectFit: 'contain' }} /><span>Guests: {villa.guests}</span></div>
                   </div>
                   <div className="recommend-price-tag-row">
                     <span className="price-label">Starting from</span>

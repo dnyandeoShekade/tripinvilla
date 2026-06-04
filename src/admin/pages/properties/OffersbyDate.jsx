@@ -170,7 +170,7 @@ export default function OffersbyDate() {
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && fetchOffers()}
-                  style={{ border: 'none', outline: 'none', width: '100%', minWidth: 0, fontSize: 13 }}
+                  style={{ border: 'none', outline: 'none', width: '100%', minWidth: 0, padding: 0, fontSize: 13 }}
                 />
               </div>
             </div>

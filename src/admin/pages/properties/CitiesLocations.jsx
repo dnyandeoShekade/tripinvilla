@@ -126,15 +126,15 @@ export default function CitiesLocations() {
               <button className="props-btn-filter" onClick={fetchCities} style={{ cursor: 'pointer', flexShrink: 0, padding: '5px 10px', fontSize: 12, whiteSpace: 'nowrap' }}>
                 <Filter size={12} /> Filter
               </button>
-              <div className="props-search-wrap" style={{ flexShrink: 1, minWidth: 80, maxWidth: 140 }}>
-                <Search size={14} style={{ flexShrink: 0 }} />
+              <div className="props-search-wrap" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 8px', border: '1px solid #E5E7EB', borderRadius: 8, background: '#fff', flexShrink: 1, minWidth: 120, maxWidth: 160 }}>
+                <Search size={14} style={{ color: '#9CA3AF', flexShrink: 0 }} />
                 <input 
                   type="text" 
                   placeholder="Search city or state..." 
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && fetchCities()}
-                  style={{ width: '100%', minWidth: 0, padding: '4px 0' }}
+                  style={{ border: 'none', background: 'transparent', outline: 'none', width: '100%', minWidth: 0, padding: 0, fontSize: 12, color: '#374151' }}
                 />
               </div>
             </div>

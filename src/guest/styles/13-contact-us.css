@@ -4,7 +4,7 @@
 .contact-page-wrapper {
   background-color: #FCF9EA;
   padding-top: 0;
-  padding-bottom: 80px;
+  padding-bottom: 20px;
 }
 
 .contact-main-row {
@@ -289,11 +289,11 @@
 
 /* ─── RESPONSIVE: Contact Us ─── */
 @media (max-width: 900px) {
-  .contact-page-wrapper { padding-bottom: 80px; }
+  .contact-page-wrapper { padding-bottom: 20px; }
   .contact-form-panel { margin-top: 40px; }
 }
 @media (max-width: 640px) {
-  .contact-page-wrapper { padding-bottom: 40px; }
+  .contact-page-wrapper { padding-bottom: 20px; }
   .contact-form-panel { margin-top: 24px; }
   .contact-form-sub { margin-bottom: 16px; }
 }
