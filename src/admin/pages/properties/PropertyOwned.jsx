@@ -46,7 +46,7 @@ export default function PropertyOwned() {
 
   useEffect(() => {
     fetchOwners();
-  }, []);
+  }, [dateFrom, dateTo]);
 
   const updateStatus = async (id, nextStatus) => {
     try {

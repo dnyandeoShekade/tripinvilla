@@ -19,7 +19,10 @@ export default function CitiesLocations() {
     setLoading(true);
     let loadedData = null;
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_BASE}/cities/analytics`);
+      const params = new URLSearchParams();
+      if (dateFrom) params.append("dateFrom", dateFrom);
+      if (dateTo) params.append("dateTo", dateTo);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE}/cities/analytics?${params.toString()}`);
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
         loadedData = data;
@@ -46,7 +49,7 @@ export default function CitiesLocations() {
     setLoading(false);
   };
 
-  useEffect(() => { fetchCities(); }, []);
+  useEffect(() => { fetchCities(); }, [dateFrom, dateTo]);
 
   const filteredCities = cities.filter(c => {
     const matchQuery = (c.cityName || '').toLowerCase().includes(searchQuery.toLowerCase()) || 

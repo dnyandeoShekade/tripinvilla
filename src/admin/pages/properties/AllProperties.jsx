@@ -311,11 +311,14 @@ export default function AllProperties() {
   };
 
   useEffect(() => {
-    fetchProperties();
     fetchOwners();
     fetchPropertyTypes();
     fetchRoomTypes();
   }, []);
+
+  useEffect(() => {
+    fetchProperties();
+  }, [dateFrom, dateTo]);
 
   const openPanel = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
