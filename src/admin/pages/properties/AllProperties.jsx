@@ -1029,7 +1029,7 @@ export default function AllProperties() {
                               onClick={() => { 
                                 setActionMenu(null); 
                                 setViewingProperty(p); 
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                setTimeout(() => document.getElementById('property-detail-div')?.scrollIntoView({ behavior: 'smooth' }), 100);
                                 toast.success('Viewing Details');
                               }}
                               style={{
@@ -1098,7 +1098,9 @@ export default function AllProperties() {
         </div>
       </div>
 
-      <PropertyViewModal property={viewingProperty} onClose={() => setViewingProperty(null)} />
+      {viewingProperty && (
+        <PropertyViewModal property={viewingProperty} onClose={() => setViewingProperty(null)} inline={true} />
+      )}
 
       {/* Add Property Side Panel */}
       {showPanel && (

@@ -283,13 +283,13 @@ export default function PropertyRooms() {
                 ) : (
                   paginatedRequests.map((p, i) => (
                     <tr key={p._id || i} style={{ borderBottom: '1px solid #F3F4F6' }}>
-                      <td style={{ color: '#58A429', fontWeight: 600, padding: '14px', cursor: 'pointer' }} onClick={() => setSelectedRequest(p)}>{p.requestNo || `REQ-${3000 + i}`}</td>
-                      <td onClick={() => setSelectedRequest(p)} style={{ cursor: 'pointer', padding: '14px' }}>
+                      <td style={{ color: '#58A429', fontWeight: 600, padding: '14px', cursor: 'pointer' }} onClick={() => { setSelectedRequest(p); setTimeout(() => document.getElementById('request-detail-div')?.scrollIntoView({ behavior: 'smooth' }), 100); }}>{p.requestNo || `REQ-${3000 + i}`}</td>
+                      <td onClick={() => { setSelectedRequest(p); setTimeout(() => document.getElementById('request-detail-div')?.scrollIntoView({ behavior: 'smooth' }), 100); }} style={{ cursor: 'pointer', padding: '14px' }}>
                         <div style={{ width: 40, height: 30, background: '#E5E7EB', borderRadius: 6, overflow: 'hidden' }}>
                           <img src={p.image || "https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=100&q=80"} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
                         </div>
                       </td>
-                      <td style={{ color: '#111827', fontWeight: 500, padding: '14px', cursor: 'pointer' }} onClick={() => setSelectedRequest(p)}><ReadMore maxWords={2}>{p.propertyName}</ReadMore></td>
+                      <td style={{ color: '#111827', fontWeight: 500, padding: '14px', cursor: 'pointer' }} onClick={() => { setSelectedRequest(p); setTimeout(() => document.getElementById('request-detail-div')?.scrollIntoView({ behavior: 'smooth' }), 100); }}><ReadMore maxWords={2}>{p.propertyName}</ReadMore></td>
                       <td style={{ color: '#6B7280', padding: '14px', whiteSpace: 'pre-line', lineHeight: 1.4 }}><ReadMore maxWords={2}>{p.location}</ReadMore></td>
                       <td style={{ padding: '14px' }}><span className="category-pill">{p.category}</span></td>
                       <td style={{ color: '#6B7280', padding: '14px' }}>{p.ownerName}</td>
@@ -309,7 +309,7 @@ export default function PropertyRooms() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                           <button onClick={() => {
                             setSelectedRequest(p);
-                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                            setTimeout(() => document.getElementById('request-detail-div')?.scrollIntoView({ behavior: 'smooth' }), 100);
                             toast.success('Viewing Details');
                           }} title="View Details" style={{ color: '#2563EB', background: '#DBEAFE', border: 'none', padding: '6px', borderRadius: '6px', cursor: 'pointer', display: 'flex' }}>
                             <Eye size={15} strokeWidth={2.5} />
@@ -366,10 +366,9 @@ export default function PropertyRooms() {
         </div>
       </div>
 
-      {/* Requested Property Details Modal */}
+      {/* Requested Property Details Inline */}
       {selectedRequest && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: 24, overflowY: 'auto' }}>
-          <div style={{ background: '#fff', padding: 32, borderRadius: 20, width: 900, maxWidth: '100%', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.25)', position: 'relative', maxHeight: '90vh', overflowY: 'auto' }}>
+        <div id="request-detail-div" style={{ position: 'relative', width: '100%', background: '#fff', borderRadius: '16px', border: '1px solid #E5E7EB', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', marginTop: '24px', padding: 32, boxSizing: 'border-box' }}>
             <button 
               onClick={() => setSelectedRequest(null)}
               style={{ position: 'absolute', top: 20, right: 20, background: '#F3F4F6', border: 'none', borderRadius: '50%', width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6B7280', cursor: 'pointer', zIndex: 10 }}
@@ -577,7 +576,6 @@ export default function PropertyRooms() {
                 </p>
               </div>
             )}
-          </div>
         </div>
       )}
 
