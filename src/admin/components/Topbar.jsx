@@ -81,6 +81,7 @@ export default function Topbar({ onToggleSidebar }) {
             const adminUserStr = localStorage.getItem('admin_user');
             let name = 'TripInVilla Admin';
             let email = 'admin@tripinvilla.com';
+            let avatar = '';
             let initial = 'T';
             if (adminUserStr) {
               try {
@@ -92,13 +93,22 @@ export default function Topbar({ onToggleSidebar }) {
                 if (u.email) {
                   email = u.email;
                 }
+                if (u.avatar) {
+                  avatar = u.avatar;
+                }
               } catch (e) {
                 console.error(e);
               }
             }
             return (
               <>
-                <div className="topbar-avatar">{initial}</div>
+                <div className="topbar-avatar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+                  {avatar ? (
+                    <img src={avatar} alt="Admin Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    initial
+                  )}
+                </div>
                 <div>
                   <div className="topbar-user-name">{name}</div>
                   <div className="topbar-user-role">{email}</div>

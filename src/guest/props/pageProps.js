@@ -498,6 +498,8 @@ export function buildGuestModalsProps({
   setEditProfileForm,
   editProfileError,
   handleEditProfileSubmit,
+  avatarFile,
+  setAvatarFile,
 }) {
   return {
     isGalleryOpen,
@@ -583,6 +585,8 @@ export function buildGuestModalsProps({
     setEditProfileForm,
     editProfileError,
     handleEditProfileSubmit,
+    avatarFile,
+    setAvatarFile,
   };
 }
 

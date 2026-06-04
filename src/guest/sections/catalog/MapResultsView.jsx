@@ -24,26 +24,58 @@ const createPriceIcon = (price) => {
   });
 };
 
-const ChangeMapView = ({ center, zoom }) => {
+const parseCoordinate = (val, isLat) => {
+  if (val === null || val === undefined) return null;
+  let num = Number(val);
+  if (isNaN(num)) return null;
+  const limit = isLat ? 90 : 180;
+  if (Math.abs(num) > limit) {
+    let temp = num;
+    while (Math.abs(temp) > limit) {
+      temp = temp / 10;
+    }
+    num = temp;
+  }
+  return num;
+};
+
+const getValidCoords = (property) => {
+  const lat = parseCoordinate(property.latitude, true);
+  const lng = parseCoordinate(property.longitude, false);
+  if (lat !== null && lng !== null && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180 && (lat !== 0 || lng !== 0)) {
+    return [lat, lng];
+  }
+  return null;
+};
+
+const ChangeMapView = ({ center, zoom, bounds }) => {
   const map = useMap();
   useEffect(() => {
-    if (center && center[0] && center[1]) {
+    if (bounds && bounds.length > 1) {
+      map.fitBounds(bounds, { padding: [50, 50], maxZoom: 14 });
+    } else if (center && center[0] && center[1]) {
       map.setView(center, zoom || map.getZoom());
     }
-  }, [center, zoom, map]);
+  }, [center, zoom, bounds, map]);
   return null;
 };
 
 export default function MapResultsView({ properties, onPropertyClick }) {
   const [mapCenter, setMapCenter] = useState([20.5937, 78.9629]); // Default to India
   const [zoom, setZoom] = useState(5);
+  const [validBounds, setValidBounds] = useState([]);
 
   useEffect(() => {
     // Determine the center based on the first valid property
-    const validProps = properties.filter((p) => p.latitude && p.longitude);
-    if (validProps.length > 0) {
-      setMapCenter([validProps[0].latitude, validProps[0].longitude]);
-      setZoom(10);
+    const validCoordsList = properties
+      .map(p => getValidCoords(p))
+      .filter(c => c !== null);
+      
+    setValidBounds(validCoordsList);
+
+    if (validCoordsList.length > 0) {
+      setMapCenter(validCoordsList[0]);
+      setZoom(12);
     }
   }, [properties]);
 
@@ -54,17 +86,18 @@ export default function MapResultsView({ properties, onPropertyClick }) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <ChangeMapView center={mapCenter} zoom={zoom} />
+        <ChangeMapView center={mapCenter} zoom={zoom} bounds={validBounds} />
 
         {properties.map((property) => {
-          if (!property.latitude || !property.longitude) return null;
+          const coords = getValidCoords(property);
+          if (!coords) return null;
           
           const priceNum = Number(String(property.price || property.bestRoomRate || 0).replace(/[^\d]/g, ''));
 
           return (
             <Marker 
               key={property._id} 
-              position={[Number(property.latitude), Number(property.longitude)]}
+              position={coords}
               icon={createPriceIcon(priceNum)}
             >
               <Popup className="custom-map-popup">

@@ -460,19 +460,42 @@ export default function PropertyDetailPage(props) {
           <div className="map-landmarks-split">
             {/* Left Fully Functional Interactive Google Map */}
             <div className="mock-map-graphic" style={{ padding: 0, overflow: 'hidden' }}>
-              <iframe
-                title={`${activeDetailProp.title} Map`}
-                src={activeDetailProp.latitude && activeDetailProp.longitude 
-                  ? `https://www.google.com/maps?q=${activeDetailProp.latitude},${activeDetailProp.longitude}&z=14&output=embed`
-                  : `https://www.google.com/maps?q=${encodeURIComponent(activeDetailProp.full_address || activeDetailProp.location || 'Kasol, Himachal Pradesh')}&output=embed`
-                }
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen=""
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
+              {(() => {
+                const parseCoordinate = (val, isLat) => {
+                  if (val === null || val === undefined) return null;
+                  let num = Number(val);
+                  if (isNaN(num)) return null;
+                  const limit = isLat ? 90 : 180;
+                  if (Math.abs(num) > limit) {
+                    let temp = num;
+                    while (Math.abs(temp) > limit) {
+                      temp = temp / 10;
+                    }
+                    num = temp;
+                  }
+                  return num;
+                };
+
+                const lat = parseCoordinate(activeDetailProp.latitude, true);
+                const lng = parseCoordinate(activeDetailProp.longitude, false);
+                const hasValidCoords = lat !== null && lng !== null && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180 && (lat !== 0 || lng !== 0);
+
+                return (
+                  <iframe
+                    title={`${activeDetailProp.title} Map`}
+                    src={hasValidCoords 
+                      ? `https://www.google.com/maps?q=${lat},${lng}&z=14&output=embed`
+                      : `https://www.google.com/maps?q=${encodeURIComponent(activeDetailProp.full_address || activeDetailProp.location || 'Kasol, Himachal Pradesh')}&output=embed`
+                    }
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen=""
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  />
+                );
+              })()}
             </div>
 
             {/* Right Landmarks List */}
@@ -713,7 +736,7 @@ export default function PropertyDetailPage(props) {
         </div>
 
         {/* Contact Owner / Enquire Now form (Moved to bottom) */}
-        <div className="detail-tab-target-section border-box-style" style={{ marginBottom: '80px', background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column' }}>
+        <div className="detail-tab-target-section border-box-style" style={{ marginBottom: '24px', background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '24px', boxSizing: 'border-box', display: 'flex', flexDirection: 'column' }}>
           <h3 className="section-subtitle-title" style={{ marginBottom: '16px', borderBottom: '1px solid #F3F4F6', paddingBottom: '12px' }}>
             Still have questions? Enquire Now
           </h3>

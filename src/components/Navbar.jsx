@@ -129,10 +129,15 @@ export default function Navbar({
               fontWeight: 700,
               cursor: 'pointer',
               fontSize: '16px',
-              fontFamily: '"Outfit", sans-serif'
+              fontFamily: '"Outfit", sans-serif',
+              overflow: 'hidden'
             }}
           >
-            {user.name ? user.name[0].toUpperCase() : 'U'}
+            {user.avatar ? (
+              <img src={user.avatar} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            ) : (
+              user.name ? user.name[0].toUpperCase() : 'U'
+            )}
           </div>
           <button
             style={{

@@ -128,6 +128,8 @@ export default function GuestApp() {
     editProfileError,
     openEditProfileModal,
     handleEditProfileSubmit,
+    avatarFile,
+    setAvatarFile,
   } = useGuestAuth({ API_BASE, API_ORIGIN, setActiveMenu });
 
   const {
@@ -652,6 +654,8 @@ export default function GuestApp() {
     editProfileError,
     openEditProfileModal,
     handleEditProfileSubmit,
+    avatarFile,
+    setAvatarFile,
 
     // guest search
     activeSearchTab,

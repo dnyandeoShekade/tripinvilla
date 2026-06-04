@@ -11,6 +11,22 @@ const parseNumber = (val) => {
   return isNaN(parsed) ? '' : parsed;
 };
 
+const sanitizeCoordinateInput = (val, isLat) => {
+  if (val === null || val === undefined || val === '') return undefined;
+  let num = Number(val);
+  if (isNaN(num)) return undefined;
+  
+  const limit = isLat ? 90 : 180;
+  if (Math.abs(num) > limit) {
+    let temp = num;
+    while (Math.abs(temp) > limit) {
+      temp = temp / 10;
+    }
+    num = temp;
+  }
+  return num;
+};
+
 const API_BASE = import.meta.env.VITE_API_BASE || `${import.meta.env.VITE_API_BASE}`;
 
 export default function MyProperties({ autoOpenForm = false }) {
@@ -537,8 +553,8 @@ export default function MyProperties({ autoOpenForm = false }) {
         locationName: formData.locationName,
         location: formData.full_address || `${formData.cityName}${formData.stateName ? ', ' + formData.stateName : ''}${formData.countryName ? ', ' + formData.countryName : ''}`,
         full_address: formData.full_address,
-        latitude: formData.latitude ? Number(formData.latitude) : undefined,
-        longitude: formData.longitude ? Number(formData.longitude) : undefined,
+        latitude: sanitizeCoordinateInput(formData.latitude, true),
+        longitude: sanitizeCoordinateInput(formData.longitude, false),
         // Pricing
         originalPrice: formData.originalPrice ? Number(formData.originalPrice) : undefined,
         price_per_night: Number(formData.price),
@@ -964,12 +980,19 @@ export default function MyProperties({ autoOpenForm = false }) {
                     </button>
                   </div>
                 </div>
-                {formData.latitude && formData.longitude && (
-                  <div style={{ marginTop: '12px', borderRadius: '8px', overflow: 'hidden', border: '1px solid #D1D5DB', height: '180px' }}>
-                    <iframe title="Map Preview" width="100%" height="100%" style={{ border: 0 }} loading="lazy"
-                      src={`https://www.google.com/maps?q=${formData.latitude},${formData.longitude}&z=14&output=embed`} />
-                    </div>
-                  )}
+                {(() => {
+                  const lat = sanitizeCoordinateInput(formData.latitude, true);
+                  const lng = sanitizeCoordinateInput(formData.longitude, false);
+                  if (lat !== undefined && lng !== undefined) {
+                    return (
+                      <div style={{ marginTop: '12px', borderRadius: '8px', overflow: 'hidden', border: '1px solid #D1D5DB', height: '180px' }}>
+                        <iframe title="Map Preview" width="100%" height="100%" style={{ border: 0 }} loading="lazy"
+                          src={`https://www.google.com/maps?q=${lat},${lng}&z=14&output=embed`} />
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
             </>)}
 

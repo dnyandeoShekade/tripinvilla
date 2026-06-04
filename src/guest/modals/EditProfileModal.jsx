@@ -8,6 +8,8 @@ export default function EditProfileModal(props) {
     setEditProfileForm,
     editProfileError,
     handleEditProfileSubmit,
+    avatarFile,
+    setAvatarFile,
   } = props;
 
   if (!isEditProfileModalOpen) return null;
@@ -123,7 +125,7 @@ export default function EditProfileModal(props) {
             </div>
           </div>
 
-          <div className="edit-profile-field-group">
+          <div className="edit-profile-field-group" style={{ marginBottom: '20px' }}>
             <label className="edit-profile-label">Email Address</label>
             <input 
               type="email" 
@@ -131,6 +133,43 @@ export default function EditProfileModal(props) {
               value={editProfileForm.emergencyEmail} 
               onChange={e => setEditProfileForm({ ...editProfileForm, emergencyEmail: e.target.value })}
             />
+          </div>
+
+          <div className="edit-profile-field-group" style={{ marginBottom: '24px' }}>
+            <label className="edit-profile-label">Profile Image</label>
+            <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginTop: '8px' }}>
+              <div style={{
+                width: '60px',
+                height: '60px',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                background: '#F3F4F6',
+                border: '1px solid #E5E7EB',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                {avatarFile ? (
+                  <img src={URL.createObjectURL(avatarFile)} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <span style={{ fontSize: '11px', color: '#9CA3AF' }}>No image</span>
+                )}
+              </div>
+              <div style={{ flex: 1 }}>
+                <input 
+                  type="file" 
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      setAvatarFile(e.target.files[0]);
+                    }
+                  }}
+                  style={{ display: 'block', fontSize: '13px', color: '#4B5563' }}
+                />
+                <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#9CA3AF' }}>Supports JPG, PNG (Max 5MB)</p>
+              </div>
+            </div>
           </div>
 
           <div className="edit-profile-actions">

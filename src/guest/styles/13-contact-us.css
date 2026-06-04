@@ -10,7 +10,7 @@
 .contact-main-row {
   width: 1280px;
   max-width: calc(100% - 160px);
-  margin: 80px auto 80px auto;
+  margin: 40px auto 40px auto;
   display: grid;
   grid-template-columns: 1fr 1.25fr;
   grid-gap: 60px;

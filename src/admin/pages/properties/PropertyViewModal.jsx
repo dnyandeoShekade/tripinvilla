@@ -89,8 +89,26 @@ export default function PropertyViewModal({ property, onClose, inline = false })
   const allRooms = [...baseRooms, ...dynamicRooms];
   const rooms = Array.from(new Map(allRooms.map(r => [r._id || Math.random(), r])).values());
   const experiences = Array.isArray(property.experiences) ? property.experiences : [];
-  const latitude    = property.latitude;
-  const longitude   = property.longitude;
+  const parseCoordinate = (val, isLat) => {
+    if (val === null || val === undefined) return null;
+    let num = Number(val);
+    if (isNaN(num)) return null;
+    const limit = isLat ? 90 : 180;
+    if (Math.abs(num) > limit) {
+      let temp = num;
+      while (Math.abs(temp) > limit) {
+        temp = temp / 10;
+      }
+      num = temp;
+    }
+    return num;
+  };
+
+  const lat = parseCoordinate(property.latitude, true);
+  const lng = parseCoordinate(property.longitude, false);
+  const hasValidCoords = lat !== null && lng !== null && lat >= -90 && lat <= 90 && lng >= -180 && lng <= 180 && (lat !== 0 || lng !== 0);
+  const latitude    = hasValidCoords ? lat : null;
+  const longitude   = hasValidCoords ? lng : null;
 
   const pill = (color, bg, text) => ({
     padding: '2px 10px', background: bg, color, fontSize: '11px',

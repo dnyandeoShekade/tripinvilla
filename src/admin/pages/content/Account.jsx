@@ -49,29 +49,40 @@ export default function Account() {
     setLoading(true);
     try {
       const token = localStorage.getItem('admin_token');
-      const payload = {
-        name: `${formData.firstName} ${formData.lastName}`.trim(),
-        phone: formData.contactNumber,
-        email: formData.email,
-        city: formData.location
-      };
+      const formDataToSend = new FormData();
+      formDataToSend.append('name', `${formData.firstName} ${formData.lastName}`.trim());
+      formDataToSend.append('phone', formData.contactNumber);
+      formDataToSend.append('email', formData.email);
+      formDataToSend.append('city', formData.location);
+      if (file) {
+        formDataToSend.append('avatar', file);
+      }
       
       const res = await fetch(`${import.meta.env.VITE_API_BASE}/users/profile`, {
         method: 'PUT',
         headers: { 
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}` 
         },
-        body: JSON.stringify(payload)
+        body: formDataToSend
       });
       if (res.ok) {
         const updatedUser = await res.json();
+        setFormData(prev => ({
+          ...prev,
+          firstName: updatedUser.name ? updatedUser.name.split(' ')[0] : '',
+          lastName: updatedUser.name ? updatedUser.name.split(' ').slice(1).join(' ') : '',
+          contactNumber: updatedUser.phone || '',
+          email: updatedUser.email || '',
+          location: updatedUser.city || '',
+          image: updatedUser.avatar || ''
+        }));
+        setFile(null);
         // Update local storage so Topbar updates instantly
         try {
           const prevStr = localStorage.getItem('admin_user');
           if (prevStr) {
             const prev = JSON.parse(prevStr);
-            const newUser = { ...prev, name: updatedUser.name, email: updatedUser.email, phone: updatedUser.phone, city: updatedUser.city };
+            const newUser = { ...prev, name: updatedUser.name, email: updatedUser.email, phone: updatedUser.phone, city: updatedUser.city, avatar: updatedUser.avatar };
             localStorage.setItem('admin_user', JSON.stringify(newUser));
           }
         } catch(e) {}

@@ -22,8 +22,8 @@ export default function ProfileTab({ user, token, setActiveMenu, openLoginModal,
 
         <div className="profile-detail-card">
           <div className="profile-card-avatar-row">
-            <div className="profile-avatar-large">
-              <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="User" />
+            <div className="profile-avatar-large" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+              <img src={user?.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"} alt="User" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div className="profile-avatar-info">
               <h3 className="profile-user-fullname">{user?.name || 'User'}</h3>

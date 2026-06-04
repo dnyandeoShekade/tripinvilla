@@ -14,6 +14,7 @@ export default function useGuestAuth({ API_BASE, API_ORIGIN, setActiveMenu }) {
 
   // Profile editing modal states
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [avatarFile, setAvatarFile] = useState(null);
   const [editProfileError, setEditProfileError] = useState('');
   const [editProfileForm, setEditProfileForm] = useState({
     citizenship: '',
@@ -149,6 +150,7 @@ export default function useGuestAuth({ API_BASE, API_ORIGIN, setActiveMenu }) {
 
   const openEditProfileModal = () => {
     setEditProfileError('');
+    setAvatarFile(null);
     setEditProfileForm({
       citizenship: user?.citizenship || 'India',
       residence: user?.residence || 'India',
@@ -168,13 +170,20 @@ export default function useGuestAuth({ API_BASE, API_ORIGIN, setActiveMenu }) {
     e.preventDefault();
     setEditProfileError('');
     try {
+      const formDataToSend = new FormData();
+      Object.keys(editProfileForm).forEach(key => {
+        formDataToSend.append(key, editProfileForm[key]);
+      });
+      if (avatarFile) {
+        formDataToSend.append('avatar', avatarFile);
+      }
+
       const response = await fetch(`${API_BASE}/users/profile`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(editProfileForm),
+        body: formDataToSend,
       });
       if (response.ok) {
         const updatedUser = await response.json();
@@ -408,6 +417,8 @@ export default function useGuestAuth({ API_BASE, API_ORIGIN, setActiveMenu }) {
     editProfileError,
     openEditProfileModal,
     handleEditProfileSubmit,
+    avatarFile,
+    setAvatarFile,
   };
 }
 
