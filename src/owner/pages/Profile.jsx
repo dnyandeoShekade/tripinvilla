@@ -155,19 +155,6 @@ export default function Profile() {
             <div style={{ gridColumn: 'span 3', height: '1px', background: '#E5E7EB', margin: '8px 0' }} />
 
             <div>
-              <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px', fontWeight: 500 }}>Bank Name</label>
-              <input type="text" name="bank" value={formData.bank} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none' }} />
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px', fontWeight: 500 }}>Account Number</label>
-              <input type="text" name="accountNum" value={formData.accountNum} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none' }} />
-            </div>
-            <div>
-              <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px', fontWeight: 500 }}>IFSC Code</label>
-              <input type="text" name="ifsc" value={formData.ifsc} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none' }} />
-            </div>
-
-            <div>
               <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px', fontWeight: 500 }}>PAN Number</label>
               <input type="text" name="pan" value={formData.pan} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none' }} />
             </div>
