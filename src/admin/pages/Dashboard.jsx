@@ -340,7 +340,7 @@ export default function Dashboard() {
                     <td style={{ fontSize: 11, color: '#6B7280' }}>{e.datesAndTime}</td>
                     <td style={{ fontWeight: 500, color: '#111827' }}>{e.userName}</td>
                     <td>{e.phoneNo}</td>
-                    <td style={{ color: '#2563EB' }}>{e.email}</td>
+                    <td style={{ color: '#111827' }}>{e.email}</td>
                     <td style={{ fontSize: 12, color: '#4B5563' }}><ReadMore maxWords={2}>{e.propertyName}</ReadMore></td>
                     <td style={{ maxWidth: 200, whiteSpace: 'normal', fontSize: 11, color: '#6B7280', lineHeight: 1.4 }}><ReadMore maxWords={6}>{e.query}</ReadMore></td>
                     <td style={{ position: 'relative' }}>
