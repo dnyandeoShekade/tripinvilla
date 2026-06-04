@@ -8,19 +8,24 @@ const SectionLabel = ({ text }) => (
   </div>
 );
 
-const FileUpload = ({ label, name, onChange, fileValue }) => (
-  <div className="form-group" style={{ marginBottom: 0 }}>
-    <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <span>{label}</span>
-      <span style={{ color: '#9CA3AF', fontSize: 10, fontWeight: 400 }}>Supported File: .jpg / max. 5mb</span>
-    </label>
-    <div className="file-upload-wrapper" style={{ position: 'relative' }}>
-      <input type="text" className="form-input" value={fileValue || 'Choose a file...'} readOnly style={{ border: 'none', background: 'transparent', flex: 1, textOverflow: 'ellipsis', overflow: 'hidden' }} />
-      <input type="file" name={name} onChange={onChange} style={{ position: 'absolute', opacity: 0, top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer' }} />
-      <button className="btn-browse" type="button">Browse</button>
+const FileUpload = ({ label, name, onChange, fileValue }) => {
+  const isIcon = label.toLowerCase().includes('icon') || label.toLowerCase().includes('svg');
+  return (
+    <div className="form-group" style={{ marginBottom: 0 }}>
+      <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <span>{label}</span>
+        <span style={{ color: '#9CA3AF', fontSize: 10, fontWeight: 400 }}>
+          {isIcon ? 'Supported File: .svg / max. 5mb' : 'Supported File: .jpg / max. 5mb'}
+        </span>
+      </label>
+      <div className="file-upload-wrapper" style={{ position: 'relative' }}>
+        <input type="text" className="form-input" value={fileValue || 'Choose a file...'} readOnly style={{ border: 'none', background: 'transparent', flex: 1, textOverflow: 'ellipsis', overflow: 'hidden' }} />
+        <input type="file" name={name} accept={isIcon ? '.svg,image/svg+xml' : 'image/*'} onChange={onChange} style={{ position: 'absolute', opacity: 0, top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer' }} />
+        <button className="btn-browse" type="button">Browse</button>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default function Homepage() {
   const [formData, setFormData] = useState({
@@ -263,7 +268,7 @@ export default function Homepage() {
 
           <div className="form-grid-3" style={{ marginBottom: 24 }}>
             <FileUpload label="Image 1*" name="section5.features.0.image" onChange={e => handleFileChange(e, 'section5.features.0.image')} fileValue={getFileDisplay('section5.features.0.image')} />
-            <FileUpload label="Icon 1*" name="section5.features.0.icon" onChange={e => handleFileChange(e, 'section5.features.0.icon')} fileValue={getFileDisplay('section5.features.0.icon')} />
+            <FileUpload label="Upload SVG (Icon 1)*" name="section5.features.0.icon" onChange={e => handleFileChange(e, 'section5.features.0.icon')} fileValue={getFileDisplay('section5.features.0.icon')} />
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Feature 1 Title*</label>
               <input type="text" className="form-input" value={formData.section5.features[0].title} onChange={e => handleChange(e, 'section5.features.0.title')} />
@@ -278,7 +283,7 @@ export default function Homepage() {
 
           <div className="form-grid-3" style={{ marginBottom: 0 }}>
             <FileUpload label="Image 2*" name="section5.features.1.image" onChange={e => handleFileChange(e, 'section5.features.1.image')} fileValue={getFileDisplay('section5.features.1.image')} />
-            <FileUpload label="Icon 2*" name="section5.features.1.icon" onChange={e => handleFileChange(e, 'section5.features.1.icon')} fileValue={getFileDisplay('section5.features.1.icon')} />
+            <FileUpload label="Upload SVG (Icon 2)*" name="section5.features.1.icon" onChange={e => handleFileChange(e, 'section5.features.1.icon')} fileValue={getFileDisplay('section5.features.1.icon')} />
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Feature 2 Title*</label>
               <input type="text" className="form-input" value={formData.section5.features[1].title} onChange={e => handleChange(e, 'section5.features.1.title')} />
@@ -342,7 +347,7 @@ export default function Homepage() {
               <label className="form-label">Highlight 1 Sub-Text*</label>
               <input type="text" className="form-input" value={formData.section7.highlights[0].subText} onChange={e => handleChange(e, 'section7.highlights.0.subText')} />
             </div>
-            <FileUpload label="Highlight 1 Icon*" name="section7.highlights.0.icon" onChange={e => handleFileChange(e, 'section7.highlights.0.icon')} fileValue={getFileDisplay('section7.highlights.0.icon')} />
+            <FileUpload label="Upload SVG (Highlight 1 Icon)*" name="section7.highlights.0.icon" onChange={e => handleFileChange(e, 'section7.highlights.0.icon')} fileValue={getFileDisplay('section7.highlights.0.icon')} />
           </div>
 
           <div className="form-grid-3">
@@ -354,7 +359,7 @@ export default function Homepage() {
               <label className="form-label">Highlight 2 Sub-Text*</label>
               <input type="text" className="form-input" value={formData.section7.highlights[1].subText} onChange={e => handleChange(e, 'section7.highlights.1.subText')} />
             </div>
-            <FileUpload label="Highlight 2 Icon*" name="section7.highlights.1.icon" onChange={e => handleFileChange(e, 'section7.highlights.1.icon')} fileValue={getFileDisplay('section7.highlights.1.icon')} />
+            <FileUpload label="Upload SVG (Highlight 2 Icon)*" name="section7.highlights.1.icon" onChange={e => handleFileChange(e, 'section7.highlights.1.icon')} fileValue={getFileDisplay('section7.highlights.1.icon')} />
           </div>
 
           <div className="form-grid-2">
