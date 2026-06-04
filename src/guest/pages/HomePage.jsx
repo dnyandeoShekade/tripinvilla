@@ -359,7 +359,20 @@ export default function HomePage(props) {
             {/* 2x2 Grid Layout */}
             <div className="popular-offers-grid">
               {(() => {
-                const source = popularOffers?.length > 0 ? popularOffers : popularOffersList;
+                const rawSource = popularOffers?.length > 0 ? popularOffers : popularOffersList;
+                const source = rawSource.filter(offer => {
+                  const isDyn = offer.property_id || offer.propertyName;
+                  if (isDyn) {
+                    if (!offer.property_id || typeof offer.property_id !== 'object') return false;
+                    if (offer.property_id.status !== 'Active') return false;
+                    const name = String(offer.property_id.name || '').trim().toLowerCase();
+                    if (name.includes('abc') || name === 'test' || name === 'owner') return false;
+                  } else {
+                    const title = String(offer.title || '').trim().toLowerCase();
+                    if (title.includes('abc') || title === 'test' || title === 'owner') return false;
+                  }
+                  return true;
+                });
                 const uniqueOffers = [];
                 const seenIds = new Set();
                 for (const o of source) {
