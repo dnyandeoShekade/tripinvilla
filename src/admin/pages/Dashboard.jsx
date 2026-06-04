@@ -112,54 +112,65 @@ export default function Dashboard() {
 
 
 
-  const StatCard = ({ icon: Icon, label, value, badge, sub, iconBg }) => (
-    <div className="stat-card">
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
-        <div style={{ width: 36, height: 36, borderRadius: 10, background: iconBg || '#EFF6FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Icon size={18} color={iconBg ? '#fff' : '#2563EB'} />
-        </div>
-        <div className="stat-card-label" style={{ margin: 0 }}>{label}</div>
-      </div>
-      <div className="stat-card-value">{value}</div>
-      <div className="stat-card-meta">
-        <span className={`stat-badge ${badge?.startsWith('-') ? 'down' : 'up'}`}>
-          {badge?.startsWith('-') ? <TrendingDown size={10} /> : <TrendingUp size={10} />} {badge}%
-        </span>
-        <span className="stat-card-sub">{sub}</span>
-      </div>
-    </div>
-  );
-
   return (
     <div className="fade-in">
 
       {/* ══ Section 1: Stat Cards ════════ */}
-      <div className="dash-section">
-        <div className="stats-grid">
-          <StatCard
-            icon={MessageSquare}
-            label="Total Enquiries (Today)"
-            value={stats.totalEnquiriesToday}
-            badge={stats.compareYesterday.enquiries}
-            sub="Compared to yesterday"
-            iconBg="#2563EB"
-          />
-          <StatCard
-            icon={Building2}
-            label="Active Properties"
-            value={stats.activeProperties}
-            badge={stats.compareYesterday.properties}
-            sub="Compared to yesterday"
-            iconBg="#58A429"
-          />
-          <StatCard
-            icon={Users}
-            label="Total Property Owners"
-            value={stats.totalOwners}
-            badge={stats.compareYesterday.owners}
-            sub="Registered owners"
-            iconBg="#7C3AED"
-          />
+      <div
+        className="dash-section"
+        style={{
+          minHeight: 162,
+          boxSizing: "border-box",
+          justifyContent: "center",
+          marginBottom: 16,
+        }}
+      >
+        <div className="props-stats-row">
+          <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
+            <div className="props-stat-icon-wrap blue">
+              <MessageSquare strokeWidth={2.5} />
+            </div>
+            <div className="props-stat-content">
+              <div className="props-stat-label">Total Enquiries (Today)</div>
+              <div className="props-stat-value">{stats.totalEnquiriesToday}</div>
+              <div className="stat-card-meta" style={{ marginTop: 4 }}>
+                <span className={`stat-badge ${stats.compareYesterday.enquiries?.startsWith('-') ? 'down' : 'up'}`}>
+                  {stats.compareYesterday.enquiries?.startsWith('-') ? <TrendingDown size={10} /> : <TrendingUp size={10} />} {stats.compareYesterday.enquiries}%
+                </span>
+                <span className="stat-card-sub">Compared to yesterday</span>
+              </div>
+            </div>
+          </div>
+          <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
+            <div className="props-stat-icon-wrap green">
+              <Building2 strokeWidth={2.5} />
+            </div>
+            <div className="props-stat-content">
+              <div className="props-stat-label">Active Properties</div>
+              <div className="props-stat-value">{stats.activeProperties}</div>
+              <div className="stat-card-meta" style={{ marginTop: 4 }}>
+                <span className={`stat-badge ${stats.compareYesterday.properties?.startsWith('-') ? 'down' : 'up'}`}>
+                  {stats.compareYesterday.properties?.startsWith('-') ? <TrendingDown size={10} /> : <TrendingUp size={10} />} {stats.compareYesterday.properties}%
+                </span>
+                <span className="stat-card-sub">Compared to yesterday</span>
+              </div>
+            </div>
+          </div>
+          <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
+            <div className="props-stat-icon-wrap" style={{ background: '#F5F3FF', color: '#7C3AED', width: 64, height: 64, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Users strokeWidth={2.5} style={{ width: 32, height: 32 }} />
+            </div>
+            <div className="props-stat-content">
+              <div className="props-stat-label">Total Property Owners</div>
+              <div className="props-stat-value">{stats.totalOwners}</div>
+              <div className="stat-card-meta" style={{ marginTop: 4 }}>
+                <span className={`stat-badge ${stats.compareYesterday.owners?.startsWith('-') ? 'down' : 'up'}`}>
+                  {stats.compareYesterday.owners?.startsWith('-') ? <TrendingDown size={10} /> : <TrendingUp size={10} />} {stats.compareYesterday.owners}%
+                </span>
+                <span className="stat-card-sub">Registered owners</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

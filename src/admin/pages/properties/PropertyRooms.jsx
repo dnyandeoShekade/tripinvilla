@@ -2,7 +2,7 @@ import { toast } from 'react-hot-toast';
 import ReadMore from '../../components/ReadMore';
 import DateRangeDropdown from '../../../components/DateRangeDropdown';
 import { useState, useEffect } from 'react';
-import { Calendar, ChevronDown, ClipboardList, Clock, CheckCircle2, Search, Filter, Edit2, Trash2, MoreVertical, Check, X, Eye } from 'lucide-react';
+import { Calendar, ChevronDown, ClipboardList, Clock, CheckCircle2, Search, Filter, Edit2, Trash2, MoreVertical, Check, X, Eye, XCircle } from 'lucide-react';
 
 export default function PropertyRooms() {
   const [requests, setRequests] = useState([]);
@@ -17,6 +17,11 @@ export default function PropertyRooms() {
   const [filterLocation, setFilterLocation] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  
+  // (fetching logic remains unchanged)
+  // Let's assume line numbers align correctly from original file
+  // We are replacing the top stats hero section in return block:
+  // (We will use the replacement target range lines below)
 
   const getAuthHeaders = (method = 'GET') => {
     const token = localStorage.getItem('admin_token');
@@ -142,43 +147,50 @@ export default function PropertyRooms() {
       </div>
 
       {/* Stats Section */}
-      <div className="dash-section" style={{ 
-        borderRadius: '18px', 
-        border: '1px solid #EFF6E6',
-        padding: '24px',
-        boxSizing: 'border-box',
-        marginTop: 0,
-        marginBottom: '24px',
-        background: '#FAFDF2'
-      }}>
-        <div style={{
-          background: '#ffffff',
-          borderRadius: '16px',
-          padding: '32px',
-          border: '1px solid #EFF6E6',
-          boxShadow: '0 2px 12px rgba(0, 0, 0, 0.02)'
-        }}>
-          <div className="props-stats-row" style={{ gap: 16 }}>
-            <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
-              <div className="props-stat-icon-wrap blue"><ClipboardList strokeWidth={2.5} /></div>
-              <div className="props-stat-content">
-                <div className="props-stat-label">Total Properties</div>
-                <div className="props-stat-value">{stats.totalProperties}</div>
-              </div>
+      <div
+        className="dash-section"
+        style={{
+          minHeight: 162,
+          boxSizing: "border-box",
+          justifyContent: "center",
+          marginBottom: 16,
+        }}
+      >
+        <div className="props-stats-row">
+          <div
+            className="props-stat-card"
+            style={{ margin: 0, borderRadius: 12 }}
+          >
+            <div className="props-stat-icon-wrap blue">
+              <ClipboardList strokeWidth={2.5} />
             </div>
-            <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
-              <div className="props-stat-icon-wrap green"><Clock strokeWidth={2.5} /></div>
-              <div className="props-stat-content">
-                <div className="props-stat-label">Property Request</div>
-                <div className="props-stat-value">{stats.pendingRequests}</div>
-              </div>
+            <div className="props-stat-content">
+              <div className="props-stat-label">Total Properties</div>
+              <div className="props-stat-value">{stats.totalProperties}</div>
             </div>
-            <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
-              <div className="props-stat-icon-wrap red"><CheckCircle2 strokeWidth={2.5} /></div>
-              <div className="props-stat-content">
-                <div className="props-stat-label">Rejected</div>
-                <div className="props-stat-value">{stats.rejectedRequests}</div>
-              </div>
+          </div>
+          <div
+            className="props-stat-card"
+            style={{ margin: 0, borderRadius: 12 }}
+          >
+            <div className="props-stat-icon-wrap green">
+              <Clock strokeWidth={2.5} />
+            </div>
+            <div className="props-stat-content">
+              <div className="props-stat-label">Property Request</div>
+              <div className="props-stat-value">{stats.pendingRequests}</div>
+            </div>
+          </div>
+          <div
+            className="props-stat-card"
+            style={{ margin: 0, borderRadius: 12 }}
+          >
+            <div className="props-stat-icon-wrap red">
+              <XCircle strokeWidth={2.5} />
+            </div>
+            <div className="props-stat-content">
+              <div className="props-stat-label">Rejected</div>
+              <div className="props-stat-value">{stats.rejectedRequests}</div>
             </div>
           </div>
         </div>
