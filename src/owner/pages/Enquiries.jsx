@@ -1,12 +1,10 @@
 import ReadMore from '../../admin/components/ReadMore';
 import React, { useEffect, useState } from 'react';
 import { Search, Filter as FilterIcon, Calendar, ChevronDown, MoreVertical } from 'lucide-react';
-import { DateRange, Calendar as ReactCalendar } from 'react-date-range';
-import 'react-date-range/dist/styles.css';
-import 'react-date-range/dist/theme/default.css';
 import { format, parse } from 'date-fns';
 import { useRef } from 'react';
 import { enquiryService } from '../services/api';
+import DateRangeDropdown from '../../components/DateRangeDropdown';
 
 export default function Enquiries() {
   const [enquiriesList, setEnquiriesList] = useState([]);
@@ -23,33 +21,6 @@ export default function Enquiries() {
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
   const [replyText, setReplyText] = useState('');
   const [submittingReply, setSubmittingReply] = useState(false);
-
-  // Date Picker state
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const datePickerRef = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (datePickerRef.current && !datePickerRef.current.contains(event.target)) {
-        setShowDatePicker(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const getSelectionRange = () => {
-    return {
-      startDate: dateFrom ? parse(dateFrom, 'yyyy-MM-dd', new Date()) : new Date(),
-      endDate: dateTo ? parse(dateTo, 'yyyy-MM-dd', new Date()) : new Date(),
-      key: 'selection',
-    };
-  };
-
-  const handleSelect = (ranges) => {
-    setDateFrom(format(ranges.selection.startDate, 'yyyy-MM-dd'));
-    setDateTo(format(ranges.selection.endDate, 'yyyy-MM-dd'));
-  };
 
   const openReplyModal = (enquiry) => {
     setSelectedEnquiry(enquiry);
@@ -142,62 +113,17 @@ export default function Enquiries() {
 
             <div className="props-table-actions" style={{ gap: '10px', display: 'flex', flexWrap: 'nowrap', alignItems: 'center', minWidth: 0, overflowX: 'auto' }}>
               {/* Date Range Picker */}
-              <div style={{ position: 'relative', flexShrink: 0 }} ref={datePickerRef}>
-                <div 
-                  onClick={() => setShowDatePicker(!showDatePicker)}
-                  className="props-filter-select"
-                  style={{ padding: '6px 12px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', border: '1px solid #E5E7EB', borderRadius: '6px', background: '#ffffff', minWidth: '150px', maxWidth: '200px' }}
-                >
-                  <Calendar size={13} style={{ color: '#6B7280', flexShrink: 0 }} />
-                  <span style={{ fontSize: '12px', color: (dateFrom && dateTo) ? '#374151' : '#9CA3AF', flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                    {(dateFrom && dateTo) ? `${dateFrom} - ${dateTo}` : 'Start Date - End Date'}
-                  </span>
-                  <ChevronDown size={13} style={{ color: '#6B7280', flexShrink: 0 }} />
-                </div>
-
-                {showDatePicker && (
-                  <div style={{ position: 'absolute', top: '100%', left: 0, marginTop: '8px', background: '#fff', borderRadius: '12px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', zIndex: 50, padding: '16px', border: '1px solid #E5E7EB', width: 'max-content' }}>
-                    <div style={{ fontWeight: 600, fontSize: '15px', color: '#111827', marginBottom: '12px', paddingLeft: '8px' }}>Select dates</div>
-                    <div style={{ display: 'flex', gap: '24px' }}>
-                      <div>
-                        <div style={{ fontWeight: 600, fontSize: '15px', color: '#111827', marginBottom: '8px', paddingLeft: '8px' }}>From</div>
-                        <ReactCalendar
-                          date={getSelectionRange().startDate}
-                          onChange={(date) => {
-                            const start = format(date, 'yyyy-MM-dd');
-                            setDateFrom(start);
-                            if (!dateTo || new Date(dateTo) < date) {
-                               setDateTo(start);
-                            }
-                          }}
-                          minDate={new Date()}
-                          color="#2563EB"
-                        />
-                      </div>
-                      <div>
-                        <div style={{ fontWeight: 600, fontSize: '15px', color: '#111827', marginBottom: '8px', paddingLeft: '8px' }}>To</div>
-                        <ReactCalendar
-                          date={getSelectionRange().endDate}
-                          onChange={(date) => {
-                            const { startDate } = getSelectionRange();
-                            const end = format(date, 'yyyy-MM-dd');
-                            if (date < startDate) {
-                                setDateFrom(end);
-                                setDateTo(end);
-                            } else {
-                                setDateTo(end);
-                            }
-                          }}
-                          minDate={getSelectionRange().startDate}
-                          color="#2563EB"
-                        />
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px', borderTop: '1px solid #F3F4F6', paddingTop: '16px' }}>
-                      <button type="button" onClick={() => { setDateFrom(''); setDateTo(''); setShowDatePicker(false); }} style={{ padding: '8px 16px', background: '#fff', border: '1px solid #D1D5DB', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 500, color: '#374151' }}>Cancel</button>
-                      <button type="button" onClick={() => { setShowDatePicker(false); fetchEnquiries(); }} style={{ padding: '8px 16px', background: '#2563EB', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '14px', fontWeight: 600, color: '#fff' }}>Filter</button>
-                    </div>
-                  </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                <DateRangeDropdown 
+                  startDate={dateFrom}
+                  endDate={dateTo}
+                  onChange={(start, end) => {
+                    setDateFrom(start);
+                    setDateTo(end);
+                  }}
+                />
+                {(dateFrom || dateTo) && (
+                  <button onClick={() => { setDateFrom(''); setDateTo(''); }} style={{ fontSize: '11px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer' }}>Clear</button>
                 )}
               </div>
 

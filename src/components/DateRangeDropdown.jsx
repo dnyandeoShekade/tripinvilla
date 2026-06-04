@@ -35,10 +35,33 @@ export default function DateRangeDropdown({
     function updatePosition() {
       if (isOpen && wrapperRef.current) {
         const rect = wrapperRef.current.getBoundingClientRect();
-        // Calculate right alignment if possible, otherwise left align
-        const popupWidth = 600; // approximate max width of the dual calendar
+        
+        // Read mainLeft from CSS custom property (sidebar width)
+        let mainLeft = 0;
+        if (typeof document !== 'undefined') {
+          const rootStyles = getComputedStyle(document.documentElement);
+          const mainLeftVal = rootStyles.getPropertyValue('--main-left');
+          if (mainLeftVal) {
+            mainLeft = parseFloat(mainLeftVal) || 0;
+          }
+        }
+
+        // Desktop popup width is around 558px with scaled styles, mobile width is centered via CSS
+        const popupWidth = window.innerWidth <= 640 ? 320 : 558;
+        
+        // Try aligning right edge of popup with right edge of trigger button
         let leftPos = rect.right - popupWidth + window.scrollX;
-        if (leftPos < 0) leftPos = rect.left + window.scrollX;
+        
+        // Constrain leftPos to not overlap sidebar (if visible)
+        const minLeft = mainLeft + 16 + window.scrollX;
+        if (leftPos < minLeft) {
+          // If aligning to right edge overlaps sidebar, align to left edge instead
+          leftPos = rect.left + window.scrollX;
+        }
+        
+        // Constrain right edge to not overflow the viewport
+        const maxLeft = window.innerWidth + window.scrollX - popupWidth - 16;
+        leftPos = Math.max(minLeft, Math.min(leftPos, maxLeft));
         
         setDropdownCoords({
           top: rect.bottom + window.scrollY + 8,
@@ -85,6 +108,82 @@ export default function DateRangeDropdown({
 
   return (
     <div ref={wrapperRef} style={{ position: 'relative', display: 'inline-block' }}>
+      {/* Custom Scoped Styles to shrink calendar size and enforce responsiveness */}
+      <style>{`
+        .daterange-dropdown-popup {
+          font-family: 'Outfit', 'Inter', sans-serif;
+        }
+        .daterange-dropdown-popup .rdrCalendarWrapper {
+          font-size: 10px !important;
+          font-family: inherit;
+        }
+        .daterange-dropdown-popup .rdrMonth {
+          width: 25.5em !important;
+          padding: 0 0.5em 0.5em 0.5em !important;
+        }
+        .daterange-dropdown-popup .rdrMonthAndYearWrapper {
+          height: 40px !important;
+          padding-top: 2px !important;
+        }
+        .daterange-dropdown-popup .rdrMonthAndYearPickers select {
+          font-size: 11px !important;
+          padding: 4px 20px 4px 6px !important;
+        }
+        .daterange-dropdown-popup .rdrMonthName {
+          padding: 4px 6px !important;
+          font-size: 11px !important;
+        }
+        .daterange-dropdown-popup .rdrWeekDays {
+          padding: 0 !important;
+        }
+        .daterange-dropdown-popup .rdrWeekDay {
+          font-size: 10px !important;
+          line-height: 2em !important;
+        }
+        .daterange-dropdown-popup .rdrDay {
+          line-height: 2.2em !important;
+          height: 2.2em !important;
+        }
+        .daterange-dropdown-popup .rdrDayNumber {
+          top: 2px !important;
+          bottom: 2px !important;
+          font-size: 10px !important;
+        }
+        .daterange-dropdown-popup .rdrSelected, 
+        .daterange-dropdown-popup .rdrInRange, 
+        .daterange-dropdown-popup .rdrStartEdge, 
+        .daterange-dropdown-popup .rdrEndEdge {
+          top: 2px !important;
+          bottom: 2px !important;
+        }
+        .daterange-dropdown-popup .rdrDayToday .rdrDayNumber span:after {
+          bottom: 2px !important;
+          width: 12px !important;
+          height: 2px !important;
+        }
+        @media (max-width: 640px) {
+          .daterange-dropdown-popup {
+            left: 50% !important;
+            right: auto !important;
+            transform: translateX(-50%) !important;
+            width: calc(100vw - 32px) !important;
+            max-width: 320px !important;
+            max-height: 80vh !important;
+            overflow-y: auto !important;
+          }
+          .daterange-calendars-wrapper {
+            flex-direction: column !important;
+            gap: 16px !important;
+            align-items: center !important;
+          }
+          .daterange-dropdown-popup .rdrMonth {
+            width: 100% !important;
+            max-width: 260px;
+            padding: 0 !important;
+          }
+        }
+      `}</style>
+
       {/* Trigger Input */}
       <div 
         onClick={() => setIsOpen(!isOpen)}
@@ -141,9 +240,9 @@ export default function DateRangeDropdown({
           </div>
 
           <div style={{ padding: '16px' }}>
-            <div className="daterange-calendars-wrapper" style={{ display: 'flex', gap: '24px' }}>
+            <div className="daterange-calendars-wrapper" style={{ display: 'flex', gap: '16px' }}>
               <div>
-                <div style={{ fontWeight: 600, fontSize: '15px', color: '#111827', marginBottom: '8px', paddingLeft: '8px' }}>From</div>
+                <div style={{ fontWeight: 600, fontSize: '13px', color: '#111827', marginBottom: '8px', paddingLeft: '8px' }}>From</div>
                 <ReactCalendar
                   date={tempRange[0].startDate}
                   onChange={(date) => {
@@ -158,7 +257,7 @@ export default function DateRangeDropdown({
                 />
               </div>
               <div>
-                <div style={{ fontWeight: 600, fontSize: '15px', color: '#111827', marginBottom: '8px', paddingLeft: '8px' }}>To</div>
+                <div style={{ fontWeight: 600, fontSize: '13px', color: '#111827', marginBottom: '8px', paddingLeft: '8px' }}>To</div>
                 <ReactCalendar
                   date={tempRange[0].endDate}
                   onChange={(date) => {
