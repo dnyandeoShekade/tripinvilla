@@ -22,27 +22,51 @@ export default function Dashboard() {
   const [recentEnquiries, setRecentEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [dashboardDateFrom, setDashboardDateFrom] = useState(() => localStorage.getItem('dashboard_date_from') || '');
+  const [dashboardDateTo, setDashboardDateTo] = useState(() => localStorage.getItem('dashboard_date_to') || '');
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const statsRes = await dashboardService.getStats();
-        setStatsData(statsRes.data);
-        
-        const enquiriesRes = await fetch(`${import.meta.env.VITE_API_BASE}/owner-dashboard/enquiries`, {
-          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
-        });
-        const enquiriesData = await enquiriesRes.json();
-        if (Array.isArray(enquiriesData)) {
-          setRecentEnquiries(enquiriesData.slice(0, 5));
-        }
-      } catch (err) {
-        console.error('Error fetching dashboard data:', err);
-      } finally {
-        setLoading(false);
-      }
+    const handleDateChange = (e) => {
+      setDashboardDateFrom(e.detail.dateFrom);
+      setDashboardDateTo(e.detail.dateTo);
     };
-    fetchData();
+    window.addEventListener('dashboard_date_changed', handleDateChange);
+    return () => {
+      window.removeEventListener('dashboard_date_changed', handleDateChange);
+    };
   }, []);
+
+  const fetchData = async () => {
+    try {
+      const params = {};
+      if (dashboardDateFrom) params.dateFrom = dashboardDateFrom;
+      if (dashboardDateTo) params.dateTo = dashboardDateTo;
+
+      const statsRes = await dashboardService.getStats(params);
+      setStatsData(statsRes.data);
+      
+      const queryParams = [];
+      if (dashboardDateFrom) queryParams.push(`dateFrom=${dashboardDateFrom}`);
+      if (dashboardDateTo) queryParams.push(`dateTo=${dashboardDateTo}`);
+      const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+
+      const enquiriesRes = await fetch(`${import.meta.env.VITE_API_BASE}/owner-dashboard/enquiries${queryString}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+      });
+      const enquiriesData = await enquiriesRes.json();
+      if (Array.isArray(enquiriesData)) {
+        setRecentEnquiries(enquiriesData.slice(0, 5));
+      }
+    } catch (err) {
+      console.error('Error fetching dashboard data:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [dashboardDateFrom, dashboardDateTo]);
 
   if (loading) {
     return (

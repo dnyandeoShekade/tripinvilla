@@ -47,7 +47,7 @@ export const userService = {
 };
 
 export const dashboardService = {
-  getStats: () => api.get('/owner-dashboard/stats'),
+  getStats: (params) => api.get('/owner-dashboard/stats', { params }),
 };
 
 export const bookingService = {

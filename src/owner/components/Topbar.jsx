@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Bell, Calendar, ChevronDown, Plus, Menu } from 'lucide-react';
 
+import DateRangeDropdown from '../../components/DateRangeDropdown';
+
 const PAGE_TITLES = {
   '/owner/dashboard':  'Dashboard Analytics',
   '/owner/properties': 'My Properties',
@@ -13,11 +15,6 @@ const PAGE_TITLES = {
   '/owner/logout':     'Log Out',
 };
 
-function formatMonthYear(dateStr) {
-  const d = dateStr ? new Date(dateStr) : new Date();
-  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-}
-
 export default function Topbar({ onToggleSidebar }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -27,14 +24,23 @@ export default function Topbar({ onToggleSidebar }) {
   const user = userStr ? JSON.parse(userStr) : { name: 'Jhon Doe', email: 'jhon@gmail.com' };
   const initials = user.name ? user.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() : 'J';
 
-  const [selectedMonth, setSelectedMonth] = useState(() => {
-    return localStorage.getItem('dashboard_month') || '';
-  });
+  const [dateFrom, setDateFrom] = useState(() => localStorage.getItem('dashboard_date_from') || '');
+  const [dateTo, setDateTo] = useState(() => localStorage.getItem('dashboard_date_to') || '');
 
-  const handleMonthChange = (e) => {
-    const val = e.target.value;
-    setSelectedMonth(val);
-    localStorage.setItem('dashboard_month', val);
+  const handleDateChange = (start, end) => {
+    setDateFrom(start);
+    setDateTo(end);
+    localStorage.setItem('dashboard_date_from', start);
+    localStorage.setItem('dashboard_date_to', end);
+    window.dispatchEvent(new CustomEvent('dashboard_date_changed', { detail: { dateFrom: start, dateTo: end } }));
+  };
+
+  const handleClear = () => {
+    setDateFrom('');
+    setDateTo('');
+    localStorage.removeItem('dashboard_date_from');
+    localStorage.removeItem('dashboard_date_to');
+    window.dispatchEvent(new CustomEvent('dashboard_date_changed', { detail: { dateFrom: '', dateTo: '' } }));
   };
 
   return (
@@ -53,18 +59,20 @@ export default function Topbar({ onToggleSidebar }) {
 
 
         {/* Date picker pill */}
-        <div className="topbar-date-btn" style={{ padding: '8px 14px', borderRadius: '8px', border: '1px solid #E5E7EB', display: 'flex', alignItems: 'center', gap: '8px', position: 'relative', background: '#fff' }}>
-          <input 
-            type="month" 
-            value={selectedMonth}
-            max={new Date().toISOString().slice(0, 7)}
-            onChange={handleMonthChange}
-            onClick={(e) => { try { e.target.showPicker(); } catch(err) {} }}
-            style={{ position: 'absolute', opacity: 0, top: 0, left: 0, width: '100%', height: '100%', cursor: 'pointer', zIndex: 10 }}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <DateRangeDropdown 
+            startDate={dateFrom}
+            endDate={dateTo}
+            onChange={handleDateChange}
           />
-          <Calendar style={{ width: 14, height: 14, color: '#6B7280' }} />
-          <span>{formatMonthYear(selectedMonth)}</span>
-          <ChevronDown style={{ width: 13, height: 13, color: '#9CA3AF' }} />
+          {(dateFrom || dateTo) && (
+            <button 
+              onClick={handleClear} 
+              style={{ fontSize: '12px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', fontWeight: 500 }}
+            >
+              Clear
+            </button>
+          )}
         </div>
 
         {/* User block */}

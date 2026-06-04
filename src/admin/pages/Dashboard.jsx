@@ -62,14 +62,33 @@ export default function Dashboard() {
   const [enqCurrentPage, setEnqCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const [dashboardDateFrom, setDashboardDateFrom] = useState(() => localStorage.getItem('dashboard_date_from') || '');
+  const [dashboardDateTo, setDashboardDateTo] = useState(() => localStorage.getItem('dashboard_date_to') || '');
+
+  useEffect(() => {
+    const handleDateChange = (e) => {
+      setDashboardDateFrom(e.detail.dateFrom);
+      setDashboardDateTo(e.detail.dateTo);
+    };
+    window.addEventListener('dashboard_date_changed', handleDateChange);
+    return () => {
+      window.removeEventListener('dashboard_date_changed', handleDateChange);
+    };
+  }, []);
+
   const fetchData = async () => {
     try {
+      const queryParams = [];
+      if (dashboardDateFrom) queryParams.push(`dateFrom=${dashboardDateFrom}`);
+      if (dashboardDateTo) queryParams.push(`dateTo=${dashboardDateTo}`);
+      const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+
       const [statsRes, chartRes, catRes, topRes, enqRes] = await Promise.all([
-        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/stats`).then(r => r.json()),
-        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/enquiries-chart?year=${selectedYear}`).then(r => r.json()),
-        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/property-categories`).then(r => r.json()),
-        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/top-properties`).then(r => r.json()),
-        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/recent-enquiries?dateFrom=${enqDateFrom}&dateTo=${enqDateTo}`, {
+        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/stats${queryString}`).then(r => r.json()),
+        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/enquiries-chart${queryString || `?year=${selectedYear}`}`).then(r => r.json()),
+        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/property-categories${queryString}`).then(r => r.json()),
+        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/top-properties${queryString}`).then(r => r.json()),
+        fetch(`${import.meta.env.VITE_API_BASE}/dashboard/recent-enquiries${queryString || `?dateFrom=${enqDateFrom}&dateTo=${enqDateTo}`}`, {
           headers: { Authorization: `Bearer ${localStorage.getItem('admin_token') || ''}` }
         }).then(r => r.json())
       ]);
@@ -89,7 +108,7 @@ export default function Dashboard() {
   useEffect(() => { 
     fetchData(); 
     setEnqCurrentPage(1);
-  }, [selectedYear, enqDateFrom, enqDateTo]);
+  }, [selectedYear, enqDateFrom, enqDateTo, dashboardDateFrom, dashboardDateTo]);
 
 
 
