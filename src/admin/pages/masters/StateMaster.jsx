@@ -275,7 +275,15 @@ export default function StateMaster() {
         </div>
 
         <div style={{ overflowX: 'auto' }}>
-          <table className="data-table">
+          <table className="data-table" style={{ tableLayout: 'fixed' }}>
+            <colgroup>
+              <col style={{ width: '16.66%' }} />
+              <col style={{ width: '16.66%' }} />
+              <col style={{ width: '16.66%' }} />
+              <col style={{ width: '16.66%' }} />
+              <col style={{ width: '16.66%' }} />
+              <col style={{ width: '16.66%' }} />
+            </colgroup>
             <thead>
               <tr>
                 <th>State Name</th>
