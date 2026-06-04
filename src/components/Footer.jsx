@@ -4,7 +4,7 @@ export default function Footer({ token, onNavigate, onRequireAuth }) {
   return (
     <footer className="site-footer" style={{ backgroundImage: `url("${footerBgImg}")` }}>
       <div className="site-footer-overlay">
-        <div className="footer-logo-row" style={{ marginBottom: 24, marginTop: -40 }}>
+        <div className="footer-logo-row" style={{ marginBottom: 24 }}>
           <img src="/tripinvilla_logo.png" alt="Tripin Villa Logo" style={{ height: '78px', width: 'auto', objectFit: 'contain' }} />
         </div>
 

@@ -554,7 +554,7 @@ export default function GuestApp() {
 
     // 4. Rating/Star Category filter
     if (filterMinRating > 0) {
-      displayList = displayList.filter(p => Math.round(Number(p.rating || 0)) >= filterMinRating);
+      displayList = displayList.filter(p => Math.round(Number(p.rating || 0)) === filterMinRating);
     }
 
     // 5. Amenities filter
