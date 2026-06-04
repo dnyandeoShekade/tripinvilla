@@ -114,38 +114,82 @@ export default function Account() {
           </button>
         </div>
 
-        <form className="form-grid-3">
-          <div>
-            <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>First Name*</label>
-            <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
-          </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Last Name*</label>
-            <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
-          </div>
-          <div style={{ gridRow: 'span 2' }}>
-            <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Image*</label>
-            <div style={{ display: 'flex', border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden', position: 'relative' }}>
-               <input type="text" value={file ? file.name : (formData.image ? formData.image.split('/').pop() : 'Choose an image...')} readOnly style={{ flex: 1, padding: '10px 14px', border: 'none', outline: 'none' }} />
-               <input type="file" onChange={e => e.target.files[0] && setFile(e.target.files[0])} style={{ position: 'absolute', opacity: 0, top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer' }} />
-               <button type="button" style={{ padding: '0 20px', background: '#F3F4F6', border: 'none', borderLeft: '1px solid #E5E7EB', color: '#374151', fontSize: '13px', cursor: 'pointer' }}>Browse</button>
+        <div style={{ display: 'flex', gap: '32px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+          <form className="form-grid-3" style={{ flex: 1, minWidth: 0 }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>First Name*</label>
+              <input type="text" name="firstName" value={formData.firstName} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
             </div>
-            <p style={{ fontSize: '11px', color: '#9CA3AF', marginTop: '6px' }}>Supported File: .jpg / max. 5mb</p>
-          </div>
-          
-          <div>
-            <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Contact Number*</label>
-            <input type="text" name="contactNumber" value={formData.contactNumber} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
-          </div>
-          <div>
-             <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Location*</label>
-             <input type="text" name="location" value={formData.location} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
-          </div>
-          <div>
-            <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Email Address*</label>
-            <input type="email" name="email" value={formData.email} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
-          </div>
-        </form>
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Last Name*</label>
+              <input type="text" name="lastName" value={formData.lastName} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
+            </div>
+            <div style={{ gridRow: 'span 2' }}>
+              <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Image*</label>
+              <div style={{ display: 'flex', border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden', position: 'relative' }}>
+                 <input type="text" value={file ? file.name : (formData.image ? formData.image.split('/').pop() : 'Choose an image...')} readOnly style={{ flex: 1, padding: '10px 14px', border: 'none', outline: 'none' }} />
+                 <input type="file" onChange={e => e.target.files[0] && setFile(e.target.files[0])} style={{ position: 'absolute', opacity: 0, top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer' }} />
+                 <button type="button" style={{ padding: '0 20px', background: '#F3F4F6', border: 'none', borderLeft: '1px solid #E5E7EB', color: '#374151', fontSize: '13px', cursor: 'pointer' }}>Browse</button>
+              </div>
+              <p style={{ fontSize: '11px', color: '#9CA3AF', marginTop: '6px' }}>Supported File: .jpg / max. 5mb</p>
+            </div>
+            
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Contact Number*</label>
+              <input type="text" name="contactNumber" value={formData.contactNumber} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
+            </div>
+            <div>
+               <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Location*</label>
+               <input type="text" name="location" value={formData.location} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px' }}>Email Address*</label>
+              <input type="email" name="email" value={formData.email} onChange={handleChange} style={{ width: '100%', padding: '10px 14px', border: '1px solid #E5E7EB', borderRadius: '8px' }} />
+            </div>
+          </form>
+
+          {/* Right Side Avatar Display */}
+          {(() => {
+            const getAvatarUrl = (av) => {
+              if (!av) return '';
+              if (av.startsWith('http') || av.startsWith('data:')) return av;
+              const base = (import.meta.env.VITE_API_BASE || 'http://localhost:8000/api').replace('/api', '');
+              return `${base}/uploads/${av}`;
+            };
+            const displayImage = file ? URL.createObjectURL(file) : getAvatarUrl(formData.image);
+            const adminName = `${formData.firstName} ${formData.lastName}`.trim() || 'Admin';
+            return (
+              <div style={{ width: 'min(250px, 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', background: '#F9FAFB', padding: '32px 20px', borderRadius: '12px', border: '1px solid #F3F4F6', flexShrink: 0 }}>
+                <div style={{
+                  width: 100,
+                  height: 100,
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #2563EB, #1D4ED8)',
+                  color: '#ffffff',
+                  fontSize: 36,
+                  fontWeight: 800,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: 16,
+                  boxShadow: '0 8px 16px -4px rgba(37, 99, 235, 0.4)',
+                  overflow: 'hidden'
+                }}>
+                  {displayImage ? (
+                    <img src={displayImage} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  ) : (
+                    adminName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'A'
+                  )}
+                </div>
+                
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: '#111827', margin: 0 }}>{adminName}</h3>
+                <span style={{ fontSize: 12, color: '#2563EB', fontWeight: 600, textTransform: 'uppercase', marginTop: 8, padding: '4px 12px', background: '#EFF6FF', borderRadius: '20px' }}>
+                  TripInVilla Admin
+                </span>
+              </div>
+            );
+          })()}
+        </div>
       </div>
     </div>
   );

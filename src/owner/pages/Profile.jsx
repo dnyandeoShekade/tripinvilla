@@ -79,7 +79,7 @@ export default function Profile() {
       
       // Update local storage so Topbar updates instantly
       try {
-        const prevStr = localStorage.getItem('user_token') ? localStorage.getItem('owner_user') : null;
+        const prevStr = localStorage.getItem('owner_user');
         if (prevStr) {
           const prev = JSON.parse(prevStr);
           const newUser = { ...prev, name: payload.name, email: payload.email, avatar: payload.avatar };
@@ -100,7 +100,14 @@ export default function Profile() {
 
   if (loading) return <div style={{ padding: '50px', textAlign: 'center' }}>Loading profile...</div>;
 
-  const displayImage = file ? URL.createObjectURL(file) : formData.avatar;
+  const getAvatarUrl = (av) => {
+    if (!av) return '';
+    if (av.startsWith('http') || av.startsWith('data:')) return av;
+    const base = (import.meta.env.VITE_API_BASE || 'http://localhost:8000/api').replace('/api', '');
+    return `${base}/uploads/${av}`;
+  };
+
+  const displayImage = file ? URL.createObjectURL(file) : getAvatarUrl(formData.avatar);
 
   return (
     <div className="fade-in">

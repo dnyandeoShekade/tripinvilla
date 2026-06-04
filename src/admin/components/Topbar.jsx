@@ -108,11 +108,17 @@ export default function Topbar({ onToggleSidebar }) {
                 console.error(e);
               }
             }
+            const getAvatarUrl = (av) => {
+              if (!av) return '';
+              if (av.startsWith('http') || av.startsWith('data:')) return av;
+              const base = (import.meta.env.VITE_API_BASE || 'http://localhost:8000/api').replace('/api', '');
+              return `${base}/uploads/${av}`;
+            };
             return (
               <>
                 <div className="topbar-avatar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                   {avatar ? (
-                    <img src={avatar} alt="Admin Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={getAvatarUrl(avatar)} alt="Admin Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     initial
                   )}
