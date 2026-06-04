@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Search, Filter, Calendar, ChevronDown, MoreVertical, Edit2, Trash2, Clock } from 'lucide-react';
 import { offerService, propertyRequestService } from '../services/api';
+import ReadMore from '../../admin/components/ReadMore';
 
 export default function OffersByDate() {
   // Form State
@@ -365,8 +366,8 @@ export default function OffersByDate() {
                   <tr key={o._id}>
                     <td style={{ color: '#58A429', fontWeight: 600, padding: '14px 16px' }}>{o.id}</td>
                     <td style={{ color: '#6B7280', padding: '14px 16px' }}>{o.dates}</td>
-                    <td style={{ color: '#111827', fontWeight: 500, padding: '14px 16px' }}>{o.name}</td>
-                    <td style={{ color: '#6B7280', padding: '14px 16px' }}>{o.location}</td>
+                    <td style={{ color: '#111827', fontWeight: 500, padding: '14px 16px' }}><ReadMore maxWords={2}>{o.name}</ReadMore></td>
+                    <td style={{ color: '#6B7280', padding: '14px 16px' }}><ReadMore maxWords={2}>{o.location}</ReadMore></td>
                     <td style={{ padding: '14px 16px' }}>
                       <span className="category-pill" style={{ background: '#F0FAF6', color: '#1d9e75', fontWeight: 500, padding: '3px 10px', borderRadius: '4px', fontSize: '11px' }}>
                         {o.category}

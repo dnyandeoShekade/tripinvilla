@@ -6,6 +6,7 @@ import {
   Bath, Music, Zap, Package, Info
 } from 'lucide-react';
 import Pagination from '../../components/Pagination';
+import ReadMore from '../../components/ReadMore';
 
 const ICON_MAP = {
   Wifi, Tv, Wind, Car, Utensils, Waves, Trees,
@@ -407,7 +408,7 @@ export default function AmenitiesMaster() {
                         {getIconComp(am.icon, am.amenitiesCategory)}
                       </div>
                     </td>
-                    <td style={{ fontWeight: 700, color: '#111827' }}>{am.amenitiesName}</td>
+                    <td style={{ fontWeight: 700, color: '#111827' }}><ReadMore maxWords={2}>{am.amenitiesName}</ReadMore></td>
                     <td>
                       <span className="category-pill" style={{ textTransform: 'capitalize' }}>
                         {am.amenitiesCategory || 'Basic'}

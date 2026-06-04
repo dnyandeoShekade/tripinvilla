@@ -3,6 +3,7 @@ import { Search, Filter, Calendar, ChevronDown, CheckCircle2, XCircle, MoreVerti
 import { useNavigate } from 'react-router-dom';
 import { propertyService, dashboardService } from '../services/api';
 import PropertyViewModal from '../../admin/pages/properties/PropertyViewModal';
+import ReadMore from '../../admin/components/ReadMore';
 
 const parseNumber = (val) => {
   if (typeof val === 'number') return val;
@@ -1513,10 +1514,14 @@ export default function MyProperties({ autoOpenForm = false }) {
                         <img src={p.images?.[0] || 'https://via.placeholder.com/44x34'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
                       </div>
                     </td>
-                    <td style={{ color: '#111827', fontWeight: 600, padding: '14px', fontSize: '13px' }}>{p.name}</td>
+                    <td style={{ color: '#111827', fontWeight: 600, padding: '14px', fontSize: '13px' }}>
+                      <ReadMore maxWords={2}>{p.name}</ReadMore>
+                    </td>
                     <td style={{ padding: '14px' }}>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span style={{ fontWeight: 500, color: '#374151', fontSize: '12px' }}>{p.full_address || p.location || (p.cityName || p.city)}</span>
+                        <span style={{ fontWeight: 500, color: '#374151', fontSize: '12px' }}>
+                          <ReadMore maxWords={2}>{p.full_address || p.location || (p.cityName || p.city)}</ReadMore>
+                        </span>
                         <span style={{ fontSize: '11px', color: '#9CA3AF' }}>{!p.full_address && !p.location ? (p.stateName || p.state) : ''}</span>
                       </div>
                     </td>

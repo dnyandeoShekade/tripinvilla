@@ -126,7 +126,7 @@ export default function LocationMakers() {
               <tbody>
                 {locationsList.map((loc, i) => (
                   <tr key={i}>
-                    <td style={{ color: '#58A429', fontWeight: 600 }}>{loc.name}</td>
+                    <td style={{ color: '#58A429', fontWeight: 600 }}><ReadMore maxWords={2}>{loc.name}</ReadMore></td>
                     <td style={{ color: '#6B7280' }}>{loc.type}</td>
                     <td style={{ color: '#9CA3AF', whiteSpace: 'pre-line', lineHeight: 1.4, fontSize: 13 }}>{loc.parent}</td>
                     <td style={{ color: '#6B7280' }}>{loc.landmark}</td>

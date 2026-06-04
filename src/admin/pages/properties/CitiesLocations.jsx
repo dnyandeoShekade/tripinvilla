@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { ChevronDown, Search, MoreVertical, Calendar, Filter } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import DateRangeDropdown from '../../../components/DateRangeDropdown';
+import ReadMore from '../../components/ReadMore';
+
 
 export default function CitiesLocations() {
   const [cities, setCities] = useState([]);
@@ -170,9 +172,9 @@ export default function CitiesLocations() {
                         style={{ color: '#58A429', fontWeight: 600, cursor: 'pointer' }}
                         onClick={() => navigate(`/admin/properties/all?city=${encodeURIComponent(c.cityName)}`)}
                       >
-                        {c.cityName}
+                        <ReadMore maxWords={2}>{c.cityName}</ReadMore>
                       </td>
-                      <td style={{ color: '#6B7280' }}>{c.stateName}</td>
+                      <td style={{ color: '#6B7280' }}><ReadMore maxWords={2}>{c.stateName}</ReadMore></td>
                       <td style={{ color: '#6B7280', fontWeight: 600 }}>{c.totalProperties} Properties</td>
                       <td style={{ color: '#6B7280' }}>{c.homestays}</td>
                       <td style={{ color: '#6B7280' }}>{c.resorts}</td>

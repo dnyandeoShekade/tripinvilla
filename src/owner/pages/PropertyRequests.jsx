@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Trash2, ShieldAlert, Plus, CheckCircle } from 'lucide-react';
 import { propertyService, propertyRequestService } from '../services/api';
+import ReadMore from '../../admin/components/ReadMore';
 
 const API_BASE = `${import.meta.env.VITE_API_BASE}`;
 
@@ -547,7 +548,7 @@ export default function PropertyRequests() {
                       const statusColor = statusLabel === 'approved' ? '#58A429' : statusLabel === 'rejected' ? '#EF4444' : '#D97706';
                       return (
                         <tr key={i}>
-                          <td style={{ color: '#111827', fontWeight: 500, padding: '14px 16px' }}>{r.propertyName}</td>
+                          <td style={{ color: '#111827', fontWeight: 500, padding: '14px 16px' }}><ReadMore maxWords={2}>{r.propertyName}</ReadMore></td>
                           <td style={{ color: '#6B7280', padding: '14px 16px' }}>{r.category}</td>
                           <td style={{ padding: '14px 16px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
