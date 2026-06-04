@@ -1519,14 +1519,14 @@ export default function MyProperties({ autoOpenForm = false }) {
                     </td>
                     <td style={{ padding: '14px' }}>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
-                        <span style={{ fontWeight: 500, color: '#374151', fontSize: '12px' }}>
+                        <span style={{ fontWeight: 500, color: '#374151', fontSize: '13px' }}>
                           <ReadMore maxWords={2}>{p.full_address || p.location || (p.cityName || p.city)}</ReadMore>
                         </span>
                         <span style={{ fontSize: '11px', color: '#9CA3AF' }}>{!p.full_address && !p.location ? (p.stateName || p.state) : ''}</span>
                       </div>
                     </td>
                     <td style={{ padding: '14px' }}>
-                      <span style={{ display: 'inline-block', padding: '3px 10px', borderRadius: '4px', fontSize: '11px', fontWeight: 500, background: '#EFF6FF', color: '#3B82F6' }}>{p.type}</span>
+                      <span className="category-pill" style={{ display: 'inline-block', padding: '3px 10px', borderRadius: '4px', fontSize: '11px', fontWeight: 500, background: '#DCFCE7', color: '#58A429' }}>{p.type}</span>
                     </td>
                     <td style={{ color: '#111827', fontWeight: 600, padding: '14px', fontSize: '13px' }}>₹{(p.price_per_night !== undefined ? p.price_per_night : p.price)?.toLocaleString()}</td>
                     <td style={{ color: '#374151', fontWeight: 500, padding: '14px', fontSize: '13px' }}>{p.bedRooms || 1}</td>

@@ -12,7 +12,7 @@ export default function ReadMore({ children, maxWords = 4 }) {
   const words = text.split(/\s+/);
 
   if (words.length <= maxWords) {
-    return <span>{text}</span>;
+    return <span style={{ whiteSpace: 'normal', wordBreak: 'break-word', display: 'inline-block', width: '250px' }}>{text}</span>;
   }
 
   return (

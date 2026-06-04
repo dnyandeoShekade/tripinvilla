@@ -385,6 +385,7 @@ export default function PropertyDetailPage(props) {
             </div>
           </div>
         )}
+      </div>
 
         {/* Sub Navigation Anchor Tabs Row */}
         <div className="detail-sub-navigation-tabs">
@@ -843,6 +844,5 @@ export default function PropertyDetailPage(props) {
         </div>
 
       </div>
-    </div>
-  );
+    );
 }
