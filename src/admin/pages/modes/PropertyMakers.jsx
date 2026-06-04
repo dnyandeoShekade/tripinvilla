@@ -2299,15 +2299,17 @@ export default function PropertyMakers() {
                   {Array.isArray(p.experiences)
                     ? p.experiences
                       .map((e) => {
+                        if (!e) return '';
                         if (typeof e === 'string') {
                           const matchedExp = availableExperiences.find(x => x._id === e || x.id === e);
                           return matchedExp ? (matchedExp.experienceName || matchedExp.name) : e;
                         }
-                        return e.experienceName || e.name || e;
+                        return e.experienceName || e.name || e || '';
                       })
+                      .filter(Boolean)
                       .slice(0, 2)
                       .join(", ") +
-                    (p.experiences.length > 2 ? "..." : "")
+                    (p.experiences.filter(Boolean).length > 2 ? "..." : "")
                     : ""}
                 </td>
                 <td style={{ color: "#6B7280" }}><ReadMore maxWords={2}>{p.location}</ReadMore></td>
