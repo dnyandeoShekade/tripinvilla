@@ -107,7 +107,9 @@ export default function HomePage(props) {
                 onClick={() => {
                   const track = document.querySelector('.carousel-track');
                   if (track) {
-                    track.scrollBy({ left: -240, behavior: 'smooth' });
+                    const card = track.querySelector('.carousel-card-item');
+                    const scrollAmount = card ? (track.clientWidth - card.clientWidth) : 240;
+                    track.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
                   }
                 }}
               >
@@ -136,7 +138,9 @@ export default function HomePage(props) {
                 onClick={() => {
                   const track = document.querySelector('.carousel-track');
                   if (track) {
-                    track.scrollBy({ left: 240, behavior: 'smooth' });
+                    const card = track.querySelector('.carousel-card-item');
+                    const scrollAmount = card ? (track.clientWidth - card.clientWidth) : 240;
+                    track.scrollBy({ left: scrollAmount, behavior: 'smooth' });
                   }
                 }}
               >

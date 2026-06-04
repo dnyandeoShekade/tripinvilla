@@ -82,6 +82,7 @@
   scrollbar-width: none;
   /* Hide default scrollbar in Firefox */
   padding: 10px 0;
+  scroll-snap-type: x mandatory;
 }
 
 .carousel-track::-webkit-scrollbar {
@@ -90,11 +91,6 @@
 }
 
 .carousel-card-item {
-  flex: 0 0 calc((100% - 100px) / 6);
-  /* Perfectly fits 6 items on wide desktops */
-  min-width: 160px;
-  max-width: 200px;
-  /* Ensures items preserve size and scroll on smaller screen widths */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -102,6 +98,49 @@
   cursor: pointer;
   transition: transform 0.2s ease;
   overflow: hidden;
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Wide Screens (>= 1200px): Show exactly 6 items */
+@media (min-width: 1200px) {
+  .carousel-card-item {
+    flex: 0 0 calc((100% - 100px) / 6);
+  }
+}
+
+/* Medium Desktop (1024px to 1199px): Show exactly 5 items */
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .carousel-card-item {
+    flex: 0 0 calc((100% - 80px) / 5);
+  }
+}
+
+/* Tablet Landscape (768px to 1023px): Show exactly 4 items */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .carousel-card-item {
+    flex: 0 0 calc((100% - 60px) / 4);
+  }
+}
+
+/* Tablet Portrait (480px to 767px): Show exactly 3 items */
+@media (min-width: 480px) and (max-width: 767px) {
+  .carousel-track {
+    gap: 16px;
+  }
+  .carousel-card-item {
+    flex: 0 0 calc((100% - 32px) / 3);
+  }
+}
+
+/* Mobile (under 480px): Show exactly 2 items */
+@media (max-width: 479px) {
+  .carousel-track {
+    gap: 12px;
+  }
+  .carousel-card-item {
+    flex: 0 0 calc((100% - 12px) / 2);
+  }
 }
 
 .carousel-card-item:hover {
