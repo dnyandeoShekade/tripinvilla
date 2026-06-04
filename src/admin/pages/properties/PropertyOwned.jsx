@@ -217,7 +217,7 @@ export default function PropertyOwned() {
                       </td>
                       <td style={{ color: '#111827', fontWeight: 500 }}><ReadMore maxWords={2}>{o.ownerName}</ReadMore></td>
                       <td style={{ color: '#9CA3AF' }}><ReadMore maxWords={2}>{o.email}</ReadMore></td>
-                      <td style={{ color: '#3B82F6', fontWeight: 500 }}>{o.contactNo}</td>
+                      <td style={{ color: '#111827', fontWeight: 500 }}>{o.contactNo}</td>
                       <td style={{ color: '#6B7280' }}><ReadMore maxWords={2}>{(o.properties && o.properties.length > 0) ? o.properties.join(', ') : 'None'}</ReadMore></td>
                       <td style={{ color: '#6B7280' }}>{o.numberOfProperties || (o.properties ? o.properties.length : 0)}</td>
                       <td>
