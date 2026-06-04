@@ -57,6 +57,7 @@ export default function PropertyMakers() {
     floorNumber: "", totalFloorsBuilding: "", furnishedStatus: "Fully Furnished", washingMachine: false, societyAmenities: [],
     bonfireArea: false, viewType: "Mountain", outdoorSeating: false, nearestHikingTrail: "", distanceFromCity: "",
   });
+  const currentType = (formData.propertyType || '').toLowerCase();
   const [isEditing, setIsEditing] = useState(false);
   const [managingRoomsProperty, setManagingRoomsProperty] = useState(null);
   const [formStep, setFormStep] = useState(1);
@@ -73,6 +74,7 @@ export default function PropertyMakers() {
   const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], offer: '', rules: '' });
   const [customRoomType, setCustomRoomType] = useState('');
   const [roomTypes, setRoomTypes] = useState([]);
+  const [isEditingRoom, setIsEditingRoom] = useState(false);
   const fileInputRef = React.useRef(null);
 
   // Amenities list
@@ -250,20 +252,28 @@ export default function PropertyMakers() {
     }
   };
 
+  const getFullRoomImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url !== 'string') return '';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+      return url;
+    }
+    const base = (import.meta.env.VITE_API_BASE || 'http://localhost:8000/api').replace('/api', '');
+    return `${base}${url}`;
+  };
+
   const fetchStates = async (countryId) => {
     try {
       const res = await fetch(
         `${import.meta.env.VITE_API_BASE}/masters/states/active?country_id=${countryId}`,
       );
       const data = await res.json();
-      setStates(data);
-      setCities([]);
-      setAreas([]);
-      setSelectedState({ id: "", name: "" });
-      setSelectedCity({ id: "", name: "" });
-      setSelectedArea({ id: "", name: "" });
+      const arr = Array.isArray(data) ? data : [];
+      setStates(arr);
+      return arr;
     } catch (err) {
       console.error(err);
+      return [];
     }
   };
 
@@ -273,12 +283,12 @@ export default function PropertyMakers() {
         `${import.meta.env.VITE_API_BASE}/masters/cities/active?state_id=${stateId}`,
       );
       const data = await res.json();
-      setCities(data);
-      setAreas([]);
-      setSelectedCity({ id: "", name: "" });
-      setSelectedArea({ id: "", name: "" });
+      const arr = Array.isArray(data) ? data : [];
+      setCities(arr);
+      return arr;
     } catch (err) {
       console.error(err);
+      return [];
     }
   };
 
@@ -295,13 +305,16 @@ export default function PropertyMakers() {
       // If no matching areas found, fallback to ALL locations from LocationMaster
       if (Array.isArray(data) && data.length === 0) {
         setAreas(allLocations);
+        return allLocations;
       } else {
-        setAreas(Array.isArray(data) ? data : []);
+        const arr = Array.isArray(data) ? data : [];
+        setAreas(arr);
+        return arr;
       }
-      setSelectedArea({ id: '', name: '' });
     } catch (err) {
       console.error(err);
       setAreas(allLocations); // Always show all on error
+      return allLocations;
     }
   };
 
@@ -554,11 +567,11 @@ export default function PropertyMakers() {
     }
   };
 
-  const handleEdit = (p) => {
+  const handleEdit = async (p) => {
     setFormData({
       id: p._id,
-      propertyType: p.propertyType || "Homestay",
-      propertyName: p.propertyName || "",
+      propertyType: p.propertyType || p.type || p.category || "Homestay",
+      propertyName: p.propertyName || p.name || "",
       ownerName: p.ownerName || "",
       ownerContact: p.ownerContact || "",
       ownerId: p.owner || "",
@@ -588,6 +601,33 @@ export default function PropertyMakers() {
         freeCancellation: false,
         freeCancellationHours: "24",
       },
+      privatePool: p.privatePool || false,
+      gardenArea: p.gardenArea || false,
+      chefAvailable: p.chefAvailable || false,
+      entirePropertyOnly: p.entirePropertyOnly || false,
+      securityCCTV: p.securityCCTV || false,
+      numberOfFloors: p.numberOfFloors || "",
+      plotSize: p.plotSize || "",
+      restaurantOnSite: p.restaurantOnSite || false,
+      spaWellness: p.spaWellness || false,
+      conferenceRoom: p.conferenceRoom || false,
+      roomService: p.roomService || false,
+      receptionAllDay: p.receptionAllDay || false,
+      liftElevator: p.liftElevator || false,
+      starRating: p.starRating || "",
+      totalRooms: p.totalRooms || "",
+      totalFloors: p.totalFloors || "",
+      activities: p.activities || [],
+      floorNumber: p.floorNumber || "",
+      totalFloorsBuilding: p.totalFloorsBuilding || "",
+      furnishedStatus: p.furnishedStatus || "Fully Furnished",
+      washingMachine: p.washingMachine || false,
+      societyAmenities: p.societyAmenities || [],
+      bonfireArea: p.bonfireArea || false,
+      viewType: p.viewType || "Mountain",
+      outdoorSeating: p.outdoorSeating || false,
+      nearestHikingTrail: p.nearestHikingTrail || "",
+      distanceFromCity: p.distanceFromCity || "",
     });
     setRoomsList(Array.isArray(p.rooms) ? p.rooms : []);
     setSelectedAmenitiesList(Array.isArray(p.amenities) ? p.amenities : []);
@@ -597,21 +637,91 @@ export default function PropertyMakers() {
     setExistingImages(Array.isArray(p.images) ? p.images : []);
     setLandmarksList(Array.isArray(p.landmarks) ? p.landmarks : []);
     setRulesSections(Array.isArray(p.otherDetails) && p.otherDetails.length > 0 ? p.otherDetails : [{ title: 'Must Read Rules', text: '' }]);
-    if (p.countryId) {
-      setSelectedCountry({ id: p.countryId, name: p.countryName || p.country });
-      fetchStates(p.countryId);
+
+    // Load cascading location dropdown lists
+    const countryId = p.countryId?._id || p.countryId;
+    const stateId = p.stateId?._id || p.stateId;
+    const cityId = p.cityId?._id || p.cityId;
+    const locationId = p.locationId?._id || p.locationId;
+
+    const manualLoc = { country: false, state: false, city: false, area: false };
+    const manualVals = { country: '', state: '', city: '', area: '' };
+
+    let loadedStates = [];
+    let loadedCities = [];
+    let loadedAreas = [];
+
+    if (countryId) {
+      loadedStates = await fetchStates(countryId);
+      if (stateId) {
+        loadedCities = await fetchCities(stateId);
+        if (cityId) {
+          loadedAreas = await fetchAreas(cityId, p.cityName || p.city);
+        }
+      }
+    } else {
+      if (p.country || p.countryName) {
+        manualLoc.country = true;
+        manualVals.country = p.country || p.countryName;
+      }
     }
-    if (p.stateId) {
-      setSelectedState({ id: p.stateId, name: p.stateName || p.state });
-      fetchCities(p.stateId);
+
+    if (!stateId && (p.state || p.stateName)) {
+      manualLoc.state = true;
+      manualVals.state = p.state || p.stateName;
     }
-    if (p.cityId) {
-      setSelectedCity({ id: p.cityId, name: p.cityName || p.city });
-      fetchAreas(p.cityId, p.cityName || p.city);
+
+    if (!cityId && (p.city || p.cityName)) {
+      manualLoc.city = true;
+      manualVals.city = p.city || p.cityName;
     }
-    if (p.locationId) {
-      setSelectedArea({ id: p.locationId, name: p.locationName || p.address });
+
+    if (!locationId && (p.locationName || p.location || p.address)) {
+      manualLoc.area = true;
+      manualVals.area = p.locationName || p.location || p.address;
     }
+
+    setManualLocation(manualLoc);
+    setManualValues(manualVals);
+
+    const resolvedCountryName = p.countryName || p.country || countries.find(c => c._id === countryId)?.countryName || "";
+    const resolvedStateName = p.stateName || p.state || loadedStates.find(s => s._id === stateId)?.stateName || "";
+    const resolvedCityName = p.cityName || p.city || loadedCities.find(c => c._id === cityId)?.cityName || "";
+    const resolvedAreaName = p.locationName || p.location || p.address || loadedAreas.find(a => a._id === locationId)?.locationName || "";
+
+    // Set selections after dropdown lists are fetched
+    if (countryId) {
+      setSelectedCountry({ id: countryId, name: resolvedCountryName });
+    } else if (p.country || p.countryName) {
+      setSelectedCountry({ id: "", name: p.country || p.countryName });
+    } else {
+      setSelectedCountry({ id: "", name: "" });
+    }
+
+    if (stateId) {
+      setSelectedState({ id: stateId, name: resolvedStateName });
+    } else if (p.state || p.stateName) {
+      setSelectedState({ id: "", name: p.state || p.stateName });
+    } else {
+      setSelectedState({ id: "", name: "" });
+    }
+
+    if (cityId) {
+      setSelectedCity({ id: cityId, name: resolvedCityName });
+    } else if (p.city || p.cityName) {
+      setSelectedCity({ id: "", name: p.city || p.cityName });
+    } else {
+      setSelectedCity({ id: "", name: "" });
+    }
+
+    if (locationId) {
+      setSelectedArea({ id: locationId, name: resolvedAreaName });
+    } else if (p.locationName || p.location || p.address) {
+      setSelectedArea({ id: "", name: p.locationName || p.location || p.address });
+    } else {
+      setSelectedArea({ id: "", name: "" });
+    }
+
     setIsEditing(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -1008,7 +1118,13 @@ export default function PropertyMakers() {
             >
               {/* Country */}
               <div>
-                <label className="form-label" style={{ fontSize: "12px", color: "#4B5563" }}>Country*</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                  <label className="form-label" style={{ fontSize: "12px", color: "#4B5563", margin: 0 }}>Country*</label>
+                  <button type="button" onClick={() => setManualLocation(p => ({ ...p, country: !p.country }))}
+                    style={{ fontSize: '10px', color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
+                    {manualLocation.country ? '← Use Dropdown' : 'Enter Manually'}
+                  </button>
+                </div>
                 {manualLocation.country ? (
                   <input type="text" className="form-input" placeholder="e.g. India"
                     value={manualValues.country}
@@ -1031,7 +1147,13 @@ export default function PropertyMakers() {
 
               {/* State */}
               <div>
-                <label className="form-label" style={{ fontSize: "12px", color: "#4B5563" }}>State*</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                  <label className="form-label" style={{ fontSize: "12px", color: "#4B5563", margin: 0 }}>State*</label>
+                  <button type="button" onClick={() => setManualLocation(p => ({ ...p, state: !p.state }))}
+                    style={{ fontSize: '10px', color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
+                    {manualLocation.state ? '← Use Dropdown' : 'Enter Manually'}
+                  </button>
+                </div>
                 {manualLocation.state ? (
                   <input type="text" className="form-input" placeholder="e.g. Himachal Pradesh"
                     value={manualValues.state}
@@ -1054,7 +1176,13 @@ export default function PropertyMakers() {
 
               {/* City */}
               <div>
-                <label className="form-label" style={{ fontSize: "12px", color: "#4B5563" }}>City*</label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                  <label className="form-label" style={{ fontSize: "12px", color: "#4B5563", margin: 0 }}>City*</label>
+                  <button type="button" onClick={() => setManualLocation(p => ({ ...p, city: !p.city }))}
+                    style={{ fontSize: '10px', color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
+                    {manualLocation.city ? '← Use Dropdown' : 'Enter Manually'}
+                  </button>
+                </div>
                 {manualLocation.city ? (
                   <input type="text" className="form-input" placeholder="e.g. Kasol"
                     value={manualValues.city}
@@ -1076,12 +1204,18 @@ export default function PropertyMakers() {
 
               {/* Area / Location */}
               <div>
-                <label className="form-label" style={{ fontSize: "12px", color: "#4B5563" }}>
-                  Area/Location*
-                  {!manualLocation.area && areas.length === 0 && allLocations.length > 0 && (
-                    <span style={{ color: '#F59E0B', fontSize: 11, marginLeft: 6 }}>Showing all locations</span>
-                  )}
-                </label>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
+                  <label className="form-label" style={{ fontSize: "12px", color: "#4B5563", margin: 0 }}>
+                    Area/Location*
+                    {!manualLocation.area && areas.length === 0 && allLocations.length > 0 && (
+                      <span style={{ color: '#F59E0B', fontSize: 11, marginLeft: 6 }}>Showing all locations</span>
+                    )}
+                  </label>
+                  <button type="button" onClick={() => setManualLocation(p => ({ ...p, area: !p.area }))}
+                    style={{ fontSize: '10px', color: '#2563EB', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline', padding: 0 }}>
+                    {manualLocation.area ? '← Use Dropdown' : 'Enter Manually'}
+                  </button>
+                </div>
                 {manualLocation.area ? (
                   <input type="text" className="form-input" placeholder="e.g. Kheerganga, Parvati Valley"
                     value={manualValues.area}
@@ -1098,10 +1232,9 @@ export default function PropertyMakers() {
                           landmark_type: l.landmarkPopularity || l.popularity || 'Tourist Popular',
                           landmark_image_url: l.landmarkImageUrl || (l.images && l.images[0]) || ''
                         }));
-                        // Auto-populate the landmarks from the selected location
                         setLandmarksList(mappedLandmarks);
                       } else if (a) {
-                        setLandmarksList([]); // Clear if the location has no landmarks
+                        setLandmarksList([]);
                       }
                     }}>
                     <option value="">Select Area</option>
@@ -1109,12 +1242,6 @@ export default function PropertyMakers() {
                       <option key={a._id} value={a._id}>{a.locationName}</option>
                     ))}
                   </select>
-                )}
-                {!manualLocation.area && (
-                  <button type="button" onClick={() => setManualLocation(p => ({ ...p, area: true }))}
-                    style={{ fontSize: 11, color: '#6B7280', background: 'none', border: 'none', cursor: 'pointer', padding: '2px 0', textDecoration: 'underline' }}>
-                    Not in list? Type manually
-                  </button>
                 )}
               </div>
             </div>
@@ -1484,7 +1611,7 @@ export default function PropertyMakers() {
               Type-Specific Details ({formData.propertyType || "Select a type"})
             </label>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
-              {formData.propertyType === 'Villa' && (
+              {currentType === 'villa' && (
                 <>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 13 }}><input type="checkbox" name="privatePool" checked={formData.privatePool} onChange={handleChangeCheckbox} style={{ accentColor: '#58A429' }} /> Private Pool</label>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 13 }}><input type="checkbox" name="gardenArea" checked={formData.gardenArea} onChange={handleChangeCheckbox} style={{ accentColor: '#58A429' }} /> Garden / Outdoor Area</label>
@@ -1501,22 +1628,22 @@ export default function PropertyMakers() {
                   </div>
                 </>
               )}
-              {(formData.propertyType === 'Resort' || formData.propertyType === 'Hotel') && (
+              {(currentType === 'resort' || currentType === 'hotel') && (
                 <>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 13 }}><input type="checkbox" name="restaurantOnSite" checked={formData.restaurantOnSite} onChange={handleChangeCheckbox} style={{ accentColor: '#58A429' }} /> Restaurant on-site</label>
-                  {formData.propertyType === 'Resort' && (
+                  {currentType === 'resort' && (
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 13 }}><input type="checkbox" name="spaWellness" checked={formData.spaWellness} onChange={handleChangeCheckbox} style={{ accentColor: '#58A429' }} /> Spa / Wellness Center</label>
                   )}
-                  {formData.propertyType === 'Resort' && (
+                  {currentType === 'resort' && (
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 13 }}><input type="checkbox" name="conferenceRoom" checked={formData.conferenceRoom} onChange={handleChangeCheckbox} style={{ accentColor: '#58A429' }} /> Conference Room</label>
                   )}
-                  {formData.propertyType === 'Hotel' && (
+                  {currentType === 'hotel' && (
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 13 }}><input type="checkbox" name="receptionAllDay" checked={formData.receptionAllDay} onChange={handleChangeCheckbox} style={{ accentColor: '#58A429' }} /> Reception 24/7</label>
                   )}
-                  {formData.propertyType === 'Hotel' && (
+                  {currentType === 'hotel' && (
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 13 }}><input type="checkbox" name="roomService" checked={formData.roomService} onChange={handleChangeCheckbox} style={{ accentColor: '#58A429' }} /> Room Service Available</label>
                   )}
-                  {formData.propertyType === 'Hotel' && (
+                  {currentType === 'hotel' && (
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 13 }}><input type="checkbox" name="liftElevator" checked={formData.liftElevator} onChange={handleChangeCheckbox} style={{ accentColor: '#58A429' }} /> Lift / Elevator</label>
                   )}
                   <div>
@@ -1527,13 +1654,13 @@ export default function PropertyMakers() {
                     <label className="form-label" style={{ fontSize: 12 }}>Total Rooms</label>
                     <input className="form-input" type="number" name="totalRooms" value={formData.totalRooms} onChange={handleChange} placeholder="e.g. 24" />
                   </div>
-                  {formData.propertyType === 'Hotel' && (
+                  {currentType === 'hotel' && (
                     <div>
                       <label className="form-label" style={{ fontSize: 12 }}>Total Floors</label>
                       <input className="form-input" type="number" name="totalFloors" value={formData.totalFloors} onChange={handleChange} placeholder="e.g. 5" />
                     </div>
                   )}
-                  {formData.propertyType === 'Resort' && (
+                  {currentType === 'resort' && (
                     <div style={{ gridColumn: 'span 3' }}>
                       <label className="form-label" style={{ fontSize: 12 }}>Activities Offered</label>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -1548,7 +1675,7 @@ export default function PropertyMakers() {
                   )}
                 </>
               )}
-              {formData.propertyType === 'Apartment' && (
+              {currentType === 'apartment' && (
                 <>
                   <div>
                     <label className="form-label" style={{ fontSize: 12 }}>Floor Number</label>
@@ -1580,7 +1707,7 @@ export default function PropertyMakers() {
                   </div>
                 </>
               )}
-              {formData.propertyType === 'Cottage' && (
+              {currentType === 'cottage' && (
                 <>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 13 }}><input type="checkbox" name="bonfireArea" checked={formData.bonfireArea} onChange={handleChangeCheckbox} style={{ accentColor: '#58A429' }} /> Bonfire Area</label>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 13 }}><input type="checkbox" name="outdoorSeating" checked={formData.outdoorSeating} onChange={handleChangeCheckbox} style={{ accentColor: '#58A429' }} /> Outdoor Seating</label>
@@ -1603,7 +1730,7 @@ export default function PropertyMakers() {
                   </div>
                 </>
               )}
-              {formData.propertyType === 'Homestay' && (
+              {currentType === 'homestay' && (
                 <div style={{ gridColumn: 'span 3', color: '#6B7280', fontSize: '13px' }}>
                   All required Homestay fields are covered in other sections.
                 </div>
@@ -1665,42 +1792,49 @@ export default function PropertyMakers() {
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Room Image*</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <input
-                    ref={roomImageRef}
-                    type="file"
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    onChange={(e) => {
-                      const file = e.target.files[0];
-                      if (file) {
-                        setRoomImageFile(file);
-                        setRoomImagePreview(URL.createObjectURL(file));
-                      }
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => roomImageRef.current.click()}
-                    style={{
-                      padding: '8px 16px',
-                      background: '#F3F4F6',
-                      border: '1px solid #D1D5DB',
-                      borderRadius: '6px',
-                      cursor: 'pointer',
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      height: '38px',
-                      whiteSpace: 'nowrap'
-                    }}
-                  >
-                    {roomImagePreview ? 'Change Image' : 'Choose Image'}
-                  </button>
+                  {!isEditingRoom && (
+                    <>
+                      <input
+                        ref={roomImageRef}
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={(e) => {
+                          const file = e.target.files[0];
+                          if (file) {
+                            setRoomImageFile(file);
+                            setRoomImagePreview(URL.createObjectURL(file));
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => roomImageRef.current.click()}
+                        style={{
+                          padding: '8px 16px',
+                          background: '#F3F4F6',
+                          border: '1px solid #D1D5DB',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          height: '38px',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {roomImagePreview ? 'Change Image' : 'Choose Image'}
+                      </button>
+                    </>
+                  )}
                   {roomImagePreview && (
                     <img
-                      src={roomImagePreview}
+                      src={getFullRoomImageUrl(roomImagePreview)}
                       alt="Room Preview"
                       style={{ width: 38, height: 38, borderRadius: 6, objectFit: 'cover', border: '1px solid #E5E7EB' }}
                     />
+                  )}
+                  {isEditingRoom && (
+                    <span style={{ fontSize: '12px', color: '#9CA3AF', fontWeight: 500 }}>Cannot change room image</span>
                   )}
                 </div>
               </div>
@@ -1785,11 +1919,12 @@ export default function PropertyMakers() {
                   setRoomForm({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], amenitiesText: '', checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '' });
                   setRoomImageFile(null);
                   setRoomImagePreview("");
+                  setIsEditingRoom(false);
                   if (roomImageRef.current) roomImageRef.current.value = "";
                   setCustomRoomType("");
                 }}
                 style={{ padding: '10px 32px', background: roomImageUploading ? '#9CA3AF' : '#58A429', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', cursor: roomImageUploading ? 'not-allowed' : 'pointer', fontWeight: 600 }}>
-                + Add Room
+                {isEditingRoom ? 'Update Room' : '+ Add Room'}
               </button>
             </div>
 
@@ -1808,7 +1943,11 @@ export default function PropertyMakers() {
                     {roomsList.map((room, idx) => (
                       <tr key={idx} style={{ borderTop: '1px solid #E5E7EB' }}>
                         <td style={{ padding: '8px 12px' }}>
-                          {room.imageUrl ? <img src={room.imageUrl} alt="Room" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} /> : <span style={{ color: '#9CA3AF', fontSize: 11 }}>No Image</span>}
+                          {(room.imageUrl || room.room_image_url || room.img) ? (
+                            <img src={getFullRoomImageUrl(room.imageUrl || room.room_image_url || room.img)} alt="Room" style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} />
+                          ) : (
+                            <span style={{ color: '#9CA3AF', fontSize: 11 }}>No Image</span>
+                          )}
                         </td>
                         <td style={{ padding: '8px 12px', fontWeight: 600, color: '#58A429' }}>{room.roomName || room.roomType}</td>
                         <td style={{ padding: '8px 12px', color: '#374151' }}>{room.roomType}</td>
@@ -1825,7 +1964,8 @@ export default function PropertyMakers() {
                                 ...room,
                                 amenitiesText: Array.isArray(room.amenities) ? room.amenities.join(', ') : room.amenitiesText
                               });
-                              setRoomImagePreview(room.imageUrl || room.room_image_url || '');
+                              setRoomImagePreview(room.imageUrl || room.room_image_url || room.img || '');
+                              setIsEditingRoom(true);
                               setCustomRoomType(roomTypes.some(rt => rt.name === room.roomType) || ['Standard', 'Deluxe', 'Suite', 'Executive', 'Premium', 'Presidential', 'Family Room', 'Double', 'Single', 'Twin'].includes(room.roomType) ? '' : room.roomType);
                               setRoomsList(prev => prev.filter((_, i) => i !== idx)); // remove from list so it can be added again
                             }} style={{ background: 'none', border: 'none', color: '#3B82F6', cursor: 'pointer', fontSize: 13, textDecoration: 'underline' }}>Edit</button>

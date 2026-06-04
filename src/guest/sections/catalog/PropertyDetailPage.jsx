@@ -47,6 +47,97 @@ export default function PropertyDetailPage(props) {
     toggleWishlist,
   } = props;
 
+  const renderTypeSpecificDetails = (p) => {
+    if (!p) return null;
+    const specs = [];
+
+    const addSpec = (label, value, iconName) => {
+      if (value !== undefined && value !== null && value !== '' && value !== false) {
+        specs.push({ label, value: typeof value === 'boolean' ? 'Yes' : value, iconName });
+      }
+    };
+
+    // Villa / House / Homestay
+    addSpec('Private Pool', p.privatePool, 'Waves');
+    addSpec('Garden Area', p.gardenArea, 'Flower2');
+    addSpec('Chef Available', p.chefAvailable, 'ChefHat');
+    addSpec('Entire Property Only', p.entirePropertyOnly, 'Home');
+    addSpec('Security CCTV', p.securityCCTV, 'Shield');
+    addSpec('Number of Floors', p.numberOfFloors, 'Home');
+    addSpec('Plot Size', p.plotSize, 'Maximize');
+
+    // Hotel / Resort
+    addSpec('Restaurant On Site', p.restaurantOnSite, 'Utensils');
+    addSpec('Spa & Wellness', p.spaWellness, 'Sparkles');
+    addSpec('Conference Room', p.conferenceRoom, 'Monitor');
+    addSpec('Room Service', p.roomService, 'Coffee');
+    addSpec('24/7 Reception', p.receptionAllDay, 'Clock');
+    addSpec('Lift / Elevator', p.liftElevator, 'Maximize');
+    addSpec('Star Rating', p.starRating, 'Star');
+    addSpec('Total Rooms', p.totalRooms, 'Home');
+    addSpec('Total Floors', p.totalFloors, 'Home');
+    if (p.activities && p.activities.length > 0) {
+      addSpec('Activities', Array.isArray(p.activities) ? p.activities.join(', ') : p.activities, 'Dumbbell');
+    }
+
+    // Apartment / Flat
+    addSpec('Floor Number', p.floorNumber, 'Home');
+    addSpec('Total Floors in Building', p.totalFloorsBuilding, 'Home');
+    addSpec('Furnished Status', p.furnishedStatus, 'Home');
+    addSpec('Washing Machine', p.washingMachine, 'Wind');
+    if (p.societyAmenities && p.societyAmenities.length > 0) {
+      addSpec('Society Amenities', Array.isArray(p.societyAmenities) ? p.societyAmenities.join(', ') : p.societyAmenities, 'Sparkles');
+    }
+
+    // Cabin / Cottage / Camp
+    addSpec('Bonfire Area', p.bonfireArea, 'Flame');
+    addSpec('View Type', p.viewType, 'Waves');
+    addSpec('Outdoor Seating', p.outdoorSeating, 'Coffee');
+    addSpec('Nearest Hiking Trail', p.nearestHikingTrail, 'MapPin');
+    if (p.distanceFromCity) {
+      addSpec('Distance from City', `${p.distanceFromCity} km`, 'MapPin');
+    }
+
+    if (specs.length === 0) return null;
+
+    const iconComponents = {
+      Waves, Flower2, ChefHat, Home, Shield, Maximize, Utensils, Sparkles, Monitor, Coffee, Clock, Star, Dumbbell, Wind, Flame, MapPin
+    };
+
+    return (
+      <div className="about-property-section" style={{ borderTop: '1px solid #E5E7EB', paddingTop: '20px', marginTop: '20px' }}>
+        <h3 className="section-subtitle-title">Property Specifications</h3>
+        <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '16px', marginTop: '-4px' }}>
+          Additional characteristics and features of this {p.type || 'property'}
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '14px' }}>
+          {specs.map((spec, idx) => {
+            const Icon = iconComponents[spec.iconName] || CheckCircle;
+            return (
+              <div key={idx} style={{
+                display: 'flex', alignItems: 'center', gap: '12px',
+                padding: '12px 16px', background: '#F9FAFB',
+                border: '1px solid #E5E7EB', borderRadius: '10px'
+              }}>
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  width: '36px', height: '36px', borderRadius: '8px',
+                  background: '#ECFDF5', color: '#58A429'
+                }}>
+                  <Icon size={20} strokeWidth={1.8} />
+                </div>
+                <div>
+                  <div style={{ fontSize: '11px', color: '#9CA3AF', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{spec.label}</div>
+                  <div style={{ fontSize: '13px', color: '#111827', fontWeight: 600 }}>{spec.value}</div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   const [amenitiesMap, setAmenitiesMap] = useState({});
 
   useEffect(() => {
@@ -385,6 +476,7 @@ export default function PropertyDetailPage(props) {
             </div>
           </div>
         )}
+        {renderTypeSpecificDetails(activeDetailProp)}
       </div>
 
         {/* Sub Navigation Anchor Tabs Row */}
@@ -597,31 +689,37 @@ export default function PropertyDetailPage(props) {
             </div>
           </div>
             {/* Dynamic Property Rules */}
-            {activeDetailProp?.otherDetails && activeDetailProp.otherDetails.length > 0 ? (
-              activeDetailProp.otherDetails.map((sec, sIdx) => (
-                <div className="must-read-rules-block" style={{ marginTop: sIdx > 0 ? '24px' : '0' }} key={`prop-rule-${sIdx}`}>
-                  <h4 className="rules-sub-hdr">{sec.title || 'Rules'}</h4>
-                  <ul className="rules-ul-list">
-                    {sec.text ? sec.text.split('\n').map((rule, rIdx) => (
-                      <li key={`prop-rule-${sIdx}-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
-                    )) : null}
-                  </ul>
-                </div>
-              ))
-            ) : (
-              <div className="must-read-rules-block">
-                <h4 className="rules-sub-hdr">Must Read Rules</h4>
-                <ul className="rules-ul-list">
-                  {typeof activeDetailProp?.rules === 'string' && activeDetailProp.rules.trim() !== '' ? (
-                    activeDetailProp.rules.split('\n').map((rule, rIdx) => (
-                      <li key={`prop-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
-                    ))
-                  ) : (
-                    <li>No special rules provided by the owner.</li>
-                  )}
-                </ul>
-              </div>
-            )}
+            {(() => {
+              const validOtherDetails = (activeDetailProp?.otherDetails || []).filter(sec => sec.title && sec.text && sec.text.trim() !== '');
+              
+              if (validOtherDetails.length > 0) {
+                return validOtherDetails.map((sec, sIdx) => (
+                  <div className="must-read-rules-block" style={{ marginTop: sIdx > 0 ? '24px' : '0' }} key={`prop-rule-${sIdx}`}>
+                    <h4 className="rules-sub-hdr">{sec.title || 'Rules'}</h4>
+                    <ul className="rules-ul-list">
+                      {sec.text.split('\n').map((rule, rIdx) => (
+                        <li key={`prop-rule-${sIdx}-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ));
+              }
+
+              if (typeof activeDetailProp?.rules === 'string' && activeDetailProp.rules.trim() !== '') {
+                return (
+                  <div className="must-read-rules-block">
+                    <h4 className="rules-sub-hdr">Property Rules</h4>
+                    <ul className="rules-ul-list">
+                      {activeDetailProp.rules.split('\n').map((rule, rIdx) => (
+                        <li key={`prop-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              }
+              
+              return null;
+            })()}
             
             {/* Dynamic Room Rules Sections */}
             {propertyRooms && propertyRooms.length > 0 && propertyRooms.map((room, idx) => {

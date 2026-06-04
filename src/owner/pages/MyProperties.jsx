@@ -64,7 +64,7 @@ export default function MyProperties({ autoOpenForm = false }) {
     // Times & Rules
     checkIn: '3:00 PM',
     checkOut: '12:00 PM',
-    rules: '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).',
+    rules: '',
     description: '',
     status: 'Active',
     // --- Type-Specific Details ---
@@ -73,6 +73,8 @@ export default function MyProperties({ autoOpenForm = false }) {
     floorNumber: '', totalFloorsBuilding: '', furnishedStatus: 'Fully Furnished', washingMachine: false, societyAmenities: [],
     bonfireArea: false, viewType: 'Mountain', outdoorSeating: false, nearestHikingTrail: '', distanceFromCity: '',
   });
+
+  const currentType = (formData.type || '').toLowerCase();
 
   // ─── Highlights / Quick info ──────────────────────────────
   const [highlights, setHighlights] = useState({
@@ -448,12 +450,40 @@ export default function MyProperties({ autoOpenForm = false }) {
     setRoomsList(Array.isArray(fullP.rooms) && typeof fullP.rooms[0] === 'object' ? fullP.rooms : []);
 
     // Load cascading location
-    if (fullP.countryId) {
-      await fetchStates(fullP.countryId);
-      if (fullP.stateId) {
-        await fetchCities(fullP.stateId);
-        if (fullP.cityId) await fetchLocations(fullP.cityId);
+    const countryId = fullP.countryId?._id || fullP.countryId;
+    const stateId = fullP.stateId?._id || fullP.stateId;
+    const cityId = fullP.cityId?._id || fullP.cityId;
+    const locationId = fullP.locationId?._id || fullP.locationId;
+
+    var manualLoc = { country: false, state: false, city: false, area: false };
+    var manualVals = { country: '', state: '', city: '', area: '' };
+
+    if (countryId) {
+      await fetchStates(countryId);
+      if (stateId) {
+        await fetchCities(stateId);
+        if (cityId) await fetchLocations(cityId);
       }
+    } else {
+      if (fullP.countryName || fullP.country) {
+        manualLoc.country = true;
+        manualVals.country = fullP.countryName || fullP.country;
+      }
+    }
+
+    if (!stateId && (fullP.stateName || fullP.state)) {
+      manualLoc.state = true;
+      manualVals.state = fullP.stateName || fullP.state;
+    }
+
+    if (!cityId && (fullP.cityName || fullP.city)) {
+      manualLoc.city = true;
+      manualVals.city = fullP.cityName || fullP.city;
+    }
+
+    if (!locationId && (fullP.locationName || fullP.location)) {
+      manualLoc.area = true;
+      manualVals.area = fullP.locationName || fullP.location;
     }
 
     setHighlights({
@@ -488,7 +518,7 @@ export default function MyProperties({ autoOpenForm = false }) {
       bathRooms: fullP.bathRooms !== undefined ? fullP.bathRooms : 1,
       checkIn: fullP.checkIn || '3:00 PM',
       checkOut: fullP.checkOut || '12:00 PM',
-      rules: fullP.rules || '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).',
+      rules: fullP.rules || '',
       description: fullP.description || '',
       status: fullP.status || 'Active',
       privatePool: fullP.privatePool || false, gardenArea: fullP.gardenArea || false, chefAvailable: fullP.chefAvailable || false, entirePropertyOnly: fullP.entirePropertyOnly || false, securityCCTV: fullP.securityCCTV || false, numberOfFloors: fullP.numberOfFloors || '', plotSize: fullP.plotSize || '',
@@ -496,8 +526,8 @@ export default function MyProperties({ autoOpenForm = false }) {
       floorNumber: fullP.floorNumber || '', totalFloorsBuilding: fullP.totalFloorsBuilding || '', furnishedStatus: fullP.furnishedStatus || 'Fully Furnished', washingMachine: fullP.washingMachine || false, societyAmenities: fullP.societyAmenities || [],
       bonfireArea: fullP.bonfireArea || false, viewType: fullP.viewType || 'Mountain', outdoorSeating: fullP.outdoorSeating || false, nearestHikingTrail: fullP.nearestHikingTrail || '', distanceFromCity: fullP.distanceFromCity || '',
     });
-    setManualLocation({ country: false, state: false, city: false, area: false });
-    setManualValues({ country: '', state: '', city: '', area: '' });
+    setManualLocation(manualLoc);
+    setManualValues(manualVals);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -665,7 +695,7 @@ export default function MyProperties({ autoOpenForm = false }) {
       originalPrice: '', price: '', taxAmount: '',
       area: '31 sq. ft.', bedRooms: 1, beds: 2, capacity: 3, bathRooms: 1,
       checkIn: '3:00 PM', checkOut: '12:00 PM',
-      rules: '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s).',
+      rules: '',
       description: '', status: 'Active',
       privatePool: false, gardenArea: false, chefAvailable: false, entirePropertyOnly: false, securityCCTV: false, numberOfFloors: '', plotSize: '',
       restaurantOnSite: false, spaWellness: false, conferenceRoom: false, roomService: false, receptionAllDay: false, liftElevator: false, starRating: '', totalRooms: '', totalFloors: '', activities: [],
@@ -740,20 +770,36 @@ export default function MyProperties({ autoOpenForm = false }) {
             </button>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+          <div style={{ 
+            display: 'flex', 
+            flexWrap: 'nowrap', 
+            gap: '20px', 
+            overflowX: 'auto',
+            paddingBottom: '8px' 
+          }}>
             {[
               { label: 'Total Enquiries (Today)', value: statsData?.totalEnquiries || 0, trend: '+04.6%', up: true },
               { label: 'Active Properties', value: myProps.filter(p => p.status === 'Active').length, trend: '-16.6%', up: false },
               { label: 'Response Rate', value: '95%', trend: '+16.6%', up: true },
             ].map((card, i) => (
-              <div key={i} style={{ background: '#ffffff', borderRadius: '12px', padding: '24px', border: '1px solid #EFF6E6', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 500, fontFamily: '"Outfit", sans-serif' }}>{card.label}</span>
+              <div key={i} style={{ 
+                background: '#ffffff', 
+                borderRadius: '12px', 
+                padding: '24px', 
+                border: '1px solid #EFF6E6', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '6px',
+                flex: '1 0 auto',
+                minWidth: '280px'
+              }}>
+                <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 500, fontFamily: '"Outfit", sans-serif', whiteSpace: 'nowrap' }}>{card.label}</span>
                 <span style={{ fontSize: '32px', fontWeight: 700, color: '#111827', fontFamily: '"Outfit", sans-serif' }}>{card.value}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', whiteSpace: 'nowrap' }}>
                   <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: card.up ? '#E8F5EE' : '#FEE2E2', color: card.up ? '#58A429' : '#EF4444', padding: '3px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
                     {card.up ? <TrendingUp size={11} /> : <TrendingDown size={11} />} {card.trend}
                   </span>
-                  <span style={{ color: '#9CA3AF', fontSize: '11px' }}>Compared to yesterday</span>
+                  <span style={{ color: '#9CA3AF', fontSize: '11px', whiteSpace: 'nowrap' }}>Compared to yesterday</span>
                 </div>
               </div>
             ))}
@@ -1081,13 +1127,18 @@ export default function MyProperties({ autoOpenForm = false }) {
                   <input style={inputStyle} type="text" name="checkOut" value={formData.checkOut} onChange={handleChange} placeholder="e.g. 12:00 PM" required />
                 </div>
               </div>
+              <div style={{ marginTop: '16px' }}>
+                <label style={labelStyle}>House Rules / Special Policies</label>
+                <textarea style={{ ...inputStyle, minHeight: '80px', resize: 'vertical' }} name="rules" value={formData.rules} onChange={handleChange}
+                  placeholder="e.g. No smoking inside the house. Keep noise down after 10 PM. No pets allowed." />
+              </div>
             </>)}
 
             {/* ── SECTION 5b: Type-Specific Details ─────────── */}
             {sectionWrap(<>
               {sectionHeader('5b. Type-Specific Details', `Extra details specific to ${formData.type} properties`)}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
-                {formData.type === 'Villa' && (
+                {currentType === 'villa' && (
                   <>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="privatePool" checked={formData.privatePool} onChange={e => setFormData(p => ({...p, privatePool: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Private Pool</label>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="gardenArea" checked={formData.gardenArea} onChange={e => setFormData(p => ({...p, gardenArea: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Garden / Outdoor Area</label>
@@ -1104,22 +1155,22 @@ export default function MyProperties({ autoOpenForm = false }) {
                     </div>
                   </>
                 )}
-                {(formData.type === 'Resort' || formData.type === 'Hotel') && (
+                {(currentType === 'resort' || currentType === 'hotel') && (
                   <>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="restaurantOnSite" checked={formData.restaurantOnSite} onChange={e => setFormData(p => ({...p, restaurantOnSite: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Restaurant on-site</label>
-                    {formData.type === 'Resort' && (
+                    {currentType === 'resort' && (
                       <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="spaWellness" checked={formData.spaWellness} onChange={e => setFormData(p => ({...p, spaWellness: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Spa / Wellness Center</label>
                     )}
-                    {formData.type === 'Resort' && (
+                    {currentType === 'resort' && (
                       <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="conferenceRoom" checked={formData.conferenceRoom} onChange={e => setFormData(p => ({...p, conferenceRoom: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Conference Room</label>
                     )}
-                    {formData.type === 'Hotel' && (
+                    {currentType === 'hotel' && (
                       <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="receptionAllDay" checked={formData.receptionAllDay} onChange={e => setFormData(p => ({...p, receptionAllDay: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Reception 24/7</label>
                     )}
-                    {formData.type === 'Hotel' && (
+                    {currentType === 'hotel' && (
                       <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="roomService" checked={formData.roomService} onChange={e => setFormData(p => ({...p, roomService: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Room Service Available</label>
                     )}
-                    {formData.type === 'Hotel' && (
+                    {currentType === 'hotel' && (
                       <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="liftElevator" checked={formData.liftElevator} onChange={e => setFormData(p => ({...p, liftElevator: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Lift / Elevator</label>
                     )}
                     <div>
@@ -1130,13 +1181,13 @@ export default function MyProperties({ autoOpenForm = false }) {
                       <label style={labelStyle}>Total Rooms</label>
                       <input style={inputStyle} type="number" name="totalRooms" value={formData.totalRooms} onChange={handleChange} placeholder="e.g. 24" />
                     </div>
-                    {formData.type === 'Hotel' && (
+                    {currentType === 'hotel' && (
                       <div>
                         <label style={labelStyle}>Total Floors</label>
                         <input style={inputStyle} type="number" name="totalFloors" value={formData.totalFloors} onChange={handleChange} placeholder="e.g. 5" />
                     </div>
                   )}
-                    {formData.type === 'Resort' && (
+                    {currentType === 'resort' && (
                       <div style={{ gridColumn: 'span 3' }}>
                         <label style={labelStyle}>Activities Offered</label>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -1151,7 +1202,7 @@ export default function MyProperties({ autoOpenForm = false }) {
                   )}
                   </>
                 )}
-                {formData.type === 'Apartment' && (
+                {currentType === 'apartment' && (
                   <>
                     <div>
                       <label style={labelStyle}>Floor Number</label>
@@ -1183,7 +1234,7 @@ export default function MyProperties({ autoOpenForm = false }) {
                     </div>
                   </>
                 )}
-                {formData.type === 'Cottage' && (
+                {currentType === 'cottage' && (
                   <>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="bonfireArea" checked={formData.bonfireArea} onChange={e => setFormData(p => ({...p, bonfireArea: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Bonfire Area</label>
                     <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><input type="checkbox" name="outdoorSeating" checked={formData.outdoorSeating} onChange={e => setFormData(p => ({...p, outdoorSeating: e.target.checked}))} style={{ accentColor: '#58A429' }} /> Outdoor Seating</label>
@@ -1206,7 +1257,7 @@ export default function MyProperties({ autoOpenForm = false }) {
                     </div>
                   </>
                 )}
-                {formData.type === 'Homestay' && (
+                {currentType === 'homestay' && (
                   <div style={{ gridColumn: 'span 3', color: '#6B7280', fontSize: '13px' }}>
                     All required Homestay fields are covered in other sections.
                     </div>
@@ -1215,7 +1266,7 @@ export default function MyProperties({ autoOpenForm = false }) {
             </>)}
 
             {/* ── SECTION 5c: Rooms (Hotel / Resort only) ──────── */}
-            {(formData.type === 'Hotel' || formData.type === 'Resort') && sectionWrap(<>
+            {(currentType === 'hotel' || currentType === 'resort') && sectionWrap(<>
               {sectionHeader('5c. Room Types', 'Add different room types for your Hotel/Resort (e.g., Deluxe, Suite, Standard)')}
               {/* Room form row */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '12px', marginBottom: '12px', alignItems: 'flex-end' }}>

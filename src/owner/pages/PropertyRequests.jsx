@@ -5,7 +5,17 @@ import ReadMore from '../../admin/components/ReadMore';
 
 const API_BASE = `${import.meta.env.VITE_API_BASE}`;
 
-const defaultRules = [{ title: 'Must Read Rules', text: '• Primary Guest should be atleast 18 years of age.\n• Passport, Aadhaar, Driving License and Govt. ID are accepted as ID proof(s)' }];
+const getFullRoomImageUrl = (url) => {
+  if (!url) return '';
+  if (typeof url !== 'string') return '';
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+    return url;
+  }
+  const base = API_BASE.replace('/api', '');
+  return `${base}${url}`;
+};
+
+const defaultRules = [];
 
 const emptyRoom = () => ({
   room_type: '',
@@ -370,10 +380,14 @@ export default function PropertyRequests() {
               <div className="form-group">
                 <label className="form-label">Upload Room Image (Max 5MB)</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <input ref={imageInputRef} type="file" accept=".jpg,.jpeg,.png" onChange={handleImageChange}
-                    style={{ flex: 1, padding: '8px', border: '1px solid #D1D5DB', borderRadius: '8px', fontSize: '13px', background: '#fff' }} />
+                  {!editingRoomId ? (
+                    <input ref={imageInputRef} type="file" accept=".jpg,.jpeg,.png" onChange={handleImageChange}
+                      style={{ flex: 1, padding: '8px', border: '1px solid #D1D5DB', borderRadius: '8px', fontSize: '13px', background: '#fff' }} />
+                  ) : (
+                    <span style={{ fontSize: '12px', color: '#9CA3AF', fontWeight: 500, flex: 1 }}>Cannot change room image</span>
+                  )}
                   {roomImagePreview && (
-                    <img src={roomImagePreview} alt="preview" style={{ width: '44px', height: '44px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #E5E7EB', flexShrink: 0 }} />
+                    <img src={getFullRoomImageUrl(roomImagePreview)} alt="preview" style={{ width: '44px', height: '44px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #E5E7EB', flexShrink: 0 }} />
                   )}
                 </div>
               </div>
@@ -552,7 +566,7 @@ export default function PropertyRequests() {
                           <td style={{ color: '#6B7280', padding: '14px 16px' }}>{r.category}</td>
                           <td style={{ padding: '14px 16px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              {r.room_image_url && <img src={r.room_image_url} alt={r.room_type} style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }} />}
+                              {r.room_image_url && <img src={getFullRoomImageUrl(r.room_image_url)} alt={r.room_type} style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }} />}
                               <span style={{ color: '#6B7280' }}>{r.room_type}</span>
                             </div>
                           </td>
@@ -618,7 +632,7 @@ export default function PropertyRequests() {
               
               {/* Image & Title */}
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                <img src={viewingRequest.room_image_url || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60'} alt={viewingRequest.room_type} style={{ width: '120px', height: '90px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #E5E7EB' }} />
+                <img src={getFullRoomImageUrl(viewingRequest.room_image_url) || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60'} alt={viewingRequest.room_type} style={{ width: '120px', height: '90px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #E5E7EB' }} />
                 <div>
                   <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: 700, color: '#111827' }}>{viewingRequest.room_type}</h3>
                   <div style={{ fontSize: '13px', color: '#4B5563' }}>Bed Type: <strong>{viewingRequest.bed_type}</strong></div>

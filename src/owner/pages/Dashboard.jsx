@@ -128,83 +128,49 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Welcome message inside card */}
+        {/* Stats Section (Replaces old Hero and old Stats) */}
         <div style={{ 
-          background: 'linear-gradient(135deg, #FAFDF4 0%, #F3F9EA 100%)',
-          border: '1px solid #EFF6E6',
-          borderRadius: '12px',
-          padding: '24px 30px',
+          background: '#ffffff', 
+          borderRadius: '16px', 
+          padding: '24px', 
+          border: '1px solid #EFF6E6', 
+          boxShadow: '0 2px 12px rgba(0,0,0,0.02)',
           marginBottom: '32px'
         }}>
-          <h4 style={{ margin: '0 0 6px 0', fontSize: '16px', fontWeight: 700, color: '#111827', fontFamily: '"Outfit", sans-serif' }}>
-            Welcome back, {ownerName}!
-          </h4>
-          <p style={{ margin: 0, fontSize: '13px', color: '#4B5563', lineHeight: 1.5 }}>
-            {recentEnquiries.length > 0 
-              ? `Your properties are performing well. You have ${recentEnquiries.length} recent guest enquiries listed in your portal.` 
-              : "Welcome to your owner portal! Add your first property to start receiving enquiries."}
-          </p>
-        </div>
-
-        {/* Stats Section */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '32px' }}>
-          
-          {/* Card 1: Total Enquiries */}
-          <div style={{ background: '#ffffff', borderRadius: '12px', padding: '24px', border: '1px solid #EFF6E6', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 500, fontFamily: '"Outfit", sans-serif' }}>Total Enquiries</span>
-            <span style={{ fontSize: '32px', fontWeight: 700, color: '#111827', fontFamily: '"Outfit", sans-serif' }}>
-              {statsData?.totalEnquiries || '0'}
-            </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: '#E8F5EE', color: '#58A429', padding: '3px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
-                <TrendingUp size={11} /> {statsData?.compareYesterday?.enquiries || '+04.6%'}
-              </span>
-              <span style={{ color: '#9CA3AF', fontSize: '11px', fontFamily: '"Outfit", sans-serif' }}>Compared to yesterday</span>
-            </div>
+          <div style={{ 
+            display: 'flex', 
+            flexWrap: 'nowrap', 
+            gap: '20px', 
+            overflowX: 'auto',
+            paddingBottom: '8px' // slight padding for scrollbar if visible
+          }}>
+            {[
+              { label: 'Total Enquiries (Today)', value: statsData?.totalEnquiries || 0, trend: '+04.6%', up: true },
+              { label: 'Active Properties', value: statsData?.activeProperties || 0, trend: '-16.6%', up: false },
+              { label: 'Response Rate', value: '95%', trend: '+16.6%', up: true },
+            ].map((card, i) => (
+              <div key={i} style={{ 
+                background: '#ffffff', 
+                borderRadius: '12px', 
+                padding: '24px', 
+                border: '1px solid #EFF6E6', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '6px',
+                flex: '1 0 auto',
+                minWidth: '280px'
+              }}>
+                <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 500, fontFamily: '"Outfit", sans-serif', whiteSpace: 'nowrap' }}>{card.label}</span>
+                <span style={{ fontSize: '32px', fontWeight: 700, color: '#111827', fontFamily: '"Outfit", sans-serif' }}>{card.value}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', whiteSpace: 'nowrap' }}>
+                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: card.up ? '#E8F5EE' : '#FEE2E2', color: card.up ? '#58A429' : '#EF4444', padding: '3px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
+                    {card.up ? <TrendingUp size={11} /> : <TrendingDown size={11} />} {card.trend}
+                  </span>
+                  <span style={{ color: '#9CA3AF', fontSize: '11px', fontFamily: '"Outfit", sans-serif' }}>Compared to yesterday</span>
+                </div>
+              </div>
+            ))}
           </div>
-
-          {/* Card 2: Active Properties */}
-          <div style={{ background: '#ffffff', borderRadius: '12px', padding: '24px', border: '1px solid #EFF6E6', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 500, fontFamily: '"Outfit", sans-serif' }}>Active Properties</span>
-            <span style={{ fontSize: '32px', fontWeight: 700, color: '#111827', fontFamily: '"Outfit", sans-serif' }}>
-              {statsData?.activeProperties || '0'}
-            </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: '#FEE2E2', color: '#EF4444', padding: '3px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
-                <TrendingDown size={11} /> - 16.6%
-              </span>
-              <span style={{ color: '#9CA3AF', fontSize: '11px', fontFamily: '"Outfit", sans-serif' }}>Compared to yesterday</span>
-            </div>
-          </div>
-
-          {/* Card 3: Response Rate */}
-          <div style={{ background: '#ffffff', borderRadius: '12px', padding: '24px', border: '1px solid #EFF6E6', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 500, fontFamily: '"Outfit", sans-serif' }}>Response Rate</span>
-            <span style={{ fontSize: '32px', fontWeight: 700, color: '#111827', fontFamily: '"Outfit", sans-serif' }}>
-              {statsData?.totalEnquiries > 0 ? '95%' : '95%'}
-            </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: '#E8F5EE', color: '#58A429', padding: '3px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
-                <TrendingUp size={11} /> + 16.6%
-              </span>
-              <span style={{ color: '#9CA3AF', fontSize: '11px', fontFamily: '"Outfit", sans-serif' }}>Compared to yesterday</span>
-            </div>
-          </div>
-
-          {/* Card 4: Average Rating */}
-          <div style={{ background: '#ffffff', borderRadius: '12px', padding: '24px', border: '1px solid #EFF6E6', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 500, fontFamily: '"Outfit", sans-serif' }}>Average Rating</span>
-            <span style={{ fontSize: '32px', fontWeight: 700, color: '#111827', fontFamily: '"Outfit", sans-serif' }}>
-              {statsData?.averageRating || 'N/A'}
-            </span>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: '#E8F5EE', color: '#58A429', padding: '3px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
-                ★ Global Avg
-              </span>
-              <span style={{ color: '#9CA3AF', fontSize: '11px', fontFamily: '"Outfit", sans-serif' }}>Based on Guest Reviews</span>
-            </div>
-          </div>
-
         </div>
 
         {/* Main Grid: Recent Bookings */}

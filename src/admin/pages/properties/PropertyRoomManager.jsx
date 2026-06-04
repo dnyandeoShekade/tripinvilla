@@ -36,6 +36,16 @@ export default function PropertyRoomManager({ property, onClose }) {
     ...(token ? { Authorization: `Bearer ${token}` } : {}),
   };
 
+  const getFullRoomImageUrl = (url) => {
+    if (!url) return '';
+    if (typeof url !== 'string') return '';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+      return url;
+    }
+    const base = (API_BASE || 'http://localhost:8000/api').replace('/api', '');
+    return `${base}${url}`;
+  };
+
   const fetchRooms = async () => {
     if (!property?._id) return;
     setLoading(true);
@@ -188,7 +198,7 @@ export default function PropertyRoomManager({ property, onClose }) {
       checkout_time: room.checkOut || room.checkout_time || '12:00 PM',
       amenities_types: room.features || room.amenities_types || [],
       offers: room.offers || [],
-      room_images: room.images && room.images.length > 0 ? room.images : (room.img ? [room.img] : ['']),
+      room_images: room.images && room.images.length > 0 ? room.images : (room.imageUrl || room.room_image_url || room.img ? [room.imageUrl || room.room_image_url || room.img] : ['']),
     });
     setEditingId(room._id);
     window.scrollTo({ top: document.getElementById('room-form-section')?.offsetTop || 0, behavior: 'smooth' });
@@ -294,27 +304,32 @@ export default function PropertyRoomManager({ property, onClose }) {
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, marginBottom: 8 }}>
                 {form.room_images.filter(u => u && u.trim()).map((url, idx) => (
                   <div key={`exist-${idx}`} style={{ position: 'relative', width: 60, height: 60 }}>
-                    <img src={url} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 6 }} />
-                    <button type="button" onClick={() => removeExistingImage(idx)} style={{ position: 'absolute', top: -6, right: -6, background: '#EF4444', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 12, padding: 0 }}>×</button>
+                    <img src={getFullRoomImageUrl(url)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 6 }} />
+                    {!editingId && (
+                      <button type="button" onClick={() => removeExistingImage(idx)} style={{ position: 'absolute', top: -6, right: -6, background: '#EF4444', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 12, padding: 0 }}>×</button>
+                    )}
                   </div>
                 ))}
 
-                {newImageFiles.map((file, idx) => (
+                {!editingId && newImageFiles.map((file, idx) => (
                   <div key={`new-${idx}`} style={{ position: 'relative', width: 60, height: 60 }}>
                     <img src={URL.createObjectURL(file)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 6 }} />
                     <button type="button" onClick={() => removeNewFile(idx)} style={{ position: 'absolute', top: -6, right: -6, background: '#EF4444', color: '#fff', border: 'none', borderRadius: '50%', width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: 12, padding: 0 }}>×</button>
                   </div>
                 ))}
 
-                <div 
-                  onClick={() => fileInputRef.current.click()}
-                  style={{ width: 60, height: 60, border: '1px dashed #D1D5DB', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#F9FAFB' }}
-                >
-                  <Plus size={20} color="#9CA3AF" />
-                </div>
+                {!editingId && (
+                  <div 
+                    onClick={() => fileInputRef.current.click()}
+                    style={{ width: 60, height: 60, border: '1px dashed #D1D5DB', borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', background: '#F9FAFB' }}
+                  >
+                    <Plus size={20} color="#9CA3AF" />
+                  </div>
+                )}
               </div>
               
-              <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple hidden accept="image/*" />
+              {!editingId && <input type="file" ref={fileInputRef} onChange={handleFileChange} multiple hidden accept="image/*" />}
+              {editingId && <span style={{ fontSize: '11px', color: '#9CA3AF' }}>Room images cannot be modified during edit</span>}
             </div>
 
             {/* Amenities */}
@@ -393,7 +408,7 @@ export default function PropertyRoomManager({ property, onClose }) {
                 <div key={room._id} style={{ border: '1px solid #E5E7EB', borderRadius: 14, overflow: 'hidden', background: '#fff', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', transition: 'box-shadow 0.2s' }}>
                   {/* Room image */}
                   <div style={{ width: '100%', height: 150, background: '#E5E7EB', position: 'relative', overflow: 'hidden' }}>
-                    <img src={room.img} alt={room.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.src = 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=400&q=80'; }} />
+                    <img src={getFullRoomImageUrl(room.img)} alt={room.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={e => { e.target.src = 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=400&q=80'; }} />
                     {room.images && room.images.length > 1 && (
                       <span style={{ position: 'absolute', bottom: 8, right: 8, background: 'rgba(0,0,0,0.6)', color: '#fff', fontSize: 11, borderRadius: 20, padding: '2px 8px' }}>
                         +{room.images.length - 1} more
