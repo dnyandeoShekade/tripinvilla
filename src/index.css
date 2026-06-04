@@ -134,6 +134,7 @@ input:focus, select:focus {
   .horizontal-property-card {
     flex-direction: column;
     min-height: auto;
+    height: auto;
   }
 
   .horiz-card-img {
@@ -361,8 +362,7 @@ input:focus, select:focus {
   border: 1px solid #E5E7EB;
   box-shadow: 0 4px 15px rgba(0,0,0,0.03);
   transition: all 0.2s ease;
-  min-height: 280px;
-  height: auto;
+  height: 300px;
 }
 
 .horizontal-property-card:hover {

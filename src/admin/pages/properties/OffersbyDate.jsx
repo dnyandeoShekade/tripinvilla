@@ -162,7 +162,7 @@ export default function OffersbyDate() {
                 <Filter size={13} /> Filter
               </button>
 
-              <div className="props-search-wrap" style={{ minWidth: 80, maxWidth: 240, margin: 0, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', flexShrink: 1 }}>
+              <div className="admin-flex-search-wrap" style={{ minWidth: 80, maxWidth: 240, margin: 0, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', flexShrink: 1 }}>
                 <Search size={14} style={{ color: '#9CA3AF', flexShrink: 0 }} />
                 <input 
                   type="text" 

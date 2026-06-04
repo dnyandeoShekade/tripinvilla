@@ -126,7 +126,7 @@ export default function CitiesLocations() {
               <button className="props-btn-filter" onClick={fetchCities} style={{ cursor: 'pointer', flexShrink: 0, padding: '5px 10px', fontSize: 12, whiteSpace: 'nowrap' }}>
                 <Filter size={12} /> Filter
               </button>
-              <div className="props-search-wrap" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 8px', border: '1px solid #E5E7EB', borderRadius: 8, background: '#fff', flexShrink: 1, minWidth: 120, maxWidth: 160 }}>
+              <div className="admin-flex-search-wrap" style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '5px 8px', border: '1px solid #E5E7EB', borderRadius: 8, background: '#fff', flexShrink: 1, minWidth: 120, maxWidth: 160 }}>
                 <Search size={14} style={{ color: '#9CA3AF', flexShrink: 0 }} />
                 <input 
                   type="text" 

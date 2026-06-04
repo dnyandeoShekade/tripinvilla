@@ -312,6 +312,19 @@ export default function PropertyViewModal({ property, onClose, inline = false })
                                 </div>
                               </div>
                             )}
+
+                            {room.rules && room.rules.length > 0 && (
+                              <div style={{ marginTop: '12px' }}>
+                                <div style={{ fontSize: '12px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Room Rules</div>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                  {room.rules.map((rule, ri) => (
+                                    <div key={ri} style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '6px', padding: '6px 10px', fontSize: '11px', color: '#78350F' }}>
+                                      <strong style={{ color: '#B45309' }}>{rule.title || 'Rule'}:</strong> {Array.isArray(rule.points) ? rule.points.join(', ') : rule.points}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>

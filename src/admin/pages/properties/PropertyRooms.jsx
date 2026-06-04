@@ -252,7 +252,7 @@ export default function PropertyRooms() {
                 <Filter size={13} /> Filter
               </button>
 
-              <div className="props-search-wrap" style={{ minWidth: 80, maxWidth: 240, margin: 0, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', flexShrink: 1 }}>
+              <div className="admin-flex-search-wrap" style={{ minWidth: 80, maxWidth: 240, margin: 0, border: '1px solid #E5E7EB', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8, padding: '6px 12px', flexShrink: 1 }}>
                 <Search size={14} style={{ color: '#9CA3AF', flexShrink: 0 }} />
                 <input 
                   type="text" 
@@ -406,9 +406,15 @@ export default function PropertyRooms() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
               <div>
                 <h2 style={{ fontSize: 20, fontWeight: 700, color: '#111827', margin: 0 }}>{selectedRequest.propertyName || 'Property'}</h2>
-                <p style={{ fontSize: 13, color: '#58A429', margin: '4px 0 0 0', display: 'flex', alignItems: 'center', gap: 4 }}>
+                <p style={{ fontSize: 13, color: '#58A429', margin: '4px 0 0 0', display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                   <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', background: '#58A429' }}></span>
-                  {selectedRequest.location || 'Location N/A'}
+                  <span>{selectedRequest.location || 'Location N/A'}</span>
+                  {selectedRequest.category && (
+                    <>
+                      <span style={{ color: '#9CA3AF' }}>•</span>
+                      <span style={{ color: '#4B5563', fontWeight: 600 }}>{selectedRequest.category}</span>
+                    </>
+                  )}
                 </p>
               </div>
               <span style={{
@@ -422,13 +428,27 @@ export default function PropertyRooms() {
 
             {/* Main Grid: Image + Room Details */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 24, marginBottom: 24 }}>
-              {/* Room Image */}
-              <div style={{ width: '100%', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', aspectRatio: '4/3' }}>
-                <img 
-                  src={selectedRequest.room_image_url || selectedRequest.image || "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80"} 
-                  alt="Room" 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                />
+              {/* Room Image & Gallery */}
+              <div>
+                <div style={{ width: '100%', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', aspectRatio: '4/3', marginBottom: 10 }}>
+                  <img 
+                    src={selectedRequest.room_image_url || selectedRequest.image || "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80"} 
+                    alt="Room" 
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  />
+                </div>
+                {selectedRequest.room_images && selectedRequest.room_images.length > 1 && (
+                  <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
+                    {selectedRequest.room_images.map((imgUrl, imgIdx) => (
+                      <div 
+                        key={imgIdx} 
+                        style={{ width: 60, height: 45, borderRadius: 6, overflow: 'hidden', flexShrink: 0, border: '1px solid #E5E7EB' }}
+                      >
+                        <img src={imgUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Room Core Details */}
@@ -446,9 +466,25 @@ export default function PropertyRooms() {
                     <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>{selectedRequest.bed_type || '—'}</div>
                   </div>
                   <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                    <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Price / Night</div>
+                    <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Price / Night (Selling)</div>
                     <div style={{ fontSize: 14, fontWeight: 700, color: '#58A429' }}>
                       {selectedRequest.price_per_room ? `₹${Number(selectedRequest.price_per_room).toLocaleString()}` : `₹${selectedRequest.priceByOwner || '—'}`}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Original Price & Tax Amount */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                  <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                    <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Original Price</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#9CA3AF', textDecoration: selectedRequest.original_price ? 'line-through' : 'none' }}>
+                      {selectedRequest.original_price ? `₹${Number(selectedRequest.original_price).toLocaleString()}` : '—'}
+                    </div>
+                  </div>
+                  <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                    <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Tax Amount</div>
+                    <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
+                      {selectedRequest.tax_amount ? `₹${Number(selectedRequest.tax_amount).toLocaleString()}` : '—'}
                     </div>
                   </div>
                 </div>
@@ -504,6 +540,31 @@ export default function PropertyRooms() {
                     </span>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Rules */}
+            {selectedRequest.rules && (Array.isArray(selectedRequest.rules) ? selectedRequest.rules.length > 0 : selectedRequest.rules) && (
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 10 }}>House Rules</div>
+                {Array.isArray(selectedRequest.rules) ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {selectedRequest.rules.map((rule, idx) => (
+                      <div key={idx} style={{ background: '#FFFDF5', border: '1px solid #FEF3C7', borderRadius: 8, padding: '12px 14px' }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#D97706', marginBottom: 6 }}>{rule.title || 'Rule'}</div>
+                        <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12.5, color: '#6B7280', lineHeight: 1.6 }}>
+                          {Array.isArray(rule.points) ? rule.points.map((pt, pidx) => (
+                            <li key={pidx}>{pt}</li>
+                          )) : <li>{rule.points || rule.text || ''}</li>}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.6, margin: 0, background: '#FFFDF5', padding: '12px 14px', borderRadius: 8, border: '1px solid #FEF3C7' }}>
+                    {selectedRequest.rules}
+                  </p>
+                )}
               </div>
             )}
 
