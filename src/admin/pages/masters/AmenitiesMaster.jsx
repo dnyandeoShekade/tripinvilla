@@ -38,13 +38,31 @@ const BLANK_FORM = {
   amenitiesName: '',
   amenitiesCategory: 'Basic',
   icon: 'Wifi',
+  iconType: 'standard', // 'standard' or 'custom'
   status: 'Active'
 };
 
-function getIconComp(iconName, cat) {
+const getIconUrl = (iconName) => {
+  if (!iconName) return '';
+  if (iconName.startsWith('http') || iconName.startsWith('data:')) return iconName;
+  const base = (import.meta.env.VITE_API_BASE || 'http://localhost:8000/api').replace('/api', '');
+  if (iconName.startsWith('/uploads/')) return `${base}${iconName}`;
+  return `${base}/uploads/${iconName}`;
+};
+
+function getIconComp(iconName, cat, size = 15) {
   const name = iconName || CATEGORY_ICON_MAP[cat] || 'Wifi';
+  if (name.startsWith('/') || name.startsWith('http')) {
+    return (
+      <img 
+        src={getIconUrl(name)} 
+        style={{ width: size, height: size, objectFit: 'contain', display: 'block' }} 
+        alt="" 
+      />
+    );
+  }
   const Comp = ICON_MAP[name] || Wifi;
-  return <Comp size={15} style={{ color: 'var(--primary)' }} />;
+  return <Comp size={size} style={{ color: 'var(--primary)' }} />;
 }
 
 const API = `${import.meta.env.VITE_API_BASE}/admin/amenities`;
@@ -55,6 +73,7 @@ export default function AmenitiesMaster() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const [formData, setFormData] = useState({ ...BLANK_FORM });
+  const [uploadedFile, setUploadedFile] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategoryFilter, setActiveCategoryFilter] = useState('All');
@@ -101,30 +120,39 @@ export default function AmenitiesMaster() {
       showToast('Amenity name is required.', 'error');
       return;
     }
-    const payload = {
-      amenitiesName: formData.amenitiesName.trim(),
-      amenitiesCategory: formData.amenitiesCategory,
-      icon: formData.icon,
-      status: formData.status,
-    };
+
+    const data = new FormData();
+    data.append('amenitiesName', formData.amenitiesName.trim());
+    data.append('amenitiesCategory', formData.amenitiesCategory);
+    data.append('status', formData.status);
+
+    if (formData.iconType === 'custom') {
+      if (uploadedFile) {
+        data.append('iconFile', uploadedFile);
+      } else {
+        data.append('icon', formData.icon);
+      }
+    } else {
+      data.append('icon', formData.icon);
+    }
+
     try {
       if (isEditing) {
         await fetch(`${API}/${formData.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: data
         });
         showToast('Amenity updated successfully!');
         setIsEditing(false);
       } else {
         await fetch(API, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
+          body: data
         });
         showToast('Amenity added successfully!');
       }
       setFormData({ ...BLANK_FORM });
+      setUploadedFile(null);
       fetchAmenities();
     } catch (err) {
       showToast('Error saving amenity.', 'error');
@@ -132,13 +160,16 @@ export default function AmenitiesMaster() {
   };
 
   const handleEdit = (am) => {
+    const isCustom = am.icon && (am.icon.startsWith('/') || am.icon.startsWith('http'));
     setFormData({
       id: am._id,
       amenitiesName: am.amenitiesName,
       amenitiesCategory: am.amenitiesCategory || 'Basic',
       icon: am.icon || CATEGORY_ICON_MAP[am.amenitiesCategory] || 'Wifi',
+      iconType: isCustom ? 'custom' : 'standard',
       status: am.status || 'Active'
     });
+    setUploadedFile(null);
     setIsEditing(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -146,6 +177,7 @@ export default function AmenitiesMaster() {
   const cancelEdit = () => {
     setIsEditing(false);
     setFormData({ ...BLANK_FORM });
+    setUploadedFile(null);
   };
 
   const triggerDelete = (id) => { setDeleteTargetId(id); setShowDeleteModal(true); };
@@ -222,7 +254,7 @@ export default function AmenitiesMaster() {
           </div>
 
           {/* Form Row */}
-          <div className="amenities-form-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1fr 1fr', gap: 16, marginBottom: 0 }}>
+          <div className="amenities-form-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1.5fr 1.8fr 1fr', gap: 16, marginBottom: 0 }}>
             {/* Name */}
             <div className="form-group">
               <label className="form-label">Amenity Name *</label>
@@ -245,11 +277,47 @@ export default function AmenitiesMaster() {
 
             {/* Icon */}
             <div className="form-group">
-              <label className="form-label">Icon</label>
-              <select name="icon" value={formData.icon}
-                onChange={handleChange} className="form-select">
-                {ICON_OPTIONS.map(i => <option key={i} value={i}>{i}</option>)}
-              </select>
+              <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>Icon *</span>
+                <span style={{ fontSize: 10, color: '#9CA3AF' }}>
+                  <span 
+                    onClick={() => setFormData(p => ({ ...p, iconType: 'standard' }))} 
+                    style={{ cursor: 'pointer', fontWeight: formData.iconType === 'standard' ? 'bold' : 'normal', color: formData.iconType === 'standard' ? 'var(--primary)' : '#9CA3AF', marginRight: 6 }}
+                  >
+                    Standard
+                  </span>
+                  |
+                  <span 
+                    onClick={() => setFormData(p => ({ ...p, iconType: 'custom' }))} 
+                    style={{ cursor: 'pointer', fontWeight: formData.iconType === 'custom' ? 'bold' : 'normal', color: formData.iconType === 'custom' ? 'var(--primary)' : '#9CA3AF', marginLeft: 6 }}
+                  >
+                    Upload SVG
+                  </span>
+                </span>
+              </label>
+              {formData.iconType === 'standard' ? (
+                <select name="icon" value={formData.icon}
+                  onChange={handleChange} className="form-select">
+                  {ICON_OPTIONS.map(i => <option key={i} value={i}>{i}</option>)}
+                </select>
+              ) : (
+                <div className="file-upload-wrapper" style={{ position: 'relative' }}>
+                  <input 
+                    type="text" 
+                    className="form-input" 
+                    value={uploadedFile ? uploadedFile.name : (formData.icon.startsWith('/') || formData.icon.startsWith('http') ? 'Keep Existing SVG' : 'Choose SVG...')} 
+                    readOnly 
+                    style={{ border: 'none', background: 'transparent', flex: 1, textOverflow: 'ellipsis', overflow: 'hidden' }} 
+                  />
+                  <input 
+                    type="file" 
+                    accept=".svg,image/svg+xml" 
+                    onChange={e => setUploadedFile(e.target.files[0])} 
+                    style={{ position: 'absolute', opacity: 0, top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer' }} 
+                  />
+                  <button className="btn-browse" type="button">Browse</button>
+                </div>
+              )}
             </div>
 
             {/* Status */}

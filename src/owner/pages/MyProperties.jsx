@@ -722,9 +722,6 @@ export default function MyProperties({ autoOpenForm = false }) {
 
   return (
     <div className="fade-in" onClick={() => setActionMenu(null)}>
-      {viewingProperty && (
-        <PropertyViewModal property={viewingProperty} onClose={() => setViewingProperty(null)} />
-      )}
       <div style={{ height: '16px' }} />
       {/* Breadcrumb */}
       <div className="props-breadcrumb" style={{ margin: '0 39px 12px', fontSize: '13px', color: '#6B7280', fontFamily: '"Outfit", sans-serif' }}>
@@ -1542,7 +1539,11 @@ export default function MyProperties({ autoOpenForm = false }) {
                         </button>
                         {actionMenu === p._id && (
                           <div style={{ position: 'absolute', right: 16, top: 36, background: '#fff', border: '1px solid #E5E7EB', borderRadius: 8, boxShadow: '0 4px 16px rgba(0,0,0,0.12)', zIndex: 100, minWidth: 140 }}>
-                            <button type="button" onClick={() => { setActionMenu(null); setViewingProperty(p); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
+                            <button type="button" onClick={() => { 
+                              setActionMenu(null); 
+                              setViewingProperty(p); 
+                              setTimeout(() => document.getElementById('property-detail-div')?.scrollIntoView({ behavior: 'smooth' }), 100);
+                            }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
                               👁 View Details
                             </button>
                             <button type="button" onClick={() => { setActionMenu(null); handleEdit(p); }} style={{ display: 'block', width: '100%', textAlign: 'left', padding: '10px 16px', fontSize: 13, color: '#374151', background: 'none', border: 'none', cursor: 'pointer', borderBottom: '1px solid #F3F4F6' }}>
@@ -1586,6 +1587,12 @@ export default function MyProperties({ autoOpenForm = false }) {
           )}
         </div>
       </div>
+
+      {viewingProperty && (
+        <div style={{ margin: '0 39px 24px' }}>
+          <PropertyViewModal property={viewingProperty} onClose={() => setViewingProperty(null)} inline={true} />
+        </div>
+      )}
     </div>
   );
 }

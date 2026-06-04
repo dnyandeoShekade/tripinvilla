@@ -252,6 +252,19 @@ export default function PropertyViewModal({ property, onClose, inline = false })
                   } else if (!expName) {
                     expName = exp;
                   }
+
+                  // If the resolved name is still a raw 24-character ObjectID hex string, try to match it or skip rendering.
+                  if (expName && typeof expName === 'string' && /^[0-9a-fA-F]{24}$/.test(expName)) {
+                    const matched = allExperiences.find(x => String(x._id) === expName || String(x.id) === expName);
+                    if (matched) {
+                      expName = matched.experienceName;
+                    } else {
+                      return null;
+                    }
+                  }
+
+                  if (!expName) return null;
+
                   return (
                     <span key={i} style={{ padding: '4px 12px', background: '#EFF6FF', color: '#2563EB', borderRadius: '20px', fontSize: '12px', fontWeight: 500 }}>
                       {expName}

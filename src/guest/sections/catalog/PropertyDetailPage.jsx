@@ -1,6 +1,12 @@
+import { useState, useEffect } from 'react';
 import { Calendar, Clock, CheckCircle, MapPin, Phone, Mail, Search, Sparkles, Star, Maximize, Home, BedDouble, Users, Utensils, Wifi, Car, Waves, Wind, Flame, Tv, ChefHat, Coffee, Dumbbell, Flower2, Shield, Monitor } from 'lucide-react';
 import { detailSubTabs, landmarks, roomOptions } from '../../../data/mockData';
 import './PropertyDetailPage.css';
+const ICON_MAP = {
+  Wifi, Tv, Wind, Car, Utensils, Waves, Trees: Flower2,
+  ShieldCheck: Shield, Flame, ChefHat, Coffee, Dumbbell,
+  Bath: CheckCircle, Music: CheckCircle, Zap: CheckCircle, Package: CheckCircle
+};
 
 export default function PropertyDetailPage(props) {
   const {
@@ -40,6 +46,25 @@ export default function PropertyDetailPage(props) {
     fetchProfileAndEnquiries,
     toggleWishlist,
   } = props;
+
+  const [amenitiesMap, setAmenitiesMap] = useState({});
+
+  useEffect(() => {
+    fetch(`${API_BASE}/admin/amenities/active`)
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) {
+          const map = {};
+          data.forEach(am => {
+            if (am.amenitiesName && am.icon) {
+              map[am.amenitiesName.toLowerCase()] = am.icon;
+            }
+          });
+          setAmenitiesMap(map);
+        }
+      })
+      .catch(err => console.error("Error loading active amenities:", err));
+  }, [API_BASE]);
 
   const propImages =
     activeDetailProp.images && activeDetailProp.images.length > 0
@@ -263,8 +288,26 @@ export default function PropertyDetailPage(props) {
             {(activeDetailProp.amenities || []).map((amenity, idx) => {
               const amName = typeof amenity === 'object' ? amenity.name || amenity.amenitiesName : amenity;
               const lName = (amName || '').toLowerCase();
+              const dbIcon = amenitiesMap[lName];
+
+              if (dbIcon && (dbIcon.startsWith('/') || dbIcon.startsWith('http'))) {
+                const base = (API_BASE || 'http://localhost:8000/api').replace('/api', '');
+                const iconUrl = dbIcon.startsWith('/') ? `${base}${dbIcon}` : dbIcon;
+                return (
+                  <div key={idx} className="amenity-vertical-item">
+                    <div className="amenity-vertical-icon" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <img src={iconUrl} style={{ width: 30, height: 30, objectFit: 'contain', display: 'block' }} alt={amName} />
+                    </div>
+                    <span className="amenity-vertical-lbl">{amName}</span>
+                    <span className="amenity-vertical-val" style={{ color: '#58A429', fontWeight: 600 }}>Available</span>
+                  </div>
+                );
+              }
+
               let Icon = CheckCircle;
-              if (lName.includes('wifi') || lName.includes('internet')) Icon = Wifi;
+              if (dbIcon && ICON_MAP[dbIcon]) {
+                Icon = ICON_MAP[dbIcon];
+              } else if (lName.includes('wifi') || lName.includes('internet')) Icon = Wifi;
               else if (lName.includes('park') || lName.includes('garage')) Icon = Car;
               else if (lName.includes('pool') || lName.includes('swim')) Icon = Waves;
               else if (lName.includes('ac') || lName.includes('air con') || lName.includes('cool')) Icon = Wind;
