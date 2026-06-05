@@ -724,7 +724,7 @@ export default function PropertyDetailPage(props) {
             {/* Dynamic Room Rules Sections */}
             {propertyRooms && propertyRooms.length > 0 && propertyRooms.map((room, idx) => {
               if (Array.isArray(room.rules) && room.rules.length > 0) {
-                return room.rules.map((sec, sIdx) => (
+                return room.rules && Array.isArray(room.rules) ? room.rules.map((sec, sIdx) => (
                   <div className="must-read-rules-block" style={{ marginTop: '24px' }} key={`room-${idx}-sec-${sIdx}`}>
                     <h4 className="rules-sub-hdr">
                       {sec.title || 'Additional Rules'} {propertyRooms.length > 1 ? `(${room.room_type || room.roomName || room.name || 'Room'})` : ''}

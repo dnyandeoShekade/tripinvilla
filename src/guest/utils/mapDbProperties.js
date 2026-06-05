@@ -69,6 +69,7 @@ export function mapDbProperties(dbProps, defaultList, where) {
       checkIn: p.checkIn || '3:00 PM',
       checkOut: p.checkOut || '12:00 PM',
       rules: p.rules || '',
+      otherDetails: p.otherDetails || [],
       category: category,
       type: category,
       experiences: p.experiences || [],

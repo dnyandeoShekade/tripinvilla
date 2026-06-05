@@ -87,7 +87,11 @@ export default function PropertyViewModal({ property, onClose, inline = false })
                           ? property.rooms
                           : []);
   const allRooms = [...baseRooms, ...dynamicRooms];
-  const rooms = Array.from(new Map(allRooms.map(r => [r._id || Math.random(), r])).values());
+  const rooms = Array.from(new Map(allRooms.map(r => {
+    const rType = (r.roomType || r.room_type || r.title || r.name || 'Standard').toLowerCase().trim();
+    const rPrice = Number(r.pricePerNight || r.price_per_room || r.price || 0);
+    return [`${rType}-${rPrice}`, r];
+  })).values());
   const experiences = Array.isArray(property.experiences) ? property.experiences : [];
   const parseCoordinate = (val, isLat) => {
     if (val === null || val === undefined) return null;
@@ -344,7 +348,7 @@ export default function PropertyViewModal({ property, onClose, inline = false })
                               </div>
                             )}
 
-                            {room.rules && room.rules.length > 0 && (
+                            {room.rules && Array.isArray(room.rules) && room.rules.length > 0 && (
                               <div style={{ marginTop: '12px' }}>
                                 <div style={{ fontSize: '12px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Room Rules</div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
