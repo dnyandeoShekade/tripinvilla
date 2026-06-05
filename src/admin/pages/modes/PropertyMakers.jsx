@@ -1823,7 +1823,6 @@ export default function PropertyMakers() {
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Room Image*</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  {!isEditingRoom && (
                     <>
                       <input
                         ref={roomImageRef}
@@ -1856,16 +1855,12 @@ export default function PropertyMakers() {
                         {roomImagePreview ? 'Change Image' : 'Choose Image'}
                       </button>
                     </>
-                  )}
                   {roomImagePreview && (
                     <img
                       src={getFullRoomImageUrl(roomImagePreview)}
                       alt="Room Preview"
                       style={{ width: 38, height: 38, borderRadius: 6, objectFit: 'cover', border: '1px solid #E5E7EB' }}
                     />
-                  )}
-                  {isEditingRoom && (
-                    <span style={{ fontSize: '12px', color: '#9CA3AF', fontWeight: 500 }}>Cannot change room image</span>
                   )}
                 </div>
               </div>
