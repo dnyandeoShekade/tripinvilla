@@ -1,0 +1,134 @@
+/* Homepage hero section (HeroSection.jsx) */
+
+.hero-wrapper {
+  position: relative;
+  width: 100%;
+  height: 712px;
+  margin: 0;
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+}
+
+.hero-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.6) 100%);
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+}
+
+.hero-headline-container {
+  position: absolute;
+  top: 150px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+}
+
+.hero-headline {
+  font-family: 'Lato', sans-serif;
+  font-size: 74px;
+  font-weight: 500;
+  color: #FFFFFF;
+  line-height: 100%;
+  letter-spacing: 0%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.hero-headline-span {
+  font-family: 'Lato', sans-serif;
+  font-size: 74px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: var(--primary-blue);
+  width: 439px;
+  height: 105px;
+  border-radius: 0;
+  box-shadow: 0 8px 30px rgba(37, 99, 235, 0.4);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 100%;
+}
+
+/* ─── Responsive: Hero ─── */
+@media (max-width: 1200px) {
+  .hero-headline {
+    font-size: 58px;
+  }
+
+  .hero-headline-span {
+    font-size: 58px;
+    width: 360px;
+    height: 90px;
+  }
+}
+
+@media (max-width: 900px) {
+  .hero-wrapper {
+    height: auto;
+    min-height: 480px;
+    padding-bottom: 24px;
+  }
+
+  .hero-headline-container {
+    top: 110px;
+    width: calc(100% - 32px);
+  }
+
+  .hero-headline {
+    font-size: 44px;
+    white-space: normal;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-headline-span {
+    font-size: 44px;
+    width: auto;
+    height: auto;
+    padding: 10px 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-wrapper {
+    min-height: 380px;
+  }
+
+  .hero-headline-container {
+    top: 80px;
+  }
+
+  .hero-headline {
+    font-size: 32px;
+    gap: 8px;
+  }
+
+  .hero-headline-span {
+    font-size: 32px;
+    padding: 6px 14px;
+  }
+}

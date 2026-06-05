@@ -68,7 +68,7 @@ export default function PropertyRequests() {
     }
   };
 
-  
+
   const handleAddCustomExperience = async () => {
     if (!newCustomExp.trim()) return;
     try {
@@ -117,7 +117,7 @@ export default function PropertyRequests() {
       fetchAmenities('All');
     }
     fetchExperiences();
-    
+
     try {
       const rtRes = await fetch(`${API_BASE}/master/room-types`);
       const rtData = await rtRes.json();
@@ -139,7 +139,7 @@ export default function PropertyRequests() {
   const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
   const toggleAmenity = (a) => setSelectedAmenities(prev => prev.includes(a) ? prev.filter(x => x !== a) : [...prev, a]);
-  
+
   const toggleExperience = (id) => setSelectedExperiences(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
 
   const handleAddRuleSection = () => setRulesSections(prev => [...prev, { title: '', text: '' }]);
@@ -256,7 +256,7 @@ export default function PropertyRequests() {
   const handleEditRoom = (r) => {
     setEditingRoomId(r.id || r._id);
     setPropertyId(r.property_id || r.property?._id);
-    
+
     // Check if it's a fallback room type or custom
     if (!fallbackRoomTypes.includes(r.room_type) && !roomTypes.some(rt => rt.name === r.room_type)) {
       setManualRoomType(true);
@@ -273,12 +273,12 @@ export default function PropertyRequests() {
       checkin_time: r.checkin_time || '02:00 PM',
       checkout_time: r.checkout_time || '12:00 PM',
     });
-    
+
     setRoomImagePreview(r.room_image_url || r.image || '');
     setSelectedAmenities(r.amenities_types || []);
     setSelectedExperiences(r.experiences || []);
     setOffersList(r.offers && r.offers.length > 0 ? r.offers : []);
-    
+
     if (Array.isArray(r.rules) && r.rules.length > 0) {
       setRulesSections(r.rules.map(rule => ({
         title: rule.title || '',
@@ -287,7 +287,7 @@ export default function PropertyRequests() {
     } else {
       setRulesSections(defaultRules);
     }
-    
+
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -366,7 +366,7 @@ export default function PropertyRequests() {
                 ) : (
                   <select className="form-select" name="room_type" value={formData.room_type} onChange={handleInputChange} required style={{ marginTop: '6px' }}>
                     <option value="">Select Room Type</option>
-                    {roomTypes.length > 0 
+                    {roomTypes.length > 0
                       ? roomTypes.map(rt => <option key={rt._id || rt.name} value={rt.name}>{rt.name}</option>)
                       : fallbackRoomTypes.map(t => <option key={t} value={t}>{t}</option>)
                     }
@@ -459,8 +459,8 @@ export default function PropertyRequests() {
                       {a}
                     </button>
                   ))}
-                    </div>
-                  )}
+                </div>
+              )}
             </div>
 
             {/* Dynamic House Rules */}
@@ -471,7 +471,7 @@ export default function PropertyRequests() {
                   + Add Section
                 </button>
               </div>
-              
+
               {rulesSections.map((sec, idx) => (
                 <div key={idx} style={{ background: 'white', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '12px', marginBottom: '10px', position: 'relative' }}>
                   <button type="button" onClick={() => handleRemoveRuleSection(idx)} style={{ position: 'absolute', top: '10px', right: '10px', background: 'none', border: 'none', color: '#EF4444', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold' }}>
@@ -479,24 +479,24 @@ export default function PropertyRequests() {
                   </button>
                   <div className="form-group" style={{ marginBottom: '10px' }}>
                     <label className="form-label">Section Title*</label>
-                    <input 
-                      type="text" 
-                      className="form-input" 
-                      value={sec.title} 
-                      onChange={e => handleRuleSectionChange(idx, 'title', e.target.value)} 
-                      placeholder="e.g. Must Read Rules" 
-                      required 
+                    <input
+                      type="text"
+                      className="form-input"
+                      value={sec.title}
+                      onChange={e => handleRuleSectionChange(idx, 'title', e.target.value)}
+                      placeholder="e.g. Must Read Rules"
+                      required
                     />
                   </div>
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Rules Text (one rule per line)*</label>
-                    <textarea 
-                      className="form-textarea" 
-                      value={sec.text} 
-                      onChange={e => handleRuleSectionChange(idx, 'text', e.target.value)} 
-                      placeholder="e.g. • Primary Guest should be atleast 18 years of age." 
+                    <textarea
+                      className="form-textarea"
+                      value={sec.text}
+                      onChange={e => handleRuleSectionChange(idx, 'text', e.target.value)}
+                      placeholder="e.g. • Primary Guest should be atleast 18 years of age."
                       style={{ minHeight: '60px', padding: '8px 12px', width: '100%', border: '1px solid #D1D5DB', borderRadius: '8px' }}
-                      required 
+                      required
                     />
                   </div>
                 </div>
@@ -614,7 +614,7 @@ export default function PropertyRequests() {
         <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
           <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }} onClick={() => setViewingRequest(null)} />
           <div style={{ position: 'relative', width: '100%', maxWidth: '600px', maxHeight: '90vh', background: '#fff', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.3)' }}>
-            
+
             {/* Header */}
             <div style={{ padding: '18px 24px', borderBottom: '1px solid #E5E7EB', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F9FAFB' }}>
               <div>
@@ -629,7 +629,7 @@ export default function PropertyRequests() {
 
             {/* Content */}
             <div style={{ overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              
+
               {/* Image & Title */}
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
                 <img src={getFullRoomImageUrl(viewingRequest.room_image_url) || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60'} alt={viewingRequest.room_type} style={{ width: '120px', height: '90px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #E5E7EB' }} />

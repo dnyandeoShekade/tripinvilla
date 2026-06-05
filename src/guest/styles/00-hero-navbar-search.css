@@ -1,37 +1,4 @@
-/* App-specific local layout components */
-
-.hero-wrapper {
-  position: relative;
-  width: 100%;
-  height: 712px;
-  /* Fixed Figma height */
-  margin: 0;
-  border-radius: 0px;
-  /* Sharp bottom corners as requested */
-  overflow: visible;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-}
-
-.hero-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.2) 50%, rgba(0, 0, 0, 0.6) 100%);
-  display: flex;
-  flex-direction: column;
-  z-index: 2;
-}
+/* Navbar and floating search card (HeroSection.jsx) */
 
 /* Header/Navbar specs: Width 1278px, Height 72px, Top 39px, Left 82px (Centered) */
 .navbar-container {
@@ -171,59 +138,6 @@
   background: var(--brand-green-hover);
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(88, 164, 41, 0.35);
-}
-
-/* Exact Figma Specs for the Hero Headline: Top 203px, Blue Box Width 439px, Height 105px */
-.hero-headline-container {
-  position: absolute;
-  top: 150px;
-  /* Reduced from 203px to decrease space below header */
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 5;
-}
-
-.hero-headline {
-  font-family: 'Lato', sans-serif;
-  font-size: 74px;
-  /* Fixed Figma font size */
-  font-weight: 500;
-  /* Medium for "Find Your" */
-  color: #FFFFFF;
-  line-height: 100%;
-  /* Fixed Figma line height */
-  letter-spacing: 0%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin: 0;
-  white-space: nowrap;
-}
-
-.hero-headline-span {
-  font-family: 'Lato', sans-serif;
-  font-size: 74px;
-  /* Fixed Figma font size */
-  font-weight: 700;
-  /* Bold for "Perfect Stay" */
-  color: #FFFFFF;
-  background: var(--primary-blue);
-  width: 439px;
-  /* Exact Figma Width */
-  height: 105px;
-  /* Exact Figma Height */
-  border-radius: 0px;
-  /* Sharp edges as requested */
-  box-shadow: 0 8px 30px rgba(37, 99, 235, 0.4);
-  display: inline-flex;
-  /* Use inline-flex to center text horizontally and vertically inside the box */
-  align-items: center;
-  justify-content: center;
-  line-height: 100%;
 }
 
 /* Floating Search box design: Width 1281px, Height 284px, Top 372px, Left 79px (Centered) */
@@ -476,7 +390,7 @@
 }
 
 
-/* ─── RESPONSIVE: Hero & Search ─── */
+/* ─── RESPONSIVE: Navbar & Search ─── */
 @media (max-width: 1366px) {
   .nav-pill-item { font-size: 12px; padding: 6px 6px; }
   .nav-pill-wrapper { padding: 0 12px; }
@@ -505,19 +419,13 @@
     grid-template-columns: repeat(3, 1fr);
     margin-top: 0;
   }
-  .hero-headline { font-size: 58px; }
-  .hero-headline-span { font-size: 58px; width: 360px; height: 90px; }
-  
+
   .nav-pill-wrapper { padding: 8px; gap: 4px; flex-wrap: nowrap; overflow-x: auto; height: auto; border-radius: 40px; justify-content: center; }
   .nav-pill-item { font-size: 11px; padding: 4px 6px; }
 }
 
 @media (max-width: 900px) {
-  .hero-wrapper { height: auto; min-height: 480px; padding-bottom: 24px; }
   .navbar-container { max-width: calc(100% - 32px); margin: 16px auto 0; }
-  .hero-headline-container { top: 110px; width: calc(100% - 32px); }
-  .hero-headline { font-size: 44px; white-space: normal; flex-wrap: wrap; justify-content: center; }
-  .hero-headline-span { font-size: 44px; width: auto; height: auto; padding: 10px 20px; }
   .search-card-wrapper { position: static; transform: none; max-width: calc(100% - 32px); margin: 24px auto 0; }
   .search-fields-grid { grid-template-columns: repeat(2, 1fr); margin-top: 16px; }
   .tabs-row { position: static; transform: none; width: 100%; margin-bottom: 8px; justify-content: center; flex-wrap: wrap; }
@@ -526,10 +434,6 @@
 }
 
 @media (max-width: 640px) {
-  .hero-wrapper { min-height: 380px; }
-  .hero-headline-container { top: 80px; }
-  .hero-headline { font-size: 32px; gap: 8px; }
-  .hero-headline-span { font-size: 32px; padding: 6px 14px; }
   .search-fields-grid { grid-template-columns: 1fr; }
   .action-buttons-row { flex-direction: column; gap: 10px; align-items: stretch; }
   .btn-search, .btn-search-ai, .btn-outline { width: 100%; justify-content: center; }
