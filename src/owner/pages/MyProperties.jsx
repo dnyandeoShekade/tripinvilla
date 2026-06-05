@@ -716,7 +716,7 @@ export default function MyProperties({ autoOpenForm = false }) {
       p.name?.toLowerCase().includes(filterSearch.toLowerCase()) ||
       p.city?.toLowerCase().includes(filterSearch.toLowerCase()) ||
       (p.address || p.location || '').toLowerCase().includes(filterSearch.toLowerCase()) ||
-      p.propertyNo?.toString().includes(filterSearch);
+      p.propertyNo?.toString()?.includes(filterSearch);
     const matchesType = filterType === '' || p.type === filterType;
     let matchesDate = true;
     if (p.createdAt) {
