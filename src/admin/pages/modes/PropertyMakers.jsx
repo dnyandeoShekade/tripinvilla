@@ -44,6 +44,7 @@ export default function PropertyMakers() {
     bedRooms: 1,
     beds: 2,
     capacity: 3,
+    foodPreference: "none",
     bathRooms: 1,
     rules: "",
     highlights: {
@@ -457,7 +458,7 @@ export default function PropertyMakers() {
       amenities: [], location: "", full_address: "", latitude: "", longitude: "",
       propertyPrice: "", originalPrice: "", taxAmount: "", imagesUrl: "", videosUrl: "",
       aboutProperty: "", status: "Active", checkIn: "3:00 PM", checkOut: "12:00 PM",
-      area: "31 sq. ft.", bedRooms: 1, beds: 2, capacity: 3, bathRooms: 1,
+      area: "31 sq. ft.", bedRooms: 1, beds: 2, capacity: 3, bathRooms: 1, foodPreference: "none",
       rules: "",
       highlights: { breakfastIncluded: false, parkingAvailable: false, freeCancellation: false, freeCancellationHours: "24" },
     });
@@ -1592,6 +1593,21 @@ export default function PropertyMakers() {
                 className="form-input"
                 required
               />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Food Preference*</label>
+              <select
+                name="foodPreference"
+                value={formData.foodPreference || 'none'}
+                onChange={handleChange}
+                className="form-input"
+                required
+              >
+                <option value="none">None / No Food Provided</option>
+                <option value="veg">Pure Veg</option>
+                <option value="non-veg">Non-Veg Allowed</option>
+                <option value="both">Both (Veg & Non-Veg)</option>
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">Bath Rooms*</label>
