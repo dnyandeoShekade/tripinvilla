@@ -172,6 +172,11 @@ export default function AboutUs() {
         body: fd
       });
       if (res.ok) {
+        const result = await res.json();
+        if (result?.data) {
+          setFormData(prev => ({ ...prev, ...result.data }));
+        }
+        setFiles({});
         alert('About Us content updated successfully!');
       } else {
         alert('Failed to update About Us content.');
@@ -215,8 +220,8 @@ export default function AboutUs() {
 
           <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '0 -32px 24px -32px' }} />
 
-          {/* Section 1 */}
-          <SectionLabel text="Section 1" />
+          {/* Section 1 — Intro block on About Us page */}
+          <SectionLabel text="Section 1 — Intro (Mission, Vision & Experience)" />
           <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
@@ -275,8 +280,8 @@ export default function AboutUs() {
 
           <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '0 -32px 24px -32px' }} />
 
-          {/* Section 2 */}
-          <SectionLabel text="Section 2 (Services)" />
+          {/* Section 2 — Services block on About Us page */}
+          <SectionLabel text="Section 2 — Why Choose Our Services" />
           <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Main Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
@@ -337,7 +342,7 @@ export default function AboutUs() {
           <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '24px -32px 24px -32px' }} />
 
           {/* Section 3: Testimonials */}
-          <SectionLabel text="Section 3 (Testimonials)" />
+          <SectionLabel text="Section 3 — Testimonials (shown on About Us page)" />
           <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>

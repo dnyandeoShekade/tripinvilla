@@ -349,10 +349,14 @@ export default function HomePage(props) {
             {/* Title Layout */}
             <div className="section-title-wrap">
               <h2 className="section-main-headline">
-                <span className="highlight-sharp-blue-box">Popular</span> Offers Of Property
+                {renderTitle(
+                  homepageContent?.section4?.title,
+                  <span><span className="highlight-sharp-blue-box">Popular</span> Offers Of Property</span>,
+                  'Popular'
+                )}
               </h2>
               <p className="section-sub-headline">
-                {homepageContent?.section2?.subText || 'Carefully selected stays that meet our standards for comfort, quality, and location.'}
+                {homepageContent?.section4?.subText || 'Exclusive deals on handpicked stays — limited-time offers you won\'t want to miss.'}
               </p>
             </div>
 

@@ -33,6 +33,7 @@ export default function HeroSection(props) {
 
     // Actions
     handleClearAll,
+    handleCloseSearch,
     handleSearch,
     handleAISearch,
     aiSearchLoading,
@@ -106,12 +107,16 @@ export default function HeroSection(props) {
           </div>
 
           {/* ══ FLOATING SEARCH CARD ══ */}
-          <div className="search-card-wrapper">
+          <form
+            className="search-card-wrapper"
+            onSubmit={(e) => { e.preventDefault(); handleSearch(); }}
+          >
             {/* Top category bar */}
             <div className="tabs-row">
               {['Villas', 'Homestays', 'Hotels', 'Resorts', 'More+'].map((tab) => (
                 <button
                   key={tab}
+                  type="button"
                   className={`tab-btn ${activeSearchTab === tab ? 'active' : ''}`}
                   onClick={() => setActiveSearchTab(tab)}
                 >
@@ -298,15 +303,15 @@ export default function HeroSection(props) {
 
               {/* Execution Buttons */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <button className="btn-outline">Close</button>
-                <button className="btn-outline" onClick={handleClearAll}>Clear all</button>
+                <button type="button" className="btn-outline" onClick={handleCloseSearch || handleClearAll}>Close</button>
+                <button type="button" className="btn-outline" onClick={handleClearAll}>Clear all</button>
                 
-                <button className="btn-search" onClick={handleSearch}>
+                <button type="submit" className="btn-search">
                   <Search size={16} />
                   <span>Search</span>
                 </button>
 
-                <button className="btn-search-ai" onClick={handleAISearch} disabled={aiSearchLoading} style={{ opacity: aiSearchLoading ? 0.7 : 1 }}>
+                <button type="button" className="btn-search-ai" onClick={handleAISearch} disabled={aiSearchLoading} style={{ opacity: aiSearchLoading ? 0.7 : 1 }}>
                   <Sparkles size={16} color="var(--primary-blue)" />
                   <span>{aiSearchLoading ? 'Searching...' : 'Search with AI'}</span>
                 </button>
@@ -314,7 +319,7 @@ export default function HeroSection(props) {
 
             </div>
 
-          </div>
+          </form>
 
         </div>
       )}

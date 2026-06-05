@@ -65,7 +65,7 @@ export default function GuestApp() {
     }
   };
 
-  const popularOffers = usePopularOffers(API_BASE);
+  const popularOffers = usePopularOffers(API_BASE, activeMenu);
 
   const {
     token,
@@ -197,6 +197,8 @@ export default function GuestApp() {
     handleAISearch,
     handleSearch,
     handleClearAll,
+    handleCloseSearch,
+    buildSearchParams,
   } = useGuestSearch({ API_BASE, setActiveMenu });
 
   const mapDbProperties = (dbProps, defaultList) =>
@@ -523,13 +525,21 @@ export default function GuestApp() {
   })) : [];
 
   const getFilteredProperties = () => {
-    const hasFilters = (sidebarSearchText && sidebarSearchText.trim() !== '') || (where && where.trim() !== '') || filterSelectedTypes.length > 0 || filterSelectedAmenities.length > 0 || filterMinPrice !== '' || filterMaxPrice !== '' || filterMinRating > 0 || filterInstantBook || filterCancellationPolicy || filterHomestays;
-
-    if (!hasFilters) return currentPropertiesVillas;
-
     let displayList = [...currentPropertiesVillas];
 
-    // 1. Sidebar Search text filter
+    // 1. Hero "Where" filter (client-side refinement)
+    if (where && where.trim() !== '') {
+      const q = where.toLowerCase().trim();
+      displayList = displayList.filter(p =>
+        p.title?.toLowerCase().includes(q) ||
+        p.location?.toLowerCase().includes(q) ||
+        p.category?.toLowerCase().includes(q) ||
+        p.type?.toLowerCase().includes(q) ||
+        p.description?.toLowerCase().includes(q)
+      );
+    }
+
+    // 2. Sidebar Search text filter
     if (sidebarSearchText && sidebarSearchText.trim() !== '') {
       const q = sidebarSearchText.toLowerCase().trim();
       displayList = displayList.filter(p => 
@@ -541,25 +551,27 @@ export default function GuestApp() {
       );
     }
 
-    // 2. Property Type filter
+    // 3. Property Type filter
     if (filterSelectedTypes.length > 0) {
       displayList = displayList.filter(p => filterSelectedTypes.some(t => p.type?.toLowerCase() === t.toLowerCase() || p.category?.toLowerCase() === t.toLowerCase()));
     }
 
-    // 3. Price/Budget filters
-    const minP = filterMinPrice !== '' ? Number(filterMinPrice) : 0;
-    const maxP = filterMaxPrice !== '' ? Number(filterMaxPrice) : Infinity;
-    displayList = displayList.filter(p => {
-      const priceNum = p.priceRaw !== undefined ? p.priceRaw : Number(String(p.price || 0).replace(/[^\d]/g, ''));
-      return priceNum >= minP && priceNum <= maxP;
-    });
+    // 4. Price/Budget filters
+    if (filterMinPrice !== '' || filterMaxPrice !== '') {
+      const minP = filterMinPrice !== '' ? Number(filterMinPrice) : 0;
+      const maxP = filterMaxPrice !== '' ? Number(filterMaxPrice) : Infinity;
+      displayList = displayList.filter(p => {
+        const priceNum = p.priceRaw !== undefined ? p.priceRaw : Number(String(p.price || 0).replace(/[^\d]/g, ''));
+        return priceNum >= minP && priceNum <= maxP;
+      });
+    }
 
-    // 4. Rating/Star Category filter
+    // 5. Rating/Star Category filter
     if (filterMinRating > 0) {
       displayList = displayList.filter(p => Math.round(Number(p.rating || 0)) === filterMinRating);
     }
 
-    // 5. Amenities filter
+    // 6. Amenities filter
     if (filterSelectedAmenities.length > 0) {
       displayList = displayList.filter(p => {
         const propAmenities = (p.amenities || []).map(a => a.toLowerCase());
@@ -567,7 +579,7 @@ export default function GuestApp() {
       });
     }
 
-    // 6. Booking Preferences filters
+    // 7. Booking Preferences filters
     if (filterInstantBook) {
       displayList = displayList.filter(p => p.instantBook || (p.rules || '').toLowerCase().includes('instant') || (p.description || '').toLowerCase().includes('instant'));
     }
@@ -685,6 +697,8 @@ export default function GuestApp() {
     handleAISearch,
     handleSearch,
     handleClearAll,
+    handleCloseSearch,
+    buildSearchParams,
     sidebarSearchText,
     setSidebarSearchText,
     filterMinPrice,

@@ -30,6 +30,7 @@ export default function SearchResultsPage(props) {
     setAuthMode, setAuthModalOpen,
     aiSummary, aiTags,
     fetchProperties,
+    buildSearchParams,
   } = props;
 
   const [showMap, setShowMap] = useState(false);
@@ -105,7 +106,7 @@ export default function SearchResultsPage(props) {
                 <input type="number" placeholder="Min" value={filterMinPrice} onChange={e => setFilterMinPrice(e.target.value === '' ? '' : Number(e.target.value))} style={{ flex: 1, border: '1px solid #E5E7EB', borderRadius: '8px', padding: '6px 12px', fontSize: '13px', fontFamily: '"Outfit", sans-serif', color: '#374151', outline: 'none' }} />
                 <span style={{ fontSize: '12px', color: '#9CA3AF', fontFamily: '"Outfit", sans-serif' }}>To</span>
                 <input type="number" placeholder="Max" value={filterMaxPrice} onChange={e => setFilterMaxPrice(e.target.value === '' ? '' : Number(e.target.value))} style={{ flex: 1, border: '1px solid #E5E7EB', borderRadius: '8px', padding: '6px 12px', fontSize: '13px', fontFamily: '"Outfit", sans-serif', color: '#374151', outline: 'none' }} />
-                <button style={{ background: '#ffffff', border: '1px solid #E5E7EB', borderRadius: '8px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.borderColor = '#58A429'} onMouseOut={e => e.currentTarget.style.borderColor = '#E5E7EB'}><ArrowRight size={14} color="#111827" /></button>
+                <button type="button" title="Apply budget" style={{ background: '#ffffff', border: '1px solid #E5E7EB', borderRadius: '8px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s' }} onClick={() => fetchProperties(buildSearchParams ? buildSearchParams() : { search: where })} onMouseOver={e => e.currentTarget.style.borderColor = '#58A429'} onMouseOut={e => e.currentTarget.style.borderColor = '#E5E7EB'}><ArrowRight size={14} color="#111827" /></button>
               </div>
             </div>
 
@@ -173,7 +174,7 @@ export default function SearchResultsPage(props) {
             </div>
 
             {/* Clear filters */}
-            <button onClick={() => { setFilterSelectedTypes([]); setFilterSelectedAmenities([]); setFilterMinPrice(''); setFilterMaxPrice(''); setFilterPriceSlider(50000); setSidebarSearchText(''); setFilterMinRating(0); setFilterInstantBook(false); setFilterCancellationPolicy(false); setFilterHomestays(false); setSearchSortBy('popularity'); fetchProperties({ search: where }); }} style={{ width: '100%', marginTop: '16px', padding: '10px', background: '#F3F4F6', border: '1px solid #E5E7EB', borderRadius: '10px', fontSize: '13px', fontWeight: 600, color: '#374151', cursor: 'pointer', fontFamily: '"Outfit", sans-serif', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.background = '#E5E7EB'} onMouseOut={e => e.currentTarget.style.background = '#F3F4F6'}>
+            <button onClick={() => { setFilterSelectedTypes([]); setFilterSelectedAmenities([]); setFilterMinPrice(''); setFilterMaxPrice(''); setFilterPriceSlider(50000); setSidebarSearchText(''); setFilterMinRating(0); setFilterInstantBook(false); setFilterCancellationPolicy(false); setFilterHomestays(false); setSearchSortBy('popularity'); fetchProperties(buildSearchParams ? buildSearchParams({ search: where, type: '' }) : { search: where }); }} style={{ width: '100%', marginTop: '16px', padding: '10px', background: '#F3F4F6', border: '1px solid #E5E7EB', borderRadius: '10px', fontSize: '13px', fontWeight: 600, color: '#374151', cursor: 'pointer', fontFamily: '"Outfit", sans-serif', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.background = '#E5E7EB'} onMouseOut={e => e.currentTarget.style.background = '#F3F4F6'}>
               Clear All Filters
             </button>
           </div>

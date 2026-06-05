@@ -76,8 +76,7 @@ export default function Homepage() {
     banner: { title: 'Find Your Perfect Stay', image: '' },
     section1: { title: 'Best Villas around you', subText: 'Choose from homestays, villas, apartments, resorts and more—stays that fit your travel style.' },
     section2: { title: 'Curated properties', subText: 'Carefully selected stays that meet our standards for comfort, quality, and location.' },
-    section3: { title: 'Top Destinations around you', subText: 'Choose the next destination for you' },
-    section4: { title: 'Popular Offers of Property', subText: 'Carefully selected stays that meet our standards for comfort, quality, and location.' },
+    section4: { title: 'Popular Offers of Property', subText: 'Exclusive deals on handpicked stays — limited-time offers you won\'t want to miss.' },
     section5: {
       title: 'Why Choose Our *Services*',
       subText: 'Choose the next destination for you',
@@ -92,19 +91,6 @@ export default function Homepage() {
       ],
       image3: ''
     },
-    section6: {
-      title: 'Our Testimonials', subText: 'Check what our customers says about us',
-      testimonials: Array(4).fill({ text: 'Working with this...', name: 'Jessy Rey', designation: 'Director Of Operations', image: '', video: '' })
-    },
-    section7: {
-      point1: 'Curated & Verified Stays', point2: 'Seamless Booking Experience',
-      highlights: [
-        { title: 'Our Mission', subText: 'Our mission is to connect travelers ...', icon: '' },
-        { title: 'Our Mission', subText: 'Our mission is to connect travelers ...', icon: '' }
-      ],
-      experience: { title: '40+', subText: 'Years of Experience That Drive Results' },
-      mainImage: ''
-    }
   });
 
   const [files, setFiles] = useState({});
@@ -115,7 +101,8 @@ export default function Homepage() {
       .then(res => res.json())
       .then(data => {
         if (data && data.data && Object.keys(data.data).length > 0) {
-          setFormData(prev => ({ ...prev, ...data.data }));
+          const { section3, section6, section7, ...rest } = data.data;
+          setFormData(prev => ({ ...prev, ...rest }));
         }
       })
       .catch(console.error);
@@ -155,11 +142,16 @@ export default function Homepage() {
     return '';
   };
 
+  const buildPayload = () => {
+    const { section3, section6, section7, ...payload } = formData;
+    return payload;
+  };
+
   const handleUpdate = async () => {
     setLoading(true);
     try {
       const fd = new FormData();
-      fd.append('contentData', JSON.stringify(formData));
+      fd.append('contentData', JSON.stringify(buildPayload()));
       Object.keys(files).forEach(key => {
         fd.append(key, files[key]);
       });
@@ -168,6 +160,12 @@ export default function Homepage() {
         body: fd
       });
       if (res.ok) {
+        const result = await res.json();
+        if (result?.data) {
+          const { section3, section6, section7, ...rest } = result.data;
+          setFormData(prev => ({ ...prev, ...rest }));
+        }
+        setFiles({});
         alert('Homepage content updated successfully!');
       } else {
         alert('Failed to update homepage content.');
@@ -209,8 +207,8 @@ export default function Homepage() {
 
           <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '0 -32px 24px -32px' }} />
 
-          {/* Section 1 */}
-          <SectionLabel text="Section 1" />
+          {/* Section 1 — Best Villas Around You */}
+          <SectionLabel text="Section 1 — Best Villas Around You" />
           <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
@@ -224,8 +222,8 @@ export default function Homepage() {
 
           <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '0 -32px 24px -32px' }} />
 
-          {/* Section 2 */}
-          <SectionLabel text="Section 2" />
+          {/* Section 2 — Curated Properties */}
+          <SectionLabel text="Section 2 — Curated Properties" />
           <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
@@ -239,23 +237,8 @@ export default function Homepage() {
 
           <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '0 -32px 24px -32px' }} />
 
-          {/* Section 3 */}
-          <SectionLabel text="Section 3" />
-          <div className="form-grid-2">
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
-              <input type="text" className="form-input" value={formData.section3.title} onChange={e => handleChange(e, 'section3.title')} />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Sub-Text*</label>
-              <input type="text" className="form-input" value={formData.section3.subText} onChange={e => handleChange(e, 'section3.subText')} />
-            </div>
-          </div>
-
-          <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '0 -32px 24px -32px' }} />
-
-          {/* Section 4 */}
-          <SectionLabel text="Section 4" />
+          {/* Section 4 — Popular Offers (homepage) */}
+          <SectionLabel text="Section 3 — Popular Offers of Property" />
           <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
@@ -269,8 +252,8 @@ export default function Homepage() {
 
           <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '0 -32px 24px -32px' }} />
 
-          {/* Section 5 */}
-                    <SectionLabel text="Section 5" />
+          {/* Section 5 — Why Choose Our Services */}
+          <SectionLabel text="Section 4 — Why Choose Our Services" />
           <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Main Title*</label>
@@ -332,93 +315,6 @@ export default function Homepage() {
               <label className="form-label">Feature 2 Title*</label>
               <input type="text" className="form-input" value={formData.section5.features[1].title} onChange={e => handleChange(e, 'section5.features.1.title')} />
             </div>
-          </div>
-
-          <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '24px -32px 24px -32px' }} />
-
-          {/* Section 6 */}
-          <SectionLabel text="Section 6 (Testimonials)" />
-          <div className="form-grid-2">
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
-              <input type="text" className="form-input" value={formData.section6.title} onChange={e => handleChange(e, 'section6.title')} />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Sub-Text*</label>
-              <input type="text" className="form-input" value={formData.section6.subText} onChange={e => handleChange(e, 'section6.subText')} />
-            </div>
-          </div>
-          {formData.section6.testimonials.map((t, i) => (
-            <div key={i} className="form-grid-5" style={{ marginBottom: i === 3 ? 0 : 24 }}>
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">Text {i + 1}*</label>
-                <input type="text" className="form-input" value={t.text} onChange={e => handleChange(e, `section6.testimonials.${i}.text`)} />
-              </div>
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">Name*</label>
-                <input type="text" className="form-input" value={t.name} onChange={e => handleChange(e, `section6.testimonials.${i}.name`)} />
-              </div>
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">Designation*</label>
-                <input type="text" className="form-input" value={t.designation} onChange={e => handleChange(e, `section6.testimonials.${i}.designation`)} />
-              </div>
-              <FileUpload label={`Image ${i + 1}`} name={`section6.testimonials.${i}.image`} onChange={e => handleFileChange(e, `section6.testimonials.${i}.image`)} fileData={getFileDisplay(`section6.testimonials.${i}.image`)} />
-              <FileUpload label={`Video ${i + 1}`} name={`section6.testimonials.${i}.video`} onChange={e => handleFileChange(e, `section6.testimonials.${i}.video`)} fileData={getFileDisplay(`section6.testimonials.${i}.video`)} />
-            </div>
-          ))}
-
-          <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '24px -32px 24px -32px' }} />
-
-          {/* Section 7 */}
-          <SectionLabel text="Section 7 (Highlights)" />
-          <div className="form-grid-2">
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Point 1*</label>
-              <input type="text" className="form-input" value={formData.section7.point1} onChange={e => handleChange(e, 'section7.point1')} />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Point 2*</label>
-              <input type="text" className="form-input" value={formData.section7.point2} onChange={e => handleChange(e, 'section7.point2')} />
-            </div>
-          </div>
-
-          <div className="form-grid-3">
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Highlight 1 Title*</label>
-              <input type="text" className="form-input" value={formData.section7.highlights[0].title} onChange={e => handleChange(e, 'section7.highlights.0.title')} />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Highlight 1 Sub-Text*</label>
-              <input type="text" className="form-input" value={formData.section7.highlights[0].subText} onChange={e => handleChange(e, 'section7.highlights.0.subText')} />
-            </div>
-            <FileUpload label="Upload SVG (Highlight 1 Icon)*" name="section7.highlights.0.icon" onChange={e => handleFileChange(e, 'section7.highlights.0.icon')} fileData={getFileDisplay('section7.highlights.0.icon')} />
-          </div>
-
-          <div className="form-grid-3">
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Highlight 2 Title*</label>
-              <input type="text" className="form-input" value={formData.section7.highlights[1].title} onChange={e => handleChange(e, 'section7.highlights.1.title')} />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Highlight 2 Sub-Text*</label>
-              <input type="text" className="form-input" value={formData.section7.highlights[1].subText} onChange={e => handleChange(e, 'section7.highlights.1.subText')} />
-            </div>
-            <FileUpload label="Upload SVG (Highlight 2 Icon)*" name="section7.highlights.1.icon" onChange={e => handleFileChange(e, 'section7.highlights.1.icon')} fileData={getFileDisplay('section7.highlights.1.icon')} />
-          </div>
-
-          <div className="form-grid-2">
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Experience Title*</label>
-              <input type="text" className="form-input" value={formData.section7.experience.title} onChange={e => handleChange(e, 'section7.experience.title')} />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Experience Sub-text*</label>
-              <input type="text" className="form-input" value={formData.section7.experience.subText} onChange={e => handleChange(e, 'section7.experience.subText')} />
-            </div>
-          </div>
-
-          <div className="form-grid-1" style={{ marginBottom: 0 }}>
-            <FileUpload label="Main Image*" name="section7.mainImage" onChange={e => handleFileChange(e, 'section7.mainImage')} fileData={getFileDisplay('section7.mainImage')} />
           </div>
 
         </div>

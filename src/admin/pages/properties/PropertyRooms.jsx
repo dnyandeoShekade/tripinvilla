@@ -23,6 +23,11 @@ export default function PropertyRooms() {
   // We are replacing the top stats hero section in return block:
   // (We will use the replacement target range lines below)
 
+  const getRequestRooms = (request) => {
+    if (Array.isArray(request?.rooms) && request.rooms.length > 0) return request.rooms;
+    return [request];
+  };
+
   const getAuthHeaders = (method = 'GET') => {
     const token = localStorage.getItem('admin_token');
     return {
@@ -282,16 +287,16 @@ export default function PropertyRooms() {
             <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', whiteSpace: 'nowrap' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid #F3F4F6' }}>
-                  {['Request No','Image','Property Name','Location','Category','Owner Name','Owner Contact','Price by Owner','Status','Actions'].map((h, i) => (
+                  {['Request No','Image','Property Name','Location','Category','Rooms','Owner Name','Owner Contact','Price by Owner','Status','Actions'].map((h, i) => (
                     <th key={i} style={{ color: '#9CA3AF', fontWeight: 500, padding: '12px 14px', fontSize: '12px' }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {loading ? (
-                  <tr><td colSpan="10" style={{ textAlign: 'center', padding: '40px 0', color: '#6B7280' }}>Loading requests...</td></tr>
+                  <tr><td colSpan="11" style={{ textAlign: 'center', padding: '40px 0', color: '#6B7280' }}>Loading requests...</td></tr>
                 ) : paginatedRequests.length === 0 ? (
-                  <tr><td colSpan="10" style={{ textAlign: 'center', padding: '40px 0', color: '#6B7280' }}>No requests found</td></tr>
+                  <tr><td colSpan="11" style={{ textAlign: 'center', padding: '40px 0', color: '#6B7280' }}>No requests found</td></tr>
                 ) : (
                   paginatedRequests.map((p, i) => (
                     <tr key={p._id || i} style={{ borderBottom: '1px solid #F3F4F6' }}>
@@ -304,6 +309,11 @@ export default function PropertyRooms() {
                       <td style={{ color: '#111827', fontWeight: 500, padding: '14px', cursor: 'pointer' }} onClick={() => { setSelectedRequest(p); setTimeout(() => document.getElementById('request-detail-div')?.scrollIntoView({ behavior: 'smooth' }), 100); }}><ReadMore maxWords={6}>{p.propertyName}</ReadMore></td>
                       <td style={{ color: '#6B7280', padding: '14px', whiteSpace: 'pre-line', lineHeight: 1.4 }}><ReadMore maxWords={6}>{p.location}</ReadMore></td>
                       <td style={{ padding: '14px' }}><span className="category-pill">{p.category}</span></td>
+                      <td style={{ color: '#374151', padding: '14px', fontWeight: 500 }}>
+                        {getRequestRooms(p).length > 1
+                          ? `${getRequestRooms(p).length} Rooms`
+                          : (p.room_type || '1 Room')}
+                      </td>
                       <td style={{ color: '#6B7280', padding: '14px' }}>{p.ownerName}</td>
                       <td style={{ color: '#6B7280', padding: '14px' }}>{p.ownerContact}</td>
                       <td style={{ color: '#111827', fontWeight: 600, padding: '14px' }}>{typeof p.priceByOwner === 'number' ? `₹${p.priceByOwner.toLocaleString()}` : `₹${p.priceByOwner}`}</td>
@@ -391,7 +401,9 @@ export default function PropertyRooms() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid #E5E7EB', paddingBottom: 20, marginBottom: 24 }}>
               <div>
                 <h3 style={{ fontSize: 20, fontWeight: 700, color: '#111827', margin: 0 }}>Requested Property Details</h3>
-                <p style={{ fontSize: 13, color: '#6B7280', margin: '4px 0 0 0' }}>Room request: {selectedRequest.requestNo}</p>
+                <p style={{ fontSize: 13, color: '#6B7280', margin: '4px 0 0 0' }}>
+                  Request: {selectedRequest.requestNo} · {getRequestRooms(selectedRequest).length} room{getRequestRooms(selectedRequest).length > 1 ? 's' : ''}
+                </p>
               </div>
               <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                 {selectedRequest.status !== 'Accepted' && (
@@ -437,147 +449,152 @@ export default function PropertyRooms() {
               </span>
             </div>
 
-            {/* Main Grid: Image + Room Details */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 24, marginBottom: 24 }}>
-              {/* Room Image & Gallery */}
-              <div>
-                <div style={{ width: '100%', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', aspectRatio: '4/3', marginBottom: 10 }}>
-                  <img 
-                    src={selectedRequest.room_image_url || selectedRequest.image || "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80"} 
-                    alt="Room" 
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
-                  />
-                </div>
-                {selectedRequest.room_images && selectedRequest.room_images.length > 1 && (
-                  <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
-                    {selectedRequest.room_images.map((imgUrl, imgIdx) => (
-                      <div 
-                        key={imgIdx} 
-                        style={{ width: 60, height: 45, borderRadius: 6, overflow: 'hidden', flexShrink: 0, border: '1px solid #E5E7EB' }}
-                      >
-                        <img src={imgUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
-                      </div>
-                    ))}
-                  </div>
-                )}
+            {/* Owner Info */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 24 }}>
+              <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Owner</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{selectedRequest.ownerName || '—'}</div>
               </div>
-
-              {/* Room Core Details */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {/* Room Type */}
-                <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 10, padding: '12px 16px' }}>
-                  <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Room Type</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#111827' }}>{selectedRequest.room_type || '—'}</div>
-                </div>
-
-                {/* Bed & Price */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                    <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Bed Type</div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>{selectedRequest.bed_type || '—'}</div>
-                  </div>
-                  <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                    <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Price / Night (Selling)</div>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#58A429' }}>
-                      {selectedRequest.price_per_room ? `₹${Number(selectedRequest.price_per_room).toLocaleString()}` : `₹${selectedRequest.priceByOwner || '—'}`}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Original Price & Tax Amount */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                    <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Original Price</div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#9CA3AF', textDecoration: selectedRequest.original_price ? 'line-through' : 'none' }}>
-                      {selectedRequest.original_price ? `₹${Number(selectedRequest.original_price).toLocaleString()}` : '—'}
-                    </div>
-                  </div>
-                  <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                    <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Tax Amount</div>
-                    <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
-                      {selectedRequest.tax_amount ? `₹${Number(selectedRequest.tax_amount).toLocaleString()}` : '—'}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Check-In / Check-Out */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                    <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Check-In</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{selectedRequest.checkin_time || '—'}</div>
-                  </div>
-                  <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                    <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Check-Out</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{selectedRequest.checkout_time || '—'}</div>
-                  </div>
-                </div>
-
-                {/* Owner Info */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                  <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                    <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Owner</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{selectedRequest.ownerName || '—'}</div>
-                  </div>
-                  <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                    <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Contact</div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{selectedRequest.ownerContact || '—'}</div>
-                  </div>
-                </div>
+              <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Contact</div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{selectedRequest.ownerContact || '—'}</div>
               </div>
             </div>
 
-            {/* Amenities */}
-            {selectedRequest.amenities_types && selectedRequest.amenities_types.length > 0 && (
-              <div style={{ marginBottom: 20 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 10 }}>Amenities</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  {selectedRequest.amenities_types.map((a, i) => (
-                    <span key={i} style={{ padding: '4px 12px', background: '#EFF6FF', color: '#2563EB', borderRadius: 20, fontSize: 12, fontWeight: 500, border: '1px solid #BFDBFE' }}>
-                      {a}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            {/* All Rooms */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+              {getRequestRooms(selectedRequest).map((room, roomIdx) => (
+                <div key={roomIdx} style={{ border: '1px solid #E5E7EB', borderRadius: 14, padding: 24, background: '#FAFAFA' }}>
+                  {getRequestRooms(selectedRequest).length > 1 && (
+                    <div style={{ fontSize: 13, fontWeight: 700, color: '#2563EB', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      Room {roomIdx + 1} of {getRequestRooms(selectedRequest).length}
+                    </div>
+                  )}
 
-            {/* Offers */}
-            {selectedRequest.offers && selectedRequest.offers.length > 0 && (
-              <div style={{ marginBottom: 20 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 10 }}>Offers Included</div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-                  {selectedRequest.offers.map((o, i) => (
-                    <span key={i} style={{ padding: '4px 12px', background: '#F0FDF4', color: '#16A34A', borderRadius: 20, fontSize: 12, fontWeight: 500, border: '1px solid #BBF7D0' }}>
-                      ✓ {o}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Rules */}
-            {selectedRequest.rules && (Array.isArray(selectedRequest.rules) ? selectedRequest.rules.length > 0 : selectedRequest.rules) && (
-              <div style={{ marginBottom: 20 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 10 }}>House Rules</div>
-                {Array.isArray(selectedRequest.rules) ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {selectedRequest.rules.map((rule, idx) => (
-                      <div key={idx} style={{ background: '#FFFDF5', border: '1px solid #FEF3C7', borderRadius: 8, padding: '12px 14px' }}>
-                        <div style={{ fontSize: 13, fontWeight: 700, color: '#D97706', marginBottom: 6 }}>{rule.title || 'Rule'}</div>
-                        <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12.5, color: '#6B7280', lineHeight: 1.6 }}>
-                          {Array.isArray(rule.points) ? rule.points.map((pt, pidx) => (
-                            <li key={pidx}>{pt}</li>
-                          )) : <li>{rule.points || rule.text || ''}</li>}
-                        </ul>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 24, marginBottom: 20 }}>
+                    <div>
+                      <div style={{ width: '100%', borderRadius: 12, overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,0,0,0.08)', aspectRatio: '4/3', marginBottom: 10 }}>
+                        <img
+                          src={room.room_image_url || selectedRequest.room_image_url || selectedRequest.image || "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80"}
+                          alt="Room"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
                       </div>
-                    ))}
+                      {(room.room_images || selectedRequest.room_images) && (room.room_images || selectedRequest.room_images).length > 1 && (
+                        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 4 }}>
+                          {(room.room_images || selectedRequest.room_images).map((imgUrl, imgIdx) => (
+                            <div
+                              key={imgIdx}
+                              style={{ width: 60, height: 45, borderRadius: 6, overflow: 'hidden', flexShrink: 0, border: '1px solid #E5E7EB' }}
+                            >
+                              <img src={imgUrl} style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="" />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                      <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 10, padding: '12px 16px' }}>
+                        <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Room Type</div>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: '#111827' }}>{room.room_type || selectedRequest.room_type || '—'}</div>
+                      </div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                        <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                          <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Bed Type</div>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>{room.bed_type || selectedRequest.bed_type || '—'}</div>
+                        </div>
+                        <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                          <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Price / Night (Selling)</div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: '#58A429' }}>
+                            {(room.price_per_room || selectedRequest.price_per_room)
+                              ? `₹${Number(room.price_per_room || selectedRequest.price_per_room).toLocaleString()}`
+                              : `₹${selectedRequest.priceByOwner || '—'}`}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                        <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                          <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Original Price</div>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: '#9CA3AF', textDecoration: (room.original_price || selectedRequest.original_price) ? 'line-through' : 'none' }}>
+                            {(room.original_price || selectedRequest.original_price) ? `₹${Number(room.original_price || selectedRequest.original_price).toLocaleString()}` : '—'}
+                          </div>
+                        </div>
+                        <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                          <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Tax Amount</div>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
+                            {(room.tax_amount || selectedRequest.tax_amount) ? `₹${Number(room.tax_amount || selectedRequest.tax_amount).toLocaleString()}` : '—'}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+                        <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                          <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Check-In</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{room.checkin_time || selectedRequest.checkin_time || '—'}</div>
+                        </div>
+                        <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                          <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Check-Out</div>
+                          <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{room.checkout_time || selectedRequest.checkout_time || '—'}</div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                ) : (
-                  <p style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.6, margin: 0, background: '#FFFDF5', padding: '12px 14px', borderRadius: 8, border: '1px solid #FEF3C7' }}>
-                    {selectedRequest.rules}
-                  </p>
-                )}
-              </div>
-            )}
+
+                  {(room.amenities_types || selectedRequest.amenities_types) && (room.amenities_types || selectedRequest.amenities_types).length > 0 && (
+                    <div style={{ marginBottom: 16 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 10 }}>Amenities</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                        {(room.amenities_types || selectedRequest.amenities_types).map((a, i) => (
+                          <span key={i} style={{ padding: '4px 12px', background: '#EFF6FF', color: '#2563EB', borderRadius: 20, fontSize: 12, fontWeight: 500, border: '1px solid #BFDBFE' }}>
+                            {a}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {(room.offers || selectedRequest.offers) && (room.offers || selectedRequest.offers).length > 0 && (
+                    <div style={{ marginBottom: 16 }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 10 }}>Offers Included</div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                        {(room.offers || selectedRequest.offers).map((o, i) => (
+                          <span key={i} style={{ padding: '4px 12px', background: '#F0FDF4', color: '#16A34A', borderRadius: 20, fontSize: 12, fontWeight: 500, border: '1px solid #BBF7D0' }}>
+                            ✓ {o}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {(room.rules || selectedRequest.rules) && (Array.isArray(room.rules || selectedRequest.rules) ? (room.rules || selectedRequest.rules).length > 0 : (room.rules || selectedRequest.rules)) && (
+                    <div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 10 }}>House Rules</div>
+                      {Array.isArray(room.rules || selectedRequest.rules) ? (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                          {(room.rules || selectedRequest.rules).map((rule, idx) => (
+                            <div key={idx} style={{ background: '#FFFDF5', border: '1px solid #FEF3C7', borderRadius: 8, padding: '12px 14px' }}>
+                              <div style={{ fontSize: 13, fontWeight: 700, color: '#D97706', marginBottom: 6 }}>{rule.title || 'Rule'}</div>
+                              <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12.5, color: '#6B7280', lineHeight: 1.6 }}>
+                                {Array.isArray(rule.points) ? rule.points.map((pt, pidx) => (
+                                  <li key={pidx}>{pt}</li>
+                                )) : <li>{rule.points || rule.text || ''}</li>}
+                              </ul>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p style={{ fontSize: 13, color: '#6B7280', lineHeight: 1.6, margin: 0, background: '#FFFDF5', padding: '12px 14px', borderRadius: 8, border: '1px solid #FEF3C7' }}>
+                          {room.rules || selectedRequest.rules}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
 
             {/* About / Description */}
             {selectedRequest.about && (

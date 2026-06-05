@@ -227,17 +227,25 @@ export default function PropertyRequests() {
 
   const handleRemoveFromQueue = (idx) => setRoomQueue(prev => prev.filter((_, i) => i !== idx));
 
-  // Submit all queued rooms
+  // Submit all queued rooms as a single property request
   const handleSubmitAll = async (e) => {
     e.preventDefault();
     if (roomQueue.length === 0) { alert('Add at least one room to the queue first.'); return; }
+
+    const propertyIds = [...new Set(roomQueue.map((room) => room.property_id))];
+    if (propertyIds.length > 1) {
+      alert('All rooms must belong to the same property.');
+      return;
+    }
+
     setLoading(true);
     try {
-      for (const room of roomQueue) {
-        const { _preview_img, ...payload } = room;
-        await propertyRequestService.add(payload);
-      }
-      alert(`${roomQueue.length} room(s) submitted successfully for Admin approval!`);
+      const rooms = roomQueue.map(({ _preview_img, ...room }) => room);
+      await propertyRequestService.add({
+        property_id: rooms[0].property_id,
+        rooms,
+      });
+      alert(`${rooms.length} room(s) submitted in one request for Admin approval!`);
       setRoomQueue([]);
       fetchData();
     } catch (err) {
@@ -245,6 +253,11 @@ export default function PropertyRequests() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getRequestRooms = (request) => {
+    if (Array.isArray(request?.rooms) && request.rooms.length > 0) return request.rooms;
+    return [request];
   };
 
   const handleDelete = async (id) => {
@@ -567,12 +580,28 @@ export default function PropertyRequests() {
                           <td style={{ padding: '14px 16px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                               {r.room_image_url && <img src={getFullRoomImageUrl(r.room_image_url)} alt={r.room_type} style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }} />}
-                              <span style={{ color: '#6B7280' }}>{r.room_type}</span>
+                              <span style={{ color: '#6B7280' }}>
+                                {getRequestRooms(r).length > 1
+                                  ? `${getRequestRooms(r).length} Rooms: ${getRequestRooms(r).map((room) => room.room_type).join(', ')}`
+                                  : (r.room_type || getRequestRooms(r)[0]?.room_type)}
+                              </span>
                             </div>
                           </td>
-                          <td style={{ color: '#6B7280', padding: '14px 16px' }}>{r.bed_type}</td>
-                          <td style={{ color: '#6B7280', padding: '14px 16px' }}>{r.amenities_types?.length > 0 ? r.amenities_types.join(', ') : 'None'}</td>
-                          <td style={{ color: '#111827', fontWeight: 600, padding: '14px 16px' }}>₹{r.price_per_room}</td>
+                          <td style={{ color: '#6B7280', padding: '14px 16px' }}>
+                            {getRequestRooms(r).length > 1
+                              ? `${getRequestRooms(r).length} room types`
+                              : (r.bed_type || getRequestRooms(r)[0]?.bed_type)}
+                          </td>
+                          <td style={{ color: '#6B7280', padding: '14px 16px' }}>
+                            {getRequestRooms(r).length > 1
+                              ? 'See view for details'
+                              : (r.amenities_types?.length > 0 ? r.amenities_types.join(', ') : 'None')}
+                          </td>
+                          <td style={{ color: '#111827', fontWeight: 600, padding: '14px 16px' }}>
+                            {getRequestRooms(r).length > 1
+                              ? `From ₹${Math.min(...getRequestRooms(r).map((room) => Number(room.price_per_room || 0)).filter(Boolean))}`
+                              : `₹${r.price_per_room}`}
+                          </td>
                           <td style={{ color: '#6B7280', padding: '14px 16px' }}>
                             <div>In: {r.checkin_time || '02:00 PM'}</div>
                             <div>Out: {r.checkout_time || '12:00 PM'}</div>
@@ -629,80 +658,82 @@ export default function PropertyRequests() {
 
             {/* Content */}
             <div style={{ overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {getRequestRooms(viewingRequest).map((room, roomIdx) => (
+                <div key={roomIdx} style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingBottom: roomIdx < getRequestRooms(viewingRequest).length - 1 ? '20px' : 0, borderBottom: roomIdx < getRequestRooms(viewingRequest).length - 1 ? '1px solid #E5E7EB' : 'none' }}>
+                  {getRequestRooms(viewingRequest).length > 1 && (
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#2563EB', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      Room {roomIdx + 1} of {getRequestRooms(viewingRequest).length}
+                    </div>
+                  )}
 
-              {/* Image & Title */}
-              <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                <img src={getFullRoomImageUrl(viewingRequest.room_image_url) || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60'} alt={viewingRequest.room_type} style={{ width: '120px', height: '90px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #E5E7EB' }} />
-                <div>
-                  <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: 700, color: '#111827' }}>{viewingRequest.room_type}</h3>
-                  <div style={{ fontSize: '13px', color: '#4B5563' }}>Bed Type: <strong>{viewingRequest.bed_type}</strong></div>
-                  <div style={{ fontSize: '14px', fontWeight: 700, color: '#58A429', marginTop: '6px' }}>₹{viewingRequest.price_per_room}/night</div>
-                </div>
-              </div>
-
-              {/* Specs */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                  <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Original Price</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#9CA3AF', textDecoration: viewingRequest.original_price ? 'line-through' : 'none' }}>
-                    {viewingRequest.original_price ? `₹${Number(viewingRequest.original_price).toLocaleString()}` : '—'}
+                  <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                    <img src={getFullRoomImageUrl(room.room_image_url || viewingRequest.room_image_url) || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60'} alt={room.room_type} style={{ width: '120px', height: '90px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #E5E7EB' }} />
+                    <div>
+                      <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: 700, color: '#111827' }}>{room.room_type || viewingRequest.room_type}</h3>
+                      <div style={{ fontSize: '13px', color: '#4B5563' }}>Bed Type: <strong>{room.bed_type || viewingRequest.bed_type}</strong></div>
+                      <div style={{ fontSize: '14px', fontWeight: 700, color: '#58A429', marginTop: '6px' }}>₹{room.price_per_room || viewingRequest.price_per_room}/night</div>
+                    </div>
                   </div>
-                </div>
-                <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                  <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Tax Amount</div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
-                    {viewingRequest.tax_amount ? `₹${Number(viewingRequest.tax_amount).toLocaleString()}` : '—'}
-                  </div>
-                </div>
-              </div>
 
-              {/* Check-In / Check-Out */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                  <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Check-In Time</div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{viewingRequest.checkin_time || '02:00 PM'}</div>
-                </div>
-                <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                  <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Check-Out Time</div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{viewingRequest.checkout_time || '12:00 PM'}</div>
-                </div>
-              </div>
-
-              {/* Amenities */}
-              <div>
-                <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#374151', margin: '0 0 6px 0' }}>Amenities</h4>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                  {viewingRequest.amenities_types?.length > 0 ? viewingRequest.amenities_types.map((a, i) => (
-                    <span key={i} style={{ padding: '3px 10px', background: '#ECFDF5', color: '#059669', borderRadius: '12px', fontSize: '12px', fontWeight: 500 }}>{a}</span>
-                  )) : <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>No amenities selected</span>}
-                </div>
-              </div>
-
-              {/* Offers */}
-              <div>
-                <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#374151', margin: '0 0 6px 0' }}>Offers & Discounts</h4>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                  {viewingRequest.offers?.length > 0 ? viewingRequest.offers.map((o, i) => (
-                    <span key={i} style={{ padding: '3px 10px', background: '#EFF6FF', color: '#2563EB', borderRadius: '12px', fontSize: '12px', fontWeight: 500 }}>{o}</span>
-                  )) : <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>No offers added</span>}
-                </div>
-              </div>
-
-              {/* Rules */}
-              <div>
-                <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#374151', margin: '0 0 6px 0' }}>House Rules</h4>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {Array.isArray(viewingRequest.rules) && viewingRequest.rules.length > 0 ? viewingRequest.rules.map((rule, i) => (
-                    <div key={i} style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '8px', padding: '10px' }}>
-                      <div style={{ fontSize: '12px', fontWeight: 700, color: '#B45309', marginBottom: '4px' }}>{rule.title}</div>
-                      <div style={{ fontSize: '12px', color: '#78350F', whiteSpace: 'pre-wrap' }}>
-                        {Array.isArray(rule.points) ? rule.points.map(p => `• ${p}`).join('\n') : rule.points}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                      <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Original Price</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: '#9CA3AF', textDecoration: (room.original_price || viewingRequest.original_price) ? 'line-through' : 'none' }}>
+                        {(room.original_price || viewingRequest.original_price) ? `₹${Number(room.original_price || viewingRequest.original_price).toLocaleString()}` : '—'}
                       </div>
                     </div>
-                  )) : <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>No custom rules added</span>}
-                </div>
-              </div>
+                    <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                      <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Tax Amount</div>
+                      <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
+                        {(room.tax_amount || viewingRequest.tax_amount) ? `₹${Number(room.tax_amount || viewingRequest.tax_amount).toLocaleString()}` : '—'}
+                      </div>
+                    </div>
+                  </div>
 
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                    <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                      <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Check-In Time</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{room.checkin_time || viewingRequest.checkin_time || '02:00 PM'}</div>
+                    </div>
+                    <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                      <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Check-Out Time</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{room.checkout_time || viewingRequest.checkout_time || '12:00 PM'}</div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#374151', margin: '0 0 6px 0' }}>Amenities</h4>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                      {(room.amenities_types || viewingRequest.amenities_types)?.length > 0 ? (room.amenities_types || viewingRequest.amenities_types).map((a, i) => (
+                        <span key={i} style={{ padding: '3px 10px', background: '#ECFDF5', color: '#059669', borderRadius: '12px', fontSize: '12px', fontWeight: 500 }}>{a}</span>
+                      )) : <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>No amenities selected</span>}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#374151', margin: '0 0 6px 0' }}>Offers & Discounts</h4>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                      {(room.offers || viewingRequest.offers)?.length > 0 ? (room.offers || viewingRequest.offers).map((o, i) => (
+                        <span key={i} style={{ padding: '3px 10px', background: '#EFF6FF', color: '#2563EB', borderRadius: '12px', fontSize: '12px', fontWeight: 500 }}>{o}</span>
+                      )) : <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>No offers added</span>}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#374151', margin: '0 0 6px 0' }}>House Rules</h4>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {Array.isArray(room.rules || viewingRequest.rules) && (room.rules || viewingRequest.rules).length > 0 ? (room.rules || viewingRequest.rules).map((rule, i) => (
+                        <div key={i} style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '8px', padding: '10px' }}>
+                          <div style={{ fontSize: '12px', fontWeight: 700, color: '#B45309', marginBottom: '4px' }}>{rule.title}</div>
+                          <div style={{ fontSize: '12px', color: '#78350F', whiteSpace: 'pre-wrap' }}>
+                            {Array.isArray(rule.points) ? rule.points.map(p => `• ${p}`).join('\n') : rule.points}
+                          </div>
+                        </div>
+                      )) : <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>No custom rules added</span>}
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

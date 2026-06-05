@@ -3,10 +3,12 @@ import { CheckCircle, CreditCard, Percent, Play } from 'lucide-react';
 import { aboutHeroImg, missionIcon, rect32Img, rect33Img, rect35Img, visionIcon } from '../../../assets';
 import './AboutUsPage.css';
 
-export default function AboutUsPage({ homepageContent, renderTitle }) {
+export default function AboutUsPage({ renderTitle, activeMenu }) {
   const [aboutUsContent, setAboutUsContent] = useState(null);
 
   useEffect(() => {
+    if (activeMenu !== 'About Us') return;
+
     fetch(`${import.meta.env.VITE_API_BASE}/content/aboutUs`)
       .then(res => res.json())
       .then(data => {
@@ -15,11 +17,11 @@ export default function AboutUsPage({ homepageContent, renderTitle }) {
         }
       })
       .catch(console.error);
-  }, []);
+  }, [activeMenu]);
 
   const s1 = aboutUsContent?.section1;
-  const s2 = aboutUsContent?.section2 || homepageContent?.section5;
-  const s3 = aboutUsContent?.section3 || homepageContent?.section6;
+  const s2 = aboutUsContent?.section2;
+  const s3 = aboutUsContent?.section3;
 
   return (
     <div className="about-page-layout fade-in">

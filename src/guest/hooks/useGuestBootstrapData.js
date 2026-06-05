@@ -61,7 +61,7 @@ export default function useGuestBootstrapData({
     fetchHomepageData();
     fetchAll();
 
-    fetchProperties({ type: activePropCategory });
+    fetchProperties({ type: 'Villa', search: '' });
     if (token) {
       fetchProfileAndEnquiries(token);
     }
@@ -72,4 +72,41 @@ export default function useGuestBootstrapData({
       fetchProfileAndEnquiries(token);
     }
   }, [activeMenu, token]);
+
+  // Refetch homepage CMS content when user returns to Home (picks up admin edits)
+  useEffect(() => {
+    if (activeMenu !== 'Home') return;
+
+    const refreshHomepageContent = async () => {
+      try {
+        const [contentRes, featRes, destRes, expRes] = await Promise.all([
+          fetch(`${API_BASE}/content/homepage`),
+          fetch(`${API_BASE}/properties?limit=6&status=Active`),
+          fetch(`${API_BASE}/masters/destinations?status=Active`),
+          fetch(`${API_BASE}/master/experiences/active`),
+        ]);
+
+        if (contentRes.ok) {
+          const contentData = await contentRes.json();
+          if (contentData?.data) {
+            setHomepageContent(contentData.data);
+          }
+        }
+        if (featRes.ok) {
+          const f = await featRes.json();
+          setFeaturedProperties(f.properties || []);
+        }
+        if (destRes.ok) {
+          setLiveDestinations(await destRes.json());
+        }
+        if (expRes.ok) {
+          setLiveExperiences(await expRes.json());
+        }
+      } catch (err) {
+        console.error('Error refreshing homepage content:', err);
+      }
+    };
+
+    refreshHomepageContent();
+  }, [activeMenu, API_BASE, setHomepageContent, setFeaturedProperties, setLiveDestinations, setLiveExperiences]);
 }

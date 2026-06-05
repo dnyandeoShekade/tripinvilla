@@ -1,10 +1,50 @@
 import { useEffect, useState } from 'react';
 
+const TYPE_MAP = {
+  Apartments: 'Apartment',
+  Apartment: 'Apartment',
+  Homestays: 'Homestay',
+  Homestay: 'Homestay',
+  Resorts: 'Resort',
+  Resort: 'Resort',
+  Villas: 'Villa',
+  Villa: 'Villa',
+  Hotels: 'Hotel',
+  Hotel: 'Hotel',
+  Cottages: 'Cottage',
+  Cottage: 'Cottage',
+  Motels: 'Motel',
+  Motel: 'Motel',
+  Bungalows: 'Bungalow',
+  Bungalow: 'Bungalow',
+};
+
+const normalizePropertyType = (value) => {
+  if (!value || typeof value !== 'string') return '';
+  return TYPE_MAP[value] || value.replace(/s$/i, '') || value;
+};
+
+const parseHeroPrice = (priceVal) => {
+  if (!priceVal || priceVal === 'Any') return { min: '', max: '' };
+  const cleanPrice = String(priceVal).replace(/[₹,\s]/g, '');
+  if (cleanPrice.includes('-')) {
+    const [minP, maxP] = cleanPrice.split('-').map((v) => parseInt(v, 10));
+    return {
+      min: Number.isNaN(minP) ? '' : minP,
+      max: Number.isNaN(maxP) ? '' : maxP,
+    };
+  }
+  if (cleanPrice.includes('+')) {
+    const minP = parseInt(cleanPrice, 10);
+    return { min: Number.isNaN(minP) ? '' : minP, max: '' };
+  }
+  return { min: '', max: '' };
+};
+
 export default function useGuestSearch({ API_BASE, setActiveMenu }) {
   const [activeSearchTab, setActiveSearchTab] = useState('Villas');
-  const [activePropCategory, setActivePropCategory] = useState('Apartments');
+  const [activePropCategory, setActivePropCategory] = useState('Villas');
 
-  // Input states
   const [where, setWhere] = useState('');
   const [dates, setDates] = useState('');
   const [guests, setGuests] = useState('Any Guests');
@@ -12,11 +52,9 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
   const [stayType, setStayType] = useState('Any');
   const [foodPref, setFoodPref] = useState('Any');
 
-  // Checkbox states
   const [verifiedOnly, setVerifiedOnly] = useState(false);
   const [featuredOnly, setFeaturedOnly] = useState(false);
 
-  // Search Results Filter States
   const [filterMinPrice, setFilterMinPrice] = useState('');
   const [filterMaxPrice, setFilterMaxPrice] = useState('');
   const [, setFilterPriceSlider] = useState(50000);
@@ -29,10 +67,8 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
   const [filterCancellationPolicy, setFilterCancellationPolicy] = useState(false);
   const [filterHomestays, setFilterHomestays] = useState(false);
 
-  // Pagination State
   const [searchCurrentPage, setSearchCurrentPage] = useState(1);
 
-  // Auto-reset page to 1 when filters change
   useEffect(() => {
     setSearchCurrentPage(1);
   }, [
@@ -46,6 +82,7 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
     filterCancellationPolicy,
     filterHomestays,
     searchSortBy,
+    where,
   ]);
 
   const [liveProperties, setLiveProperties] = useState([]);
@@ -53,82 +90,84 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
   const [aiSummary, setAiSummary] = useState(null);
   const [aiTags, setAiTags] = useState([]);
 
+  const buildSearchParams = (overrides = {}) => ({
+    search: where,
+    dates,
+    guests,
+    price,
+    stayType,
+    foodPref,
+    verifiedOnly,
+    featuredOnly,
+    type: activeSearchTab && activeSearchTab !== 'More+'
+      ? normalizePropertyType(activeSearchTab)
+      : '',
+    ...overrides,
+  });
+
   const fetchProperties = async (searchParams = {}) => {
     try {
       const query = new URLSearchParams();
-      const hasOwn = (key) => Object.prototype.hasOwnProperty.call(searchParams, key);
+      const get = (key, fallback) =>
+        Object.prototype.hasOwnProperty.call(searchParams, key) ? searchParams[key] : fallback;
 
-      // 1. Where / Search Text
-      // Sent as 'city' → backend searches city + state + location fields (broad match)
-      // Also sent as 'keyword' for name/description matching
-      const searchVal = hasOwn('search') ? searchParams.search : where;
-      const hasSearchText = searchVal && searchVal.trim() !== '';
-      if (hasSearchText) {
-        query.append('city', searchVal.trim());
+      const searchVal = get('search', where);
+      if (searchVal && String(searchVal).trim() !== '') {
+        query.append('city', String(searchVal).trim());
       }
 
-      // 2. Type / Category
-      // We rely on frontend filters (`filterSelectedTypes`) for property type filtering
-      // so we don't pass `type` to the backend query anymore. This allows the sidebar 
-      // filters to work correctly across all property types.
+      const typeVal = normalizePropertyType(get('type', ''));
+      if (typeVal) {
+        query.append('type', typeVal);
+      }
 
-      // 3. Guests / Who
-      const guestsVal = hasOwn('guests') ? searchParams.guests : guests;
+      const guestsVal = get('guests', guests);
       if (guestsVal && guestsVal !== 'Any Guests') {
         const match = String(guestsVal).match(/\d+/);
         if (match) query.append('guests', match[0]);
       }
 
-      // 4. Price per Night Range
-      const priceVal = hasOwn('price') ? searchParams.price : price;
+      const priceVal = get('price', price);
       if (priceVal && priceVal !== 'Any') {
-        const cleanPrice = priceVal.replace(/[₹,\s]/g, '');
-        if (cleanPrice.includes('-')) {
-          const [minP, maxP] = cleanPrice.split('-').map((v) => parseInt(v, 10));
-          if (!isNaN(minP)) query.append('minPrice', minP);
-          if (!isNaN(maxP)) query.append('maxPrice', maxP);
-        } else if (cleanPrice.includes('+')) {
-          const minP = parseInt(cleanPrice, 10);
-          if (!isNaN(minP)) query.append('minPrice', minP);
+        const { min, max } = parseHeroPrice(priceVal);
+        if (min !== '') query.append('minPrice', min);
+        if (max !== '') query.append('maxPrice', max);
+      }
+
+      const datesVal = get('dates', dates);
+      if (datesVal && datesVal !== 'Select dates' && String(datesVal).trim() !== '') {
+        if (String(datesVal).includes(' to ')) {
+          const [start, end] = String(datesVal).split(' to ');
+          if (start) query.append('checkIn', start.trim());
+          if (end) query.append('checkOut', end.trim());
         }
       }
 
-      // 5. Dates
-      const datesVal = hasOwn('dates') ? searchParams.dates : dates;
-      if (datesVal && datesVal !== 'Select dates' && datesVal.trim() !== '') {
-        // Flatpickr 'Y-m-d to Y-m-d'
-        if (datesVal.includes(' to ')) {
-          const [start, end] = datesVal.split(' to ');
-          if (start) query.append('checkIn', start);
-          if (end) query.append('checkOut', end);
-        }
-      }
-
-      // 6. Room Type
-      if (stayType && stayType !== 'Any') {
+      const stayTypeVal = get('stayType', stayType);
+      if (stayTypeVal && stayTypeVal !== 'Any') {
         const roomMap = {
           '1 Deluxe Room': 'private-room',
           '2 Deluxe Rooms': 'private-room',
           'Entire Villa': 'entire-place',
         };
-        if (roomMap[stayType]) query.append('roomType', roomMap[stayType]);
+        if (roomMap[stayTypeVal]) query.append('roomType', roomMap[stayTypeVal]);
       }
 
-      // 7. Food Preference
-      if (foodPref && foodPref !== 'Any') {
+      const foodPrefVal = get('foodPref', foodPref);
+      if (foodPrefVal && foodPrefVal !== 'Any') {
         const foodMap = {
           'Pure Veg': 'veg',
           'Non-Veg': 'non-veg',
           'Buffet Available': 'both',
         };
-        if (foodMap[foodPref]) query.append('foodPreference', foodMap[foodPref]);
+        if (foodMap[foodPrefVal]) query.append('foodPreference', foodMap[foodPrefVal]);
       }
 
-      // 8. Checkboxes
-      if (verifiedOnly) query.append('verifiedOnly', 'true');
-      if (featuredOnly) query.append('featuredOnly', 'true');
+      const verifiedVal = get('verifiedOnly', verifiedOnly);
+      const featuredVal = get('featuredOnly', featuredOnly);
+      if (verifiedVal) query.append('verifiedOnly', 'true');
+      if (featuredVal) query.append('featuredOnly', 'true');
 
-      // Pagination & Limits
       if (searchParams.limit) query.append('limit', searchParams.limit);
       if (searchParams.status) query.append('status', searchParams.status);
 
@@ -177,15 +216,19 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
           setAiTags(tags);
 
           if (f.city) setWhere(f.city);
-          if (f.type) setActivePropCategory(f.type + 's');
+          if (f.type) {
+            const normalized = normalizePropertyType(f.type);
+            setActivePropCategory(normalized);
+            setFilterSelectedTypes([normalized]);
+          }
         }
       } else {
-        fetchProperties({ search: where });
+        fetchProperties(buildSearchParams());
         if (setActiveMenu) setActiveMenu('Search');
       }
     } catch (e) {
       console.error('AI Search error:', e);
-      fetchProperties({ search: where });
+      fetchProperties(buildSearchParams());
       if (setActiveMenu) setActiveMenu('Search');
     } finally {
       setAiSearchLoading(false);
@@ -194,26 +237,21 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
 
   const handleSearch = () => {
     if (setActiveMenu) setActiveMenu('Search');
-    if (where && where.trim()) {
-      setFilterSelectedTypes([]);
-      fetchProperties({ search: where, price, guests });
-    } else if (activeSearchTab && activeSearchTab !== 'More+') {
+
+    const tabType = activeSearchTab && activeSearchTab !== 'More+'
+      ? normalizePropertyType(activeSearchTab)
+      : '';
+
+    if (tabType) {
       setActivePropCategory(activeSearchTab);
-      const typeMap = {
-        Apartments: 'Apartment',
-        Homestays: 'Homestay',
-        Resorts: 'Resort',
-        Villas: 'Villa',
-        Hotels: 'Hotel',
-        Cottages: 'Cottage',
-        Motels: 'Motel',
-        Bungalows: 'Bungalow',
-      };
-      setFilterSelectedTypes([typeMap[activeSearchTab] || activeSearchTab]);
-      fetchProperties({ price, guests });
-    } else {
-      fetchProperties({ price, guests });
+      setFilterSelectedTypes([tabType]);
     }
+
+    const { min, max } = parseHeroPrice(price);
+    setFilterMinPrice(min);
+    setFilterMaxPrice(max);
+
+    fetchProperties(buildSearchParams({ type: tabType }));
 
     setTimeout(() => {
       window.scrollTo({ top: 750, behavior: 'smooth' });
@@ -229,19 +267,30 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
     setFoodPref('Any');
     setVerifiedOnly(false);
     setFeaturedOnly(false);
+    setFilterMinPrice('');
+    setFilterMaxPrice('');
+    setFilterSelectedTypes([]);
+    setFilterSelectedAmenities([]);
+    setSidebarSearchText('');
+    setFilterMinRating(0);
+    setFilterInstantBook(false);
+    setFilterCancellationPolicy(false);
+    setFilterHomestays(false);
     setAiSummary(null);
     setAiTags([]);
-    fetchProperties({});
+    fetchProperties({ search: '', type: '', price: 'Any', guests: 'Any Guests', dates: '', stayType: 'Any', foodPref: 'Any', verifiedOnly: false, featuredOnly: false });
+  };
+
+  const handleCloseSearch = () => {
+    if (setActiveMenu) setActiveMenu('Home');
   };
 
   return {
-    // tabs
     activeSearchTab,
     setActiveSearchTab,
     activePropCategory,
     setActivePropCategory,
 
-    // inputs
     where,
     setWhere,
     dates,
@@ -259,16 +308,13 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
     featuredOnly,
     setFeaturedOnly,
 
-    // results
     liveProperties,
     setLiveProperties,
 
-    // AI
     aiSearchLoading,
     aiSummary,
     aiTags,
 
-    // filters
     filterMinPrice,
     setFilterMinPrice,
     filterMaxPrice,
@@ -291,15 +337,14 @@ export default function useGuestSearch({ API_BASE, setActiveMenu }) {
     filterHomestays,
     setFilterHomestays,
 
-    // pagination
     searchCurrentPage,
     setSearchCurrentPage,
 
-    // actions
     fetchProperties,
+    buildSearchParams,
     handleAISearch,
     handleSearch,
     handleClearAll,
+    handleCloseSearch,
   };
 }
-
