@@ -45,6 +45,7 @@ export default function PropertyMakers() {
     beds: 2,
     capacity: 3,
     foodPreference: "none",
+    roomType: "entire-place",
     bathRooms: 1,
     rules: "",
     highlights: {
@@ -458,7 +459,7 @@ export default function PropertyMakers() {
       amenities: [], location: "", full_address: "", latitude: "", longitude: "",
       propertyPrice: "", originalPrice: "", taxAmount: "", imagesUrl: "", videosUrl: "",
       aboutProperty: "", status: "Active", checkIn: "3:00 PM", checkOut: "12:00 PM",
-      area: "31 sq. ft.", bedRooms: 1, beds: 2, capacity: 3, bathRooms: 1, foodPreference: "none",
+      area: "31 sq. ft.", bedRooms: 1, beds: 2, capacity: 3, bathRooms: 1, foodPreference: "none", roomType: "entire-place",
       rules: "",
       highlights: { breakfastIncluded: false, parkingAvailable: false, freeCancellation: false, freeCancellationHours: "24" },
     });
@@ -1593,6 +1594,20 @@ export default function PropertyMakers() {
                 className="form-input"
                 required
               />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Stay Config (Room Type)*</label>
+              <select
+                name="roomType"
+                value={formData.roomType || 'entire-place'}
+                onChange={handleChange}
+                className="form-input"
+                required
+              >
+                <option value="entire-place">Entire Property / Villa</option>
+                <option value="private-room">Private Room(s)</option>
+                <option value="shared-room">Shared Room</option>
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">Food Preference*</label>
