@@ -210,11 +210,11 @@ export default function Dashboard() {
                             ENQ-{String(i + 1).padStart(3, '0')}
                           </td>
                           <td style={{ fontWeight: 500, color: '#111827', padding: '14px', fontSize: '13px' }}>
-                            <ReadMore maxWords={2}>{e.property?.name || 'Unnamed Property'}</ReadMore>
+                            <ReadMore maxWords={6}>{e.property?.name || 'Unnamed Property'}</ReadMore>
                           </td>
                           <td style={{ padding: '14px' }}>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span style={{ fontWeight: 500, color: '#374151', fontSize: '13px' }}><ReadMore maxWords={2}>{e.name || 'Guest'}</ReadMore></span>
+                              <span style={{ fontWeight: 500, color: '#374151', fontSize: '13px' }}><ReadMore maxWords={6}>{e.name || 'Guest'}</ReadMore></span>
                             </div>
                           </td>
                           <td style={{ color: '#6B7280', padding: '14px', fontSize: '13px' }}>

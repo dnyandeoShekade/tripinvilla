@@ -243,9 +243,9 @@ export default function AdminList() {
                         <td style={{ color: '#58A429', fontWeight: 500 }}>
                           {a.createdAt ? new Date(a.createdAt).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'}) + ' - 12 PM' : '20 May 2026 - 12 PM'}
                         </td>
-                        <td style={{ color: '#111827', fontWeight: 500 }}><ReadMore maxWords={2}>{a.name || 'Rahul Sharma'}</ReadMore></td>
+                        <td style={{ color: '#111827', fontWeight: 500 }}><ReadMore maxWords={6}>{a.name || 'Rahul Sharma'}</ReadMore></td>
                         <td style={{ color: '#0C6DC4', fontWeight: 500 }}>{a.role || 'Admin'}</td>
-                        <td><ReadMore maxWords={2}>{a.email || 'rahul22@gmail.com'}</ReadMore></td>
+                        <td><ReadMore maxWords={6}>{a.email || 'rahul22@gmail.com'}</ReadMore></td>
                         <td>{a.phone || '998877665'}</td>
                         <td>
                           {a.status === 'In-Active' ? (

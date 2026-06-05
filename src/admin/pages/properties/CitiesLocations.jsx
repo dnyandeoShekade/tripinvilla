@@ -175,9 +175,9 @@ export default function CitiesLocations() {
                         style={{ color: '#58A429', fontWeight: 600, cursor: 'pointer' }}
                         onClick={() => navigate(`/admin/properties/all?city=${encodeURIComponent(c.cityName)}`)}
                       >
-                        <ReadMore maxWords={2}>{c.cityName}</ReadMore>
+                        <ReadMore maxWords={6}>{c.cityName}</ReadMore>
                       </td>
-                      <td style={{ color: '#6B7280' }}><ReadMore maxWords={2}>{c.stateName}</ReadMore></td>
+                      <td style={{ color: '#6B7280' }}><ReadMore maxWords={6}>{c.stateName}</ReadMore></td>
                       <td style={{ color: '#6B7280', fontWeight: 600 }}>{c.totalProperties} Properties</td>
                       <td style={{ color: '#6B7280' }}>{c.homestays}</td>
                       <td style={{ color: '#6B7280' }}>{c.resorts}</td>

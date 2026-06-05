@@ -153,8 +153,8 @@ export default function Bookings() {
                 .map((booking, index) => (
                   <tr key={index}>
                     <td style={{ fontWeight: 600, color: '#1d9e75' }}>{booking.razorpayOrderId || booking._id.substring(0, 8)}</td>
-                    <td style={{ fontWeight: 500 }}><ReadMore maxWords={2}>{booking.property?.propertyName || booking.property?.name}</ReadMore></td>
-                    <td style={{ fontWeight: 500, color: '#111827' }}><ReadMore maxWords={2}>{booking.user?.name || 'Guest'}</ReadMore></td>
+                    <td style={{ fontWeight: 500 }}><ReadMore maxWords={6}>{booking.property?.propertyName || booking.property?.name}</ReadMore></td>
+                    <td style={{ fontWeight: 500, color: '#111827' }}><ReadMore maxWords={6}>{booking.user?.name || 'Guest'}</ReadMore></td>
                     <td>{booking.user?.phone || 'N/A'}</td>
                     <td>{new Date(booking.checkIn).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
                     <td>{new Date(booking.checkOut).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</td>

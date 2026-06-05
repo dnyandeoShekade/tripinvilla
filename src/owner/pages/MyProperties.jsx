@@ -1566,12 +1566,12 @@ export default function MyProperties({ autoOpenForm = false }) {
                       </div>
                     </td>
                     <td style={{ color: '#111827', fontWeight: 600, padding: '14px', fontSize: '13px' }}>
-                      <ReadMore maxWords={2}>{p.name}</ReadMore>
+                      <ReadMore maxWords={6}>{p.name}</ReadMore>
                     </td>
                     <td style={{ padding: '14px' }}>
                       <div style={{ display: 'flex', flexDirection: 'column' }}>
                         <span style={{ fontWeight: 500, color: '#374151', fontSize: '13px' }}>
-                          <ReadMore maxWords={2}>{p.full_address || p.location || (p.cityName || p.city)}</ReadMore>
+                          <ReadMore maxWords={6}>{p.full_address || p.location || (p.cityName || p.city)}</ReadMore>
                         </span>
                         <span style={{ fontSize: '11px', color: '#9CA3AF' }}>{!p.full_address && !p.location ? (p.stateName || p.state) : ''}</span>
                       </div>

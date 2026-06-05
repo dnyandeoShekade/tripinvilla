@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { userService, propertyService } from '../services/api';
+import ImageCropper from '../../components/ImageCropper';
 
 export default function Profile() {
   const [formData, setFormData] = useState({
@@ -19,6 +20,7 @@ export default function Profile() {
   });
   
   const [file, setFile] = useState(null);
+  const [cropFile, setCropFile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
@@ -144,7 +146,10 @@ export default function Profile() {
               <label style={{ display: 'block', fontSize: '13px', color: '#4B5563', marginBottom: '8px', fontWeight: 500 }}>Profile Image</label>
               <div style={{ display: 'flex', border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden', position: 'relative' }}>
                  <input type="text" value={file ? file.name : (formData.avatar ? 'Image Uploaded' : 'Choose an image...')} readOnly style={{ flex: 1, padding: '10px 14px', border: 'none', outline: 'none', fontSize: '13px' }} />
-                 <input type="file" accept="image/*" onChange={e => e.target.files[0] && setFile(e.target.files[0])} style={{ position: 'absolute', opacity: 0, top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer' }} />
+                 <input type="file" accept="image/*" onChange={e => {
+                   if (e.target.files[0]) setCropFile(e.target.files[0]);
+                   e.target.value = null;
+                 }} style={{ position: 'absolute', opacity: 0, top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer' }} />
                  <button type="button" style={{ padding: '0 20px', background: '#F3F4F6', border: 'none', borderLeft: '1px solid #E5E7EB', color: '#374151', fontSize: '13px', cursor: 'pointer' }}>Browse</button>
               </div>
               <p style={{ fontSize: '11px', color: '#9CA3AF', marginTop: '6px' }}>Supported File: .jpg, .png / max. 5mb</p>
@@ -217,6 +222,18 @@ export default function Profile() {
 
         </div>
       </div>
+      
+      {cropFile && (
+        <ImageCropper
+          file={cropFile}
+          onApply={(croppedFile) => {
+            setFile(croppedFile);
+            setCropFile(null);
+          }}
+          onCancel={() => setCropFile(null)}
+          shape="circle"
+        />
+      )}
     </div>
   );
 }

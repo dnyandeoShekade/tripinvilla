@@ -496,7 +496,7 @@ export default function LocationMaster() {
                 paginated.map((loc) => (
                   <tr key={loc._id}>
                     <td style={{ fontWeight: 700, color: '#000000', whiteSpace: 'normal', maxW: '180px' }}>
-                      <ReadMore maxWords={2}>{loc.locationName}</ReadMore>
+                      <ReadMore maxWords={6}>{loc.locationName}</ReadMore>
                     </td>
                     <td style={{ fontWeight: 500 }}>{loc.locationType}</td>
                     <td style={{ fontSize: '11px', color: '#6B7280', whiteSpace: 'normal', maxW: '160px', lineHeight: 1.4 }}>{loc.parentLocationHierarchy}</td>
@@ -535,7 +535,7 @@ export default function LocationMaster() {
                     </td>
 
                     <td style={{ color: '#9CA3AF', fontSize: '11px', whiteSpace: 'normal', maxW: '180px' }}>
-                      <ReadMore maxWords={2}>{loc.aboutLocation || 'N/A'}</ReadMore>
+                      <ReadMore maxWords={6}>{loc.aboutLocation || 'N/A'}</ReadMore>
                     </td>
                     <td>
                       <span className={`status-pill ${loc.status ? loc.status.toLowerCase() : 'active'}`}>

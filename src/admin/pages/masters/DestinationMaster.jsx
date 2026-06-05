@@ -501,8 +501,8 @@ export default function DestinationMaster() {
                         <img src={getFullImageUrl(dest.coverImageUrl)} alt={dest.destinationName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </div>
                     </td>
-                    <td style={{ fontWeight: 700, color: '#111827' }}><ReadMore maxWords={2}>{dest.destinationName}</ReadMore></td>
-                    <td style={{ fontWeight: 500, fontSize: '11.5px' }}><ReadMore maxWords={2}>{`${getStateName(dest.stateId)}, ${getCountryName(dest.countryId)}`}</ReadMore></td>
+                    <td style={{ fontWeight: 700, color: '#111827' }}><ReadMore maxWords={6}>{dest.destinationName}</ReadMore></td>
+                    <td style={{ fontWeight: 500, fontSize: '11.5px' }}><ReadMore maxWords={6}>{`${getStateName(dest.stateId)}, ${getCountryName(dest.countryId)}`}</ReadMore></td>
                     <td>
                       <div style={{ display: 'flex', gap: 4 }}>
                         {(dest.propertyTypesOffered || []).map(t => (
@@ -510,7 +510,7 @@ export default function DestinationMaster() {
                         ))}
                       </div>
                     </td>
-                    <td style={{ fontSize: '11.5px', color: '#6B7280', maxWidth: '180px', whiteSpace: 'normal' }}><ReadMore maxWords={2}>{dest.description}</ReadMore></td>
+                    <td style={{ fontSize: '11.5px', color: '#6B7280', maxWidth: '180px', whiteSpace: 'normal' }}><ReadMore maxWords={6}>{dest.description}</ReadMore></td>
                     <td style={{ textAlign: 'center', fontWeight: 700, color: 'var(--primary)' }}>{dest.propertiesCount > 0 ? dest.propertiesCount : ''}</td>
                     <td>
                       <span className={`status-pill ${dest.status ? dest.status.toLowerCase() : 'active'}`}>

@@ -938,10 +938,10 @@ export default function AllProperties() {
                         </div>
                       </td>
                       <td style={{ color: "#111827", fontWeight: 500 }}>
-                        <ReadMore maxWords={2}>{p.propertyName || p.name}</ReadMore>
+                        <ReadMore maxWords={6}>{p.propertyName || p.name}</ReadMore>
                       </td>
                       <td style={{ color: "#6B7280" }}>
-                        <ReadMore maxWords={2}>
+                        <ReadMore maxWords={6}>
                           {p.full_address || p.location || (p.city + (p.state ? ', ' + p.state : ''))}
                         </ReadMore>
                       </td>

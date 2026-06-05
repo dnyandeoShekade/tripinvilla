@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function ReadMore({ children, maxWords = 4 }) {
+export default function ReadMore({ children, maxWords = 6 }) {
   const [expanded, setExpanded] = useState(false);
   
   if (children === null || children === undefined) return null;

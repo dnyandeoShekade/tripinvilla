@@ -2425,7 +2425,7 @@ export default function PropertyMakers() {
                   </div>
                 </td>
                 <td style={{ color: "#111827", fontWeight: 600 }}>
-                  <ReadMore maxWords={2}>{p.propertyName}</ReadMore>
+                  <ReadMore maxWords={6}>{p.propertyName}</ReadMore>
                 </td>
                 <td style={{ color: "#6B7280" }}>{p.ownerName}</td>
                 <td style={{ color: "#6B7280" }}>{p.ownerContact}</td>
@@ -2452,7 +2452,7 @@ export default function PropertyMakers() {
                     (p.experiences.filter(Boolean).length > 2 ? "..." : "")
                     : ""}
                 </td>
-                <td style={{ color: "#6B7280" }}><ReadMore maxWords={2}>{p.location}</ReadMore></td>
+                <td style={{ color: "#6B7280" }}><ReadMore maxWords={6}>{p.location}</ReadMore></td>
                 <td
                   style={{
                     color: "#6B7280",

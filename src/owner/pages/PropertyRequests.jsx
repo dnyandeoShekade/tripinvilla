@@ -562,7 +562,7 @@ export default function PropertyRequests() {
                       const statusColor = statusLabel === 'approved' ? '#58A429' : statusLabel === 'rejected' ? '#EF4444' : '#D97706';
                       return (
                         <tr key={i}>
-                          <td style={{ color: '#111827', fontWeight: 500, padding: '14px 16px' }}><ReadMore maxWords={2}>{r.propertyName}</ReadMore></td>
+                          <td style={{ color: '#111827', fontWeight: 500, padding: '14px 16px' }}><ReadMore maxWords={6}>{r.propertyName}</ReadMore></td>
                           <td style={{ color: '#6B7280', padding: '14px 16px' }}>{r.category}</td>
                           <td style={{ padding: '14px 16px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

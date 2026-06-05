@@ -32,7 +32,12 @@ export default function OffersByDate() {
     return {
       _id: o._id || o.id,
       id: o.offerId || 'N/A',
-      dates: `${dateFormatted} at ${timeFormatted}`,
+      dates: (
+        <div style={{ whiteSpace: 'nowrap', lineHeight: '1.4' }}>
+          <div>{dateFormatted}</div>
+          <div style={{ fontSize: '12px', color: '#9CA3AF' }}>{timeFormatted}</div>
+        </div>
+      ),
       name: o.propertyName || o.property_id?.name || 'Property',
       location: o.location || o.property_id?.location || 'N/A',
       category: o.category || 'N/A',
@@ -366,8 +371,8 @@ export default function OffersByDate() {
                   <tr key={o._id}>
                     <td style={{ color: '#58A429', fontWeight: 600, padding: '14px 16px' }}>{o.id}</td>
                     <td style={{ color: '#6B7280', padding: '14px 16px' }}>{o.dates}</td>
-                    <td style={{ color: '#111827', fontWeight: 500, padding: '14px 16px' }}><ReadMore maxWords={2}>{o.name}</ReadMore></td>
-                    <td style={{ color: '#6B7280', padding: '14px 16px' }}><ReadMore maxWords={2}>{o.location}</ReadMore></td>
+                    <td style={{ color: '#111827', fontWeight: 500, padding: '14px 16px' }}><ReadMore maxWords={6}>{o.name}</ReadMore></td>
+                    <td style={{ color: '#6B7280', padding: '14px 16px' }}><ReadMore maxWords={6}>{o.location}</ReadMore></td>
                     <td style={{ padding: '14px 16px' }}>
                       <span className="category-pill" style={{ background: '#F0FAF6', color: '#1d9e75', fontWeight: 500, padding: '3px 10px', borderRadius: '4px', fontSize: '11px' }}>
                         {o.category}
