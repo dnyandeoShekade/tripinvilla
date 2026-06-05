@@ -133,6 +133,12 @@ export default function Dashboard() {
             <div className="props-stat-content">
               <div className="props-stat-label">Total Enquiries (Today)</div>
               <div className="props-stat-value">{stats.totalEnquiriesToday}</div>
+              <div className="stat-card-meta" style={{ marginTop: 4 }}>
+                <span className={`stat-badge ${stats.compareYesterday.enquiries?.startsWith('-') ? 'down' : 'up'}`}>
+                  {stats.compareYesterday.enquiries?.startsWith('-') ? <TrendingDown size={10} /> : <TrendingUp size={10} />} {stats.compareYesterday.enquiries}%
+                </span>
+                <span className="stat-card-sub">Compared to yesterday</span>
+              </div>
             </div>
           </div>
           <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
@@ -142,6 +148,12 @@ export default function Dashboard() {
             <div className="props-stat-content">
               <div className="props-stat-label">Active Properties</div>
               <div className="props-stat-value">{stats.activeProperties}</div>
+              <div className="stat-card-meta" style={{ marginTop: 4 }}>
+                <span className={`stat-badge ${stats.compareYesterday.properties?.startsWith('-') ? 'down' : 'up'}`}>
+                  {stats.compareYesterday.properties?.startsWith('-') ? <TrendingDown size={10} /> : <TrendingUp size={10} />} {stats.compareYesterday.properties}%
+                </span>
+                <span className="stat-card-sub">Compared to yesterday</span>
+              </div>
             </div>
           </div>
           <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
@@ -151,6 +163,12 @@ export default function Dashboard() {
             <div className="props-stat-content">
               <div className="props-stat-label">Total Property Owners</div>
               <div className="props-stat-value">{stats.totalOwners}</div>
+              <div className="stat-card-meta" style={{ marginTop: 4 }}>
+                <span className={`stat-badge ${stats.compareYesterday.owners?.startsWith('-') ? 'down' : 'up'}`}>
+                  {stats.compareYesterday.owners?.startsWith('-') ? <TrendingDown size={10} /> : <TrendingUp size={10} />} {stats.compareYesterday.owners}%
+                </span>
+                <span className="stat-card-sub">Registered owners</span>
+              </div>
             </div>
           </div>
         </div>

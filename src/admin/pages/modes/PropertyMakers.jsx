@@ -56,8 +56,8 @@ export default function PropertyMakers() {
     },
     privatePool: false, gardenArea: false, chefAvailable: false, entirePropertyOnly: false, securityCCTV: false, numberOfFloors: "", plotSize: "",
     restaurantOnSite: false, spaWellness: false, conferenceRoom: false, roomService: false, receptionAllDay: false, liftElevator: false, starRating: "", totalRooms: "", totalFloors: "", activities: [],
-    floorNumber: "", totalFloorsBuilding: "", furnishedStatus: "", washingMachine: false, societyAmenities: [],
-    bonfireArea: false, viewType: "", outdoorSeating: false, nearestHikingTrail: "", distanceFromCity: "",
+    floorNumber: "", totalFloorsBuilding: "", furnishedStatus: "Fully Furnished", washingMachine: false, societyAmenities: [],
+    bonfireArea: false, viewType: "Mountain", outdoorSeating: false, nearestHikingTrail: "", distanceFromCity: "",
   });
   const currentType = (formData.propertyType || '').toLowerCase();
   const [isEditing, setIsEditing] = useState(false);
@@ -622,11 +622,11 @@ export default function PropertyMakers() {
       activities: p.activities || [],
       floorNumber: p.floorNumber || "",
       totalFloorsBuilding: p.totalFloorsBuilding || "",
-      furnishedStatus: p.furnishedStatus || "",
+      furnishedStatus: p.furnishedStatus || "Fully Furnished",
       washingMachine: p.washingMachine || false,
       societyAmenities: p.societyAmenities || [],
       bonfireArea: p.bonfireArea || false,
-      viewType: p.viewType || "",
+      viewType: p.viewType || "Mountain",
       outdoorSeating: p.outdoorSeating || false,
       nearestHikingTrail: p.nearestHikingTrail || "",
       distanceFromCity: p.distanceFromCity || "",
@@ -1719,7 +1719,6 @@ export default function PropertyMakers() {
                   <div>
                     <label className="form-label" style={{ fontSize: 12 }}>Furnished Status</label>
                     <select className="form-select" name="furnishedStatus" value={formData.furnishedStatus} onChange={handleChange}>
-                      <option value="">Select Status</option>
                       <option value="Fully Furnished">Fully Furnished</option>
                       <option value="Semi Furnished">Semi Furnished</option>
                       <option value="Unfurnished">Unfurnished</option>
@@ -1746,7 +1745,6 @@ export default function PropertyMakers() {
                   <div>
                     <label className="form-label" style={{ fontSize: 12 }}>View Type</label>
                     <select className="form-select" name="viewType" value={formData.viewType} onChange={handleChange}>
-                      <option value="">Select View</option>
                       <option value="Mountain">Mountain</option>
                       <option value="Forest">Forest</option>
                       <option value="River">River</option>
@@ -1825,6 +1823,7 @@ export default function PropertyMakers() {
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Room Image*</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                  {!isEditingRoom && (
                     <>
                       <input
                         ref={roomImageRef}
@@ -1857,12 +1856,16 @@ export default function PropertyMakers() {
                         {roomImagePreview ? 'Change Image' : 'Choose Image'}
                       </button>
                     </>
+                  )}
                   {roomImagePreview && (
                     <img
                       src={getFullRoomImageUrl(roomImagePreview)}
                       alt="Room Preview"
                       style={{ width: 38, height: 38, borderRadius: 6, objectFit: 'cover', border: '1px solid #E5E7EB' }}
                     />
+                  )}
+                  {isEditingRoom && (
+                    <span style={{ fontSize: '12px', color: '#9CA3AF', fontWeight: 500 }}>Cannot change room image</span>
                   )}
                 </div>
               </div>

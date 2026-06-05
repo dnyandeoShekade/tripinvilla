@@ -560,7 +560,7 @@ export default function PropertyRooms() {
                 <div style={{ fontSize: 14, fontWeight: 700, color: '#111827', marginBottom: 10 }}>House Rules</div>
                 {Array.isArray(selectedRequest.rules) ? (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                    {selectedRequest.rules && Array.isArray(selectedRequest.rules) && selectedRequest.rules.map((rule, idx) => (
+                    {selectedRequest.rules.map((rule, idx) => (
                       <div key={idx} style={{ background: '#FFFDF5', border: '1px solid #FEF3C7', borderRadius: 8, padding: '12px 14px' }}>
                         <div style={{ fontSize: 13, fontWeight: 700, color: '#D97706', marginBottom: 6 }}>{rule.title || 'Rule'}</div>
                         <ul style={{ margin: 0, paddingLeft: 18, fontSize: 12.5, color: '#6B7280', lineHeight: 1.6 }}>
