@@ -497,11 +497,11 @@ export default function PropertyDetailPage(props) {
         <div id="detail-section-rooms" className="detail-tab-target-section border-box-style">
           <h3 className="section-subtitle-title" style={{ marginBottom: '24px' }}>Rooms</h3>
           <div className="rooms-stack">
-            {(!propertyRooms || propertyRooms.length === 0) ? (
+            {(!dynamicRooms || dynamicRooms.length === 0) ? (
               <div style={{ textAlign: 'center', padding: '32px 16px', color: '#9CA3AF', fontSize: '14px' }}>
                 No rooms have been added for this property yet.
               </div>
-            ) : propertyRooms.map((room, idx) => {
+            ) : dynamicRooms.map((room, idx) => {
               const roomImg = room.room_image_url || room.img || room.image || 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=600&q=80';
               const roomTitle = room.room_type || room.title || room.name || room.type || 'Standard Room';
               const roomPrice = Number(String(room.price_per_room || room.price || room.rate || 1400).replace(/[^\d]/g, ''));
@@ -735,7 +735,7 @@ export default function PropertyDetailPage(props) {
                 {propertyRooms && propertyRooms.length > 0 && propertyRooms.map((room, idx) => {
                   if (Array.isArray(room.rules) && room.rules.length > 0) {
                     return room.rules
-                      .filter(sec => sec.points && sec.points.length > 0) // Only show sections with points
+                      .filter(sec => Array.isArray(sec.points) && sec.points.length > 0) // Only show sections with points
                       .map((sec, sIdx) => (
                         <div className="must-read-rules-block" key={`room-${idx}-sec-${sIdx}`}>
                           <h4 className="rules-sub-hdr">{sec.title || 'Additional Rules'}</h4>
