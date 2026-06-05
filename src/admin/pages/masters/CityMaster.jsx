@@ -301,7 +301,7 @@ export default function CityMaster() {
                 <th>City Name</th>
                 <th>Associated State</th>
                 <th>Associated Country</th>
-                <th style={{ textAlign: 'center' }}>Properties Count</th>
+                <th >Properties Count</th>
                 <th>Status</th>
                 <th style={{ textAlign: 'right', paddingRight: '24px' }}>Actions</th>
               </tr>

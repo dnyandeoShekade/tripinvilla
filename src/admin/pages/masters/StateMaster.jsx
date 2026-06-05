@@ -288,8 +288,8 @@ export default function StateMaster() {
               <tr>
                 <th>State Name</th>
                 <th>Associated Country</th>
-                <th style={{ textAlign: 'center' }}>Cities Count</th>
-                <th style={{ textAlign: 'center' }}>Owners Count</th>
+                <th >Cities Count</th>
+                <th >Owners Count</th>
                 <th>Status</th>
                 <th style={{ textAlign: 'right', paddingRight: '24px' }}>Actions</th>
               </tr>

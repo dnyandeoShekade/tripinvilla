@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import './styles/EditProfileModal.css';
 import ImageCropper from '../../components/ImageCropper';
 
@@ -14,14 +14,26 @@ export default function EditProfileModal(props) {
     setAvatarFile,
   } = props;
 
-  const [cropFile, setCropFile] = useState(null);
+  const [cropFile, setCropFile]       = useState(null);
+  const [showPreview, setShowPreview] = useState(false); // full-size lightbox
+  const fileInputRef                  = useRef(null);
 
   if (!isEditProfileModalOpen) return null;
 
-  // Build preview URL — cropped file takes priority, then existing avatar URL
+  // Build preview URL — cropped file takes priority, then existing saved avatar
+  const getAvatarUrl = (av) => {
+    if (!av) return null;
+    if (av.startsWith('http') || av.startsWith('data:') || av.startsWith('blob:')) return av;
+    const base = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_API_BASE
+      ? import.meta.env.VITE_API_BASE
+      : 'http://localhost:8000/api'
+    ).replace('/api', '');
+    return `${base}/uploads/${av}`;
+  };
+
   const previewUrl = avatarFile
     ? URL.createObjectURL(avatarFile)
-    : (editProfileForm?.avatarUrl || editProfileForm?.avatar || null);
+    : getAvatarUrl(editProfileForm?.avatar || editProfileForm?.avatarUrl);
 
   const initials = (editProfileForm?.name || editProfileForm?.firstName || 'U')
     .split(' ')
@@ -30,8 +42,24 @@ export default function EditProfileModal(props) {
     .substring(0, 2)
     .toUpperCase();
 
+  const openFilePicker = () => fileInputRef.current?.click();
+
   return (
     <>
+      {/* ── Hidden file input (outside form so z-index issues don't bite) ── */}
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        style={{ display: 'none' }}
+        onChange={(e) => {
+          if (e.target.files && e.target.files[0]) {
+            setCropFile(e.target.files[0]);
+          }
+          e.target.value = null;
+        }}
+      />
+
       <div className="edit-profile-modal-overlay" onClick={() => setIsEditProfileModalOpen(false)}>
         <div className="edit-profile-card" onClick={(e) => e.stopPropagation()}>
 
@@ -143,51 +171,82 @@ export default function EditProfileModal(props) {
                 <label className="edit-profile-label">Profile Image</label>
                 <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap', marginTop: '8px' }}>
 
-                  {/* Live preview circle */}
-                  <div className="edit-profile-avatar-preview">
+                  {/* Clickable avatar circle — click to open file picker, click again when image set to preview */}
+                  <div
+                    className="edit-profile-avatar-preview"
+                    title={previewUrl ? 'Click to preview full image' : 'Click to choose a photo'}
+                    style={{ cursor: 'pointer', position: 'relative' }}
+                    onClick={() => {
+                      if (previewUrl) {
+                        setShowPreview(true);
+                      } else {
+                        openFilePicker();
+                      }
+                    }}
+                  >
                     {previewUrl ? (
-                      <img src={previewUrl} alt="Profile Preview" />
+                      <>
+                        <img src={previewUrl} alt="Profile Preview" />
+                        {/* overlay hint */}
+                        <div style={{
+                          position: 'absolute', inset: 0, borderRadius: '50%',
+                          background: 'rgba(0,0,0,0.28)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          opacity: 0, transition: 'opacity 0.2s',
+                        }}
+                          className="avatar-hover-overlay"
+                        >
+                          <span style={{ color: '#fff', fontSize: 11, fontWeight: 700, textAlign: 'center', lineHeight: 1.3 }}>
+                            View<br/>Photo
+                          </span>
+                        </div>
+                      </>
                     ) : (
-                      <span className="edit-profile-avatar-placeholder">{initials || 'No image'}</span>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                        <span style={{ fontSize: 22 }}>📷</span>
+                        <span className="edit-profile-avatar-placeholder">{initials}</span>
+                      </div>
                     )}
                   </div>
 
-                  {/* Upload area */}
+                  {/* Upload controls */}
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <label style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      padding: '9px 18px',
-                      background: '#F3F4F6',
-                      border: '1px solid #D1D5DB',
-                      borderRadius: '8px',
-                      fontSize: '13px',
-                      color: '#374151',
-                      fontWeight: 600,
-                      cursor: 'pointer',
-                      transition: 'background 0.15s ease',
-                      marginBottom: '6px'
-                    }}>
-                      📷 Choose Photo
-                      <input
-                        type="file"
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        onChange={(e) => {
-                          if (e.target.files && e.target.files[0]) {
-                            setCropFile(e.target.files[0]);
-                          }
-                          e.target.value = null;
-                        }}
-                      />
-                    </label>
+                    <button
+                      type="button"
+                      onClick={openFilePicker}
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        padding: '9px 18px',
+                        background: '#F3F4F6',
+                        border: '1px solid #D1D5DB',
+                        borderRadius: '8px',
+                        fontSize: '13px',
+                        color: '#374151',
+                        fontWeight: 600,
+                        cursor: 'pointer',
+                        transition: 'background 0.15s ease',
+                        marginBottom: '6px',
+                      }}
+                    >
+                      📷 {avatarFile ? 'Change Photo' : 'Choose Photo'}
+                    </button>
                     <p style={{ margin: 0, fontSize: '11px', color: '#9CA3AF' }}>
-                      Supports JPG, PNG (Max 5MB) — You can crop after selecting.
+                      Supports JPG, PNG (Max 5MB) — Cropper opens after selecting.
                     </p>
                     {avatarFile && (
                       <p style={{ margin: '6px 0 0', fontSize: '12px', color: '#58A429', fontWeight: 600 }}>
-                        ✓ {avatarFile.name} selected
+                        ✓ {avatarFile.name} selected &nbsp;
+                        <span
+                          style={{ color: '#EF4444', cursor: 'pointer', fontWeight: 500 }}
+                          onClick={() => setAvatarFile(null)}
+                        >Remove</span>
+                      </p>
+                    )}
+                    {previewUrl && (
+                      <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#6B7280' }}>
+                        👆 Click the circle to preview full-size
                       </p>
                     )}
                   </div>
@@ -212,7 +271,7 @@ export default function EditProfileModal(props) {
         </div>
       </div>
 
-      {/* Image Cropper Modal */}
+      {/* ── Image Cropper ── */}
       {cropFile && (
         <ImageCropper
           file={cropFile}
@@ -223,6 +282,50 @@ export default function EditProfileModal(props) {
           onCancel={() => setCropFile(null)}
           shape="circle"
         />
+      )}
+
+      {/* ── Full-size preview lightbox ── */}
+      {showPreview && previewUrl && (
+        <div
+          onClick={() => setShowPreview(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 200000,
+            background: 'rgba(0,0,0,0.82)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: 24,
+          }}
+        >
+          <div style={{ position: 'relative', maxWidth: 480, width: '100%' }} onClick={e => e.stopPropagation()}>
+            <img
+              src={previewUrl}
+              alt="Full profile preview"
+              style={{ width: '100%', borderRadius: 16, boxShadow: '0 24px 60px rgba(0,0,0,0.4)', display: 'block' }}
+            />
+            <button
+              onClick={() => setShowPreview(false)}
+              style={{
+                position: 'absolute', top: -14, right: -14,
+                width: 32, height: 32, borderRadius: '50%',
+                background: '#fff', border: 'none', cursor: 'pointer',
+                fontSize: 18, lineHeight: 1, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                color: '#374151',
+              }}
+            >&times;</button>
+            <button
+              type="button"
+              onClick={() => { setShowPreview(false); openFilePicker(); }}
+              style={{
+                marginTop: 16, width: '100%',
+                padding: '10px', border: 'none', borderRadius: 10,
+                background: '#58A429', color: '#fff', fontWeight: 700,
+                fontSize: 14, cursor: 'pointer',
+              }}
+            >
+              📷 Change Photo
+            </button>
+          </div>
+        </div>
       )}
     </>
   );

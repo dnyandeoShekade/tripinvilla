@@ -69,10 +69,10 @@ export default function WishlistTab(props) {
         )}
 
         <div className="dashboard-capsule-nav">
-          <button className="capsule-btn" onClick={() => { if (!token) { openLoginModal(); return; } setActiveMenu('Profile'); }}><UserCircle size={15} /><span>My Account</span></button>
-          <button className="capsule-btn active" onClick={() => { if (!token) { openLoginModal(); return; } setActiveMenu('Wishlist'); }}><Heart size={15} /><span>Wishlist</span></button>
-          <button className="capsule-btn" onClick={() => { if (!token) { openLoginModal(); return; } setActiveMenu('Enquiries'); }}><CalendarCheck size={15} /><span>My Enquiries</span></button>
-          <button className="capsule-btn" onClick={() => setActiveMenu('Reviews')}><Star size={15} /><span>My Reviews</span></button>
+          <button className="capsule-btn" onClick={() => { if (!token) { openLoginModal(); return; } setActiveMenu('Profile'); }}><UserCircle size={18} /><span>My Account</span></button>
+          <button className="capsule-btn active" onClick={() => { if (!token) { openLoginModal(); return; } setActiveMenu('Wishlist'); }}><Heart size={18} /><span>Wishlist</span></button>
+          <button className="capsule-btn" onClick={() => { if (!token) { openLoginModal(); return; } setActiveMenu('Enquiries'); }}><CalendarCheck size={18} /><span>My Enquiries</span></button>
+          <button className="capsule-btn" onClick={() => setActiveMenu('Reviews')}><Star size={18} /><span>My Reviews</span></button>
         </div>
 
         <div className="villas-grid" style={{ marginTop: '40px' }}>

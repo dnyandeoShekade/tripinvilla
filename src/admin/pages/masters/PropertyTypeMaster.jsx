@@ -152,7 +152,7 @@ export default function PropertyTypeMaster() {
             <thead>
               <tr>
                 <th>Type Name</th>
-                <th style={{ textAlign: 'center' }}>Properties Count</th>
+                <th >Properties Count</th>
                 <th>Status</th>
                 <th style={{ textAlign: 'right', paddingRight: '24px' }}>Actions</th>
               </tr>
@@ -164,7 +164,7 @@ export default function PropertyTypeMaster() {
                 paginated.map((type) => (
                   <tr key={type._id}>
                     <td style={{ fontWeight: 600, color: '#111827' }}>{type.name}</td>
-                    <td style={{ textAlign: 'center', fontWeight: 700, color: 'var(--primary)' }}>{type.propertiesCount > 0 ? type.propertiesCount : ''}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--primary)' }}>{type.propertiesCount > 0 ? type.propertiesCount : ''}</td>
                     <td>
                       <span className={`status-pill ${type.status ? type.status.toLowerCase() : 'active'}`}>
                         {type.status || 'Active'}
