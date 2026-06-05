@@ -249,7 +249,7 @@ export default function SearchResultsPage(props) {
                 </div>
               );
 
-              const itemsPerPage = 5;
+              const itemsPerPage = 12; // Increased from 5 to 12 items per page
               const totalPages = Math.ceil(displayList.length / itemsPerPage) || 1;
               const safeCurrentPage = Math.min(searchCurrentPage, totalPages);
               const paginatedList = displayList.slice((safeCurrentPage - 1) * itemsPerPage, safeCurrentPage * itemsPerPage);

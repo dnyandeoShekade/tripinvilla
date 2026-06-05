@@ -48,15 +48,17 @@ export default function useGuestBootstrapData({
 
     const fetchAll = async () => {
       try {
-        const res = await fetch(`${API_BASE}/properties`);
+        // Fetch all properties without limit (or with a very high limit)
+        const res = await fetch(`${API_BASE}/properties?limit=1000&status=Active`);
         if (res.ok) {
           const data = await res.json();
           if (data && data.properties) {
+            console.log('📦 Total properties loaded:', data.properties.length);
             setAllProperties(data.properties);
           }
         }
       } catch (e) {
-        console.error(e);
+        console.error('Error fetching all properties:', e);
       }
     };
 

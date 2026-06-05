@@ -280,41 +280,6 @@ export default function AboutUs() {
 
           <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '0 -32px 24px -32px' }} />
 
-          {/* Section 2 — Why Choose Our Services (Now Synced) */}
-          <SectionLabel text="Section 2 — Why Choose Our Services (Synced with Homepage Section 5)" />
-          <div style={{ 
-            background: '#F0F9FF', 
-            border: '2px solid #0EA5E9', 
-            borderRadius: '8px', 
-            padding: '16px 20px', 
-            marginBottom: 24,
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px'
-          }}>
-            <div style={{
-              width: '40px',
-              height: '40px',
-              background: '#0EA5E9',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'white',
-              fontWeight: 'bold',
-              flexShrink: 0
-            }}>🔗</div>
-            <div>
-              <p style={{ margin: '0 0 4px 0', fontWeight: 600, color: '#0C4A6E' }}>Synchronized Section</p>
-              <p style={{ margin: 0, fontSize: '13px', color: '#0369A1' }}>
-                This section is now synced with <strong>Homepage → Section 4 → Why Choose Our Services</strong>. 
-                Edit the "Why Choose Our Services" section on the Homepage page to update this content.
-              </p>
-            </div>
-          </div>
-
-          <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '24px -32px 24px -32px' }} />
-
           {/* Section 3: Testimonials */}
           <SectionLabel text="Section 3 — Testimonials (shown on About Us page)" />
           <div className="form-grid-2">
@@ -339,18 +304,22 @@ export default function AboutUs() {
               {i === 3 && (
                 <div className="form-group" style={{ marginBottom: 0, padding: '12px', backgroundColor: '#FEF3C7', borderRadius: '6px', border: '1px solid #FCD34D' }}>
                   <label className="form-label" style={{ color: '#92400E', marginBottom: '4px' }}>📹 Video Only</label>
-                  <p style={{ fontSize: '13px', color: '#92400E', margin: 0 }}>Text testimonial is hidden for 4th item. Add name, designation & video below.</p>
+                  <p style={{ fontSize: '13px', color: '#92400E', margin: 0 }}>Upload video & designation only. Name and image will be shown as overlay on video.</p>
                 </div>
               )}
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">Name*</label>
-                <input type="text" className="form-input" value={t.name} onChange={e => handleChange(e, `section3.testimonials.${i}.name`)} />
-              </div>
+              {i !== 3 && (
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">Name*</label>
+                  <input type="text" className="form-input" value={t.name} onChange={e => handleChange(e, `section3.testimonials.${i}.name`)} />
+                </div>
+              )}
+              {i !== 3 && (
+                <FileUpload label={`Image ${i + 1}`} name={`section3.testimonials.${i}.image`} onChange={e => handleFileChange(e, `section3.testimonials.${i}.image`)} fileData={getFileDisplay(`section3.testimonials.${i}.image`)} />
+              )}
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Designation*</label>
                 <input type="text" className="form-input" value={t.designation} onChange={e => handleChange(e, `section3.testimonials.${i}.designation`)} />
               </div>
-              <FileUpload label={`Image ${i + 1}`} name={`section3.testimonials.${i}.image`} onChange={e => handleFileChange(e, `section3.testimonials.${i}.image`)} fileData={getFileDisplay(`section3.testimonials.${i}.image`)} />
               {i === 3 && <FileUpload label={`Video ${i + 1}`} name={`section3.testimonials.${i}.video`} onChange={e => handleFileChange(e, `section3.testimonials.${i}.video`)} fileData={getFileDisplay(`section3.testimonials.${i}.video`)} />}
             </div>
           ))}
