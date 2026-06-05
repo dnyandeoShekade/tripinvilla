@@ -367,7 +367,52 @@ const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
           </div>
         )}
 
-        {/* House Rules — FIX 1: only shown if property actually has rules in DB */}
+        {/* Dynamic Rules (dynamicRules / ruleSections / otherDetails) */}
+        {(() => {
+          const validDynamicRules = (
+            property.dynamicRules ||
+            property.ruleSections ||
+            property.otherDetails ||
+            []
+          ).filter(sec => sec.title && (
+            (sec.text && sec.text.trim() !== '') ||
+            (Array.isArray(sec.points) && sec.points.length > 0)
+          ));
+
+          if (validDynamicRules.length === 0) return null;
+
+          return (
+            <div>
+              <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 12px 0' }}>Property Rules</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {validDynamicRules.map((sec, sIdx) => (
+                  <div key={sIdx} style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '10px', padding: '14px 16px' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#B91C1C', marginBottom: '8px' }}>
+                      {sec.title}
+                    </div>
+                    <ul style={{ margin: 0, paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {/* Handle sec.text (newline-separated string) */}
+                      {sec.text && sec.text.trim() !== '' &&
+                        sec.text.split('\n')
+                          .map(line => line.replace(/^[•*\-]\s*/, '').trim())
+                          .filter(line => line !== '')
+                          .map((line, lIdx) => (
+                            <li key={lIdx} style={{ fontSize: '13px', color: '#991B1B', lineHeight: 1.6 }}>{line}</li>
+                          ))
+                      }
+                      {/* Handle sec.points (array) */}
+                      {Array.isArray(sec.points) && sec.points.map((point, pIdx) => (
+                        <li key={pIdx} style={{ fontSize: '13px', color: '#991B1B', lineHeight: 1.6 }}>{point}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* House Rules — static string fallback, only if no dynamic rules */}
         {rules && (
           <div>
             <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>House Rules</h3>
