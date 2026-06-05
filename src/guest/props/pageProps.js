@@ -273,6 +273,7 @@ export function buildCatalogPagesProps({
   setReviewName,
   setReviewPage,
   reviewPage,
+  liveExperiences,
 }) {
   return {
     activeMenu,
@@ -355,6 +356,7 @@ export function buildCatalogPagesProps({
     setReviewName,
     setReviewPage,
     reviewPage,
+    liveExperiences,
   };
 }
 

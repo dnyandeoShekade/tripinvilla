@@ -45,6 +45,7 @@ export default function PropertyDetailPage(props) {
     API_BASE,
     fetchProfileAndEnquiries,
     toggleWishlist,
+    liveExperiences,
   } = props;
 
   const renderTypeSpecificDetails = (p) => {
@@ -683,13 +684,22 @@ export default function PropertyDetailPage(props) {
 
         {/* PROPERTY RULES SECTION — only show if there is actual rules content */}
         {(() => {
-          const hasOtherDetails = Array.isArray(activeDetailProp?.otherDetails) && activeDetailProp.otherDetails.some(sec => sec.title && sec.text && sec.text.trim() !== '');
+          const validOtherDetails = (
+            activeDetailProp?.dynamicRules ||
+            activeDetailProp?.ruleSections ||
+            activeDetailProp?.otherDetails ||
+            []
+          ).filter(sec => sec.title && ((sec.text && sec.text.trim() !== '') || (sec.points && sec.points.length > 0)));
+          const hasDynamicRules = validOtherDetails.length > 0;
           const hasStringRules = typeof activeDetailProp?.rules === 'string' && activeDetailProp.rules.trim() !== '';
           const hasRoomRules = propertyRooms && propertyRooms.some(room => Array.isArray(room.rules) && room.rules.length > 0);
-          if (!hasOtherDetails && !hasStringRules && !hasRoomRules) return null;
+          if (!hasDynamicRules && !hasStringRules && !hasRoomRules) return null;
           return (
             <div id="detail-section-rules" className="detail-tab-target-section border-box-style">
-              <h3 className="section-subtitle-title" style={{ marginBottom: '20px' }}>Property Rules</h3>
+              {/* Only show heading if there are no dynamic rules */}
+              {!hasDynamicRules && (hasStringRules || hasRoomRules) && (
+                <h3 className="section-subtitle-title" style={{ marginBottom: '20px' }}>Property Rules</h3>
+              )}
               <div className="rules-timings-grid">
                 <div className="time-badge">
                   <span>Check In : {activeDetailProp.checkIn || '3:00 PM'}</span>
@@ -699,53 +709,41 @@ export default function PropertyDetailPage(props) {
                 </div>
               </div>
                 {/* Dynamic Property Rules */}
-                {(() => {
-                  const validOtherDetails = (activeDetailProp?.otherDetails || []).filter(sec => sec.title && sec.text && sec.text.trim() !== '');
-                  
-                  if (validOtherDetails.length > 0) {
-                    return validOtherDetails.map((sec, sIdx) => (
-                      <div className="must-read-rules-block" style={{ marginTop: sIdx > 0 ? '24px' : '0' }} key={`prop-rule-${sIdx}`}>
-                        <h4 className="rules-sub-hdr">{sec.title || 'Rules'}</h4>
-                        <ul className="rules-ul-list">
-                          {sec.text.split('\n').map((rule, rIdx) => (
-                            <li key={`prop-rule-${sIdx}-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    ));
-                  }
+                {hasDynamicRules && validOtherDetails.map((sec, sIdx) => (
+                  <div className="must-read-rules-block" style={{ marginTop: sIdx > 0 ? '24px' : '0' }} key={`prop-rule-${sIdx}`}>
+                    <h4 className="rules-sub-hdr">{sec.title || 'Rules'}</h4>
+                    <ul className="rules-ul-list">
+                      {sec.text.split('\n').map((rule, rIdx) => (
+                        <li key={`prop-rule-${sIdx}-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
 
-                  if (typeof activeDetailProp?.rules === 'string' && activeDetailProp.rules.trim() !== '') {
-                    return (
-                      <div className="must-read-rules-block">
-                        <h4 className="rules-sub-hdr">Property Rules</h4>
-                        <ul className="rules-ul-list">
-                          {activeDetailProp.rules.split('\n').map((rule, rIdx) => (
-                            <li key={`prop-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    );
-                  }
-                  
-                  return null;
-                })()}
-                
+                {/* Only show static rules if no dynamic rules */}
+                {!hasDynamicRules && hasStringRules && (
+                  <div className="must-read-rules-block">
+                    <h4 className="rules-sub-hdr">Property Rules</h4>
+                    <ul className="rules-ul-list">
+                      {activeDetailProp.rules.split('\n').map((rule, rIdx) => (
+                        <li key={`prop-${rIdx}`}>{rule.replace(/^[•*-]\s*/, '')}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
                 {/* Dynamic Room Rules Sections */}
                 {propertyRooms && propertyRooms.length > 0 && propertyRooms.map((room, idx) => {
                   if (Array.isArray(room.rules) && room.rules.length > 0) {
-                    return room.rules.map((sec, sIdx) => (
-                      <div className="must-read-rules-block" style={{ marginTop: '24px' }} key={`room-${idx}-sec-${sIdx}`}>
-                        <h4 className="rules-sub-hdr">
-                          {sec.title || 'Additional Rules'} {propertyRooms.length > 1 ? `(${room.room_type || room.roomName || room.name || 'Room'})` : ''}
-                        </h4>
-                        <ul className="rules-ul-list">
-                          {(sec.points || []).map((point, pIdx) => (
-                            <li key={pIdx}>{point}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    ));
+                    return room.rules
+                      .filter(sec => sec.points && sec.points.length > 0) // Only show sections with points
+                      .map((sec, sIdx) => (
+                        <div className="must-read-rules-block" key={`room-${idx}-sec-${sIdx}`}>
+                          <h4 className="rules-sub-hdr">{sec.title || 'Additional Rules'}</h4>
+                          <ul className="rules-ul-list">
+                            {sec.points.map((point, pIdx) => <li key={pIdx}>{point}</li>)}
+                          </ul>
+                        </div>
+                      ));
                   }
                   return null;
                 })}

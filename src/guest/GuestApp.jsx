@@ -733,6 +733,7 @@ export default function GuestApp() {
     setActiveDestinationInfo,
     setSelectedProperty,
     activeDetailProp,
+    liveExperiences,
     displayDestinations,
     displayExperiences,
     currentBestVillas,
