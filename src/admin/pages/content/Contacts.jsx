@@ -9,7 +9,7 @@ const SectionLabel = ({ text }) => (
 );
 
 const FileUpload = ({ label, name, onChange, fileData }) => {
-  const [preview, setPreview] = React.useState(false);
+  const [preview, setPreview] = useState(false);
   const isIcon = label.toLowerCase().includes('icon') || label.toLowerCase().includes('svg');
   
   const isFile = fileData instanceof File;
