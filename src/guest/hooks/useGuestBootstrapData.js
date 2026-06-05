@@ -35,7 +35,9 @@ export default function useGuestBootstrapData({
         const contentRes = await fetch(`${API_BASE}/content/homepage`);
         if (contentRes.ok) {
           const contentData = await contentRes.json();
+          console.log('📡 Content API Response:', contentData);
           if (contentData && contentData.data) {
+            console.log('✅ Homepage content loaded with sections:', Object.keys(contentData.data));
             setHomepageContent(contentData.data);
           }
         }

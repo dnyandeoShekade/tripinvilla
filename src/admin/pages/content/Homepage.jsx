@@ -150,8 +150,10 @@ export default function Homepage() {
   const handleUpdate = async () => {
     setLoading(true);
     try {
+      const payload = buildPayload();
+      console.log('💾 Saving homepage content:', payload);
       const fd = new FormData();
-      fd.append('contentData', JSON.stringify(buildPayload()));
+      fd.append('contentData', JSON.stringify(payload));
       Object.keys(files).forEach(key => {
         fd.append(key, files[key]);
       });
@@ -161,6 +163,7 @@ export default function Homepage() {
       });
       if (res.ok) {
         const result = await res.json();
+        console.log('✅ Save response:', result);
         if (result?.data) {
           const { section3, section6, section7, ...rest } = result.data;
           setFormData(prev => ({ ...prev, ...rest }));

@@ -19,8 +19,12 @@ api.interceptors.request.use((config) => {
 
 export const propertyService = {
   getMine: () => api.get('/properties/owner'),
-  add: (data) => api.post('/properties', data),
-  update: (id, data) => api.put(`/properties/${id}`, data),
+  add: (data) => api.post('/properties', data, {
+    headers: { 'Content-Type': 'application/json' }
+  }),
+  update: (id, data) => api.put(`/properties/${id}`, data, {
+    headers: { 'Content-Type': 'application/json' }
+  }),
   delete: (id) => api.delete(`/properties/${id}`),
   updateStatus: (id, status) => api.put(`/properties/${id}/status`, { status }),
   uploadImages: (formData) => api.post('/properties/upload', formData, {

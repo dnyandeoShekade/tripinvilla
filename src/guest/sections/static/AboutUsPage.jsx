@@ -5,22 +5,34 @@ import './AboutUsPage.css';
 
 export default function AboutUsPage({ renderTitle, activeMenu }) {
   const [aboutUsContent, setAboutUsContent] = useState(null);
+  const [homepageContent, setHomepageContent] = useState(null);
 
   useEffect(() => {
     if (activeMenu !== 'About Us') return;
 
-    fetch(`${import.meta.env.VITE_API_BASE}/content/aboutUs`)
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.data) {
-          setAboutUsContent(data.data);
-        }
-      })
-      .catch(console.error);
+    // Fetch both AboutUs content and Homepage content (for shared section5/services)
+    Promise.all([
+      fetch(`${import.meta.env.VITE_API_BASE}/content/aboutUs`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.data) {
+            setAboutUsContent(data.data);
+          }
+        }),
+      fetch(`${import.meta.env.VITE_API_BASE}/content/homepage`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.data) {
+            setHomepageContent(data.data);
+            console.log('✅ Homepage section5 synced to AboutUs:', data.data.section5);
+          }
+        })
+    ]).catch(console.error);
   }, [activeMenu]);
 
   const s1 = aboutUsContent?.section1;
-  const s2 = aboutUsContent?.section2;
+  // Use section5 from homepage (synced/shared data)
+  const s2 = homepageContent?.section5 || aboutUsContent?.section2;
   const s3 = aboutUsContent?.section3;
 
   return (
@@ -128,14 +140,21 @@ export default function AboutUsPage({ renderTitle, activeMenu }) {
             {(() => {
               const mainT = (s3?.testimonials && s3.testimonials[3]) ? s3.testimonials[3] : { name: 'David Campbell', designation: 'Head of Digital Transformation', image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=300&q=80" };
               return (
-                <div className="testimonial-card-item image-cover-mode">
-                  <img src={mainT.image || "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=300&q=80"} alt={mainT.name} />
+                <div className="testimonial-card-item image-cover-mode" style={{ position: 'relative', backgroundColor: '#000' }}>
+                  {mainT.video ? (
+                    <video 
+                      src={mainT.video} 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                      poster={mainT.image || "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=300&q=80"}
+                    />
+                  ) : (
+                    <img src={mainT.image || "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=300&q=80"} alt={mainT.name} />
+                  )}
                   <div className="image-cover-tint-overlay">
                     <div style={{ width: '48px', height: '48px', borderRadius: '50%', overflow: 'hidden', border: '2px solid #FFFFFF' }}>
                       <img src={mainT.image || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80"} alt={mainT.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     </div>
                     {mainT.video && <div className="play-btn-circle-large"><Play size={20} fill="#FFFFFF" color="#FFFFFF" style={{ marginLeft: '3px' }} /></div>}
-                    {!mainT.video && <div className="play-btn-circle-large"><Play size={20} fill="#FFFFFF" color="#FFFFFF" style={{ marginLeft: '3px' }} /></div>}
                     <div><h5 className="cover-mode-signature-title">{mainT.name}</h5><span className="cover-mode-signature-role">{mainT.designation}</span></div>
                   </div>
                 </div>

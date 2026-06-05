@@ -51,6 +51,18 @@ export default function HomePage(props) {
   // currentBestVillas is already strictly filtered by category and capped at 6 in GuestApp
   const homepageBestVillas = currentBestVillas;
 
+  // Debug: Log homepage content to verify section4 is loaded
+  useEffect(() => {
+    if (activeMenu === 'Home' && homepageContent) {
+      console.log('📋 HomePage Content Loaded:', {
+        section1: homepageContent.section1,
+        section2: homepageContent.section2,
+        section4: homepageContent.section4,
+        section5: homepageContent.section5,
+      });
+    }
+  }, [homepageContent, activeMenu]);
+
   const handleViewAll = () => {
     if (setActivePropCategory) setActivePropCategory(activeCategory);
     if (setFilterSelectedTypes) setFilterSelectedTypes([typeMap[activeCategory] || activeCategory]);

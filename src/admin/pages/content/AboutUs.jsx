@@ -280,63 +280,37 @@ export default function AboutUs() {
 
           <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '0 -32px 24px -32px' }} />
 
-          {/* Section 2 — Services block on About Us page */}
-          <SectionLabel text="Section 2 — Why Choose Our Services" />
-          <div className="form-grid-2">
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Main Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
-              <input type="text" className="form-input" value={formData.section2.title} onChange={e => handleChange(e, 'section2.title')} />
+          {/* Section 2 — Why Choose Our Services (Now Synced) */}
+          <SectionLabel text="Section 2 — Why Choose Our Services (Synced with Homepage Section 5)" />
+          <div style={{ 
+            background: '#F0F9FF', 
+            border: '2px solid #0EA5E9', 
+            borderRadius: '8px', 
+            padding: '16px 20px', 
+            marginBottom: 24,
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <div style={{
+              width: '40px',
+              height: '40px',
+              background: '#0EA5E9',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontWeight: 'bold',
+              flexShrink: 0
+            }}>🔗</div>
+            <div>
+              <p style={{ margin: '0 0 4px 0', fontWeight: 600, color: '#0C4A6E' }}>Synchronized Section</p>
+              <p style={{ margin: 0, fontSize: '13px', color: '#0369A1' }}>
+                This section is now synced with <strong>Homepage → Section 4 → Why Choose Our Services</strong>. 
+                Edit the "Why Choose Our Services" section on the Homepage page to update this content.
+              </p>
             </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Main Sub-Text*</label>
-              <input type="text" className="form-input" value={formData.section2.subText} onChange={e => handleChange(e, 'section2.subText')} />
-            </div>
-          </div>
-          
-          <div className="form-grid-3">
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Row 1 Title*</label>
-              <input type="text" className="form-input" value={formData.section2.row1.title} onChange={e => handleChange(e, 'section2.row1.title')} />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Row 1 Sub-Text*</label>
-              <input type="text" className="form-input" value={formData.section2.row1.subText} onChange={e => handleChange(e, 'section2.row1.subText')} />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Row 1 Description*</label>
-              <input type="text" className="form-input" value={formData.section2.row1Desc} onChange={e => handleChange(e, 'section2.row1Desc')} />
-            </div>
-          </div>
-          <div className="form-grid-3">
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Row 2 Title*</label>
-              <input type="text" className="form-input" value={formData.section2.row2.title} onChange={e => handleChange(e, 'section2.row2.title')} />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Row 2 Sub-Text*</label>
-              <input type="text" className="form-input" value={formData.section2.row2.subText} onChange={e => handleChange(e, 'section2.row2.subText')} />
-            </div>
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Row 2 Description*</label>
-              <input type="text" className="form-input" value={formData.section2.row2Desc} onChange={e => handleChange(e, 'section2.row2Desc')} />
-            </div>
-          </div>
-          <div className="form-grid-3" style={{ marginBottom: 24 }}>
-            <FileUpload label="Feature 1 Image*" name="section2.features.0.image" onChange={e => handleFileChange(e, 'section2.features.0.image')} fileData={getFileDisplay('section2.features.0.image')} />
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Feature 1 Title*</label>
-              <input type="text" className="form-input" value={formData.section2.features[0].title} onChange={e => handleChange(e, 'section2.features.0.title')} />
-            </div>
-          </div>
-          <div className="form-grid-3" style={{ marginBottom: 24 }}>
-            <FileUpload label="Feature 2 Image*" name="section2.features.1.image" onChange={e => handleFileChange(e, 'section2.features.1.image')} fileData={getFileDisplay('section2.features.1.image')} />
-            <div className="form-group" style={{ marginBottom: 0 }}>
-              <label className="form-label">Feature 2 Title*</label>
-              <input type="text" className="form-input" value={formData.section2.features[1].title} onChange={e => handleChange(e, 'section2.features.1.title')} />
-            </div>
-          </div>
-          <div className="form-grid-1" style={{ marginBottom: 24 }}>
-            <FileUpload label="Center Image*" name="section2.imageCenter" onChange={e => handleFileChange(e, 'section2.imageCenter')} fileData={getFileDisplay('section2.imageCenter')} />
           </div>
 
           <hr style={{ border: 'none', borderBottom: '1px solid #E5E7EB', margin: '24px -32px 24px -32px' }} />
@@ -356,10 +330,18 @@ export default function AboutUs() {
 
           {formData.section3.testimonials.map((t, i) => (
             <div key={i} className="form-grid-5" style={{ marginBottom: i === 3 ? 0 : 24 }}>
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">Text {i + 1}*</label>
-                <input type="text" className="form-input" value={t.text} onChange={e => handleChange(e, `section3.testimonials.${i}.text`)} />
-              </div>
+              {i !== 3 && (
+                <div className="form-group" style={{ marginBottom: 0 }}>
+                  <label className="form-label">Text {i + 1}*</label>
+                  <input type="text" className="form-input" value={t.text} onChange={e => handleChange(e, `section3.testimonials.${i}.text`)} />
+                </div>
+              )}
+              {i === 3 && (
+                <div className="form-group" style={{ marginBottom: 0, padding: '12px', backgroundColor: '#FEF3C7', borderRadius: '6px', border: '1px solid #FCD34D' }}>
+                  <label className="form-label" style={{ color: '#92400E', marginBottom: '4px' }}>📹 Video Only</label>
+                  <p style={{ fontSize: '13px', color: '#92400E', margin: 0 }}>Text testimonial is hidden for 4th item. Add name, designation & video below.</p>
+                </div>
+              )}
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Name*</label>
                 <input type="text" className="form-input" value={t.name} onChange={e => handleChange(e, `section3.testimonials.${i}.name`)} />

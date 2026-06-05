@@ -558,8 +558,15 @@ export default function MyProperties({ autoOpenForm = false }) {
       if (selectedFiles.length > 0) {
         const uploadData = new FormData();
         selectedFiles.forEach(file => uploadData.append('images', file));
-        const uploadRes = await propertyService.uploadImages(uploadData);
-        imageUrls = uploadRes.data.urls;
+        try {
+          const uploadRes = await propertyService.uploadImages(uploadData);
+          imageUrls = uploadRes.data.urls;
+        } catch (imgErr) {
+          console.error('❌ Image upload failed:', imgErr.response?.data?.message || imgErr.message);
+          alert('Image upload failed: ' + (imgErr.response?.data?.message || imgErr.message));
+          setLoading(false);
+          return;
+        }
       }
 
       const allImages = [...existingImages, ...imageUrls];
@@ -616,14 +623,23 @@ export default function MyProperties({ autoOpenForm = false }) {
         bonfireArea: formData.bonfireArea, viewType: formData.viewType, outdoorSeating: formData.outdoorSeating, nearestHikingTrail: formData.nearestHikingTrail, distanceFromCity: formData.distanceFromCity,
       };
 
+      console.log('📤 Sending property data to backend:', propertyData);
+
       if (editId) {
+        console.log('🔄 Updating property:', editId);
         await propertyService.update(editId, propertyData);
         alert('Property updated successfully!');
       } else {
+        console.log('✨ Creating new property...');
         const createdProp = await propertyService.add(propertyData);
+        console.log('✅ Property created:', createdProp.data);
         const newId = createdProp.data.id || createdProp.data._id;
         for (const lm of landmarksList) {
-          await propertyService.addLandmark(newId, lm);
+          try {
+            await propertyService.addLandmark(newId, lm);
+          } catch (lmErr) {
+            console.error('⚠️  Landmark add failed:', lmErr);
+          }
         }
         alert('Property added successfully!\n\nNext step: Go to "Property Requests" from the sidebar, add your rooms, and submit a request. Your property will go live after admin approval of the room request.');
       }
@@ -631,7 +647,15 @@ export default function MyProperties({ autoOpenForm = false }) {
       fetchMyProperties(); fetchStats();
       resetForm();
     } catch (err) {
-      alert('Error saving property: ' + (err.response?.data?.message || err.message));
+      console.error('❌ Error saving property:', err);
+      const errorMsg = err.response?.data?.message || err.message || 'Unknown error';
+      console.error('Error details:', {
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        message: errorMsg,
+        data: err.response?.data
+      });
+      alert('Error saving property: ' + errorMsg);
     } finally {
       setLoading(false);
     }
