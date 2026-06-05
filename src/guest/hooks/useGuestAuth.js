@@ -162,6 +162,8 @@ export default function useGuestAuth({ API_BASE, API_ORIGIN, setActiveMenu }) {
       emergencyName: user?.emergencyName || '',
       emergencyPhone: user?.emergencyPhone || '',
       emergencyEmail: user?.emergencyEmail || '',
+      avatar: user?.profilePicture || user?.avatar || '',
+      name: user?.name || user?.firstName || '',
     });
     setIsEditProfileModalOpen(true);
   };

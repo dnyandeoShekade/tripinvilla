@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const SectionLabel = ({ text }) => (
   <div style={{ marginBottom: 24, marginTop: 12 }}>
@@ -10,51 +10,61 @@ const SectionLabel = ({ text }) => (
 
 const FileUpload = ({ label, name, onChange, fileData }) => {
   const [preview, setPreview] = useState(false);
+  const previewRef = React.useRef(null);
   const isIcon = label.toLowerCase().includes('icon') || label.toLowerCase().includes('svg');
   
   const isFile = fileData instanceof File;
   const filename = isFile ? fileData.name : (fileData ? fileData.split('/').pop() : '');
   const previewUrl = isFile ? URL.createObjectURL(fileData) : fileData;
 
+  const handleTogglePreview = () => {
+    setPreview(!preview);
+    if (!preview) {
+      setTimeout(() => {
+        previewRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    }
+  };
+
   return (
-    <div className="form-group" style={{ marginBottom: 0 }}>
+    <div className="form-group" style={{ marginBottom: preview ? 24 : 0 }}>
       <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <span>{label}</span>
         <span style={{ color: '#9CA3AF', fontSize: 10, fontWeight: 400 }}>
           {isIcon ? 'Supported File: .svg / max. 5mb' : 'Supported File: .jpg / max. 5mb'}
         </span>
       </label>
-      <div className="file-upload-wrapper" style={{ display: 'flex', gap: '8px' }}>
-        <div style={{ position: 'relative', flex: 1, display: 'flex', background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden' }}>
-          <input type="text" className="form-input" value={filename || 'Choose a file...'} readOnly style={{ border: 'none', background: 'transparent', flex: 1, textOverflow: 'ellipsis', overflow: 'hidden', padding: '10px 14px' }} />
+      
+      <div className="file-upload-wrapper" style={{ display: 'flex', background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden' }}>
+        <input type="text" className="form-input" value={filename || 'Choose a file...'} readOnly style={{ border: 'none', background: 'transparent', flex: 1, textOverflow: 'ellipsis', overflow: 'hidden', padding: '10px 14px' }} />
+        
+        <div style={{ position: 'relative' }}>
           <input type="file" name={name} accept={isIcon ? '.svg,image/svg+xml' : 'image/*'} onChange={onChange} style={{ position: 'absolute', opacity: 0, top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer' }} />
-          <button className="btn-browse" type="button" style={{ border: 'none', borderLeft: '1px solid #E5E7EB', background: '#F3F4F6', padding: '0 20px', cursor: 'pointer', color: '#374151', fontSize: '13px' }}>Browse</button>
+          <button className="btn-browse" type="button" style={{ border: 'none', borderLeft: '1px solid #E5E7EB', background: '#F3F4F6', height: '100%', padding: '0 20px', cursor: 'pointer', color: '#374151', fontSize: '13px', fontWeight: 500 }}>Browse</button>
         </div>
         
         {previewUrl && (
           <button 
             type="button" 
-            onClick={() => setPreview(true)} 
+            onClick={handleTogglePreview}
             style={{ 
-              padding: '0 16px', background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE', 
-              borderRadius: '8px', cursor: 'pointer', fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px'
+              border: 'none', borderLeft: '1px solid #E5E7EB', background: preview ? '#E5E7EB' : '#F9FAFB', 
+              padding: '0 20px', cursor: 'pointer', color: '#111827', fontSize: '13px', fontWeight: 600, 
+              display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s'
             }}
           >
-            👁️ View
+            {preview ? 'Hide' : 'View'}
           </button>
         )}
       </div>
 
       {preview && previewUrl && (
-        <div onClick={() => setPreview(false)} style={{ position: 'fixed', inset: 0, zIndex: 999999, background: 'rgba(0,0,0,0.85)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
-          <div style={{ position: 'relative', maxWidth: '900px', width: '100%' }} onClick={e => e.stopPropagation()}>
-            {previewUrl.endsWith('.mp4') || previewUrl.endsWith('.webm') ? (
-               <video src={previewUrl} controls autoPlay style={{ width: '100%', borderRadius: 12, boxShadow: '0 24px 60px rgba(0,0,0,0.4)' }} />
-            ) : (
-               <img src={previewUrl} alt="Preview" style={{ width: '100%', borderRadius: 12, boxShadow: '0 24px 60px rgba(0,0,0,0.4)', display: 'block' }} />
-            )}
-            <button onClick={() => setPreview(false)} style={{ position: 'absolute', top: -16, right: -16, width: 36, height: 36, borderRadius: '50%', background: '#fff', border: 'none', cursor: 'pointer', fontSize: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#111827', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>&times;</button>
-          </div>
+        <div ref={previewRef} style={{ marginTop: '16px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #E5E7EB', background: '#FAFAFA', padding: '16px', display: 'flex', justifyContent: 'center' }}>
+          {previewUrl.endsWith('.mp4') || previewUrl.endsWith('.webm') ? (
+             <video src={previewUrl} controls autoPlay style={{ maxWidth: '100%', maxHeight: '400px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+          ) : (
+             <img src={previewUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '400px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', display: 'block', objectFit: 'contain' }} />
+          )}
         </div>
       )}
     </div>
