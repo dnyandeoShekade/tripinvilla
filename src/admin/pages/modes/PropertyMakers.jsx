@@ -56,8 +56,8 @@ export default function PropertyMakers() {
     },
     privatePool: false, gardenArea: false, chefAvailable: false, entirePropertyOnly: false, securityCCTV: false, numberOfFloors: "", plotSize: "",
     restaurantOnSite: false, spaWellness: false, conferenceRoom: false, roomService: false, receptionAllDay: false, liftElevator: false, starRating: "", totalRooms: "", totalFloors: "", activities: [],
-    floorNumber: "", totalFloorsBuilding: "", furnishedStatus: "Fully Furnished", washingMachine: false, societyAmenities: [],
-    bonfireArea: false, viewType: "Mountain", outdoorSeating: false, nearestHikingTrail: "", distanceFromCity: "",
+    floorNumber: "", totalFloorsBuilding: "", furnishedStatus: "", washingMachine: false, societyAmenities: [],
+    bonfireArea: false, viewType: "", outdoorSeating: false, nearestHikingTrail: "", distanceFromCity: "",
   });
   const currentType = (formData.propertyType || '').toLowerCase();
   const [isEditing, setIsEditing] = useState(false);
@@ -622,11 +622,11 @@ export default function PropertyMakers() {
       activities: p.activities || [],
       floorNumber: p.floorNumber || "",
       totalFloorsBuilding: p.totalFloorsBuilding || "",
-      furnishedStatus: p.furnishedStatus || "Fully Furnished",
+      furnishedStatus: p.furnishedStatus || "",
       washingMachine: p.washingMachine || false,
       societyAmenities: p.societyAmenities || [],
       bonfireArea: p.bonfireArea || false,
-      viewType: p.viewType || "Mountain",
+      viewType: p.viewType || "",
       outdoorSeating: p.outdoorSeating || false,
       nearestHikingTrail: p.nearestHikingTrail || "",
       distanceFromCity: p.distanceFromCity || "",
@@ -1719,6 +1719,7 @@ export default function PropertyMakers() {
                   <div>
                     <label className="form-label" style={{ fontSize: 12 }}>Furnished Status</label>
                     <select className="form-select" name="furnishedStatus" value={formData.furnishedStatus} onChange={handleChange}>
+                      <option value="">Select Status</option>
                       <option value="Fully Furnished">Fully Furnished</option>
                       <option value="Semi Furnished">Semi Furnished</option>
                       <option value="Unfurnished">Unfurnished</option>
@@ -1745,6 +1746,7 @@ export default function PropertyMakers() {
                   <div>
                     <label className="form-label" style={{ fontSize: 12 }}>View Type</label>
                     <select className="form-select" name="viewType" value={formData.viewType} onChange={handleChange}>
+                      <option value="">Select View</option>
                       <option value="Mountain">Mountain</option>
                       <option value="Forest">Forest</option>
                       <option value="River">River</option>

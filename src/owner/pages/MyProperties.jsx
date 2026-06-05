@@ -70,8 +70,8 @@ export default function MyProperties({ autoOpenForm = false }) {
     // --- Type-Specific Details ---
     privatePool: false, gardenArea: false, chefAvailable: false, entirePropertyOnly: false, securityCCTV: false, numberOfFloors: '', plotSize: '',
     restaurantOnSite: false, spaWellness: false, conferenceRoom: false, roomService: false, receptionAllDay: false, liftElevator: false, starRating: '', totalRooms: '', totalFloors: '', activities: [],
-    floorNumber: '', totalFloorsBuilding: '', furnishedStatus: 'Fully Furnished', washingMachine: false, societyAmenities: [],
-    bonfireArea: false, viewType: 'Mountain', outdoorSeating: false, nearestHikingTrail: '', distanceFromCity: '',
+    floorNumber: '', totalFloorsBuilding: '', furnishedStatus: '', washingMachine: false, societyAmenities: [],
+    bonfireArea: false, viewType: '', outdoorSeating: false, nearestHikingTrail: '', distanceFromCity: '',
   });
 
   const currentType = (formData.type || '').toLowerCase();
@@ -523,8 +523,8 @@ export default function MyProperties({ autoOpenForm = false }) {
       status: fullP.status || 'Active',
       privatePool: fullP.privatePool || false, gardenArea: fullP.gardenArea || false, chefAvailable: fullP.chefAvailable || false, entirePropertyOnly: fullP.entirePropertyOnly || false, securityCCTV: fullP.securityCCTV || false, numberOfFloors: fullP.numberOfFloors || '', plotSize: fullP.plotSize || '',
       restaurantOnSite: fullP.restaurantOnSite || false, spaWellness: fullP.spaWellness || false, conferenceRoom: fullP.conferenceRoom || false, roomService: fullP.roomService || false, receptionAllDay: fullP.receptionAllDay || false, liftElevator: fullP.liftElevator || false, starRating: fullP.starRating || '', totalRooms: fullP.totalRooms || '', totalFloors: fullP.totalFloors || '', activities: fullP.activities || [],
-      floorNumber: fullP.floorNumber || '', totalFloorsBuilding: fullP.totalFloorsBuilding || '', furnishedStatus: fullP.furnishedStatus || 'Fully Furnished', washingMachine: fullP.washingMachine || false, societyAmenities: fullP.societyAmenities || [],
-      bonfireArea: fullP.bonfireArea || false, viewType: fullP.viewType || 'Mountain', outdoorSeating: fullP.outdoorSeating || false, nearestHikingTrail: fullP.nearestHikingTrail || '', distanceFromCity: fullP.distanceFromCity || '',
+      floorNumber: fullP.floorNumber || '', totalFloorsBuilding: fullP.totalFloorsBuilding || '', furnishedStatus: fullP.furnishedStatus || '', washingMachine: fullP.washingMachine || false, societyAmenities: fullP.societyAmenities || [],
+      bonfireArea: fullP.bonfireArea || false, viewType: fullP.viewType || '', outdoorSeating: fullP.outdoorSeating || false, nearestHikingTrail: fullP.nearestHikingTrail || '', distanceFromCity: fullP.distanceFromCity || '',
     });
     setManualLocation(manualLoc);
     setManualValues(manualVals);
@@ -699,8 +699,8 @@ export default function MyProperties({ autoOpenForm = false }) {
       description: '', status: 'Active',
       privatePool: false, gardenArea: false, chefAvailable: false, entirePropertyOnly: false, securityCCTV: false, numberOfFloors: '', plotSize: '',
       restaurantOnSite: false, spaWellness: false, conferenceRoom: false, roomService: false, receptionAllDay: false, liftElevator: false, starRating: '', totalRooms: '', totalFloors: '', activities: [],
-      floorNumber: '', totalFloorsBuilding: '', furnishedStatus: 'Fully Furnished', washingMachine: false, societyAmenities: [],
-      bonfireArea: false, viewType: 'Mountain', outdoorSeating: false, nearestHikingTrail: '', distanceFromCity: '',
+      floorNumber: '', totalFloorsBuilding: '', furnishedStatus: '', washingMachine: false, societyAmenities: [],
+      bonfireArea: false, viewType: '', outdoorSeating: false, nearestHikingTrail: '', distanceFromCity: '',
     });
     setSelectedFiles([]);
     setExistingImages([]);
