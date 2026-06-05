@@ -2,7 +2,7 @@ import React from 'react';
 import { X, MapPin, Bed, Bath, Users, IndianRupee, Clock, CheckCircle2, Home, Phone, Mail, Hash } from 'lucide-react';
 
 export default function PropertyViewModal({ property, onClose, inline = false }) {
-  const [dynamicRooms, setDynamicRooms] = React.useState([]);
+const [dynamicRooms, setDynamicRooms] = React.useState(() => []);
   const [allExperiences, setAllExperiences] = React.useState([]);
   const [showRooms, setShowRooms] = React.useState(false);
 
@@ -87,8 +87,7 @@ export default function PropertyViewModal({ property, onClose, inline = false })
   const propertyNo = property.propertyNo || property._id?.toString().slice(-6).toUpperCase() || '';
 
   // FIX 2: Use ONLY dynamicRooms fetched by property._id — never merge with embedded property.rooms
-  const rooms = dynamicRooms;
-
+const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
   const experiences = Array.isArray(property.experiences) ? property.experiences : [];
 
   const parseCoordinate = (val, isLat) => {

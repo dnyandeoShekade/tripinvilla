@@ -1101,9 +1101,9 @@ export default function AllProperties() {
         </div>
       </div>
 
-      {viewingProperty && (
-        <PropertyViewModal property={viewingProperty} onClose={() => setViewingProperty(null)} inline={true} />
-      )}
+     {viewingProperty != null && typeof viewingProperty === 'object' && (
+  <PropertyViewModal property={viewingProperty} onClose={() => setViewingProperty(null)} inline={true} />
+)}
 
       {/* Add Property Side Panel */}
       {showPanel && (
