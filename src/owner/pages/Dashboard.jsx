@@ -74,62 +74,16 @@ export default function Dashboard() {
 
   return (
     <div className="fade-in">
+      <div style={{ height: '16px' }} />
 
       {/* ══ Section 1: Stat Cards ════════ */}
       <div className="dash-section" style={{ marginBottom: 16 }}>
-        {/* Card Header Row */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '16px' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif' }}>Dashboard Analytics</h2>
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-            {/* Date Range Filter */}
-            <DateRangeDropdown 
-              startDate={dashboardDateFrom}
-              endDate={dashboardDateTo}
-              onChange={(start, end) => {
-                localStorage.setItem('dashboard_date_from', start);
-                localStorage.setItem('dashboard_date_to', end);
-                window.dispatchEvent(new CustomEvent('dashboard_date_changed', { detail: { dateFrom: start, dateTo: end } }));
-              }}
-            />
-            {(dashboardDateFrom || dashboardDateTo) && (
-              <button onClick={() => {
-                localStorage.removeItem('dashboard_date_from');
-                localStorage.removeItem('dashboard_date_to');
-                window.dispatchEvent(new CustomEvent('dashboard_date_changed', { detail: { dateFrom: '', dateTo: '' } }));
-              }} style={{ fontSize: '11px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', fontFamily: '"Outfit", sans-serif' }}>
-                Clear
-              </button>
-            )}
-            {/* Manage Listings Button */}
-            <button 
-              onClick={() => navigate('/owner/properties')}
-              style={{ 
-                background: '#58A429', 
-                color: '#ffffff', 
-                borderRadius: '8px', 
-                padding: '8px 16px', 
-                fontWeight: 600, 
-                fontSize: '12px', 
-                border: 'none', 
-                cursor: 'pointer',
-                fontFamily: '"Outfit", sans-serif',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                boxShadow: '0 2px 8px rgba(88, 164, 41, 0.2)'
-              }}
-            >
-              Manage Listings <ArrowUpRight size={14} />
-            </button>
-          </div>
-        </div>
-
         <div className="props-stats-row">
           <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
             <div className="props-stat-icon-wrap blue">
               <MessageSquare strokeWidth={2.5} />
             </div>
+
             <div className="props-stat-content">
               <div className="props-stat-label">Total Enquiries (Today)</div>
               <div className="props-stat-value">{statsData?.totalEnquiries || 0}</div>

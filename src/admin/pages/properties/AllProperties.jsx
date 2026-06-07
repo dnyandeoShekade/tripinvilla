@@ -1235,7 +1235,7 @@ export default function AllProperties() {
                 </select>
               </div>
 
-              {/* Row 1: Property Type, Property Name, Room Type */}
+                {/* Row 1: Property Type, Property Name, Room Type — side by side */}
               <div className="form-grid-3">
                 <div className="form-group">
                   <label
@@ -1250,7 +1250,7 @@ export default function AllProperties() {
                     value={form.type}
                     onChange={handleFormChange}
                   >
-                    <option value="">Select Property Type</option>
+                    <option value="">— Select Property Type —</option>
                     {propertyTypes.map(pt => (
                       <option key={pt._id} value={pt.name}>{pt.name}</option>
                     ))}
@@ -1272,7 +1272,7 @@ export default function AllProperties() {
                       style={{ marginTop: '8px' }} 
                       type="text" 
                       className="form-input"
-                      placeholder="Enter custom property type"
+                      placeholder="e.g. Bungalow, Treehouse, Farmhouse..."
                       value={customPropertyType}
                       onChange={(e) => setCustomPropertyType(e.target.value)}
                       required
@@ -1292,7 +1292,7 @@ export default function AllProperties() {
                     name="name"
                     value={form.name}
                     onChange={handleFormChange}
-                    placeholder="Enter property name"
+                    placeholder="e.g. Aparahotel Stare Miasto, Lake View Villa"
                     required
                   />
                 </div>
@@ -1309,13 +1309,13 @@ export default function AllProperties() {
                     name="roomType"
                     value={form.roomType}
                     onChange={handleFormChange}
-                    placeholder="e.g. 1 Deluxe 4 Normal"
+                    placeholder="e.g. 1 Deluxe, 4 Normal"
                     required
                   />
                 </div>
               </div>
 
-              {/* Row 2: Owner Contact & Amenities */}
+              {/* Row 2: Owner Contact & Amenities — side by side */}
               <div className="form-grid-3">
                 <div className="form-group">
                   <label
@@ -1330,7 +1330,7 @@ export default function AllProperties() {
                     name="ownerContact"
                     value={form.ownerContact}
                     onChange={handleFormChange}
-                    placeholder="Owner contact number"
+                    placeholder="e.g. +91 98765 43210"
                     required
                   />
                 </div>

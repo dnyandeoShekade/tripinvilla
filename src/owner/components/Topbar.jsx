@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Bell, Calendar, ChevronDown, Plus, Menu } from 'lucide-react';
+import { Bell, Calendar, ChevronDown, Plus, Menu, ArrowUpRight } from 'lucide-react';
 
 import DateRangeDropdown from '../../components/DateRangeDropdown';
 
@@ -43,6 +43,58 @@ export default function Topbar({ onToggleSidebar }) {
     window.dispatchEvent(new CustomEvent('dashboard_date_changed', { detail: { dateFrom: '', dateTo: '' } }));
   };
 
+  const renderActionButton = () => {
+    if (location.pathname === '/owner/properties') {
+      return (
+        <button 
+          onClick={() => window.dispatchEvent(new CustomEvent('owner_toggle_add_form'))}
+          style={{ 
+            background: '#58A429', 
+            color: '#ffffff', 
+            borderRadius: '8px', 
+            padding: '8px 16px', 
+            fontWeight: 600, 
+            fontSize: '12px', 
+            border: 'none', 
+            cursor: 'pointer', 
+            fontFamily: '"Outfit", sans-serif', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '6px',
+            boxShadow: '0 2px 8px rgba(88,164,41,0.2)'
+          }}
+        >
+          <Plus size={14} /> Add Property
+        </button>
+      );
+    }
+    if (location.pathname === '/owner/dashboard') {
+      return (
+        <button 
+          onClick={() => navigate('/owner/properties')}
+          style={{ 
+            background: '#58A429', 
+            color: '#ffffff', 
+            borderRadius: '8px', 
+            padding: '8px 16px', 
+            fontWeight: 600, 
+            fontSize: '12px', 
+            border: 'none', 
+            cursor: 'pointer', 
+            fontFamily: '"Outfit", sans-serif', 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '6px',
+            boxShadow: '0 2px 8px rgba(88, 164, 41, 0.2)'
+          }}
+        >
+          Manage Listings <ArrowUpRight size={14} />
+        </button>
+      );
+    }
+    return null;
+  };
+
   return (
     <header className="topbar">
       {/* Left – page title */}
@@ -56,8 +108,6 @@ export default function Topbar({ onToggleSidebar }) {
       {/* Right – action buttons + date filter + user */}
       <div className="topbar-right" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         
-
-
         {/* Date picker pill */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <DateRangeDropdown 
@@ -74,6 +124,9 @@ export default function Topbar({ onToggleSidebar }) {
             </button>
           )}
         </div>
+
+        {/* Action Button */}
+        {renderActionButton()}
 
         {/* User block */}
         <div className="topbar-user" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 12px', borderRadius: '8px', border: '1px solid #E5E7EB', background: '#ffffff', position: 'relative' }}>

@@ -757,6 +757,19 @@ export default function MyProperties({ autoOpenForm = false }) {
   const paginatedProps = filteredProps.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
 
+  useEffect(() => {
+    const handleToggle = () => {
+      if (showForm && !editId) {
+        resetForm();
+      } else {
+        resetForm();
+        setShowForm(true);
+      }
+    };
+    window.addEventListener('owner_toggle_add_form', handleToggle);
+    return () => window.removeEventListener('owner_toggle_add_form', handleToggle);
+  }, [showForm, editId]);
+
   // ─── Styles helpers ───────────────────────────────────────
   const sectionHeader = (title, subtitle) => (
     <div style={{ marginBottom: '20px', paddingBottom: '12px', borderBottom: '2px solid #F0FDF4' }}>
@@ -783,16 +796,8 @@ export default function MyProperties({ autoOpenForm = false }) {
         Property Management &gt; <span style={{ color: '#111827', fontWeight: 600 }}>My Properties</span>
       </div>
 
-      {/* ══ Section 1: Stats Cards ════════ */}
-      <div className="dash-section" style={{ marginBottom: 16 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif' }}>My Properties</h2>
-          <button onClick={() => { resetForm(); setShowForm(!showForm); }}
-            style={{ background: '#58A429', color: '#ffffff', borderRadius: '8px', padding: '8px 16px', fontWeight: 600, fontSize: '12px', border: 'none', cursor: 'pointer', fontFamily: '"Outfit", sans-serif', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 2px 8px rgba(88,164,41,0.2)' }}>
-            {showForm && !editId ? 'Hide Form' : '+ Add Property'}
-          </button>
-        </div>
-
+      <div className="dash-section" style={{ marginBottom: 24 }}>
+        {/* ══ Stats Cards ════════ */}
         <div className="props-stats-row">
           <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
             <div className="props-stat-icon-wrap blue">
@@ -840,12 +845,10 @@ export default function MyProperties({ autoOpenForm = false }) {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* ══ Section 2: Add Property Form ════════ */}
-      <div className="dash-section" style={{ marginBottom: 16 }}>
+        {/* ══ Section 2: Add Property Form ════════ */}
         {showForm && (
-          <div style={{ padding: '21px', background: '#ffffff', border: '1.5px dashed #58A429', borderRadius: '16px' }}>
+          <div style={{ padding: '21px', background: '#ffffff', border: '1.5px dashed #58A429', borderRadius: '16px', marginTop: 16 }}>
             
             {/* Form Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
@@ -1550,14 +1553,13 @@ export default function MyProperties({ autoOpenForm = false }) {
               )}
             </div>
             </div>
-                    </div>
-                  )}
-      </div>
+            </div>
+            )}
 
-      {/* ── Property List Table ───────────────────────────────── */}
-      <div className="dash-section" style={{ marginBottom: 24 }}>
-        <div className="chart-card" style={{ padding: 0, overflow: 'hidden', borderRadius: 12, border: 'none', boxShadow: 'none' }}>
-          <div className="table-header" style={{ padding: '14px 20px' }}>
+            {/* ── Property List Table ───────────────────────────────── */}
+            <div className="chart-card" style={{ padding: 0, overflow: 'hidden', borderRadius: 12, border: 'none', boxShadow: 'none', marginTop: 16 }}>
+            <div className="table-header" style={{ padding: '14px 20px' }}>
+
             <span className="table-title">My Property List</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', minWidth: 0, overflowX: 'auto' }}>
               {[{ val: filterDateFrom, set: setFilterDateFrom }, { val: filterDateTo, set: setFilterDateTo }].map((f, i) => (
