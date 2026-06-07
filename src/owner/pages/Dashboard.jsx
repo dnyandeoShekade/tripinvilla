@@ -2,20 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { 
   TrendingUp, 
   TrendingDown, 
-  Calendar, 
-  Home, 
-  DollarSign, 
   MessageSquare, 
   ArrowUpRight, 
-  ChevronRight,
-  ClipboardList,
-  Clock,
-  CheckCircle2,
-  XCircle
+  Building2,
+  Users
 } from 'lucide-react';
 import ReadMore from '../../admin/components/ReadMore';
 import { useNavigate } from 'react-router-dom';
-import { dashboardService, bookingService } from '../services/api';
+import { dashboardService } from '../services/api';
+import DateRangeDropdown from '../../components/DateRangeDropdown';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -77,33 +72,35 @@ export default function Dashboard() {
     );
   }
 
-  const ownerUser = JSON.parse(localStorage.getItem('owner_user')) || {};
-  const ownerName = ownerUser.name || 'Owner';
-  const ownerEmail = ownerUser.email || 'owner@tripinvilla.com';
-  const ownerInitial = ownerName.charAt(0).toUpperCase();
-
   return (
     <div className="fade-in">
-      <div style={{ height: '16px' }} />
-      {/* Breadcrumb */}
-      <div className="props-breadcrumb" style={{ fontSize: '13px', color: '#6B7280', fontFamily: '"Outfit", sans-serif' }}>
-        Dashboard &gt; <span style={{ color: '#111827', fontWeight: 600 }}>Dashboard Analytics</span>
-      </div>
 
-      {/* Unified Figma Dashboard Card - Green Background Div */}
-      <div className="dash-section" style={{ 
-        borderRadius: '18px', 
-        border: '1px solid #EFF6E6',
-        padding: '36px',
-        boxSizing: 'border-box',
-        marginTop: 0
-      }}>
-        
+      {/* ══ Section 1: Stat Cards ════════ */}
+      <div className="dash-section" style={{ marginBottom: 16 }}>
         {/* Card Header Row */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', flexWrap: 'wrap', gap: '20px' }}>
-          <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif' }}>Dashboard Analytics</h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '16px' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif' }}>Dashboard Analytics</h2>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            {/* Date Range Filter */}
+            <DateRangeDropdown 
+              startDate={dashboardDateFrom}
+              endDate={dashboardDateTo}
+              onChange={(start, end) => {
+                localStorage.setItem('dashboard_date_from', start);
+                localStorage.setItem('dashboard_date_to', end);
+                window.dispatchEvent(new CustomEvent('dashboard_date_changed', { detail: { dateFrom: start, dateTo: end } }));
+              }}
+            />
+            {(dashboardDateFrom || dashboardDateTo) && (
+              <button onClick={() => {
+                localStorage.removeItem('dashboard_date_from');
+                localStorage.removeItem('dashboard_date_to');
+                window.dispatchEvent(new CustomEvent('dashboard_date_changed', { detail: { dateFrom: '', dateTo: '' } }));
+              }} style={{ fontSize: '11px', color: '#EF4444', background: 'none', border: 'none', cursor: 'pointer', fontFamily: '"Outfit", sans-serif' }}>
+                Clear
+              </button>
+            )}
             {/* Manage Listings Button */}
             <button 
               onClick={() => navigate('/owner/properties')}
@@ -111,9 +108,9 @@ export default function Dashboard() {
                 background: '#58A429', 
                 color: '#ffffff', 
                 borderRadius: '8px', 
-                padding: '10px 20px', 
+                padding: '8px 16px', 
                 fontWeight: 600, 
-                fontSize: '13px', 
+                fontSize: '12px', 
                 border: 'none', 
                 cursor: 'pointer',
                 fontFamily: '"Outfit", sans-serif',
@@ -128,127 +125,123 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Stats Section (Replaces old Hero and old Stats) */}
-        <div style={{ 
-          background: '#ffffff', 
-          borderRadius: '16px', 
-          padding: '24px', 
-          border: '1px solid #EFF6E6', 
-          boxShadow: '0 2px 12px rgba(0,0,0,0.02)',
-          marginBottom: '32px'
-        }}>
-          <div style={{ 
-            display: 'flex', 
-            flexWrap: 'nowrap', 
-            gap: '20px', 
-            overflowX: 'auto',
-            paddingBottom: '8px' // slight padding for scrollbar if visible
-          }}>
-            {[
-              { label: 'Total Enquiries (Today)', value: statsData?.totalEnquiries || 0, trend: '+04.6%', up: true },
-              { label: 'Active Properties', value: statsData?.activeProperties || 0, trend: '-16.6%', up: false },
-              { label: 'Response Rate', value: '95%', trend: '+16.6%', up: true },
-            ].map((card, i) => (
-              <div key={i} style={{ 
-                background: '#ffffff', 
-                borderRadius: '12px', 
-                padding: '24px', 
-                border: '1px solid #EFF6E6', 
-                display: 'flex', 
-                flexDirection: 'column', 
-                gap: '6px',
-                flex: '1 0 auto',
-                minWidth: '280px'
-              }}>
-                <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 500, fontFamily: '"Outfit", sans-serif', whiteSpace: 'nowrap' }}>{card.label}</span>
-                <span style={{ fontSize: '32px', fontWeight: 700, color: '#111827', fontFamily: '"Outfit", sans-serif' }}>{card.value}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', whiteSpace: 'nowrap' }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: card.up ? '#E8F5EE' : '#FEE2E2', color: card.up ? '#58A429' : '#EF4444', padding: '3px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
-                    {card.up ? <TrendingUp size={11} /> : <TrendingDown size={11} />} {card.trend}
-                  </span>
-                  <span style={{ color: '#9CA3AF', fontSize: '11px', fontFamily: '"Outfit", sans-serif' }}>Compared to yesterday</span>
-                </div>
+        <div className="props-stats-row">
+          <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
+            <div className="props-stat-icon-wrap blue">
+              <MessageSquare strokeWidth={2.5} />
+            </div>
+            <div className="props-stat-content">
+              <div className="props-stat-label">Total Enquiries (Today)</div>
+              <div className="props-stat-value">{statsData?.totalEnquiries || 0}</div>
+              <div className="stat-card-meta" style={{ marginTop: 4 }}>
+                <span className="stat-badge up">
+                  <TrendingUp size={10} /> +04.6%
+                </span>
+                <span className="stat-card-sub">Compared to yesterday</span>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Main Grid: Recent Bookings */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '24px' }}>
-          
-          {/* Recent Bookings sub-card */}
-          <div style={{ border: '1px solid #EFF6E6', borderRadius: '12px', padding: '24px', background: '#ffffff' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif' }}>Recent Enquiries</h3>
-              <button 
-                onClick={() => navigate('/owner/enquiries')} 
-                style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#58A429', fontSize: '13px', fontWeight: 600, border: 'none', background: 'none', cursor: 'pointer', fontFamily: '"Outfit", sans-serif' }}
-              >
-                View All <ChevronRight size={14} />
-              </button>
-            </div>
-
-            <div style={{ overflowX: 'auto', width: '100%' }}>
-              <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #F3F4F6' }}>
-                    <th style={{ color: '#9CA3AF', fontWeight: 500, fontSize: '12px', padding: '12px 14px' }}>Enquiry ID</th>
-                    <th style={{ color: '#9CA3AF', fontWeight: 500, fontSize: '12px', padding: '12px 14px' }}>Property</th>
-                    <th style={{ color: '#9CA3AF', fontWeight: 500, fontSize: '12px', padding: '12px 14px' }}>Guest Name</th>
-                    <th style={{ color: '#9CA3AF', fontWeight: 500, fontSize: '12px', padding: '12px 14px' }}>Date &amp; Time</th>
-                    <th style={{ color: '#9CA3AF', fontWeight: 500, fontSize: '12px', padding: '12px 14px' }}>Email / Phone</th>
-                    <th style={{ color: '#9CA3AF', fontWeight: 500, fontSize: '12px', padding: '12px 14px' }}>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recentEnquiries.length > 0 ? (
-                    recentEnquiries.map((e, i) => {
-                      const dateStr = new Date(e.createdAt || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-                      return (
-                        <tr key={e._id || i} style={{ borderBottom: '1px solid #F3F4F6' }}>
-                          <td style={{ fontWeight: 600, color: '#58A429', padding: '14px', fontSize: '13px' }}>
-                            ENQ-{String(i + 1).padStart(3, '0')}
-                          </td>
-                          <td style={{ fontWeight: 500, color: '#111827', padding: '14px', fontSize: '13px' }}>
-                            <ReadMore maxWords={6}>{e.property?.name || 'Unnamed Property'}</ReadMore>
-                          </td>
-                          <td style={{ padding: '14px' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span style={{ fontWeight: 500, color: '#374151', fontSize: '13px' }}><ReadMore maxWords={6}>{e.name || 'Guest'}</ReadMore></span>
-                            </div>
-                          </td>
-                          <td style={{ color: '#6B7280', padding: '14px', fontSize: '13px' }}>
-                            {dateStr}
-                          </td>
-                          <td style={{ padding: '14px' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                              <span style={{ fontSize: '12.5px', color: '#374151', fontWeight: 500 }}>{e.email}</span>
-                              <span style={{ fontSize: '11px', color: '#9CA3AF' }}>{e.phone}</span>
-                            </div>
-                          </td>
-                          <td style={{ padding: '14px' }}>
-                            <span className={`status-pill ${e.replied ? 'active' : 'pending'}`}>
-                              {e.replied ? 'Replied' : 'Pending'}
-                            </span>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  ) : (
-                    <tr>
-                      <td colSpan="6" style={{ textAlign: 'center', padding: '40px 0', color: '#9CA3AF', fontSize: '13px' }}>
-                        No recent enquiries found.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
             </div>
           </div>
-
+          <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
+            <div className="props-stat-icon-wrap green">
+              <Building2 strokeWidth={2.5} />
+            </div>
+            <div className="props-stat-content">
+              <div className="props-stat-label">Active Properties</div>
+              <div className="props-stat-value">{statsData?.activeProperties || 0}</div>
+              <div className="stat-card-meta" style={{ marginTop: 4 }}>
+                <span className="stat-badge down">
+                  <TrendingDown size={10} /> -16.6%
+                </span>
+                <span className="stat-card-sub">Compared to yesterday</span>
+              </div>
+            </div>
+          </div>
+          <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
+            <div className="props-stat-icon-wrap purple">
+              <Users strokeWidth={2.5} />
+            </div>
+            <div className="props-stat-content">
+              <div className="props-stat-label">Response Rate</div>
+              <div className="props-stat-value">{statsData?.responseRate !== undefined ? `${statsData.responseRate}%` : '0%'}</div>
+              <div className="stat-card-meta" style={{ marginTop: 4 }}>
+                <span className="stat-badge up">
+                  <TrendingUp size={10} /> +16.6%
+                </span>
+                <span className="stat-card-sub">Compared to yesterday</span>
+              </div>
+            </div>
+          </div>
         </div>
-
       </div>
+
+      {/* ══ Section 2: Recent Enquiries ══════ */}
+      <div className="dash-section" style={{ marginBottom: 24 }}>
+        <div className="chart-card" style={{ padding: 0, overflow: 'hidden', borderRadius: 12, border: 'none', boxShadow: 'none' }}>
+          <div className="table-header" style={{ padding: '14px 20px' }}>
+            <span className="table-title">Recent Enquiries</span>
+            <div className="table-header-right">
+              <button className="table-view-all" onClick={() => navigate('/owner/enquiries')} style={{ cursor: 'pointer' }}>View All</button>
+            </div>
+          </div>
+          <div style={{ overflowX: 'auto', width: '100%' }}>
+            <table className="data-table" style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+              <thead>
+                <tr style={{ borderBottom: '1px solid #F3F4F6' }}>
+                  <th style={{ color: '#9CA3AF', fontWeight: 500, fontSize: '12px', padding: '12px 14px' }}>Enquiry ID</th>
+                  <th style={{ color: '#9CA3AF', fontWeight: 500, fontSize: '12px', padding: '12px 14px' }}>Property</th>
+                  <th style={{ color: '#9CA3AF', fontWeight: 500, fontSize: '12px', padding: '12px 14px' }}>Guest Name</th>
+                  <th style={{ color: '#9CA3AF', fontWeight: 500, fontSize: '12px', padding: '12px 14px' }}>Date & Time</th>
+                  <th style={{ color: '#9CA3AF', fontWeight: 500, fontSize: '12px', padding: '12px 14px' }}>Email / Phone</th>
+                  <th style={{ color: '#9CA3AF', fontWeight: 500, fontSize: '12px', padding: '12px 14px' }}>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recentEnquiries.length > 0 ? (
+                  recentEnquiries.map((e, i) => {
+                    const dateStr = new Date(e.createdAt || Date.now()).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    return (
+                      <tr key={e._id || i} style={{ borderBottom: '1px solid #F3F4F6' }}>
+                        <td style={{ fontWeight: 600, color: '#58A429', padding: '14px', fontSize: '13px' }}>
+                          ENQ-{String(i + 1).padStart(3, '0')}
+                        </td>
+                        <td style={{ fontWeight: 500, color: '#111827', padding: '14px', fontSize: '13px' }}>
+                          <ReadMore maxWords={6}>{e.property?.name || 'Unnamed Property'}</ReadMore>
+                        </td>
+                        <td style={{ padding: '14px' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span style={{ fontWeight: 500, color: '#374151', fontSize: '13px' }}><ReadMore maxWords={6}>{e.name || 'Guest'}</ReadMore></span>
+                          </div>
+                        </td>
+                        <td style={{ color: '#6B7280', padding: '14px', fontSize: '13px' }}>
+                          {dateStr}
+                        </td>
+                        <td style={{ padding: '14px' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span style={{ fontSize: '12.5px', color: '#374151', fontWeight: 500 }}>{e.email}</span>
+                            <span style={{ fontSize: '11px', color: '#9CA3AF' }}>{e.phone}</span>
+                          </div>
+                        </td>
+                        <td style={{ padding: '14px' }}>
+                          <span className={`status-pill ${e.replied ? 'active' : 'pending'}`}>
+                            {e.replied ? 'Replied' : 'Pending'}
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan="6" style={{ textAlign: 'center', padding: '40px 0', color: '#9CA3AF', fontSize: '13px' }}>
+                      No recent enquiries found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }

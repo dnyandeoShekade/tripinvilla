@@ -174,7 +174,7 @@ export default function PropertyRequests() {
 
     setLoading(true);
     try {
-      let roomImageUrl = '';
+      let roomImageUrl = roomImagePreview || '';
       if (selectedRoomImage) {
         const fd = new FormData();
         fd.append('images', selectedRoomImage);
@@ -325,7 +325,7 @@ export default function PropertyRequests() {
       ) : (
         <>
           {/* ─── ROOM FORM ─── */}
-          <div className="dash-section" style={{ marginBottom: 16, padding: '24px' }}>
+          <div className="dash-section" style={{ marginBottom: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
               <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', fontFamily: '"Outfit", sans-serif', margin: 0 }}>
                 Configure Room Pricing &amp; Rules
@@ -393,14 +393,13 @@ export default function PropertyRequests() {
               <div className="form-group">
                 <label className="form-label">Upload Room Image (Max 5MB)</label>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  {!editingRoomId ? (
-                    <input ref={imageInputRef} type="file" accept=".jpg,.jpeg,.png" onChange={handleImageChange}
-                      style={{ width: '100%', boxSizing: 'border-box', padding: '8px', border: '1px solid #D1D5DB', borderRadius: '8px', fontSize: '13px', background: '#fff' }} />
-                  ) : (
-                    <span style={{ fontSize: '12px', color: '#9CA3AF', fontWeight: 500 }}>Cannot change room image</span>
-                  )}
+                  <input ref={imageInputRef} type="file" accept=".jpg,.jpeg,.png" onChange={handleImageChange}
+                    style={{ width: '100%', boxSizing: 'border-box', padding: '8px', border: '1px solid #D1D5DB', borderRadius: '8px', fontSize: '13px', background: '#fff' }} />
                   {roomImagePreview && (
                     <img src={getFullRoomImageUrl(roomImagePreview)} alt="preview" style={{ width: '100%', height: '80px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #E5E7EB' }} />
+                  )}
+                  {editingRoomId && (
+                    <span style={{ fontSize: '11px', color: '#9CA3AF', fontStyle: 'italic' }}>Upload a new image to replace the current one, or leave empty to keep the existing image.</span>
                   )}
                 </div>
               </div>
@@ -543,7 +542,7 @@ export default function PropertyRequests() {
 
           {/* ─── ROOM QUEUE PREVIEW ─── */}
           {roomQueue.length > 0 && (
-            <div className="dash-section" style={{ marginBottom: 16, padding: '24px' }}>
+            <div className="dash-section" style={{ marginBottom: 16 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: 0 }}>
                   Rooms Ready to Submit ({roomQueue.length})
@@ -577,7 +576,7 @@ export default function PropertyRequests() {
           )}
 
           {/* ─── SUBMITTED REQUESTS TABLE ─── */}
-          <div className="dash-section" style={{ marginBottom: 24, padding: '24px' }}>
+          <div className="dash-section" style={{ marginBottom: 24 }}>
             <div className="chart-card" style={{ padding: 0, overflow: 'hidden', borderRadius: 12, border: 'none', boxShadow: 'none' }}>
               <div style={{ overflowX: 'auto' }}>
                 <table className="data-table" style={{ whiteSpace: 'nowrap' }}>

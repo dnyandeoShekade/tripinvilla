@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Filter, Calendar, ChevronDown, CheckCircle2, XCircle, MoreVertical, Edit2, Trash2, ArrowUpRight, Upload, TrendingUp, TrendingDown } from 'lucide-react';
+import { Search, Filter, Calendar, ChevronDown, CheckCircle2, XCircle, MoreVertical, Edit2, Trash2, ArrowUpRight, Upload, TrendingUp, TrendingDown, MessageSquare, Building2, Users, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { propertyService, dashboardService } from '../services/api';
 import PropertyViewModal from '../../admin/pages/properties/PropertyViewModal';
@@ -783,56 +783,69 @@ export default function MyProperties({ autoOpenForm = false }) {
         Property Management &gt; <span style={{ color: '#111827', fontWeight: 600 }}>My Properties</span>
       </div>
 
-      {/* ── Stats Section ─────────────────────────────────────── */}
-      <div className="dash-section" style={{ borderRadius: '18px', border: '1px solid #EFF6E6', padding: '24px', boxSizing: 'border-box', marginTop: 0, background: '#FAFDF2' }}>
-        <div style={{ background: '#ffffff', borderRadius: '16px', padding: '32px', border: '1px solid #EFF6E6', boxShadow: '0 2px 12px rgba(0,0,0,0.02)' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', flexWrap: 'wrap', gap: '20px' }}>
-            <h2 style={{ fontSize: '22px', fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif' }}>My Properties</h2>
-            <button onClick={() => { resetForm(); setShowForm(!showForm); }}
-              style={{ background: '#58A429', color: '#ffffff', borderRadius: '8px', padding: '10px 20px', fontWeight: 600, fontSize: '13px', border: 'none', cursor: 'pointer', fontFamily: '"Outfit", sans-serif', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 2px 8px rgba(88,164,41,0.2)' }}>
-              {showForm && !editId ? 'Hide Form' : '+ Add Property'}
-            </button>
-          </div>
-
-          <div style={{ 
-            display: 'flex', 
-            flexWrap: 'nowrap', 
-            gap: '20px', 
-            overflowX: 'auto',
-            paddingBottom: '8px' 
-          }}>
-            {[
-              { label: 'Total Enquiries (Today)', value: statsData?.totalEnquiries || 0, trend: '+04.6%', up: true },
-              { label: 'Active Properties', value: myProps.filter(p => p.status === 'Active').length, trend: '-16.6%', up: false },
-              { label: 'Response Rate', value: '95%', trend: '+16.6%', up: true },
-            ].map((card, i) => (
-              <div key={i} style={{ 
-                background: '#ffffff', 
-                borderRadius: '12px', 
-                padding: '24px', 
-                border: '1px solid #EFF6E6', 
-                display: 'flex', 
-                flexDirection: 'column', 
-                gap: '6px',
-                flex: '1 0 auto',
-                minWidth: '280px'
-              }}>
-                <span style={{ fontSize: '13px', color: '#6B7280', fontWeight: 500, fontFamily: '"Outfit", sans-serif', whiteSpace: 'nowrap' }}>{card.label}</span>
-                <span style={{ fontSize: '32px', fontWeight: 700, color: '#111827', fontFamily: '"Outfit", sans-serif' }}>{card.value}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px', whiteSpace: 'nowrap' }}>
-                  <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: card.up ? '#E8F5EE' : '#FEE2E2', color: card.up ? '#58A429' : '#EF4444', padding: '3px 8px', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
-                    {card.up ? <TrendingUp size={11} /> : <TrendingDown size={11} />} {card.trend}
-                  </span>
-                  <span style={{ color: '#9CA3AF', fontSize: '11px', whiteSpace: 'nowrap' }}>Compared to yesterday</span>
-                </div>
-              </div>
-            ))}
-          </div>
+      {/* ══ Section 1: Stats Cards ════════ */}
+      <div className="dash-section" style={{ marginBottom: 16 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+          <h2 style={{ fontSize: 18, fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif' }}>My Properties</h2>
+          <button onClick={() => { resetForm(); setShowForm(!showForm); }}
+            style={{ background: '#58A429', color: '#ffffff', borderRadius: '8px', padding: '8px 16px', fontWeight: 600, fontSize: '12px', border: 'none', cursor: 'pointer', fontFamily: '"Outfit", sans-serif', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 2px 8px rgba(88,164,41,0.2)' }}>
+            {showForm && !editId ? 'Hide Form' : '+ Add Property'}
+          </button>
         </div>
 
-        {/* ── ADD PROPERTY FORM ─────────────────────────────── */}
+        <div className="props-stats-row">
+          <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
+            <div className="props-stat-icon-wrap blue">
+              <MessageSquare strokeWidth={2.5} />
+            </div>
+            <div className="props-stat-content">
+              <div className="props-stat-label">Total Enquiries (Today)</div>
+              <div className="props-stat-value">{statsData?.totalEnquiries || 0}</div>
+              <div className="stat-card-meta" style={{ marginTop: 4 }}>
+                <span className="stat-badge up">
+                  <TrendingUp size={10} /> +04.6%
+                </span>
+                <span className="stat-card-sub">Compared to yesterday</span>
+              </div>
+            </div>
+          </div>
+          <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
+            <div className="props-stat-icon-wrap green">
+              <Building2 strokeWidth={2.5} />
+            </div>
+            <div className="props-stat-content">
+              <div className="props-stat-label">Active Properties</div>
+              <div className="props-stat-value">{myProps.filter(p => p.status === 'Active').length}</div>
+              <div className="stat-card-meta" style={{ marginTop: 4 }}>
+                <span className="stat-badge down">
+                  <TrendingDown size={10} /> -16.6%
+                </span>
+                <span className="stat-card-sub">Compared to yesterday</span>
+              </div>
+            </div>
+          </div>
+          <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
+            <div className="props-stat-icon-wrap" style={{ background: '#F5F3FF', color: '#7C3AED', width: 64, height: 64, borderRadius: 16, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Users strokeWidth={2.5} style={{ width: 32, height: 32 }} />
+            </div>
+            <div className="props-stat-content">
+              <div className="props-stat-label">Response Rate</div>
+              <div className="props-stat-value">95%</div>
+              <div className="stat-card-meta" style={{ marginTop: 4 }}>
+                <span className="stat-badge up">
+                  <TrendingUp size={10} /> +16.6%
+                </span>
+                <span className="stat-card-sub">Compared to yesterday</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ══ Section 2: Add Property Form ════════ */}
+      <div className="dash-section" style={{ marginBottom: 16 }}>
         {showForm && (
-          <div style={{ marginTop: '24px', padding: '32px', background: '#ffffff', border: '1.5px dashed #58A429', borderRadius: '16px' }}>
+          <div style={{ padding: '21px', background: '#ffffff', border: '1.5px dashed #58A429', borderRadius: '16px' }}>
             
             {/* Form Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
@@ -1541,13 +1554,11 @@ export default function MyProperties({ autoOpenForm = false }) {
                   )}
       </div>
 
-      <div style={{ height: '24px' }} />
-
       {/* ── Property List Table ───────────────────────────────── */}
-      <div className="dash-section" style={{ borderRadius: '18px', border: '1px solid #EFF6E6', padding: '36px', boxSizing: 'border-box' }}>
-        <div style={{ border: '1px solid #EFF6E6', borderRadius: '12px', padding: '24px', background: '#ffffff' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'nowrap', gap: '8px', minWidth: 0 }}>
-            <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', margin: 0, fontFamily: '"Outfit", sans-serif', whiteSpace: 'nowrap', flexShrink: 0 }}>My Property List</h3>
+      <div className="dash-section" style={{ marginBottom: 24 }}>
+        <div className="chart-card" style={{ padding: 0, overflow: 'hidden', borderRadius: 12, border: 'none', boxShadow: 'none' }}>
+          <div className="table-header" style={{ padding: '14px 20px' }}>
+            <span className="table-title">My Property List</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', minWidth: 0, overflowX: 'auto' }}>
               {[{ val: filterDateFrom, set: setFilterDateFrom }, { val: filterDateTo, set: setFilterDateTo }].map((f, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '5px 8px', background: '#ffffff', flexShrink: 0 }}>
@@ -1606,7 +1617,7 @@ export default function MyProperties({ autoOpenForm = false }) {
                     <td style={{ color: '#111827', fontWeight: 600, padding: '14px', fontSize: '13px' }}>₹{(p.price_per_night !== undefined ? p.price_per_night : p.price)?.toLocaleString()}</td>
                     <td style={{ color: '#374151', fontWeight: 500, padding: '14px', fontSize: '13px' }}>{p.bedRooms || 1}</td>
                     <td style={{ color: '#374151', fontWeight: 500, padding: '14px', fontSize: '13px' }}>{enquiryCounts[p._id] || 0}</td>
-                    <td style={{ color: '#D97706', fontWeight: 600, padding: '14px', fontSize: '13px' }}>{p.rating || '5 Star'}</td>
+                    <td style={{ color: '#D97706', fontWeight: 600, padding: '14px', fontSize: '13px' }}>{p.rating || '—'}</td>
                     <td style={{ padding: '14px' }}>
                       <span onClick={() => handleStatusToggle(p._id, p.status)} title="Click to toggle"
                         style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600, cursor: 'pointer', userSelect: 'none', background: p.status === 'Active' ? '#DCFCE7' : p.status === 'Pending' ? '#FEF3C7' : '#FEE2E2', color: p.status === 'Active' ? '#58A429' : p.status === 'Pending' ? '#D97706' : '#EF4444' }}>

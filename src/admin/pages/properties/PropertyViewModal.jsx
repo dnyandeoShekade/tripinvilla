@@ -87,7 +87,9 @@ const [dynamicRooms, setDynamicRooms] = React.useState(() => []);
   const propertyNo = property.propertyNo || property._id?.toString().slice(-6).toUpperCase() || '';
 
   // FIX 2: Use ONLY dynamicRooms fetched by property._id — never merge with embedded property.rooms
-const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
+const rooms = (Array.isArray(dynamicRooms) && dynamicRooms.length > 0)
+  ? dynamicRooms
+  : (Array.isArray(property.rooms) && property.rooms.length > 0 ? property.rooms : []);
   const experiences = Array.isArray(property.experiences) ? property.experiences : [];
 
   const parseCoordinate = (val, isLat) => {
