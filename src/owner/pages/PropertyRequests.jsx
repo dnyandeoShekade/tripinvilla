@@ -392,15 +392,15 @@ export default function PropertyRequests() {
             <div className="form-grid-3" style={{ marginBottom: '16px' }}>
               <div className="form-group">
                 <label className="form-label">Upload Room Image (Max 5MB)</label>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {!editingRoomId ? (
                     <input ref={imageInputRef} type="file" accept=".jpg,.jpeg,.png" onChange={handleImageChange}
-                      style={{ flex: 1, padding: '8px', border: '1px solid #D1D5DB', borderRadius: '8px', fontSize: '13px', background: '#fff' }} />
+                      style={{ width: '100%', boxSizing: 'border-box', padding: '8px', border: '1px solid #D1D5DB', borderRadius: '8px', fontSize: '13px', background: '#fff' }} />
                   ) : (
-                    <span style={{ fontSize: '12px', color: '#9CA3AF', fontWeight: 500, flex: 1 }}>Cannot change room image</span>
+                    <span style={{ fontSize: '12px', color: '#9CA3AF', fontWeight: 500 }}>Cannot change room image</span>
                   )}
                   {roomImagePreview && (
-                    <img src={getFullRoomImageUrl(roomImagePreview)} alt="preview" style={{ width: '44px', height: '44px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #E5E7EB', flexShrink: 0 }} />
+                    <img src={getFullRoomImageUrl(roomImagePreview)} alt="preview" style={{ width: '100%', height: '80px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #E5E7EB' }} />
                   )}
                 </div>
               </div>
@@ -427,11 +427,31 @@ export default function PropertyRequests() {
               </div>
               <div className="form-group">
                 <label className="form-label">Check-In Time</label>
-                <input type="text" className="form-input" name="checkin_time" value={formData.checkin_time} onChange={handleInputChange} placeholder="e.g. 02:00 PM" />
+                <select className="form-select" name="checkin_time" value={formData.checkin_time} onChange={handleInputChange}>
+                  <option value="">Select Time</option>
+                  {Array.from({ length: 48 }).map((_, i) => {
+                    const hrs = Math.floor(i / 2);
+                    const mins = i % 2 === 0 ? '00' : '30';
+                    const ampm = hrs < 12 ? 'AM' : 'PM';
+                    const displayHrs = hrs % 12 || 12;
+                    const timeStr = `${displayHrs.toString().padStart(2, '0')}:${mins} ${ampm}`;
+                    return <option key={timeStr} value={timeStr}>{timeStr}</option>;
+                  })}
+                </select>
               </div>
               <div className="form-group">
                 <label className="form-label">Check-Out Time</label>
-                <input type="text" className="form-input" name="checkout_time" value={formData.checkout_time} onChange={handleInputChange} placeholder="e.g. 12:00 PM" />
+                <select className="form-select" name="checkout_time" value={formData.checkout_time} onChange={handleInputChange}>
+                  <option value="">Select Time</option>
+                  {Array.from({ length: 48 }).map((_, i) => {
+                    const hrs = Math.floor(i / 2);
+                    const mins = i % 2 === 0 ? '00' : '30';
+                    const ampm = hrs < 12 ? 'AM' : 'PM';
+                    const displayHrs = hrs % 12 || 12;
+                    const timeStr = `${displayHrs.toString().padStart(2, '0')}:${mins} ${ampm}`;
+                    return <option key={timeStr} value={timeStr}>{timeStr}</option>;
+                  })}
+                </select>
               </div>
             </div>
 
@@ -574,59 +594,155 @@ export default function PropertyRequests() {
                       const statusBg = statusLabel === 'approved' ? '#DCFCE7' : statusLabel === 'rejected' ? '#FEE2E2' : '#FEF3C7';
                       const statusColor = statusLabel === 'approved' ? '#58A429' : statusLabel === 'rejected' ? '#EF4444' : '#D97706';
                       return (
-                        <tr key={i}>
-                          <td style={{ color: '#111827', fontWeight: 500, padding: '14px 16px' }}><ReadMore maxWords={6}>{r.propertyName}</ReadMore></td>
-                          <td style={{ color: '#6B7280', padding: '14px 16px' }}>{r.category}</td>
-                          <td style={{ padding: '14px 16px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                              {r.room_image_url && <img src={getFullRoomImageUrl(r.room_image_url)} alt={r.room_type} style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }} />}
-                              <span style={{ color: '#6B7280' }}>
-                                {getRequestRooms(r).length > 1
-                                  ? `${getRequestRooms(r).length} Rooms: ${getRequestRooms(r).map((room) => room.room_type).join(', ')}`
-                                  : (r.room_type || getRequestRooms(r)[0]?.room_type)}
+                        <React.Fragment key={i}>
+                          <tr>
+                            <td style={{ color: '#111827', fontWeight: 500, padding: '14px 16px' }}><ReadMore maxWords={6}>{r.propertyName}</ReadMore></td>
+                            <td style={{ color: '#6B7280', padding: '14px 16px' }}>{r.category}</td>
+                            <td style={{ padding: '14px 16px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                {r.room_image_url && <img src={getFullRoomImageUrl(r.room_image_url)} alt={r.room_type} style={{ width: '32px', height: '32px', borderRadius: '6px', objectFit: 'cover' }} />}
+                                <span style={{ color: '#6B7280' }}>
+                                  {getRequestRooms(r).length > 1
+                                    ? `${getRequestRooms(r).length} Rooms: ${getRequestRooms(r).map((room) => room.room_type).join(', ')}`
+                                    : (r.room_type || getRequestRooms(r)[0]?.room_type)}
+                                </span>
+                              </div>
+                            </td>
+                            <td style={{ color: '#6B7280', padding: '14px 16px' }}>
+                              {getRequestRooms(r).length > 1
+                                ? `${getRequestRooms(r).length} room types`
+                                : (r.bed_type || getRequestRooms(r)[0]?.bed_type)}
+                            </td>
+                            <td style={{ color: '#6B7280', padding: '14px 16px' }}>
+                              {getRequestRooms(r).length > 1
+                                ? 'See view for details'
+                                : (r.amenities_types?.length > 0 ? r.amenities_types.join(', ') : 'None')}
+                            </td>
+                            <td style={{ color: '#111827', fontWeight: 600, padding: '14px 16px' }}>
+                              {getRequestRooms(r).length > 1
+                                ? `From ₹${Math.min(...getRequestRooms(r).map((room) => Number(room.price_per_room || 0)).filter(Boolean))}`
+                                : `₹${r.price_per_room}`}
+                            </td>
+                            <td style={{ color: '#6B7280', padding: '14px 16px' }}>
+                              <div>In: {r.checkin_time || '02:00 PM'}</div>
+                              <div>Out: {r.checkout_time || '12:00 PM'}</div>
+                            </td>
+                            <td style={{ color: '#6B7280', padding: '14px 16px' }}>{Array.isArray(r.rules) ? `${r.rules.length} section(s)` : (r.rules?.length > 35 ? `${r.rules.substring(0, 35)}...` : r.rules)}</td>
+                            <td style={{ color: '#111827', fontWeight: 600, padding: '14px 16px' }}>{r.offers?.length > 0 ? r.offers.join(', ') : 'None'}</td>
+                            <td style={{ padding: '14px 16px' }}>
+                              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600, background: statusBg, color: statusColor }}>
+                                <span style={{ width: 6, height: 6, borderRadius: '50%', background: statusColor }} /> {statusLabel.toUpperCase()}
                               </span>
-                            </div>
-                          </td>
-                          <td style={{ color: '#6B7280', padding: '14px 16px' }}>
-                            {getRequestRooms(r).length > 1
-                              ? `${getRequestRooms(r).length} room types`
-                              : (r.bed_type || getRequestRooms(r)[0]?.bed_type)}
-                          </td>
-                          <td style={{ color: '#6B7280', padding: '14px 16px' }}>
-                            {getRequestRooms(r).length > 1
-                              ? 'See view for details'
-                              : (r.amenities_types?.length > 0 ? r.amenities_types.join(', ') : 'None')}
-                          </td>
-                          <td style={{ color: '#111827', fontWeight: 600, padding: '14px 16px' }}>
-                            {getRequestRooms(r).length > 1
-                              ? `From ₹${Math.min(...getRequestRooms(r).map((room) => Number(room.price_per_room || 0)).filter(Boolean))}`
-                              : `₹${r.price_per_room}`}
-                          </td>
-                          <td style={{ color: '#6B7280', padding: '14px 16px' }}>
-                            <div>In: {r.checkin_time || '02:00 PM'}</div>
-                            <div>Out: {r.checkout_time || '12:00 PM'}</div>
-                          </td>
-                          <td style={{ color: '#6B7280', padding: '14px 16px' }}>{Array.isArray(r.rules) ? `${r.rules.length} section(s)` : (r.rules?.length > 35 ? `${r.rules.substring(0, 35)}...` : r.rules)}</td>
-                          <td style={{ color: '#111827', fontWeight: 600, padding: '14px 16px' }}>{r.offers?.length > 0 ? r.offers.join(', ') : 'None'}</td>
-                          <td style={{ padding: '14px 16px' }}>
-                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '3px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600, background: statusBg, color: statusColor }}>
-                              <span style={{ width: 6, height: 6, borderRadius: '50%', background: statusColor }} /> {statusLabel.toUpperCase()}
-                            </span>
-                          </td>
-                          <td style={{ padding: '14px 16px' }}>
-                            <div style={{ display: 'flex', gap: '8px' }}>
-                              <button type="button" onClick={() => setViewingRequest(r)} style={{ color: '#0C6DC4', background: '#EFF6FF', border: 'none', borderRadius: 6, padding: 6, cursor: 'pointer' }} title="View Details">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                              </button>
-                              <button type="button" onClick={() => handleEditRoom(r)} style={{ color: '#2563EB', background: '#EFF6FF', border: 'none', borderRadius: 6, padding: 6, cursor: 'pointer' }} title="Edit Room">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-                              </button>
-                              <button type="button" onClick={() => handleDelete(r._id)} style={{ color: '#EF4444', background: '#FEE2E2', border: 'none', borderRadius: 6, padding: 6, cursor: 'pointer' }} title="Delete">
-                                <Trash2 size={14} />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
+                            </td>
+                            <td style={{ padding: '14px 16px' }}>
+                              <div style={{ display: 'flex', gap: '8px' }}>
+                                <button type="button" onClick={() => setViewingRequest(viewingRequest === r._id ? null : r._id)} style={{ color: '#0C6DC4', background: '#EFF6FF', border: 'none', borderRadius: 6, padding: 6, cursor: 'pointer' }} title="View Details">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                                </button>
+                                <button type="button" onClick={() => handleEditRoom(r)} style={{ color: '#2563EB', background: '#EFF6FF', border: 'none', borderRadius: 6, padding: 6, cursor: 'pointer' }} title="Edit Room">
+                                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                </button>
+                                <button type="button" onClick={() => handleDelete(r._id)} style={{ color: '#EF4444', background: '#FEE2E2', border: 'none', borderRadius: 6, padding: 6, cursor: 'pointer' }} title="Delete">
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                          {viewingRequest === r._id && (
+                            <tr>
+                              <td colSpan="11" style={{ padding: 0, borderBottom: 'none' }}>
+                                <div style={{ background: '#F9FAFB', padding: '24px', borderBottom: '1px solid #E5E7EB', borderTop: '1px dashed #D1D5DB' }}>
+                                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                                    <div>
+                                      <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#111827' }}>Room Request Details</h2>
+                                      <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '2px' }}>{r.propertyName} · {r.category}</div>
+                                    </div>
+                                    <button onClick={() => setViewingRequest(null)} style={{ background: '#E5E7EB', border: 'none', cursor: 'pointer', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', fontWeight: 600, color: '#374151' }}>Close Details</button>
+                                  </div>
+
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                                    {getRequestRooms(r).map((room, roomIdx) => (
+                                      <div key={roomIdx} style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingBottom: roomIdx < getRequestRooms(r).length - 1 ? '20px' : 0, borderBottom: roomIdx < getRequestRooms(r).length - 1 ? '1px dashed #D1D5DB' : 'none' }}>
+                                        {getRequestRooms(r).length > 1 && (
+                                          <div style={{ fontSize: '12px', fontWeight: 700, color: '#2563EB', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                                            Room {roomIdx + 1} of {getRequestRooms(r).length}
+                                          </div>
+                                        )}
+
+                                        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                                          <img src={getFullRoomImageUrl(room.room_image_url || r.room_image_url) || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60'} alt={room.room_type} style={{ width: '120px', height: '90px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #E5E7EB' }} />
+                                          <div>
+                                            <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: 700, color: '#111827' }}>{room.room_type || r.room_type}</h3>
+                                            <div style={{ fontSize: '13px', color: '#4B5563' }}>Bed Type: <strong>{room.bed_type || r.bed_type}</strong></div>
+                                            <div style={{ fontSize: '14px', fontWeight: 700, color: '#58A429', marginTop: '6px' }}>₹{room.price_per_room || r.price_per_room}/night</div>
+                                          </div>
+                                        </div>
+
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                          <div style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                                            <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Original Price</div>
+                                            <div style={{ fontSize: 14, fontWeight: 600, color: '#9CA3AF', textDecoration: (room.original_price || r.original_price) ? 'line-through' : 'none' }}>
+                                              {(room.original_price || r.original_price) ? `₹${Number(room.original_price || r.original_price).toLocaleString()}` : '—'}
+                                            </div>
+                                          </div>
+                                          <div style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                                            <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Tax Amount</div>
+                                            <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
+                                              {(room.tax_amount || r.tax_amount) ? `₹${Number(room.tax_amount || r.tax_amount).toLocaleString()}` : '—'}
+                                            </div>
+                                          </div>
+                                        </div>
+
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                          <div style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                                            <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Check-In Time</div>
+                                            <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{room.checkin_time || r.checkin_time || '02:00 PM'}</div>
+                                          </div>
+                                          <div style={{ background: '#FFFFFF', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
+                                            <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Check-Out Time</div>
+                                            <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{room.checkout_time || r.checkout_time || '12:00 PM'}</div>
+                                          </div>
+                                        </div>
+
+                                        <div>
+                                          <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#374151', margin: '0 0 6px 0' }}>Amenities</h4>
+                                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                            {(room.amenities_types || r.amenities_types)?.length > 0 ? (room.amenities_types || r.amenities_types).map((a, j) => (
+                                              <span key={j} style={{ padding: '3px 10px', background: '#ECFDF5', color: '#059669', borderRadius: '12px', fontSize: '12px', fontWeight: 500 }}>{a}</span>
+                                            )) : <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>No amenities selected</span>}
+                                          </div>
+                                        </div>
+
+                                        <div>
+                                          <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#374151', margin: '0 0 6px 0' }}>Offers & Discounts</h4>
+                                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                            {(room.offers || r.offers)?.length > 0 ? (room.offers || r.offers).map((o, j) => (
+                                              <span key={j} style={{ padding: '3px 10px', background: '#EFF6FF', color: '#2563EB', borderRadius: '12px', fontSize: '12px', fontWeight: 500 }}>{o}</span>
+                                            )) : <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>No offers added</span>}
+                                          </div>
+                                        </div>
+
+                                        <div>
+                                          <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#374151', margin: '0 0 6px 0' }}>House Rules</h4>
+                                          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                            {Array.isArray(room.rules || r.rules) && (room.rules || r.rules).length > 0 ? (room.rules || r.rules).map((rule, j) => (
+                                              <div key={j} style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '8px', padding: '10px' }}>
+                                                <div style={{ fontSize: '12px', fontWeight: 700, color: '#B45309', marginBottom: '4px' }}>{rule.title}</div>
+                                                <div style={{ fontSize: '12px', color: '#78350F', whiteSpace: 'pre-wrap' }}>
+                                                  {Array.isArray(rule.points) ? rule.points.map(p => `• ${p}`).join('\n') : rule.points}
+                                                </div>
+                                              </div>
+                                            )) : <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>No custom rules added</span>}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
                       );
                     }) : (
                       <tr><td colSpan="12" style={{ textAlign: 'center', padding: '20px', color: '#6B7280' }}>No property requests submitted yet.</td></tr>
@@ -639,105 +755,7 @@ export default function PropertyRequests() {
         </>
       )}
 
-      {viewingRequest && (
-        <div style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '16px' }}>
-          <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(4px)' }} onClick={() => setViewingRequest(null)} />
-          <div style={{ position: 'relative', width: '100%', maxWidth: '600px', maxHeight: '90vh', background: '#fff', borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.3)' }}>
 
-            {/* Header */}
-            <div style={{ padding: '18px 24px', borderBottom: '1px solid #E5E7EB', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#F9FAFB' }}>
-              <div>
-                <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 700, color: '#111827' }}>Room Request Details</h2>
-                <div style={{ fontSize: '13px', color: '#6B7280', marginTop: '2px' }}>{viewingRequest.propertyName} · {viewingRequest.category}</div>
-              </div>
-              <button onClick={() => setViewingRequest(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex' }}
-                onMouseOver={e => e.currentTarget.style.background = '#E5E7EB'} onMouseOut={e => e.currentTarget.style.background = 'none'}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4B5563" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-              </button>
-            </div>
-
-            {/* Content */}
-            <div style={{ overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              {getRequestRooms(viewingRequest).map((room, roomIdx) => (
-                <div key={roomIdx} style={{ display: 'flex', flexDirection: 'column', gap: '16px', paddingBottom: roomIdx < getRequestRooms(viewingRequest).length - 1 ? '20px' : 0, borderBottom: roomIdx < getRequestRooms(viewingRequest).length - 1 ? '1px solid #E5E7EB' : 'none' }}>
-                  {getRequestRooms(viewingRequest).length > 1 && (
-                    <div style={{ fontSize: '12px', fontWeight: 700, color: '#2563EB', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                      Room {roomIdx + 1} of {getRequestRooms(viewingRequest).length}
-                    </div>
-                  )}
-
-                  <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-                    <img src={getFullRoomImageUrl(room.room_image_url || viewingRequest.room_image_url) || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=500&auto=format&fit=crop&q=60'} alt={room.room_type} style={{ width: '120px', height: '90px', borderRadius: '8px', objectFit: 'cover', border: '1px solid #E5E7EB' }} />
-                    <div>
-                      <h3 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: 700, color: '#111827' }}>{room.room_type || viewingRequest.room_type}</h3>
-                      <div style={{ fontSize: '13px', color: '#4B5563' }}>Bed Type: <strong>{room.bed_type || viewingRequest.bed_type}</strong></div>
-                      <div style={{ fontSize: '14px', fontWeight: 700, color: '#58A429', marginTop: '6px' }}>₹{room.price_per_room || viewingRequest.price_per_room}/night</div>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                    <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                      <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Original Price</div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: '#9CA3AF', textDecoration: (room.original_price || viewingRequest.original_price) ? 'line-through' : 'none' }}>
-                        {(room.original_price || viewingRequest.original_price) ? `₹${Number(room.original_price || viewingRequest.original_price).toLocaleString()}` : '—'}
-                      </div>
-                    </div>
-                    <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                      <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Tax Amount</div>
-                      <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
-                        {(room.tax_amount || viewingRequest.tax_amount) ? `₹${Number(room.tax_amount || viewingRequest.tax_amount).toLocaleString()}` : '—'}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                    <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                      <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Check-In Time</div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{room.checkin_time || viewingRequest.checkin_time || '02:00 PM'}</div>
-                    </div>
-                    <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
-                      <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Check-Out Time</div>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#111827' }}>{room.checkout_time || viewingRequest.checkout_time || '12:00 PM'}</div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#374151', margin: '0 0 6px 0' }}>Amenities</h4>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                      {(room.amenities_types || viewingRequest.amenities_types)?.length > 0 ? (room.amenities_types || viewingRequest.amenities_types).map((a, i) => (
-                        <span key={i} style={{ padding: '3px 10px', background: '#ECFDF5', color: '#059669', borderRadius: '12px', fontSize: '12px', fontWeight: 500 }}>{a}</span>
-                      )) : <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>No amenities selected</span>}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#374151', margin: '0 0 6px 0' }}>Offers & Discounts</h4>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                      {(room.offers || viewingRequest.offers)?.length > 0 ? (room.offers || viewingRequest.offers).map((o, i) => (
-                        <span key={i} style={{ padding: '3px 10px', background: '#EFF6FF', color: '#2563EB', borderRadius: '12px', fontSize: '12px', fontWeight: 500 }}>{o}</span>
-                      )) : <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>No offers added</span>}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 style={{ fontSize: '13px', fontWeight: 700, color: '#374151', margin: '0 0 6px 0' }}>House Rules</h4>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {Array.isArray(room.rules || viewingRequest.rules) && (room.rules || viewingRequest.rules).length > 0 ? (room.rules || viewingRequest.rules).map((rule, i) => (
-                        <div key={i} style={{ background: '#FFFBEB', border: '1px solid #FDE68A', borderRadius: '8px', padding: '10px' }}>
-                          <div style={{ fontSize: '12px', fontWeight: 700, color: '#B45309', marginBottom: '4px' }}>{rule.title}</div>
-                          <div style={{ fontSize: '12px', color: '#78350F', whiteSpace: 'pre-wrap' }}>
-                            {Array.isArray(rule.points) ? rule.points.map(p => `• ${p}`).join('\n') : rule.points}
-                          </div>
-                        </div>
-                      )) : <span style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>No custom rules added</span>}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

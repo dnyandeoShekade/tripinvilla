@@ -28,11 +28,8 @@ const FileUpload = ({ label, name, onChange, fileData }) => {
 
   return (
     <div className="form-group" style={{ marginBottom: preview ? 24 : 0 }}>
-      <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
         <span>{label}</span>
-        <span style={{ color: '#9CA3AF', fontSize: 10, fontWeight: 400 }}>
-          {isIcon ? 'Supported File: .svg / max. 5mb' : 'Supported File: .jpg / max. 5mb'}
-        </span>
       </label>
       
       <div className="file-upload-wrapper" style={{ display: 'flex', background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '8px', overflow: 'hidden' }}>
@@ -56,6 +53,10 @@ const FileUpload = ({ label, name, onChange, fileData }) => {
             {preview ? 'Hide' : 'View'}
           </button>
         )}
+      </div>
+
+      <div style={{ color: '#9CA3AF', fontSize: 10, fontWeight: 400, marginTop: '4px' }}>
+        {isIcon ? 'Supported File: .svg / max. 5mb' : 'Supported File: .jpg / max. 5mb'}
       </div>
 
       {preview && previewUrl && (

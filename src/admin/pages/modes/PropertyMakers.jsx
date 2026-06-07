@@ -1518,27 +1518,43 @@ export default function PropertyMakers() {
           <div className="form-grid-3">
             <div className="form-group">
               <label className="form-label">Check-In Time*</label>
-              <input
-                type="text"
+              <select
                 name="checkIn"
                 value={formData.checkIn}
                 onChange={handleChange}
-                placeholder="e.g. 3:00 PM"
-                className="form-input"
+                className="form-select"
                 required
-              />
+              >
+                <option value="">Select Time</option>
+                {Array.from({ length: 48 }).map((_, i) => {
+                  const hrs = Math.floor(i / 2);
+                  const mins = i % 2 === 0 ? '00' : '30';
+                  const ampm = hrs < 12 ? 'AM' : 'PM';
+                  const displayHrs = hrs % 12 || 12;
+                  const timeStr = `${displayHrs.toString().padStart(2, '0')}:${mins} ${ampm}`;
+                  return <option key={timeStr} value={timeStr}>{timeStr}</option>;
+                })}
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">Check-Out Time*</label>
-              <input
-                type="text"
+              <select
                 name="checkOut"
                 value={formData.checkOut}
                 onChange={handleChange}
-                placeholder="e.g. 12:00 PM"
-                className="form-input"
+                className="form-select"
                 required
-              />
+              >
+                <option value="">Select Time</option>
+                {Array.from({ length: 48 }).map((_, i) => {
+                  const hrs = Math.floor(i / 2);
+                  const mins = i % 2 === 0 ? '00' : '30';
+                  const ampm = hrs < 12 ? 'AM' : 'PM';
+                  const displayHrs = hrs % 12 || 12;
+                  const timeStr = `${displayHrs.toString().padStart(2, '0')}:${mins} ${ampm}`;
+                  return <option key={timeStr} value={timeStr}>{timeStr}</option>;
+                })}
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">Area Size*</label>
