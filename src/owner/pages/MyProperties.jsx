@@ -151,6 +151,17 @@ export default function MyProperties({ autoOpenForm = false }) {
   const [filterDateFrom, setFilterDateFrom] = useState('');
   const [filterDateTo, setFilterDateTo] = useState('');
 
+  useEffect(() => {
+    const handleDateChange = (e) => {
+      setFilterDateFrom(e.detail.dateFrom);
+      setFilterDateTo(e.detail.dateTo);
+    };
+    window.addEventListener('dashboard_date_changed', handleDateChange);
+    return () => {
+      window.removeEventListener('dashboard_date_changed', handleDateChange);
+    };
+  }, []);
+
   // ─── Fetch helpers ────────────────────────────────────────
   const fetchMyProperties = async () => {
     try {

@@ -89,7 +89,18 @@ export default function AllProperties() {
 
   // ─── Rooms (for Hotel / Resort) ──────────────────────
   const [roomsList, setRoomsList] = useState([]);
-  const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
+  const [roomForm, setRoomForm] = useState({ 
+    roomType: 'Deluxe', 
+    roomName: '', 
+    pricePerNight: '', 
+    originalPrice: '', 
+    taxAmount: '', 
+    offer: '', 
+    maxGuests: 2, 
+    bedType: 'Double', 
+    count: 1, 
+    amenities: [] 
+  });
   const [editingRoomIdx, setEditingRoomIdx] = useState(null); // index of room being edited
   const [customRoomType, setCustomRoomType] = useState('');
   const [roomTypes, setRoomTypes] = useState([]);
@@ -319,6 +330,17 @@ export default function AllProperties() {
   useEffect(() => {
     fetchProperties();
   }, [dateFrom, dateTo]);
+
+  useEffect(() => {
+    const handleDateChange = (e) => {
+      setDateFrom(e.detail.dateFrom);
+      setDateTo(e.detail.dateTo);
+    };
+    window.addEventListener('dashboard_date_changed', handleDateChange);
+    return () => {
+      window.removeEventListener('dashboard_date_changed', handleDateChange);
+    };
+  }, []);
 
   const openPanel = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -810,18 +832,6 @@ export default function AllProperties() {
                   <option value="">All Types</option>
                   {propertyTypes.map(pt => (
                     <option key={pt._id} value={pt.name}>{pt.name}</option>
-                  ))}
-                  {propertyTypes.length === 0 && [
-                    "Villa",
-                    "Homestay",
-                    "Resort",
-                    "Apartment",
-                    "Cottage",
-                    "Others",
-                  ].map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
                   ))}
                 </select>
               </div>
@@ -1526,7 +1536,7 @@ export default function AllProperties() {
                   <label className="form-label" style={{ fontFamily: '"Outfit", sans-serif', marginBottom: 8, fontSize: 15, color: '#111827' }}>
                     Room Types (Hotel / Resort)
                   </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 12, alignItems: 'flex-end' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 12, alignItems: 'flex-end' }}>
                     <div>
                       <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Room Type</label>
                       <select className="form-control" value={roomForm.roomType} onChange={e => setRoomForm(p => ({ ...p, roomType: e.target.value }))}>
@@ -1545,6 +1555,18 @@ export default function AllProperties() {
                     <div>
                       <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Price/Night (₹)</label>
                       <input type="number" className="form-control" value={roomForm.pricePerNight} onChange={e => setRoomForm(p => ({ ...p, pricePerNight: e.target.value }))} placeholder="e.g. 3500" />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Room Image</label>
+                      <input type="file" className="form-control" onChange={e => setRoomForm(p => ({ ...p, imageFile: e.target.files[0] }))} accept="image/*" />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Tax Amount (₹)</label>
+                      <input type="number" className="form-control" value={roomForm.taxAmount} onChange={e => setRoomForm(p => ({ ...p, taxAmount: e.target.value }))} placeholder="e.g. 200" />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Discount / Offer</label>
+                      <input type="text" className="form-control" value={roomForm.offer} onChange={e => setRoomForm(p => ({ ...p, offer: e.target.value }))} placeholder="e.g. 10% Off" />
                     </div>
                     <div>
                       <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Bed Type</label>
