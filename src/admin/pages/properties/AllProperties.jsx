@@ -252,6 +252,16 @@ export default function AllProperties() {
     }
   };
 
+  const fetchStatesListOnly = async (countryId) => {
+    try {
+      const res = await fetch(`${API}/masters/states/active?country_id=${countryId}`);
+      const data = await res.json();
+      setStates(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const fetchCities = async (stateId) => {
     try {
       const res = await fetch(`${API}/masters/cities/active?state_id=${stateId}`);
@@ -265,12 +275,32 @@ export default function AllProperties() {
     }
   };
 
+  const fetchCitiesListOnly = async (stateId) => {
+    try {
+      const res = await fetch(`${API}/masters/cities/active?state_id=${stateId}`);
+      const data = await res.json();
+      setCities(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const fetchAreas = async (cityId) => {
     try {
       const res = await fetch(`${API}/masters/locations/active?city_id=${cityId}`);
       const data = await res.json();
       setAreas(data);
       setSelectedArea({ id: "", name: "" });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchAreasListOnly = async (cityId) => {
+    try {
+      const res = await fetch(`${API}/masters/locations/active?city_id=${cityId}`);
+      const data = await res.json();
+      setAreas(data);
     } catch (err) {
       console.error(err);
     }
@@ -408,9 +438,18 @@ export default function AllProperties() {
     setSelectedExperiences(p.experiences || []);
     setLandmarksList([]); // Will need separate fetch if editing landmarks
 
-    if (p.countryId) setSelectedCountry({ id: p.countryId, name: p.countryName || "" });
-    if (p.stateId) setSelectedState({ id: p.stateId, name: p.stateName || "" });
-    if (p.cityId) setSelectedCity({ id: p.cityId, name: p.cityName || "" });
+    if (p.countryId) {
+      setSelectedCountry({ id: p.countryId, name: p.countryName || "" });
+      fetchStatesListOnly(p.countryId);
+    }
+    if (p.stateId) {
+      setSelectedState({ id: p.stateId, name: p.stateName || "" });
+      fetchCitiesListOnly(p.stateId);
+    }
+    if (p.cityId) {
+      setSelectedCity({ id: p.cityId, name: p.cityName || "" });
+      fetchAreasListOnly(p.cityId);
+    }
     if (p.locationId) setSelectedArea({ id: p.locationId, name: p.locationName || "" });
 
     setShowPanel(true);
@@ -1264,17 +1303,6 @@ export default function AllProperties() {
                     {propertyTypes.map(pt => (
                       <option key={pt._id} value={pt.name}>{pt.name}</option>
                     ))}
-                    {propertyTypes.length === 0 && (
-                      <>
-                        <option value="Homestay">Homestay</option>
-                        <option value="Villa">Villa</option>
-                        <option value="Apartment">Apartment</option>
-                        <option value="Resort">Resort</option>
-                      </>
-                    )}
-                    {form.type && form.type !== 'Other' && !propertyTypes.some(pt => pt.name === form.type) && propertyTypes.length > 0 && (
-                      <option value={form.type}>{form.type}</option>
-                    )}
                     <option value="Other">Other (Add Manually)</option>
                   </select>
                   {form.type === 'Other' && (
@@ -1469,10 +1497,20 @@ export default function AllProperties() {
                               transition: "all 0.15s",
                             }}
                           >
-                            <span>
-
-                            </span>
                             <span>{exp.experienceName || exp.name}</span>
+                            {isSelected && (
+                              <span
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedExperiences((prev) =>
+                                    prev.filter((x) => x !== id),
+                                  );
+                                }}
+                                style={{ fontSize: "16px", marginLeft: 4 }}
+                              >
+                                &times;
+                              </span>
+                            )}
                           </button>
                         );
                       })}

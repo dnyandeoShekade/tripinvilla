@@ -531,14 +531,14 @@ export default function PropertyRooms() {
                       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
                         <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
                           <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Original Price</div>
-                          <div style={{ fontSize: 14, fontWeight: 600, color: '#9CA3AF', textDecoration: (room.original_price || selectedRequest.original_price) ? 'line-through' : 'none' }}>
-                            {(room.original_price || selectedRequest.original_price) ? `₹${Number(room.original_price || selectedRequest.original_price).toLocaleString()}` : '—'}
+                          <div style={{ fontSize: 14, fontWeight: 600, color: '#9CA3AF', textDecoration: (room.original_price != null || selectedRequest.original_price != null) ? 'line-through' : 'none' }}>
+                            {(room.original_price != null || selectedRequest.original_price != null) ? `₹${Number(room.original_price ?? selectedRequest.original_price).toLocaleString()}` : '—'}
                           </div>
                         </div>
                         <div style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 10, padding: '10px 14px' }}>
                           <div style={{ fontSize: 11, color: '#6B7280', fontWeight: 500, marginBottom: 2 }}>Tax Amount</div>
                           <div style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
-                            {(room.tax_amount || selectedRequest.tax_amount) ? `₹${Number(room.tax_amount || selectedRequest.tax_amount).toLocaleString()}` : '—'}
+                            {(room.tax_amount != null || selectedRequest.tax_amount != null) ? `₹${Number(room.tax_amount ?? selectedRequest.tax_amount).toLocaleString()}` : '—'}
                           </div>
                         </div>
                       </div>

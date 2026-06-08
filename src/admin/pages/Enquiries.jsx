@@ -19,6 +19,7 @@ export default function Enquiries() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [propertyType, setPropertyType] = useState('All Categories');
+  const [propertyTypes, setPropertyTypes] = useState([]);
   const [location, setLocation] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -46,8 +47,19 @@ export default function Enquiries() {
     }
   };
 
+  const fetchPropertyTypes = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/master/property-types`);
+      const data = await res.json();
+      if (Array.isArray(data)) setPropertyTypes(data);
+    } catch (err) {
+      console.error("Error fetching property types:", err);
+    }
+  };
+
   useEffect(() => {
     fetchEnquiries();
+    fetchPropertyTypes();
   }, []);
 
   const handleReplySubmit = async () => {
@@ -159,11 +171,9 @@ export default function Enquiries() {
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
               <select value={propertyType} onChange={e => setPropertyType(e.target.value)} style={{ appearance: 'none', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '8px 32px 8px 12px', fontSize: '13px', color: '#9CA3AF', background: '#FFFFFF', outline: 'none', cursor: 'pointer' }}>
                 <option value="All Categories">Property Type</option>
-                <option value="Homestay">Homestay</option>
-                <option value="Hotel">Hotel</option>
-                <option value="Villa">Villa</option>
-                <option value="Apartment">Apartment</option>
-                <option value="Cottage">Cottage</option>
+                {propertyTypes.map(pt => (
+                  <option key={pt._id} value={pt.name}>{pt.name}</option>
+                ))}
               </select>
               <ChevronDown size={14} color="#9CA3AF" style={{ position: 'absolute', right: '12px', pointerEvents: 'none' }} />
             </div>

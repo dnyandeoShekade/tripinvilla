@@ -1469,15 +1469,25 @@ export default function MyProperties({ autoOpenForm = false }) {
               ) : (
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                   {availableExperiences.map(exp => {
-                    const isSelected = selectedExperiences.includes(exp._id || exp.experienceName);
                     const id = exp._id || exp.experienceName || exp.name;
+                    const isSelected = selectedExperiences.includes(id);
                     return (
                       <button key={id} type="button"
-                        onClick={() => setSelectedExperiences(prev => prev.includes(id) ? prev.filter(e => e !== id) : [...prev, id])}
+                        onClick={() => !isSelected && setSelectedExperiences(prev => [...prev, id])}
                         style={{ padding: '8px 16px', borderRadius: '20px', fontSize: '13px', fontWeight: 500, border: isSelected ? '1.5px solid #58A429' : '1px solid #D1D5DB', background: isSelected ? '#ECFDF5' : '#fff', color: isSelected ? '#58A429' : '#374151', cursor: 'pointer', transition: 'all 0.15s', fontFamily: '"Outfit", sans-serif', display: 'flex', alignItems: 'center', gap: '6px' }}>
 
                         <span>{exp.experienceName || exp.name}</span>
-                        {isSelected && <span style={{ fontSize: '11px' }}>✓</span>}
+                        {isSelected && (
+                          <span
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setSelectedExperiences(prev => prev.filter(e => e !== id));
+                            }}
+                            style={{ fontSize: '16px', marginLeft: '4px' }}
+                          >
+                            &times;
+                          </span>
+                        )}
                       </button>
                     );
                   })}
@@ -1576,7 +1586,7 @@ export default function MyProperties({ autoOpenForm = false }) {
           <div className="table-header" style={{ padding: '14px 20px' }}>
             <span className="table-title">My Property List</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', minWidth: 0, overflowX: 'auto' }}>
-              {[{ val: filterDateFrom, set: setFilterDateFrom }, { val: filterDateTo, set: setFilterDateTo }].map((f, i) => (
+              {[{ val: filterDateFrom, set: (val) => handleLocalDateChange('from', val) }, { val: filterDateTo, set: (val) => handleLocalDateChange('to', val) }].map((f, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '4px', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '5px 8px', background: '#ffffff', flexShrink: 0 }}>
                   <Calendar size={14} style={{ color: '#9CA3AF' }} />
                   <input type="date" value={f.val} onChange={e => f.set(e.target.value)} style={{ border: 'none', outline: 'none', fontSize: '11px', color: '#374151', width: '95px' }} />
