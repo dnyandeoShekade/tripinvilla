@@ -8,10 +8,11 @@ const SectionLabel = ({ text }) => (
   </div>
 );
 
-const FileUpload = ({ label, name, onChange, fileData }) => {
+const FileUpload = ({ label, name, onChange, fileData, accept }) => {
   const [preview, setPreview] = useState(false);
   const previewRef = React.useRef(null);
   const isIcon = label.toLowerCase().includes('icon') || label.toLowerCase().includes('svg');
+  const isVideo = label.toLowerCase().includes('video');
   
   const isFile = fileData instanceof File;
   const filename = isFile ? fileData.name : (fileData ? fileData.split('/').pop() : '');
@@ -26,6 +27,13 @@ const FileUpload = ({ label, name, onChange, fileData }) => {
     }
   };
 
+  const getAcceptType = () => {
+    if (accept) return accept;
+    if (isIcon) return '.svg,image/svg+xml';
+    if (isVideo) return 'video/mp4,video/quicktime,video/x-m4v,video/webm';
+    return 'image/*';
+  };
+
   return (
     <div className="form-group" style={{ marginBottom: preview ? 24 : 0 }}>
       <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
@@ -36,17 +44,17 @@ const FileUpload = ({ label, name, onChange, fileData }) => {
         <input type="text" className="form-input" value={filename || 'Choose a file...'} readOnly style={{ border: 'none', background: 'transparent', flex: 1, textOverflow: 'ellipsis', overflow: 'hidden', padding: '10px 14px' }} />
         
         <div style={{ position: 'relative' }}>
-          <input type="file" name={name} accept={isIcon ? '.svg,image/svg+xml' : 'image/*'} onChange={onChange} style={{ position: 'absolute', opacity: 0, top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer' }} />
+          <input type="file" name={name} accept={getAcceptType()} onChange={onChange} style={{ position: 'absolute', opacity: 0, top: 0, left: 0, right: 0, bottom: 0, cursor: 'pointer' }} />
           <button className="btn-browse" type="button" style={{ border: 'none', borderLeft: '1px solid #E5E7EB', background: '#F3F4F6', height: '100%', padding: '0 20px', cursor: 'pointer', color: '#374151', fontSize: '13px', fontWeight: 500 }}>Browse</button>
         </div>
         
         {previewUrl && (
-          <button 
-            type="button" 
+          <button
+            type="button"
             onClick={handleTogglePreview}
-            style={{ 
-              border: 'none', borderLeft: '1px solid #E5E7EB', background: preview ? '#E5E7EB' : '#F9FAFB', 
-              padding: '0 20px', cursor: 'pointer', color: '#111827', fontSize: '13px', fontWeight: 600, 
+            style={{
+              border: 'none', borderLeft: '1px solid #E5E7EB', background: preview ? '#E5E7EB' : '#F9FAFB',
+              padding: '0 20px', cursor: 'pointer', color: '#111827', fontSize: '13px', fontWeight: 600,
               display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s'
             }}
           >
@@ -56,12 +64,12 @@ const FileUpload = ({ label, name, onChange, fileData }) => {
       </div>
 
       <div style={{ color: '#9CA3AF', fontSize: 10, fontWeight: 400, marginTop: '4px' }}>
-        {isIcon ? 'Supported File: .svg / max. 5mb' : 'Supported File: .jpg / max. 5mb'}
+        {isIcon ? 'Supported File: .svg / max. 5mb' : isVideo ? 'Supported File: .mp4 / max. 50mb' : 'Supported File: .jpg / max. 5mb'}
       </div>
 
       {preview && previewUrl && (
         <div ref={previewRef} style={{ marginTop: '16px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #E5E7EB', background: '#FAFAFA', padding: '16px', display: 'flex', justifyContent: 'center' }}>
-          {previewUrl.endsWith('.mp4') || previewUrl.endsWith('.webm') ? (
+          {previewUrl.endsWith('.mp4') || previewUrl.endsWith('.webm') || previewUrl.endsWith('.mov') || previewUrl.endsWith('.m4v') ? (
              <video src={previewUrl} controls autoPlay style={{ maxWidth: '100%', maxHeight: '400px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
           ) : (
              <img src={previewUrl} alt="Preview" style={{ maxWidth: '100%', maxHeight: '400px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', display: 'block', objectFit: 'contain' }} />
@@ -214,7 +222,7 @@ export default function AboutUs() {
           <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Banner Title*</label>
-              <input type="text" className="form-input" value={formData.banner.title} onChange={e => handleChange(e, 'banner.title')} />
+              <input type="text" className="form-input" placeholder="Enter banner title..." value={formData.banner.title} onChange={e => handleChange(e, 'banner.title')} />
             </div>
             <FileUpload label="Banner Image*" name="banner.image" onChange={e => handleFileChange(e, 'banner.image')} fileData={getFileDisplay('banner.image')} />
           </div>
@@ -226,53 +234,53 @@ export default function AboutUs() {
           <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
-              <input type="text" className="form-input" value={formData.section1.title} onChange={e => handleChange(e, 'section1.title')} />
+              <input type="text" className="form-input" placeholder="Enter section title..." value={formData.section1.title} onChange={e => handleChange(e, 'section1.title')} />
             </div>
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Sub-Text*</label>
-              <input type="text" className="form-input" value={formData.section1.subText} onChange={e => handleChange(e, 'section1.subText')} />
+              <input type="text" className="form-input" placeholder="Enter sub-text..." value={formData.section1.subText} onChange={e => handleChange(e, 'section1.subText')} />
             </div>
           </div>
           <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Point 1*</label>
-              <input type="text" className="form-input" value={formData.section1.point1} onChange={e => handleChange(e, 'section1.point1')} />
+              <input type="text" className="form-input" placeholder="Enter point 1..." value={formData.section1.point1} onChange={e => handleChange(e, 'section1.point1')} />
             </div>
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Point 2*</label>
-              <input type="text" className="form-input" value={formData.section1.point2} onChange={e => handleChange(e, 'section1.point2')} />
+              <input type="text" className="form-input" placeholder="Enter point 2..." value={formData.section1.point2} onChange={e => handleChange(e, 'section1.point2')} />
             </div>
           </div>
           <div className="form-grid-3">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Mission Title*</label>
-              <input type="text" className="form-input" value={formData.section1.highlights[0].title} onChange={e => handleChange(e, 'section1.highlights.0.title')} />
+              <input type="text" className="form-input" placeholder="Enter mission title..." value={formData.section1.highlights[0].title} onChange={e => handleChange(e, 'section1.highlights.0.title')} />
             </div>
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Mission Sub-Text*</label>
-              <input type="text" className="form-input" value={formData.section1.highlights[0].subText} onChange={e => handleChange(e, 'section1.highlights.0.subText')} />
+              <input type="text" className="form-input" placeholder="Enter mission sub-text..." value={formData.section1.highlights[0].subText} onChange={e => handleChange(e, 'section1.highlights.0.subText')} />
             </div>
             <FileUpload label="Upload SVG (Mission Icon)*" name="section1.highlights.0.icon" onChange={e => handleFileChange(e, 'section1.highlights.0.icon')} fileData={getFileDisplay('section1.highlights.0.icon')} />
           </div>
           <div className="form-grid-3">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Vision Title*</label>
-              <input type="text" className="form-input" value={formData.section1.highlights[1].title} onChange={e => handleChange(e, 'section1.highlights.1.title')} />
+              <input type="text" className="form-input" placeholder="Enter vision title..." value={formData.section1.highlights[1].title} onChange={e => handleChange(e, 'section1.highlights.1.title')} />
             </div>
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Vision Sub-Text*</label>
-              <input type="text" className="form-input" value={formData.section1.highlights[1].subText} onChange={e => handleChange(e, 'section1.highlights.1.subText')} />
+              <input type="text" className="form-input" placeholder="Enter vision sub-text..." value={formData.section1.highlights[1].subText} onChange={e => handleChange(e, 'section1.highlights.1.subText')} />
             </div>
             <FileUpload label="Upload SVG (Vision Icon)*" name="section1.highlights.1.icon" onChange={e => handleFileChange(e, 'section1.highlights.1.icon')} fileData={getFileDisplay('section1.highlights.1.icon')} />
           </div>
           <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Experience Title*</label>
-              <input type="text" className="form-input" value={formData.section1.experience.title} onChange={e => handleChange(e, 'section1.experience.title')} />
+              <input type="text" className="form-input" placeholder="Enter experience title..." value={formData.section1.experience.title} onChange={e => handleChange(e, 'section1.experience.title')} />
             </div>
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Experience Sub-text*</label>
-              <input type="text" className="form-input" value={formData.section1.experience.subText} onChange={e => handleChange(e, 'section1.experience.subText')} />
+              <input type="text" className="form-input" placeholder="Enter experience sub-text..." value={formData.section1.experience.subText} onChange={e => handleChange(e, 'section1.experience.subText')} />
             </div>
           </div>
           <div className="form-grid-1" style={{ marginBottom: 24 }}>
@@ -286,42 +294,52 @@ export default function AboutUs() {
           <div className="form-grid-2">
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Title* <span style={{fontSize: 10, color: "#9CA3AF", fontWeight: "normal"}}>(Wrap word in *asterisks* to highlight)</span></label>
-              <input type="text" className="form-input" value={formData.section3.title} onChange={e => handleChange(e, 'section3.title')} />
+              <input type="text" className="form-input" placeholder="Enter section title..." value={formData.section3.title} onChange={e => handleChange(e, 'section3.title')} />
             </div>
             <div className="form-group" style={{ marginBottom: 0 }}>
               <label className="form-label">Sub-Text*</label>
-              <input type="text" className="form-input" value={formData.section3.subText} onChange={e => handleChange(e, 'section3.subText')} />
+              <input type="text" className="form-input" placeholder="Enter sub-text..." value={formData.section3.subText} onChange={e => handleChange(e, 'section3.subText')} />
             </div>
           </div>
 
           {formData.section3.testimonials.map((t, i) => (
-            <div key={i} className="form-grid-5" style={{ marginBottom: i === 3 ? 0 : 24 }}>
-              {i !== 3 && (
-                <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label">Text {i + 1}*</label>
-                  <input type="text" className="form-input" value={t.text} onChange={e => handleChange(e, `section3.testimonials.${i}.text`)} />
-                </div>
+            <div key={i} className="testimonial-form-row" style={{ marginBottom: i === 3 ? 0 : 24 }}>
+              {i !== 3 ? (
+                <>
+                  <div className="form-group">
+                    <label className="form-label">Text {i + 1}*</label>
+                    <input type="text" className="form-input" placeholder="Enter testimonial text..." value={t.text} onChange={e => handleChange(e, `section3.testimonials.${i}.text`)} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Name*</label>
+                    <input type="text" className="form-input" placeholder="Enter person's name..." value={t.name} onChange={e => handleChange(e, `section3.testimonials.${i}.name`)} />
+                  </div>
+                  <div className="form-group">
+                    <FileUpload label={`Image ${i + 1}`} name={`section3.testimonials.${i}.image`} onChange={e => handleFileChange(e, `section3.testimonials.${i}.image`)} fileData={getFileDisplay(`section3.testimonials.${i}.image`)} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Designation*</label>
+                    <input type="text" className="form-input" placeholder="Enter designation and company..." value={t.designation} onChange={e => handleChange(e, `section3.testimonials.${i}.designation`)} />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="form-group">
+                    <label className="form-label">Name*</label>
+                    <input type="text" className="form-input" placeholder="Enter person's name..." value={t.name} onChange={e => handleChange(e, `section3.testimonials.${i}.name`)} />
+                  </div>
+                  <div className="form-group">
+                    <FileUpload label={`Video ${i + 1}`} name={`section3.testimonials.${i}.video`} onChange={e => handleFileChange(e, `section3.testimonials.${i}.video`)} fileData={getFileDisplay(`section3.testimonials.${i}.video`)} />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Designation*</label>
+                    <input type="text" className="form-input" placeholder="Enter designation and company..." value={t.designation} onChange={e => handleChange(e, `section3.testimonials.${i}.designation`)} />
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <span className="video-only-badge">📹 Video Only</span>
+                  </div>
+                </>
               )}
-              {i === 3 && (
-                <div className="form-group" style={{ marginBottom: 0, padding: '12px', backgroundColor: '#FEF3C7', borderRadius: '6px', border: '1px solid #FCD34D' }}>
-                  <label className="form-label" style={{ color: '#92400E', marginBottom: '4px' }}>📹 Video Only</label>
-                  <p style={{ fontSize: '13px', color: '#92400E', margin: 0 }}>Upload video & designation only. Name and image will be shown as overlay on video.</p>
-                </div>
-              )}
-              {i !== 3 && (
-                <div className="form-group" style={{ marginBottom: 0 }}>
-                  <label className="form-label">Name*</label>
-                  <input type="text" className="form-input" value={t.name} onChange={e => handleChange(e, `section3.testimonials.${i}.name`)} />
-                </div>
-              )}
-              {i !== 3 && (
-                <FileUpload label={`Image ${i + 1}`} name={`section3.testimonials.${i}.image`} onChange={e => handleFileChange(e, `section3.testimonials.${i}.image`)} fileData={getFileDisplay(`section3.testimonials.${i}.image`)} />
-              )}
-              <div className="form-group" style={{ marginBottom: 0 }}>
-                <label className="form-label">Designation*</label>
-                <input type="text" className="form-input" value={t.designation} onChange={e => handleChange(e, `section3.testimonials.${i}.designation`)} />
-              </div>
-              {i === 3 && <FileUpload label={`Video ${i + 1}`} name={`section3.testimonials.${i}.video`} onChange={e => handleFileChange(e, `section3.testimonials.${i}.video`)} fileData={getFileDisplay(`section3.testimonials.${i}.video`)} />}
             </div>
           ))}
         </div>

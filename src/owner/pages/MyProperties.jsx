@@ -796,7 +796,7 @@ export default function MyProperties({ autoOpenForm = false }) {
         Property Management &gt; <span style={{ color: '#111827', fontWeight: 600 }}>My Properties</span>
       </div>
 
-      <div className="dash-section" style={{ marginBottom: 24 }}>
+      <div className="dash-section" style={{ marginBottom: 16 }}>
         {/* ══ Stats Cards ════════ */}
         <div className="props-stats-row">
           <div className="props-stat-card" style={{ margin: 0, borderRadius: 12 }}>
@@ -845,10 +845,12 @@ export default function MyProperties({ autoOpenForm = false }) {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* ══ Section 2: Add Property Form ════════ */}
-        {showForm && (
-          <div style={{ padding: '21px', background: '#ffffff', border: '1.5px dashed #58A429', borderRadius: '16px', marginTop: 16 }}>
+      {/* ══ Section 2: Add Property Form ════════ */}
+      {showForm && (
+        <div className="dash-section" style={{ marginBottom: 16 }}>
+          <div style={{ padding: '21px', background: '#ffffff', border: '1.5px dashed #58A429', borderRadius: '16px' }}>
             
             {/* Form Header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '28px' }}>
@@ -1552,14 +1554,15 @@ export default function MyProperties({ autoOpenForm = false }) {
                 </button>
               )}
             </div>
-            </div>
-            </div>
-            )}
+          </div>
+        </div>
+      </div>
+    )}
 
-            {/* ── Property List Table ───────────────────────────────── */}
-            <div className="chart-card" style={{ padding: 0, overflow: 'hidden', borderRadius: 12, border: 'none', boxShadow: 'none', marginTop: 16 }}>
-            <div className="table-header" style={{ padding: '14px 20px' }}>
-
+      {/* ── Property List Table ───────────────────────────────── */}
+      <div className="dash-section" style={{ marginBottom: 24 }}>
+        <div className="chart-card" style={{ padding: 0, overflow: 'hidden', borderRadius: 12, border: 'none', boxShadow: 'none' }}>
+          <div className="table-header" style={{ padding: '14px 20px' }}>
             <span className="table-title">My Property List</span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexWrap: 'nowrap', minWidth: 0, overflowX: 'auto' }}>
               {[{ val: filterDateFrom, set: setFilterDateFrom }, { val: filterDateTo, set: setFilterDateTo }].map((f, i) => (

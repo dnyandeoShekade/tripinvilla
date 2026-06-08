@@ -144,6 +144,7 @@
 /* === Responsive Stat Cards === */
 @media (max-width: 1200px) {
   .props-stats-row {
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
   .props-stat-card {
@@ -165,6 +166,7 @@
 
 @media (max-width: 900px) {
   .props-stats-row {
+    grid-template-columns: 1fr;
     gap: 10px;
   }
   .props-stat-card {
@@ -191,6 +193,7 @@
 
 @media (max-width: 640px) {
   .props-stats-row {
+    grid-template-columns: 1fr;
     gap: 8px;
   }
   .props-stat-card {
@@ -219,6 +222,7 @@
 
 @media (max-width: 480px) {
   .props-stats-row {
+    grid-template-columns: 1fr;
     gap: 6px;
   }
   .props-stat-card {

@@ -261,6 +261,19 @@ export default function PropertyRooms() {
                 />
               </div>
 
+              <div className="props-filter-select" style={{ display: 'flex', alignItems: 'center', gap: 6, border: '1px solid #E5E7EB', borderRadius: '8px', padding: '6px 12px', background: '#ffffff', flexShrink: 0, maxWidth: 140 }}>
+                <select 
+                  value={selectedStatus} 
+                  onChange={e => setSelectedStatus(e.target.value)}
+                  style={{ border: 'none', background: 'transparent', outline: 'none', color: '#374151', fontSize: 13, cursor: 'pointer', fontFamily: '"Outfit", sans-serif', maxWidth: '100%' }}
+                >
+                  <option value="">All Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Accepted">Accepted</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
+
               <button 
                 className="props-btn-filter" 
                 onClick={fetchRequests} 
