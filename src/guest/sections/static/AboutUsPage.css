@@ -333,3 +333,782 @@
   line-height: 1.3;
 }
 
+/* ==========================================================================
+   ABOUT US PAGE MOBILE RESPONSIVE
+   ========================================================================== */
+
+/* ─── Tablets & Small Laptops (1024px - 1200px) ─── */
+@media (max-width: 1200px) {
+  .about-main-wrapper {
+    max-width: calc(100% - 80px);
+  }
+
+  .dashboard-hero-banner {
+    padding: 30px 40px;
+    height: 360px;
+  }
+
+  .dashboard-hero-title {
+    font-size: 44px;
+  }
+
+  .about-main-hdr {
+    font-size: 36px;
+  }
+
+  .about-master-image-box {
+    height: 500px;
+  }
+
+  .about-blue-badge-card {
+    width: 220px;
+    height: 200px;
+    padding: 24px;
+  }
+
+  .about-badge-title {
+    font-size: 44px;
+  }
+
+  .testimonials-horizontal-cards-row {
+    grid-gap: 20px;
+  }
+
+  .testimonial-card-item {
+    height: 380px;
+    padding: 24px;
+  }
+}
+
+/* ─── Tablet Portrait (900px) ─── */
+@media (max-width: 900px) {
+  .about-main-wrapper {
+    max-width: calc(100% - 40px);
+    margin-top: 40px;
+  }
+
+  .dashboard-hero-banner {
+    height: 300px;
+    padding: 20px 20px;
+  }
+
+  .dashboard-hero-title {
+    font-size: 36px;
+  }
+
+  .about-split-grid {
+    grid-template-columns: 1fr;
+    grid-gap: 40px;
+  }
+
+  .about-vertical-line {
+    display: none;
+  }
+
+  .about-main-hdr {
+    font-size: 32px;
+  }
+
+  .about-desc-p {
+    font-size: 14px;
+  }
+
+  .about-mission-block {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+
+  .about-right-col {
+    max-width: 100%;
+    order: -1;
+  }
+
+  .about-master-image-box {
+    height: 400px;
+    max-width: 100%;
+  }
+
+  .about-blue-badge-card {
+    position: static;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    margin: 20px auto 0;
+    padding: 20px;
+    border-radius: 16px;
+  }
+
+  .about-badge-title {
+    font-size: 40px;
+  }
+
+  .about-badge-sub {
+    font-size: 13px;
+  }
+
+  /* Services section responsive */
+  .services-grid-asym {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .services-col-center {
+    order: 1;
+  }
+
+  .service-tall-card {
+    height: 300px;
+  }
+
+  /* Testimonials 2-column */
+  .testimonials-horizontal-cards-row {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+  }
+
+  .testimonial-card-item {
+    height: 350px;
+    padding: 20px;
+  }
+
+  .testimonial-author-avatar-top {
+    width: 48px;
+    height: 48px;
+  }
+
+  .testimonial-card-quote {
+    font-size: 13px;
+  }
+
+  .author-name-signature {
+    font-size: 20px;
+  }
+}
+
+/* ─── Tablet Small / Large Mobile (768px) ─── */
+@media (max-width: 768px) {
+  .about-left-col {
+    gap: 20px;
+  }
+
+  .about-main-hdr {
+    font-size: 28px;
+  }
+
+  .about-desc-p {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .about-bullet-item {
+    font-size: 14px;
+  }
+
+  .about-mission-block {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .green-square-icon-wrap {
+    width: 40px;
+    height: 40px;
+  }
+
+  .mission-texts h5 {
+    font-size: 15px;
+  }
+
+  .mission-texts p {
+    font-size: 13px;
+  }
+
+  .about-master-image-box {
+    height: 350px;
+    border-radius: 20px;
+  }
+
+  .about-blue-badge-card {
+    max-width: 280px;
+    padding: 18px;
+  }
+
+  .about-badge-title {
+    font-size: 36px;
+  }
+
+  .about-badge-sub {
+    font-size: 12px;
+  }
+
+  /* Services section */
+  .services-section {
+    padding: 40px 0;
+    margin-top: 60px;
+  }
+
+  .services-inner-container {
+    padding: 0 20px;
+  }
+
+  .service-text-card {
+    padding: 20px;
+  }
+
+  .service-image-card {
+    height: 200px;
+  }
+
+  .service-tall-card {
+    height: 250px;
+  }
+
+  /* Testimonials responsive */
+  .testimonials-horizontal-cards-row {
+    grid-gap: 16px;
+  }
+
+  .testimonial-card-item {
+    height: 320px;
+    padding: 18px;
+  }
+
+  .testimonial-card-quote {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .author-name-signature {
+    font-size: 18px;
+  }
+
+  .author-role-text {
+    font-size: 10px;
+  }
+}
+
+/* ─── Mobile Large (640px) ─── */
+@media (max-width: 640px) {
+  .about-main-wrapper {
+    max-width: calc(100% - 32px);
+    margin-top: 32px;
+  }
+
+  .dashboard-hero-banner {
+    height: 240px;
+    padding: 20px 16px !important;
+  }
+
+  .dashboard-hero-title {
+    font-size: 28px;
+    margin-top: 60px !important;
+  }
+
+  .about-split-grid {
+    grid-gap: 30px;
+  }
+
+  .about-main-hdr {
+    font-size: 24px;
+    line-height: 1.3;
+  }
+
+  .about-desc-p {
+    font-size: 14px;
+  }
+
+  .about-bullet-item {
+    font-size: 13px;
+    gap: 8px;
+  }
+
+  .about-bullet-item svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .about-mission-block {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .about-master-image-box {
+    height: 300px;
+    border-radius: 18px;
+  }
+
+  .about-blue-badge-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .about-badge-title {
+    font-size: 32px;
+    letter-spacing: -1px;
+  }
+
+  .about-badge-sub {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  /* Services section mobile */
+  .services-section {
+    padding: 32px 0;
+    margin-top: 40px;
+  }
+
+  .services-inner-container {
+    padding: 0 16px;
+  }
+
+  .section-title-wrap {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .section-main-headline {
+    font-size: 24px;
+  }
+
+  .section-sub-headline {
+    font-size: 14px;
+  }
+
+  .services-grid-asym {
+    gap: 20px;
+  }
+
+  .service-text-card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .service-card-accent-title {
+    font-size: 18px;
+  }
+
+  .service-card-desc,
+  .service-card-desc-light {
+    font-size: 13px;
+  }
+
+  .service-image-card {
+    height: 180px;
+    border-radius: 16px;
+  }
+
+  .service-tall-card {
+    height: 220px;
+    border-radius: 16px;
+  }
+
+  .service-overlay-badge-bottom {
+    padding: 12px;
+    font-size: 12px;
+  }
+
+  .service-icon-circle-overlay {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Testimonials single column */
+  .our-testimonials-section {
+    margin: 60px 0 20px 0 !important;
+  }
+
+  .testimonials-horizontal-cards-row {
+    grid-template-columns: 1fr !important;
+    grid-gap: 16px;
+  }
+
+  .testimonial-card-item {
+    height: auto;
+    min-height: 280px;
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .testimonial-card-item.image-cover-mode {
+    height: 300px;
+  }
+
+  .testimonial-author-avatar-top {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 16px;
+  }
+
+  .testimonial-card-quote {
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .testimonial-footer-info {
+    padding-top: 16px;
+  }
+
+  .author-name-signature {
+    font-size: 20px;
+  }
+
+  .author-role-text {
+    font-size: 11px;
+  }
+
+  .play-btn-circle-large {
+    width: 48px;
+    height: 48px;
+  }
+
+  .cover-mode-signature-title {
+    font-size: 24px;
+  }
+
+  .cover-mode-signature-role {
+    font-size: 11px;
+  }
+}
+
+/* ─── Mobile Medium (480px) ─── */
+@media (max-width: 480px) {
+  .about-main-wrapper {
+    max-width: calc(100% - 24px);
+    margin-top: 24px;
+  }
+
+  .dashboard-hero-banner {
+    height: 200px !important;
+    padding: 16px 12px !important;
+  }
+
+  .dashboard-hero-title {
+    font-size: 24px !important;
+    margin-top: 50px !important;
+  }
+
+  .about-main-hdr {
+    font-size: 20px;
+  }
+
+  .about-desc-p {
+    font-size: 13px;
+  }
+
+  .about-bullet-item {
+    font-size: 12px;
+  }
+
+  .about-mission-block {
+    padding: 14px;
+  }
+
+  .green-square-icon-wrap {
+    width: 36px;
+    height: 36px;
+  }
+
+  .mission-texts h5 {
+    font-size: 14px;
+  }
+
+  .mission-texts p {
+    font-size: 12px;
+  }
+
+  .about-master-image-box {
+    height: 260px;
+  }
+
+  .about-blue-badge-card {
+    padding: 14px;
+    max-width: 250px;
+  }
+
+  .about-badge-title {
+    font-size: 28px;
+  }
+
+  .about-badge-sub {
+    font-size: 11px;
+  }
+
+  /* Services section */
+  .services-section {
+    padding: 24px 0;
+  }
+
+  .services-inner-container {
+    padding: 0 12px;
+  }
+
+  .section-main-headline {
+    font-size: 20px;
+  }
+
+  .section-sub-headline {
+    font-size: 13px;
+  }
+
+  .service-text-card {
+    padding: 16px;
+  }
+
+  .service-card-accent-title {
+    font-size: 16px;
+  }
+
+  .service-card-desc,
+  .service-card-desc-light {
+    font-size: 12px;
+  }
+
+  .service-image-card {
+    height: 160px;
+  }
+
+  .service-tall-card {
+    height: 200px;
+  }
+
+  .service-overlay-badge-bottom {
+    padding: 10px;
+    font-size: 11px;
+  }
+
+  /* Testimonials */
+  .testimonials-horizontal-cards-row {
+    grid-gap: 14px;
+  }
+
+  .testimonial-card-item {
+    padding: 16px;
+    min-height: 260px;
+  }
+
+  .testimonial-card-item.image-cover-mode {
+    height: 280px;
+  }
+
+  .testimonial-author-avatar-top {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 14px;
+  }
+
+  .testimonial-card-quote {
+    font-size: 12px;
+    margin-bottom: 14px;
+  }
+
+  .author-name-signature {
+    font-size: 18px;
+  }
+
+  .author-role-text {
+    font-size: 10px;
+  }
+
+  .play-btn-circle-large {
+    width: 44px;
+    height: 44px;
+  }
+
+  .cover-mode-signature-title {
+    font-size: 20px;
+  }
+
+  .cover-mode-signature-role {
+    font-size: 10px;
+  }
+}
+
+/* ─── Mobile Small (360px) ─── */
+@media (max-width: 360px) {
+  .about-main-wrapper {
+    max-width: calc(100% - 16px);
+  }
+
+  .dashboard-hero-banner {
+    height: 180px !important;
+    padding: 12px 8px !important;
+  }
+
+  .dashboard-hero-title {
+    font-size: 20px !important;
+    margin-top: 40px !important;
+  }
+
+  .about-main-hdr {
+    font-size: 18px;
+  }
+
+  .about-desc-p {
+    font-size: 12px;
+  }
+
+  .about-bullet-item {
+    font-size: 11px;
+  }
+
+  .about-mission-block {
+    padding: 12px;
+  }
+
+  .green-square-icon-wrap {
+    width: 32px;
+    height: 32px;
+  }
+
+  .mission-texts h5 {
+    font-size: 13px;
+  }
+
+  .mission-texts p {
+    font-size: 11px;
+  }
+
+  .about-master-image-box {
+    height: 220px;
+  }
+
+  .about-blue-badge-card {
+    padding: 12px;
+    max-width: 220px;
+  }
+
+  .about-badge-title {
+    font-size: 24px;
+  }
+
+  .about-badge-sub {
+    font-size: 10px;
+  }
+
+  /* Services section */
+  .services-inner-container {
+    padding: 0 8px;
+  }
+
+  .section-main-headline {
+    font-size: 18px;
+  }
+
+  .section-sub-headline {
+    font-size: 12px;
+  }
+
+  .service-text-card {
+    padding: 14px;
+  }
+
+  .service-card-accent-title {
+    font-size: 15px;
+  }
+
+  .service-card-desc,
+  .service-card-desc-light {
+    font-size: 11px;
+  }
+
+  .service-image-card {
+    height: 140px;
+  }
+
+  .service-tall-card {
+    height: 180px;
+  }
+
+  /* Testimonials */
+  .testimonials-horizontal-cards-row {
+    grid-gap: 12px;
+  }
+
+  .testimonial-card-item {
+    padding: 14px;
+    min-height: 240px;
+  }
+
+  .testimonial-card-item.image-cover-mode {
+    height: 260px;
+  }
+
+  .testimonial-author-avatar-top {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 12px;
+  }
+
+  .testimonial-card-quote {
+    font-size: 11px;
+    margin-bottom: 12px;
+  }
+
+  .author-name-signature {
+    font-size: 16px;
+  }
+
+  .author-role-text {
+    font-size: 9px;
+  }
+
+  .play-btn-circle-large {
+    width: 40px;
+    height: 40px;
+  }
+
+  .cover-mode-signature-title {
+    font-size: 18px;
+  }
+
+  .cover-mode-signature-role {
+    font-size: 9px;
+  }
+}
+
+/* ─── Touch Enhancements for Mobile ─── */
+@media (max-width: 640px) {
+  .testimonial-card-item,
+  .about-mission-block,
+  .service-text-card,
+  .service-image-card {
+    cursor: pointer;
+  }
+
+  .play-btn-circle-large,
+  .service-icon-circle-overlay {
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    touch-action: manipulation;
+  }
+
+  /* Ensure touch targets */
+  .play-btn-circle-large {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* Better spacing for touch */
+  .about-split-grid {
+    gap: 24px;
+  }
+
+  .testimonials-horizontal-cards-row {
+    gap: 16px;
+  }
+
+  /* Improved readability on mobile */
+  .about-main-hdr,
+  .section-main-headline,
+  .service-card-accent-title {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .testimonial-card-quote,
+  .about-desc-p {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+}
