@@ -503,35 +503,30 @@ export default function LocationMaster() {
                     
                     {/* Key Landmarks */}
                     <td style={{ fontSize: '12px', color: '#374151' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {loc.landmarks && loc.landmarks.length > 0 ? loc.landmarks.map((l, i) => (
-                          <div key={i} style={{ minHeight: '24px', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>{l.landmarkName}</div>
-                        )) : '-'}
-                      </div>
+                      {loc.landmarks && loc.landmarks.length > 0 ? (
+                        <>
+                          <div style={{ minHeight: '24px', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>{loc.landmarks[0].landmarkName}</div>
+                          {loc.landmarks.length > 1 && (
+                            <div style={{ fontSize: '10px', color: '#9CA3AF' }}>+{loc.landmarks.length - 1} more</div>
+                          )}
+                        </>
+                      ) : '-'}
                     </td>
                     
                     {/* Landmark Popularity */}
                     <td style={{ fontSize: '12px', color: '#6B7280' }}>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {loc.landmarks && loc.landmarks.length > 0 ? loc.landmarks.map((l, i) => (
-                          <div key={i} style={{ minHeight: '24px', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>{l.landmarkPopularity}</div>
-                        )) : '-'}
-                      </div>
+                      {loc.landmarks && loc.landmarks.length > 0 ? (
+                        <div style={{ minHeight: '24px', display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>{loc.landmarks[0].landmarkPopularity}</div>
+                      ) : '-'}
                     </td>
                     
                     {/* Landmark Image */}
                     <td>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        {loc.landmarks && loc.landmarks.length > 0 ? loc.landmarks.map((l, i) => (
-                          <div key={i} style={{ width: 24, height: 24, borderRadius: '4px', overflow: 'hidden', border: '1px solid #E5E7EB' }}>
-                            {l.landmarkImageUrl ? (
-                              <img src={getImgUrl(l.landmarkImageUrl)} alt={l.landmarkName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            ) : (
-                              <div style={{ width: '100%', height: '100%', background: '#F3F4F6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10 }}>📍</div>
-                            )}
-                          </div>
-                        )) : '-'}
-                      </div>
+                      {loc.landmarks && loc.landmarks.length > 0 ? (
+                        <div style={{ width: 24, height: 24, borderRadius: '4px', overflow: 'hidden', border: '1px solid #E5E7EB' }}>
+                          <img src={getImgUrl(loc.landmarks[0].landmarkImageUrl)} alt={loc.landmarks[0].landmarkName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        </div>
+                      ) : '-'}
                     </td>
 
                     <td style={{ color: '#9CA3AF', fontSize: '11px', whiteSpace: 'normal', maxW: '180px' }}>

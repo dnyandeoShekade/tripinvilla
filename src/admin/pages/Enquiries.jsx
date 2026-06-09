@@ -19,6 +19,7 @@ export default function Enquiries() {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [propertyType, setPropertyType] = useState('All Categories');
+  const [propertyTypes, setPropertyTypes] = useState([]);
   const [location, setLocation] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -46,8 +47,19 @@ export default function Enquiries() {
     }
   };
 
+  const fetchPropertyTypes = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/master/property-types`);
+      const data = await res.json();
+      if (Array.isArray(data)) setPropertyTypes(data);
+    } catch (err) {
+      console.error("Error fetching property types:", err);
+    }
+  };
+
   useEffect(() => {
     fetchEnquiries();
+    fetchPropertyTypes();
   }, []);
 
   const handleReplySubmit = async () => {
@@ -139,10 +151,10 @@ export default function Enquiries() {
       </div>
 
       <div className="admin-table-card">
-        <div className="admin-table-header" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'nowrap', gap: '12px', minWidth: 0 }}>
-          <h2 className="admin-table-title" style={{ margin: 0, fontSize: '18px', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>Enquiries</h2>
-          <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'nowrap', minWidth: 0, overflowX: 'auto' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+        <div className="enquiries-toolbar admin-table-header" style={{ marginBottom: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+          <h2 className="admin-table-title" style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>Enquiries</h2>
+          <div className="enquiries-filters-wrap" style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <DateRangeDropdown 
                 startDate={dateFrom}
                 endDate={dateTo}
@@ -159,18 +171,16 @@ export default function Enquiries() {
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
               <select value={propertyType} onChange={e => setPropertyType(e.target.value)} style={{ appearance: 'none', border: '1px solid #E5E7EB', borderRadius: '8px', padding: '8px 32px 8px 12px', fontSize: '13px', color: '#9CA3AF', background: '#FFFFFF', outline: 'none', cursor: 'pointer' }}>
                 <option value="All Categories">Property Type</option>
-                <option value="Homestay">Homestay</option>
-                <option value="Hotel">Hotel</option>
-                <option value="Villa">Villa</option>
-                <option value="Apartment">Apartment</option>
-                <option value="Cottage">Cottage</option>
+                {propertyTypes.map(pt => (
+                  <option key={pt._id} value={pt.name}>{pt.name}</option>
+                ))}
               </select>
               <ChevronDown size={14} color="#9CA3AF" style={{ position: 'absolute', right: '12px', pointerEvents: 'none' }} />
             </div>
 
-            <input type="text" placeholder="Location" value={location} onChange={e => setLocation(e.target.value)} style={{ padding: '5px 10px', fontSize: '12px', border: '1px solid #E5E7EB', borderRadius: '8px', width: '90px', outline: 'none', color: '#9CA3AF' }} />
+            <input type="text" placeholder="Location" value={location} onChange={e => setLocation(e.target.value)} style={{ padding: '8px 10px', fontSize: '13px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none', color: '#9CA3AF' }} />
 
-            <button onClick={fetchEnquiries} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '5px 12px', border: '1px solid #58A429', borderRadius: '8px', color: '#58A429', background: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 500, whiteSpace: 'nowrap', flexShrink: 0 }}>
+            <button onClick={fetchEnquiries} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '8px 12px', border: '1px solid #58A429', borderRadius: '8px', color: '#58A429', background: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: 500 }}>
               <Filter size={13} /> Filter
             </button>
 
@@ -181,22 +191,23 @@ export default function Enquiries() {
                 placeholder="Search" 
                 value={searchText}
                 onChange={e => setSearchText(e.target.value)}
-                style={{ padding: '5px 10px 5px 28px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none', fontSize: '12px', width: '140px', color: '#9CA3AF' }} 
+                style={{ padding: '8px 10px 8px 28px', border: '1px solid #E5E7EB', borderRadius: '8px', outline: 'none', fontSize: '13px', color: '#9CA3AF' }} 
               />
             </div>
           </div>
         </div>
 
-        <div style={{ overflowX: 'auto' }}>
+        {/* Desktop Table View */}
+        <div className="hidden-mobile desktop-table-wrapper" style={{ overflowX: 'auto' }}>
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Enquiry No <ChevronDown size={12} /></th>
-                <th>Date & Time <ChevronDown size={12} /></th>
-                <th>User Name <ChevronDown size={12} /></th>
-                <th>Phone No <ChevronDown size={12} /></th>
-                <th>Email Address <ChevronDown size={12} /></th>
-                <th>Property <ChevronDown size={12} /></th>
+                <th>Enquiry No</th>
+                <th>Date & Time</th>
+                <th>User Name</th>
+                <th>Phone No</th>
+                <th>Email Address</th>
+                <th>Property</th>
                 <th>Query</th>
                 <th>Status</th>
                 <th>Reply</th>
@@ -204,17 +215,9 @@ export default function Enquiries() {
             </thead>
             <tbody>
               {loading ? (
-                <tr>
-                  <td colSpan="9" style={{ textAlign: 'center', padding: '32px', color: '#6B7280' }}>
-                    Loading enquiries...
-                  </td>
-                </tr>
+                <tr><td colSpan="9" style={{ textAlign: 'center', padding: '32px', color: '#6B7280' }}>Loading enquiries...</td></tr>
               ) : filtered.length === 0 ? (
-                <tr>
-                  <td colSpan="9" style={{ textAlign: 'center', padding: '32px', color: '#6B7280' }}>
-                    No enquiries found
-                  </td>
-                </tr>
+                <tr><td colSpan="9" style={{ textAlign: 'center', padding: '32px', color: '#6B7280' }}>No enquiries found</td></tr>
               ) : (
                 paginated.map((e, idx) => (
                   <tr key={e._id || idx}>
@@ -229,7 +232,7 @@ export default function Enquiries() {
                     <td style={{ maxWidth: '200px', whiteSpace: 'normal', lineHeight: '1.4', fontSize: '13px' }}>
                       <ReadMore maxWords={6}>{e.query || e.message || '—'}</ReadMore>
                       {e.reply && (
-                        <div style={{ marginTop: '6px', padding: '6px 10px', background: '#F0FDF4', borderLeft: '3px solid #22c55e', borderRadius: '4px', fontSize: '12px', color: '#166534' }}>
+                        <div style={{ marginTop: '6px', padding: '6px 10px', background: '#F0FDF4', borderLeft: '3px solid #22c55e', borderRadius: '4px', fontSize: '12px', color: '#166534', wordBreak: 'break-word' }}>
                           <strong>Your reply:</strong> {e.reply}
                         </div>
                       )}
@@ -255,13 +258,54 @@ export default function Enquiries() {
               )}
             </tbody>
           </table>
-          <Pagination 
-            currentPage={currentPage} 
-            totalItems={totalItems} 
-            itemsPerPage={itemsPerPage} 
-            onPageChange={setCurrentPage} 
-          />
         </div>
+
+        {/* Mobile Card View */}
+        <div className="visible-mobile enquiry-cards" style={{ display: 'none', flexDirection: 'column', gap: '16px' }}>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '32px', color: '#6B7280' }}>Loading enquiries...</div>
+          ) : filtered.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '32px', color: '#6B7280' }}>No enquiries found</div>
+          ) : (
+            paginated.map((e, idx) => (
+              <div key={e._id || idx} style={{ background: '#fff', padding: '16px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: '#58A429' }}>{e.enquiryNo || `ENQ-${4000 + idx}`}</span>
+                  {statusBadge(e.status)}
+                </div>
+                <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '4px' }}>{e.user_name || e.name}</div>
+                <div style={{ fontSize: '12px', color: '#6B7280', marginBottom: '8px' }}>{e.email} • {e.phone}</div>
+                <div style={{ fontSize: '13px', marginBottom: '8px' }}><strong>Property:</strong> {e.propertyName}</div>
+                <div style={{ fontSize: '13px', marginBottom: '12px' }}><strong>Query:</strong> {e.query || e.message}</div>
+                {e.reply && (
+                  <div style={{ marginBottom: '12px', padding: '8px', background: '#F0FDF4', borderLeft: '3px solid #22c55e', borderRadius: '4px', fontSize: '12px', color: '#166534' }}>
+                    <strong>Your reply:</strong> {e.reply}
+                  </div>
+                )}
+                <button
+                  onClick={() => { setReplyModal(e); setReplyText(e.reply || ''); }}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                    padding: '10px', borderRadius: '8px', fontSize: '13px',
+                    fontWeight: 600, cursor: 'pointer', border: 'none',
+                    background: e.status === 'Replied' ? '#F3F4F6' : '#2563EB',
+                    color: e.status === 'Replied' ? '#374151' : '#FFFFFF'
+                  }}
+                >
+                  {e.status === 'Replied' ? <CheckCircle size={14} /> : <MessageSquare size={14} />}
+                  {e.status === 'Replied' ? 'Edit Reply' : 'Reply'}
+                </button>
+              </div>
+            ))
+          )}
+        </div>
+
+        <Pagination 
+          currentPage={currentPage} 
+          totalItems={totalItems} 
+          itemsPerPage={itemsPerPage} 
+          onPageChange={setCurrentPage} 
+        />
       </div>
 
       {/* Reply Modal */}
@@ -270,14 +314,14 @@ export default function Enquiries() {
           style={{
             position: 'fixed', inset: 0, zIndex: 9999,
             background: 'rgba(0,0,0,0.5)', display: 'flex',
-            alignItems: 'center', justifyContent: 'center'
+            alignItems: 'center', justifyContent: 'center', padding: '16px'
           }}
           onClick={() => setReplyModal(null)}
         >
           <div
             style={{
-              background: '#FFFFFF', borderRadius: '16px', padding: '32px',
-              width: '520px', maxWidth: '90vw', boxShadow: '0 20px 60px rgba(0,0,0,0.15)'
+              background: '#FFFFFF', borderRadius: '16px', padding: '24px',
+              width: '520px', maxWidth: '100%', boxShadow: '0 20px 60px rgba(0,0,0,0.15)'
             }}
             onClick={e => e.stopPropagation()}
           >

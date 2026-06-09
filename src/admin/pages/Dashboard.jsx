@@ -295,7 +295,7 @@ export default function Dashboard() {
                     <td style={{ fontWeight: 600, color: '#111827' }}>{typeof p.bestRoomRate === 'number' ? `₹${p.bestRoomRate.toLocaleString()}` : p.bestRoomRate}</td>
                     <td>{p.rooms}</td>
                     <td style={{ fontWeight: 700, color: '#58A429' }}>{p.totalEnquiries ?? 0}</td>
-                    <td style={{ color: '#374151' }}>{p.rating}</td>
+                    <td style={{ color: '#374151' }}>{p.rating || '—'}</td>
                     <td>
                       <span className={`status-pill ${p.status === 'Active' ? 'active' : 'inactive'}`}>
                         {p.status}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { X, MapPin, Bed, Bath, Users, IndianRupee, Clock, CheckCircle2, Home, Phone, Mail, Hash } from 'lucide-react';
+import { X, MapPin, Bed, Bath, Users, IndianRupee, Clock, CheckCircle2, Home, Phone, Mail, Hash, Building2, Eye, ChevronDown, ChevronUp, Star, Shield, Calendar, Wifi, Car, Coffee, Dumbbell, Waves, Trees, ChefHat, Sparkles } from 'lucide-react';
 
 export default function PropertyViewModal({ property, onClose, inline = false }) {
 const [dynamicRooms, setDynamicRooms] = React.useState(() => []);
@@ -61,8 +61,17 @@ const [dynamicRooms, setDynamicRooms] = React.useState(() => []);
   const bedRooms    = property.bedRooms || property.bedrooms || 1;
   const bathRooms   = property.bathRooms || property.bathrooms || 1;
   const capacity    = property.capacity || property.guests || 2;
-  const price       = property.price || property.price_per_night || property.bestRoomRate || 0;
-  const originalPrice = property.originalPrice || 0;
+  // Compute price from rooms array if available (lowest room price)
+  let computedPrice = property.price || property.price_per_night || property.bestRoomRate || 0;
+  let computedOriginalPrice = property.originalPrice || 0;
+  if (Array.isArray(property.rooms) && property.rooms.length > 0) {
+    const roomPrices = property.rooms.map(r => Number(r.pricePerNight || r.price || 0)).filter(Boolean);
+    if (roomPrices.length > 0) computedPrice = Math.min(...roomPrices);
+    const roomOrigPrices = property.rooms.map(r => Number(r.originalPrice || 0)).filter(Boolean);
+    if (roomOrigPrices.length > 0) computedOriginalPrice = Math.max(...roomOrigPrices);
+  }
+  const price       = computedPrice;
+  const originalPrice = computedOriginalPrice;
   const taxAmount   = property.taxAmount || 0;
 
   const getOwnerName = () => {
@@ -87,7 +96,9 @@ const [dynamicRooms, setDynamicRooms] = React.useState(() => []);
   const propertyNo = property.propertyNo || property._id?.toString().slice(-6).toUpperCase() || '';
 
   // FIX 2: Use ONLY dynamicRooms fetched by property._id — never merge with embedded property.rooms
-const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
+const rooms = (Array.isArray(dynamicRooms) && dynamicRooms.length > 0)
+  ? dynamicRooms
+  : (Array.isArray(property.rooms) && property.rooms.length > 0 ? property.rooms : []);
   const experiences = Array.isArray(property.experiences) ? property.experiences : [];
 
   const parseCoordinate = (val, isLat) => {
@@ -110,8 +121,8 @@ const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
   const longitude = hasValidCoords ? lng : null;
 
   const pill = (color, bg, text) => ({
-    padding: '2px 10px', background: bg, color, fontSize: '11px',
-    fontWeight: 600, borderRadius: '12px', display: 'inline-block'
+    padding: '3px 12px', background: bg, color, fontSize: '11px',
+    fontWeight: 600, borderRadius: '20px', display: 'inline-block', letterSpacing: '0.3px'
   });
 
   const containerStyle = inline
@@ -122,94 +133,110 @@ const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
     <div id={inline ? "property-detail-div" : ""} style={containerStyle}>
 
       {/* ── Header ── */}
-      <div style={{ padding: '18px 24px', borderBottom: '1px solid #E5E7EB', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: '#F9FAFB', flexShrink: 0 }}>
+      <div style={{ padding: '20px 24px', borderBottom: '1px solid #E5E7EB', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', background: 'linear-gradient(135deg, #F9FAFB 0%, #F0FDF4 100%)', flexShrink: 0 }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-            {propertyNo && <span style={{ fontSize: '12px', color: '#6B7280', fontWeight: 600 }}>#{propertyNo}</span>}
-            <span style={pill(status === 'Active' ? '#059669' : '#DC2626', status === 'Active' ? '#ECFDF5' : '#FEF2F2', status)}>{status}</span>
-            {type && <span style={pill('#58A429', '#ECFDF5', type)}>{type}</span>}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
+            {propertyNo && (
+              <span style={{ fontSize: '11px', color: '#6B7280', fontWeight: 600, background: '#E5E7EB', padding: '2px 8px', borderRadius: '6px' }}>
+                <Hash size={10} style={{ display: 'inline', marginRight: 3, transform: 'translateY(1px)' }} />{propertyNo}
+              </span>
+            )}
+            <span style={pill(status === 'Active' ? '#059669' : '#DC2626', status === 'Active' ? '#D1FAE5' : '#FEE2E2', status)}>{status}</span>
+            {type && <span style={pill('#58A429', '#E8F5E0', type)}>{type}</span>}
           </div>
-          <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: '#111827' }}>{name}</h2>
+          <h2 style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: '#111827', lineHeight: 1.3 }}>{name}</h2>
           {location && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4, fontSize: '13px', color: '#6B7280' }}>
-              <MapPin size={13} /> {location}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 6, fontSize: '13px', color: '#6B7280' }}>
+              <MapPin size={14} color="#58A429" /> {location}
             </div>
           )}
         </div>
-        <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '6px', borderRadius: '50%', display: 'flex', flexShrink: 0 }}
-          onMouseOver={e => e.currentTarget.style.background = '#E5E7EB'} onMouseOut={e => e.currentTarget.style.background = 'none'}>
-          <X size={20} color="#4B5563" />
+        <button onClick={onClose} style={{ background: 'rgba(0,0,0,0.04)', border: 'none', cursor: 'pointer', padding: '8px', borderRadius: '50%', display: 'flex', flexShrink: 0, transition: 'all 0.2s' }}
+          onMouseOver={e => { e.currentTarget.style.background = '#E5E7EB'; }} onMouseOut={e => { e.currentTarget.style.background = 'rgba(0,0,0,0.04)'; }}>
+          <X size={18} color="#4B5563" />
         </button>
       </div>
 
       {/* ── Scrollable body ── */}
-      <div style={{ overflowY: 'auto', padding: '24px', flex: 1, display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <div style={{ overflowY: 'auto', padding: '24px', flex: 1, display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
         {/* Images gallery */}
         {images.length > 0 && (
-          <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '8px', flexShrink: 0, minHeight: '168px' }}>
+          <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '8px', flexShrink: 0, minHeight: '168px', scrollbarWidth: 'thin' }}>
             {images.map((img, idx) => (
               <img
                 key={idx}
                 src={img.startsWith('http') ? img : `${window.location.origin}${img}`}
                 alt={`img-${idx}`}
                 onError={e => { e.target.style.display = 'none'; }}
-                style={{ height: '160px', width: '240px', objectFit: 'cover', borderRadius: '10px', flexShrink: 0, border: '1px solid #E5E7EB' }}
+                style={{ height: '160px', width: '240px', objectFit: 'cover', borderRadius: '12px', flexShrink: 0, border: '2px solid #E5E7EB', transition: 'transform 0.2s', cursor: 'pointer' }}
+                onMouseOver={e => { e.currentTarget.style.transform = 'scale(1.02)'; e.currentTarget.style.borderColor = '#58A429'; }}
+                onMouseOut={e => { e.currentTarget.style.transform = 'scale(1)'; e.currentTarget.style.borderColor = '#E5E7EB'; }}
               />
             ))}
           </div>
         )}
         {images.length === 0 && (
-          <div style={{ height: '120px', background: '#F3F4F6', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF', fontSize: '13px' }}>
-            No images uploaded
+          <div style={{ height: '140px', background: 'linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9CA3AF', fontSize: '13px', gap: '8px', border: '2px dashed #D1D5DB' }}>
+            <Eye size={20} /> No images uploaded for this property
           </div>
         )}
 
-        {/* Key info cards */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '12px' }}>
+        {/* Key info cards - nicer grid */}
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: '14px' }}>
 
           {/* Owner */}
           {ownerName !== 'Unknown' && (
-            <div style={{ padding: '14px 16px', background: '#F3F4F6', borderRadius: '12px' }}>
-              <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '6px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Owner Details</div>
-              <div style={{ fontSize: '14px', fontWeight: 700, color: '#111827', marginBottom: '4px' }}>{ownerName}</div>
-              {ownerPhone && <div style={{ fontSize: '12px', color: '#4B5563', display: 'flex', alignItems: 'center', gap: 4 }}><Phone size={11} />{ownerPhone}</div>}
-              {ownerEmail && <div style={{ fontSize: '12px', color: '#4B5563', display: 'flex', alignItems: 'center', gap: 4 }}><Mail size={11} />{ownerEmail}</div>}
+            <div style={{ padding: '16px 18px', background: '#F9FAFB', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+              <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '8px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: 4 }}><Building2 size={13} /> Owner Details</div>
+              <div style={{ fontSize: '15px', fontWeight: 700, color: '#111827', marginBottom: '6px' }}>{ownerName}</div>
+              {ownerPhone && <div style={{ fontSize: '13px', color: '#4B5563', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}><Phone size={12} color="#6B7280" />{ownerPhone}</div>}
+              {ownerEmail && <div style={{ fontSize: '13px', color: '#4B5563', display: 'flex', alignItems: 'center', gap: 6 }}><Mail size={12} color="#6B7280" />{ownerEmail}</div>}
+              {!ownerPhone && !ownerEmail && (
+                <div style={{ fontSize: '12px', color: '#9CA3AF' }}>—</div>
+              )}
             </div>
           )}
 
           {/* Pricing */}
-          <div style={{ padding: '14px 16px', background: '#F3F4F6', borderRadius: '12px' }}>
-            <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '6px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Pricing</div>
-            <div style={{ fontSize: '20px', fontWeight: 800, color: '#58A429', display: 'flex', alignItems: 'center' }}>
-              <IndianRupee size={16} />{Number(price).toLocaleString()}
+          <div style={{ padding: '16px 18px', background: '#F9FAFB', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+            <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '8px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}><IndianRupee size={13} /> Pricing</div>
+            <div style={{ fontSize: '22px', fontWeight: 800, color: '#58A429', display: 'flex', alignItems: 'center', gap: 2 }}>
+              <IndianRupee size={18} />{Number(price).toLocaleString()}
             </div>
-            <div style={{ fontSize: '11px', color: '#6B7280' }}>per night / room</div>
-            {originalPrice > 0 && <div style={{ fontSize: '11px', color: '#9CA3AF', textDecoration: 'line-through', marginTop: 2 }}>₹{Number(originalPrice).toLocaleString()}</div>}
-            {taxAmount > 0 && <div style={{ fontSize: '11px', color: '#6B7280' }}>+₹{taxAmount} tax</div>}
+            <div style={{ fontSize: '12px', color: '#6B7280', marginTop: 2 }}>per night / room</div>
+            {originalPrice > 0 && <div style={{ fontSize: '12px', color: '#9CA3AF', textDecoration: 'line-through', marginTop: 2 }}>₹{Number(originalPrice).toLocaleString()}</div>}
+            {taxAmount > 0 && <div style={{ fontSize: '12px', color: '#6B7280' }}>+₹{taxAmount} tax & fees</div>}
+            {price === 0 && (
+              <div style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>Price not set</div>
+            )}
           </div>
 
           {/* Timings */}
-          <div style={{ padding: '14px 16px', background: '#F3F4F6', borderRadius: '12px' }}>
-            <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '6px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Check-In / Out</div>
-            <div style={{ fontSize: '13px', color: '#111827', display: 'flex', alignItems: 'center', gap: 5 }}><Clock size={13} /> In: <strong>{checkIn}</strong></div>
-            <div style={{ fontSize: '13px', color: '#111827', display: 'flex', alignItems: 'center', gap: 5, marginTop: 6 }}><Clock size={13} /> Out: <strong>{checkOut}</strong></div>
+          <div style={{ padding: '16px 18px', background: '#F9FAFB', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+            <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '8px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}><Clock size={13} /> Check-In / Out</div>
+            <div style={{ fontSize: '14px', color: '#111827', display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+              <Calendar size={14} color="#58A429" /> In: <strong>{checkIn}</strong>
+            </div>
+            <div style={{ fontSize: '14px', color: '#111827', display: 'flex', alignItems: 'center', gap: 6 }}>
+              <Calendar size={14} color="#DC2626" /> Out: <strong>{checkOut}</strong>
+            </div>
           </div>
 
           {/* Capacity */}
-          <div style={{ padding: '14px 16px', background: '#F3F4F6', borderRadius: '12px' }}>
-            <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '8px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Capacity</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                <span style={{ color: '#6B7280', display: 'flex', alignItems: 'center', gap: 4 }}><Bed size={13} /> Bedrooms</span>
+          <div style={{ padding: '16px 18px', background: '#F9FAFB', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+            <div style={{ fontSize: '11px', color: '#6B7280', marginBottom: '8px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px' }}><Users size={13} /> Capacity</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', paddingBottom: '6px', borderBottom: '1px solid #E5E7EB' }}>
+                <span style={{ color: '#6B7280', display: 'flex', alignItems: 'center', gap: 5 }}><Bed size={14} /> Bedrooms</span>
                 <strong>{bedRooms}</strong>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                <span style={{ color: '#6B7280', display: 'flex', alignItems: 'center', gap: 4 }}><Bath size={13} /> Bathrooms</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', paddingBottom: '6px', borderBottom: '1px solid #E5E7EB' }}>
+                <span style={{ color: '#6B7280', display: 'flex', alignItems: 'center', gap: 5 }}><Bath size={14} /> Bathrooms</span>
                 <strong>{bathRooms}</strong>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                <span style={{ color: '#6B7280', display: 'flex', alignItems: 'center', gap: 4 }}><Users size={13} /> Max Guests</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                <span style={{ color: '#6B7280', display: 'flex', alignItems: 'center', gap: 5 }}><Users size={14} /> Max Guests</span>
                 <strong>{capacity}</strong>
               </div>
             </div>
@@ -218,8 +245,8 @@ const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
 
         {/* Description */}
         {description && (
-          <div>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>About Property</h3>
+          <div style={{ background: '#F9FAFB', padding: '18px 20px', borderRadius: '12px', border: '1px solid #E5E7EB' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 10px 0', display: 'flex', alignItems: 'center', gap: 6 }}><Sparkles size={16} color="#58A429" /> About Property</h3>
             <p style={{ fontSize: '14px', color: '#4B5563', lineHeight: 1.7, margin: 0 }}>{description}</p>
           </div>
         )}
@@ -227,21 +254,26 @@ const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
         {/* Amenities */}
         {amenities.length > 0 && (
           <div>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 10px 0' }}>Amenities</h3>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: 6 }}><Shield size={16} color="#58A429" /> Amenities</h3>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
               {amenities.map((am, i) => (
-                <span key={i} style={{ padding: '4px 12px', background: '#ECFDF5', color: '#059669', borderRadius: '20px', fontSize: '12px', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 5 }}>
-                  <CheckCircle2 size={12} /> {am}
+                <span key={i} style={{ padding: '6px 14px', background: '#ECFDF5', color: '#059669', borderRadius: '20px', fontSize: '13px', fontWeight: 500, display: 'flex', alignItems: 'center', gap: 6, border: '1px solid #A7F3D0' }}>
+                  <CheckCircle2 size={14} /> {am}
                 </span>
               ))}
             </div>
+          </div>
+        )}
+        {amenities.length === 0 && (
+          <div style={{ background: '#F9FAFB', padding: '14px 18px', borderRadius: '10px', border: '1px dashed #D1D5DB', color: '#9CA3AF', fontSize: '13px', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <Shield size={16} /> No amenities listed for this property
           </div>
         )}
 
         {/* Unique Experiences */}
         {experiences.length > 0 && (
           <div>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 10px 0' }}>Unique Experiences</h3>
+            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 12px 0', display: 'flex', alignItems: 'center', gap: 6 }}><Star size={16} color="#58A429" /> Unique Experiences</h3>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {experiences.map((exp, i) => {
                 let expName = exp.experienceName || exp.name;
@@ -257,7 +289,7 @@ const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
                 }
                 if (!expName) return null;
                 return (
-                  <span key={i} style={{ padding: '4px 12px', background: '#EFF6FF', color: '#2563EB', borderRadius: '20px', fontSize: '12px', fontWeight: 500 }}>
+                  <span key={i} style={{ padding: '6px 14px', background: '#EFF6FF', color: '#2563EB', borderRadius: '20px', fontSize: '13px', fontWeight: 500, border: '1px solid #BFDBFE' }}>
                     {expName}
                   </span>
                 );
@@ -271,9 +303,11 @@ const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
           <div style={{ marginBottom: '24px' }}>
             <button
               onClick={() => setShowRooms(!showRooms)}
-              style={{ width: '100%', padding: '12px', background: '#58A429', color: '#fff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', fontSize: '15px' }}
+              style={{ width: '100%', padding: '12px 18px', background: 'linear-gradient(135deg, #58A429 0%, #4A8F20 100%)', color: '#fff', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 600, display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', fontSize: '15px', boxShadow: '0 4px 12px rgba(88,164,41,0.25)', transition: 'all 0.2s' }}
+              onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 16px rgba(88,164,41,0.35)'; }}
+              onMouseOut={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(88,164,41,0.25)'; }}
             >
-              <Bed size={18} /> {showRooms ? 'Hide Room Details' : `View Room Details (${rooms.length} Room${rooms.length !== 1 ? 's' : ''})`}
+              <Bed size={18} /> {showRooms ? <><ChevronUp size={16} /> Hide Room Details</> : <><ChevronDown size={16} /> View Room Details ({rooms.length} Room{rooms.length !== 1 ? 's' : ''})</>}
             </button>
 
             {showRooms && (
@@ -301,14 +335,14 @@ const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
                     : [];
 
                   return (
-                    <div key={idx} style={{ background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '16px' }}>
+                    <div key={idx} style={{ background: '#fff', border: '1px solid #E5E7EB', borderRadius: '12px', padding: '16px', boxShadow: '0 2px 8px rgba(0,0,0,0.04)' }}>
                       <div style={{ display: 'flex', gap: '16px', flexDirection: 'row', flexWrap: 'wrap' }}>
                         {roomImg && (
                           <img
                             src={roomImg}
                             alt={roomTitle}
                             onError={e => { e.target.style.display = 'none'; }}
-                            style={{ width: 140, height: 100, objectFit: 'cover', borderRadius: '8px', flexShrink: 0 }}
+                            style={{ width: 140, height: 100, objectFit: 'cover', borderRadius: '10px', flexShrink: 0, border: '1px solid #E5E7EB' }}
                           />
                         )}
                         <div style={{ flex: 1, minWidth: '250px' }}>
@@ -318,9 +352,9 @@ const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
                               <div style={{ fontSize: '13px', color: '#4B5563', marginBottom: '4px' }}>
                                 {roomBedType} bed · {roomGuests} guests · {roomCount} room{(roomCount > 1 || typeof roomCount === 'string') ? 's' : ''}
                               </div>
-                              <div style={{ fontSize: '12px', color: '#6B7280', marginBottom: '8px', display: 'flex', gap: '12px' }}>
-                                <span><Clock size={12} style={{ display: 'inline', marginRight: 4, transform: 'translateY(2px)' }} /> Check In: {roomCheckIn}</span>
-                                <span><Clock size={12} style={{ display: 'inline', marginRight: 4, transform: 'translateY(2px)' }} /> Check Out: {roomCheckOut}</span>
+                              <div style={{ fontSize: '12px', color: '#6B7280', marginBottom: '8px', display: 'flex', gap: '16px' }}>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Clock size={12} color="#58A429" /> In: {roomCheckIn}</span>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><Clock size={12} color="#DC2626" /> Out: {roomCheckOut}</span>
                               </div>
                             </div>
                             <div style={{ textAlign: 'right' }}>
@@ -415,8 +449,8 @@ const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
         {/* House Rules — static string fallback, only if no dynamic rules */}
         {rules && (
           <div>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>House Rules</h3>
-            <div style={{ background: '#FEF2F2', padding: '14px 16px', borderRadius: '10px', color: '#991B1B', fontSize: '13px', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: 6 }}><Shield size={16} color="#DC2626" /> House Rules</h3>
+            <div style={{ background: '#FEF2F2', padding: '14px 16px', borderRadius: '10px', color: '#991B1B', fontSize: '13px', lineHeight: 1.7, whiteSpace: 'pre-wrap', border: '1px solid #FECACA' }}>
               {rules}
             </div>
           </div>
@@ -425,8 +459,8 @@ const rooms = Array.isArray(dynamicRooms) ? dynamicRooms : [];
         {/* Map */}
         {latitude && longitude && (
           <div>
-            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>Location Map</h3>
-            <div style={{ height: '180px', borderRadius: '10px', overflow: 'hidden', border: '1px solid #E5E7EB' }}>
+            <h3 style={{ fontSize: '15px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0', display: 'flex', alignItems: 'center', gap: 6 }}><MapPin size={16} color="#58A429" /> Location Map</h3>
+            <div style={{ height: '200px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #E5E7EB', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
               <iframe
                 title="Property Location"
                 width="100%"

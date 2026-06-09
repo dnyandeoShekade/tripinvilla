@@ -217,7 +217,7 @@ export default function HomePage(props) {
                       
                       <div className="villa-card-location">
                         <MapPin size={13} color="#9CA3AF" />
-                        <span>{villa.location}</span>
+                        <span>{villa.full_address || villa.location}</span>
                       </div>
 
                       <div className="villa-card-rating-row">
@@ -289,7 +289,7 @@ export default function HomePage(props) {
                     <div className="curated-card-img-wrap">
                       <img src={item.img} alt={item.title} />
                       <button 
-                        className="recommend-heart-circle" 
+                        className={`wishlist-btn-circle ${user && user.wishlist && user.wishlist.some(w => w._id === item._id || w === item._id) ? 'active' : ''}`}
                         onClick={(e) => toggleWishlist(item._id, e)}
                       >
                         <Heart 
@@ -305,7 +305,7 @@ export default function HomePage(props) {
                       
                       <div className="curated-card-location">
                         <MapPin size={13} color="#9CA3AF" />
-                        <span>{item.location}</span>
+                        <span>{item.full_address || item.location}</span>
                       </div>
 
                       <div className="curated-card-rating-row">
@@ -329,11 +329,11 @@ export default function HomePage(props) {
 
                       <div className="curated-card-price-row">
                         <span className="price-label">Starting from</span>
-                        <span className="price-green-bold">{item.price}/night</span>
+                        <span className="price-value-highlight">{item.price}/night</span>
                       </div>
 
                       <div className="curated-card-actions">
-                        <button className="recommend-details-btn-blue" onClick={() => setActiveMenu('Detail')}>View Details</button>
+                        <button className="btn-villa-action outline-blue" onClick={() => { setSelectedProperty(item); setActiveMenu('Detail'); }}>View Details</button>
                       </div>
                     </div>
                   </div>

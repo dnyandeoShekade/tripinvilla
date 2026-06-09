@@ -65,6 +65,36 @@
   margin-bottom: 24px;
 }
 
+/* Testimonial form row - horizontal layout */
+.testimonial-form-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #F9FAFB;
+  border-radius: 12px;
+  border: 1px solid #E5E7EB;
+}
+.testimonial-form-row > .form-group {
+  flex: 1;
+  min-width: 0;
+}
+.testimonial-form-row .video-only-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #FEF3C7;
+  border: 1px solid #FCD34D;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #92400E;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 .form-group {
   display: flex;
   flex-direction: column;

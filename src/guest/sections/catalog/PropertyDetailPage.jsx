@@ -7,6 +7,7 @@ const ICON_MAP = {
   ShieldCheck: Shield, Flame, ChefHat, Coffee, Dumbbell,
   Bath: CheckCircle, Music: CheckCircle, Zap: CheckCircle, Package: CheckCircle
 };
+import { LogIn, LogOut } from 'lucide-react';
 
 export default function PropertyDetailPage(props) {
   const {
@@ -230,20 +231,24 @@ export default function PropertyDetailPage(props) {
             
 
             <div className="reservation-location">
-              <MapPin size={14} color="#48BB78" />
-              <span>{activeDetailProp.location}</span>
+              <MapPin size={16} color="#58A429" />
+              <span style={{ color: '#58A429', fontWeight: 500 }}>{activeDetailProp.location}</span>
             </div>
 
-            <div className="reservation-timing-row">
-              <div className="time-badge">
-                <Calendar size={14} color="#48BB78" />
-                <span>Check In : {activeDetailProp.checkIn || '3:00 PM'}</span>
+            <hr style={{ border: 'none', borderTop: '1px solid #E5E7EB', margin: '16px 0' }} />
+
+            <div className="reservation-timing-row" style={{ display: 'flex', justifyContent: 'space-between', gap: '20px' }}>
+              <div className="time-badge" style={{ background: 'transparent', border: 'none', padding: 0, justifyContent: 'flex-start', flex: '1' }}>
+                <LogIn size={20} color="#58A429" strokeWidth={1.5} />
+                <span style={{ color: '#4B5563', fontSize: '14px' }}>Check in : {activeDetailProp.checkIn || '3:00 PM'}</span>
               </div>
-              <div className="time-badge">
-                <Calendar size={14} color="#48BB78" />
-                <span>Check Out : {activeDetailProp.checkOut || '12:00 PM'}</span>
+              <div className="time-badge" style={{ background: 'transparent', border: 'none', padding: 0, justifyContent: 'flex-start', flex: '1' }}>
+                <LogOut size={20} color="#EF4444" strokeWidth={1.5} />
+                <span style={{ color: '#4B5563', fontSize: '14px' }}>Check Out : {activeDetailProp.checkOut || '12:00 PM'}</span>
               </div>
             </div>
+
+            <hr style={{ border: 'none', borderTop: '1px solid #E5E7EB', margin: '16px 0' }} />
 
             <div className="reservation-checks-list">
               {(activeDetailProp.highlights && activeDetailProp.highlights.length > 0 ? activeDetailProp.highlights : []).map((highlight, idx) => (
@@ -296,13 +301,15 @@ export default function PropertyDetailPage(props) {
               return null;
             })()}
 
-            <div className="reservation-pricing-block">
-              {oldPriceString && (
-                <span className="old-strike-price">{oldPriceString}/night</span>
-              )}
-              <span className="taxes-subtext" style={{ textAlign: 'right' }}>+{activeDetailProp.taxAmount || 212} taxes & fees per<br />room per night</span>
-              <div style={{ marginTop: '4px' }}>
-                <span className="highlight-green-detail">{priceString}/night</span>
+            <div className="reservation-pricing-block" style={{ borderTop: 'none', paddingTop: 0, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+              <div>
+                {oldPriceString && (
+                  <div className="old-strike-price" style={{ display: 'block', marginBottom: '4px', fontSize: '15px' }}>{oldPriceString}/night</div>
+                )}
+                <div className="highlight-green-detail" style={{ lineHeight: 1 }}>{priceString}/night</div>
+              </div>
+              <div className="taxes-subtext" style={{ textAlign: 'left', marginLeft: '12px', paddingBottom: '4px', fontSize: '13px' }}>
+                +{activeDetailProp.taxAmount || 212} taxes & fees per<br />room per night
               </div>
             </div>
 
@@ -429,48 +436,15 @@ export default function PropertyDetailPage(props) {
         {activeDetailProp && activeDetailProp.experiences && activeDetailProp.experiences.length > 0 && (
           <div className="about-property-section">
             <h3 className="section-subtitle-title">Unique Experiences</h3>
-            <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '16px', marginTop: '-4px' }}>
-              This property offers handpicked experiences for an unforgettable stay
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '16px' }}>
               {activeDetailProp.experiences.map((exp, idx) => {
                 const name = exp.experienceName || exp.name || 'Experience';
-                // Pick a consistent color from a palette based on index
-                const palettes = [
-                  { bg: '#EFF6FF', border: '#BFDBFE', text: '#1D4ED8', dot: '#3B82F6' },
-                  { bg: '#F0FDF4', border: '#BBF7D0', text: '#15803D', dot: '#22C55E' },
-                  { bg: '#FFF7ED', border: '#FED7AA', text: '#C2410C', dot: '#F97316' },
-                  { bg: '#FDF4FF', border: '#E9D5FF', text: '#7E22CE', dot: '#A855F7' },
-                  { bg: '#ECFDF5', border: '#A7F3D0', text: '#065F46', dot: '#10B981' },
-                  { bg: '#FFF1F2', border: '#FECDD3', text: '#BE123C', dot: '#F43F5E' },
-                ];
-                const c = palettes[idx % palettes.length];
                 return (
-                  <div key={idx} style={{
-                    display: 'flex', alignItems: 'center', gap: '10px',
-                    background: c.bg, border: `1.5px solid ${c.border}`,
-                    borderRadius: '24px', padding: '10px 18px',
-                    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                    transition: 'transform 0.15s, box-shadow 0.15s',
-                  }}
-                    onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.10)'; }}
-                    onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 1px 4px rgba(0,0,0,0.04)'; }}
-                  >
-                    {/* Colored dot indicator */}
-                    <span style={{ width: 10, height: 10, borderRadius: '50%', background: c.dot, flexShrink: 0, display: 'inline-block' }} />
-                    {/* Experience image if available */}
-                    {(exp.themeCoverImageUrl || exp.coverImage) && (
-                      <img
-                        src={exp.themeCoverImageUrl || exp.coverImage}
-                        alt={name}
-                        onError={e => { e.target.style.display = 'none'; }}
-                        style={{ width: 28, height: 28, borderRadius: '50%', objectFit: 'cover', flexShrink: 0, border: `1px solid ${c.border}` }}
-                      />
-                    )}
-                    <span style={{ fontSize: '13px', fontWeight: 700, color: c.text, fontFamily: '"Outfit", sans-serif', letterSpacing: '0.2px' }}>
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#4B5563', flexShrink: 0 }} />
+                    <span style={{ fontSize: '15px', color: '#4B5563', fontWeight: 500, fontFamily: '"Lato", sans-serif' }}>
                       {name}
                     </span>
-                    <Sparkles size={13} color={c.dot} style={{ flexShrink: 0 }} />
                   </div>
                 );
               })}

@@ -73,7 +73,7 @@ export default function PropertyMakers() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [existingImages, setExistingImages] = useState([]);
   const [roomsList, setRoomsList] = useState([]);
-  const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], offer: '', rules: '' });
+  const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', originalPrice: '', taxAmount: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], offer: '', rules: '' });
   const [customRoomType, setCustomRoomType] = useState('');
   const [roomTypes, setRoomTypes] = useState([]);
   const [isEditingRoom, setIsEditingRoom] = useState(false);
@@ -1518,27 +1518,43 @@ export default function PropertyMakers() {
           <div className="form-grid-3">
             <div className="form-group">
               <label className="form-label">Check-In Time*</label>
-              <input
-                type="text"
+              <select
                 name="checkIn"
                 value={formData.checkIn}
                 onChange={handleChange}
-                placeholder="e.g. 3:00 PM"
-                className="form-input"
+                className="form-select"
                 required
-              />
+              >
+                <option value="">Select Time</option>
+                {Array.from({ length: 48 }).map((_, i) => {
+                  const hrs = Math.floor(i / 2);
+                  const mins = i % 2 === 0 ? '00' : '30';
+                  const ampm = hrs < 12 ? 'AM' : 'PM';
+                  const displayHrs = hrs % 12 || 12;
+                  const timeStr = `${displayHrs.toString().padStart(2, '0')}:${mins} ${ampm}`;
+                  return <option key={timeStr} value={timeStr}>{timeStr}</option>;
+                })}
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">Check-Out Time*</label>
-              <input
-                type="text"
+              <select
                 name="checkOut"
                 value={formData.checkOut}
                 onChange={handleChange}
-                placeholder="e.g. 12:00 PM"
-                className="form-input"
+                className="form-select"
                 required
-              />
+              >
+                <option value="">Select Time</option>
+                {Array.from({ length: 48 }).map((_, i) => {
+                  const hrs = Math.floor(i / 2);
+                  const mins = i % 2 === 0 ? '00' : '30';
+                  const ampm = hrs < 12 ? 'AM' : 'PM';
+                  const displayHrs = hrs % 12 || 12;
+                  const timeStr = `${displayHrs.toString().padStart(2, '0')}:${mins} ${ampm}`;
+                  return <option key={timeStr} value={timeStr}>{timeStr}</option>;
+                })}
+              </select>
             </div>
             <div className="form-group">
               <label className="form-label">Area Size*</label>
@@ -1823,8 +1839,6 @@ export default function PropertyMakers() {
               <div className="form-group" style={{ marginBottom: 0 }}>
                 <label className="form-label">Room Image*</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                  {!isEditingRoom && (
-                    <>
                       <input
                         ref={roomImageRef}
                         type="file"
@@ -1855,17 +1869,12 @@ export default function PropertyMakers() {
                       >
                         {roomImagePreview ? 'Change Image' : 'Choose Image'}
                       </button>
-                    </>
-                  )}
                   {roomImagePreview && (
                     <img
                       src={getFullRoomImageUrl(roomImagePreview)}
                       alt="Room Preview"
                       style={{ width: 38, height: 38, borderRadius: 6, objectFit: 'cover', border: '1px solid #E5E7EB' }}
                     />
-                  )}
-                  {isEditingRoom && (
-                    <span style={{ fontSize: '12px', color: '#9CA3AF', fontWeight: 500 }}>Cannot change room image</span>
                   )}
                 </div>
               </div>
@@ -1884,6 +1893,18 @@ export default function PropertyMakers() {
               <div className="form-group">
                 <label className="form-label">Offer</label>
                 <input type="text" className="form-input" value={roomForm.offer || ''} onChange={e => setRoomForm(p => ({ ...p, offer: e.target.value }))} placeholder="e.g. 20% Off" />
+              </div>
+            </div>
+
+            {/* Row 2.5 (New Fields) */}
+            <div className="form-grid-2" style={{ marginBottom: 12 }}>
+              <div className="form-group">
+                <label className="form-label">Original Price</label>
+                <input type="number" className="form-input" value={roomForm.originalPrice} onChange={e => setRoomForm(p => ({ ...p, originalPrice: e.target.value }))} placeholder="₹" />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Tax Amount</label>
+                <input type="number" className="form-input" value={roomForm.taxAmount} onChange={e => setRoomForm(p => ({ ...p, taxAmount: e.target.value }))} placeholder="₹" />
               </div>
             </div>
 
@@ -1944,10 +1965,12 @@ export default function PropertyMakers() {
                     room_image_url: uploadedUrl || roomForm.imageUrl,
                     amenities: amenArr,
                     pricePerNight: Number(roomForm.pricePerNight),
+                    original_price: Number(roomForm.originalPrice),
+                    tax_amount: Number(roomForm.taxAmount),
                     maxGuests: Number(roomForm.maxGuests),
                     count: Number(roomForm.count)
                   }]);
-                  setRoomForm({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], amenitiesText: '', checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '' });
+                  setRoomForm({ roomType: 'Deluxe', roomName: '', imageUrl: '', pricePerNight: '', originalPrice: '', taxAmount: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [], amenitiesText: '', checkIn: '3:00 PM', checkOut: '12:00 PM', offer: '', rules: '' });
                   setRoomImageFile(null);
                   setRoomImagePreview("");
                   setIsEditingRoom(false);

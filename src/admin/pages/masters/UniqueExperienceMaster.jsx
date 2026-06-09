@@ -39,7 +39,16 @@ export default function UniqueExperienceMaster() {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/experiences`);
       const data = await res.json();
-      if (Array.isArray(data)) setExperiences(data);
+      if (Array.isArray(data)) {
+        // Filter out items that look like MongoDB ObjectIDs and ensure they have a valid name/description
+        const validExperiences = data.filter(exp => {
+          const name = (exp.experienceName || exp.name || '');
+          // Check if it's a 24-character hex string (Object ID)
+          const isObjectId = /^[0-9a-fA-F]{24}$/.test(name);
+          return !isObjectId && name.trim().length > 0;
+        });
+        setExperiences(validExperiences);
+      }
     } catch (err) {
       console.error('Error fetching experiences:', err);
     } finally {

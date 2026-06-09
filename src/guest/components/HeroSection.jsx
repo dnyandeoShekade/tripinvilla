@@ -7,6 +7,21 @@ import { format, parse } from 'date-fns';
 import { heroBgImg } from '../../assets';
 
 export default function HeroSection(props) {
+  const [propertyTypes, setPropertyTypes] = useState([]);
+  
+  useEffect(() => {
+    const fetchTypes = async () => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_BASE}/master/property-types`);
+        const data = await res.json();
+        if (Array.isArray(data)) setPropertyTypes(data);
+      } catch (err) {
+        console.error("Error fetching property types:", err);
+      }
+    };
+    fetchTypes();
+  }, []);
+
   const {
     activeMenu,
     homepageContent,
@@ -493,9 +508,16 @@ export default function HeroSection(props) {
                     onChange={(e) => setStayType(e.target.value)}
                   >
                     <option value="Any">Any</option>
-                    <option value="1 Deluxe Room">1 Deluxe Room</option>
-                    <option value="2 Deluxe Rooms">2 Deluxe Rooms</option>
-                    <option value="Entire Villa">Entire Villa</option>
+                    {propertyTypes.map(pt => (
+                      <option key={pt._id} value={pt.name}>{pt.name}</option>
+                    ))}
+                    {propertyTypes.length === 0 && (
+                      <>
+                        <option value="1 Deluxe Room">1 Deluxe Room</option>
+                        <option value="2 Deluxe Rooms">2 Deluxe Rooms</option>
+                        <option value="Entire Villa">Entire Villa</option>
+                      </>
+                    )}
                   </select>
                   <ChevronDown size={14} className="field-select-arrow" />
                 </div>

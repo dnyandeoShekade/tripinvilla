@@ -289,11 +289,31 @@ export default function PropertyRoomManager({ property, onClose }) {
               </div>
               <div>
                 <label style={labelStyle}>Check-In Time</label>
-                <input type="text" value={form.checkin_time} onChange={e => setForm(p => ({ ...p, checkin_time: e.target.value }))} placeholder="3:00 PM" style={inputStyle} />
+                <select value={form.checkin_time} onChange={e => setForm(p => ({ ...p, checkin_time: e.target.value }))} style={inputStyle}>
+                  <option value="">Select Time</option>
+                  {Array.from({ length: 48 }).map((_, i) => {
+                    const hrs = Math.floor(i / 2);
+                    const mins = i % 2 === 0 ? '00' : '30';
+                    const ampm = hrs < 12 ? 'AM' : 'PM';
+                    const displayHrs = hrs % 12 || 12;
+                    const timeStr = `${displayHrs.toString().padStart(2, '0')}:${mins} ${ampm}`;
+                    return <option key={timeStr} value={timeStr}>{timeStr}</option>;
+                  })}
+                </select>
               </div>
               <div>
                 <label style={labelStyle}>Check-Out Time</label>
-                <input type="text" value={form.checkout_time} onChange={e => setForm(p => ({ ...p, checkout_time: e.target.value }))} placeholder="12:00 PM" style={inputStyle} />
+                <select value={form.checkout_time} onChange={e => setForm(p => ({ ...p, checkout_time: e.target.value }))} style={inputStyle}>
+                  <option value="">Select Time</option>
+                  {Array.from({ length: 48 }).map((_, i) => {
+                    const hrs = Math.floor(i / 2);
+                    const mins = i % 2 === 0 ? '00' : '30';
+                    const ampm = hrs < 12 ? 'AM' : 'PM';
+                    const displayHrs = hrs % 12 || 12;
+                    const timeStr = `${displayHrs.toString().padStart(2, '0')}:${mins} ${ampm}`;
+                    return <option key={timeStr} value={timeStr}>{timeStr}</option>;
+                  })}
+                </select>
               </div>
             </div>
 

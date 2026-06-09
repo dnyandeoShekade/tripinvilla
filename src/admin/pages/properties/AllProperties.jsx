@@ -89,7 +89,18 @@ export default function AllProperties() {
 
   // ─── Rooms (for Hotel / Resort) ──────────────────────
   const [roomsList, setRoomsList] = useState([]);
-  const [roomForm, setRoomForm] = useState({ roomType: 'Deluxe', roomName: '', pricePerNight: '', maxGuests: 2, bedType: 'Double', count: 1, amenities: [] });
+  const [roomForm, setRoomForm] = useState({ 
+    roomType: 'Deluxe', 
+    roomName: '', 
+    pricePerNight: '', 
+    originalPrice: '', 
+    taxAmount: '', 
+    offer: '', 
+    maxGuests: 2, 
+    bedType: 'Double', 
+    count: 1, 
+    amenities: [] 
+  });
   const [editingRoomIdx, setEditingRoomIdx] = useState(null); // index of room being edited
   const [customRoomType, setCustomRoomType] = useState('');
   const [roomTypes, setRoomTypes] = useState([]);
@@ -241,6 +252,16 @@ export default function AllProperties() {
     }
   };
 
+  const fetchStatesListOnly = async (countryId) => {
+    try {
+      const res = await fetch(`${API}/masters/states/active?country_id=${countryId}`);
+      const data = await res.json();
+      setStates(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const fetchCities = async (stateId) => {
     try {
       const res = await fetch(`${API}/masters/cities/active?state_id=${stateId}`);
@@ -254,12 +275,32 @@ export default function AllProperties() {
     }
   };
 
+  const fetchCitiesListOnly = async (stateId) => {
+    try {
+      const res = await fetch(`${API}/masters/cities/active?state_id=${stateId}`);
+      const data = await res.json();
+      setCities(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const fetchAreas = async (cityId) => {
     try {
       const res = await fetch(`${API}/masters/locations/active?city_id=${cityId}`);
       const data = await res.json();
       setAreas(data);
       setSelectedArea({ id: "", name: "" });
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchAreasListOnly = async (cityId) => {
+    try {
+      const res = await fetch(`${API}/masters/locations/active?city_id=${cityId}`);
+      const data = await res.json();
+      setAreas(data);
     } catch (err) {
       console.error(err);
     }
@@ -319,6 +360,17 @@ export default function AllProperties() {
   useEffect(() => {
     fetchProperties();
   }, [dateFrom, dateTo]);
+
+  useEffect(() => {
+    const handleDateChange = (e) => {
+      setDateFrom(e.detail.dateFrom);
+      setDateTo(e.detail.dateTo);
+    };
+    window.addEventListener('dashboard_date_changed', handleDateChange);
+    return () => {
+      window.removeEventListener('dashboard_date_changed', handleDateChange);
+    };
+  }, []);
 
   const openPanel = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -386,9 +438,18 @@ export default function AllProperties() {
     setSelectedExperiences(p.experiences || []);
     setLandmarksList([]); // Will need separate fetch if editing landmarks
 
-    if (p.countryId) setSelectedCountry({ id: p.countryId, name: p.countryName || "" });
-    if (p.stateId) setSelectedState({ id: p.stateId, name: p.stateName || "" });
-    if (p.cityId) setSelectedCity({ id: p.cityId, name: p.cityName || "" });
+    if (p.countryId) {
+      setSelectedCountry({ id: p.countryId, name: p.countryName || "" });
+      fetchStatesListOnly(p.countryId);
+    }
+    if (p.stateId) {
+      setSelectedState({ id: p.stateId, name: p.stateName || "" });
+      fetchCitiesListOnly(p.stateId);
+    }
+    if (p.cityId) {
+      setSelectedCity({ id: p.cityId, name: p.cityName || "" });
+      fetchAreasListOnly(p.cityId);
+    }
     if (p.locationId) setSelectedArea({ id: p.locationId, name: p.locationName || "" });
 
     setShowPanel(true);
@@ -811,18 +872,6 @@ export default function AllProperties() {
                   {propertyTypes.map(pt => (
                     <option key={pt._id} value={pt.name}>{pt.name}</option>
                   ))}
-                  {propertyTypes.length === 0 && [
-                    "Villa",
-                    "Homestay",
-                    "Resort",
-                    "Apartment",
-                    "Cottage",
-                    "Others",
-                  ].map((t) => (
-                    <option key={t} value={t}>
-                      {t}
-                    </option>
-                  ))}
                 </select>
               </div>
               <button
@@ -1235,7 +1284,7 @@ export default function AllProperties() {
                 </select>
               </div>
 
-              {/* Row 1: Property Type, Property Name, Room Type */}
+                {/* Row 1: Property Type, Property Name, Room Type — side by side */}
               <div className="form-grid-3">
                 <div className="form-group">
                   <label
@@ -1250,21 +1299,10 @@ export default function AllProperties() {
                     value={form.type}
                     onChange={handleFormChange}
                   >
-                    <option value="">Select Property Type</option>
+                    <option value="">— Select Property Type —</option>
                     {propertyTypes.map(pt => (
                       <option key={pt._id} value={pt.name}>{pt.name}</option>
                     ))}
-                    {propertyTypes.length === 0 && (
-                      <>
-                        <option value="Homestay">Homestay</option>
-                        <option value="Villa">Villa</option>
-                        <option value="Apartment">Apartment</option>
-                        <option value="Resort">Resort</option>
-                      </>
-                    )}
-                    {form.type && form.type !== 'Other' && !propertyTypes.some(pt => pt.name === form.type) && propertyTypes.length > 0 && (
-                      <option value={form.type}>{form.type}</option>
-                    )}
                     <option value="Other">Other (Add Manually)</option>
                   </select>
                   {form.type === 'Other' && (
@@ -1272,7 +1310,7 @@ export default function AllProperties() {
                       style={{ marginTop: '8px' }} 
                       type="text" 
                       className="form-input"
-                      placeholder="Enter custom property type"
+                      placeholder="e.g. Bungalow, Treehouse, Farmhouse..."
                       value={customPropertyType}
                       onChange={(e) => setCustomPropertyType(e.target.value)}
                       required
@@ -1292,7 +1330,7 @@ export default function AllProperties() {
                     name="name"
                     value={form.name}
                     onChange={handleFormChange}
-                    placeholder="Enter property name"
+                    placeholder="e.g. Aparahotel Stare Miasto, Lake View Villa"
                     required
                   />
                 </div>
@@ -1309,13 +1347,13 @@ export default function AllProperties() {
                     name="roomType"
                     value={form.roomType}
                     onChange={handleFormChange}
-                    placeholder="e.g. 1 Deluxe 4 Normal"
+                    placeholder="e.g. 1 Deluxe, 4 Normal"
                     required
                   />
                 </div>
               </div>
 
-              {/* Row 2: Owner Contact & Amenities */}
+              {/* Row 2: Owner Contact & Amenities — side by side */}
               <div className="form-grid-3">
                 <div className="form-group">
                   <label
@@ -1330,7 +1368,7 @@ export default function AllProperties() {
                     name="ownerContact"
                     value={form.ownerContact}
                     onChange={handleFormChange}
-                    placeholder="Owner contact number"
+                    placeholder="e.g. +91 98765 43210"
                     required
                   />
                 </div>
@@ -1459,10 +1497,20 @@ export default function AllProperties() {
                               transition: "all 0.15s",
                             }}
                           >
-                            <span>
-
-                            </span>
                             <span>{exp.experienceName || exp.name}</span>
+                            {isSelected && (
+                              <span
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedExperiences((prev) =>
+                                    prev.filter((x) => x !== id),
+                                  );
+                                }}
+                                style={{ fontSize: "16px", marginLeft: 4 }}
+                              >
+                                &times;
+                              </span>
+                            )}
                           </button>
                         );
                       })}
@@ -1526,7 +1574,7 @@ export default function AllProperties() {
                   <label className="form-label" style={{ fontFamily: '"Outfit", sans-serif', marginBottom: 8, fontSize: 15, color: '#111827' }}>
                     Room Types (Hotel / Resort)
                   </label>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 12, alignItems: 'flex-end' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 12, alignItems: 'flex-end' }}>
                     <div>
                       <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Room Type</label>
                       <select className="form-control" value={roomForm.roomType} onChange={e => setRoomForm(p => ({ ...p, roomType: e.target.value }))}>
@@ -1545,6 +1593,18 @@ export default function AllProperties() {
                     <div>
                       <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Price/Night (₹)</label>
                       <input type="number" className="form-control" value={roomForm.pricePerNight} onChange={e => setRoomForm(p => ({ ...p, pricePerNight: e.target.value }))} placeholder="e.g. 3500" />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Room Image</label>
+                      <input type="file" className="form-control" onChange={e => setRoomForm(p => ({ ...p, imageFile: e.target.files[0] }))} accept="image/*" />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Tax Amount (₹)</label>
+                      <input type="number" className="form-control" value={roomForm.taxAmount} onChange={e => setRoomForm(p => ({ ...p, taxAmount: e.target.value }))} placeholder="e.g. 200" />
+                    </div>
+                    <div>
+                      <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Discount / Offer</label>
+                      <input type="text" className="form-control" value={roomForm.offer} onChange={e => setRoomForm(p => ({ ...p, offer: e.target.value }))} placeholder="e.g. 10% Off" />
                     </div>
                     <div>
                       <label style={{ fontSize: 12, color: '#4B5563', marginBottom: 4, display: 'block' }}>Bed Type</label>

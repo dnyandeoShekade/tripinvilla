@@ -275,3 +275,12 @@
     width: 100% !important;
   }
 }
+
+/* Enquiries Responsive Fixes */
+@media (max-width: 640px) {
+  .hidden-mobile { display: none !important; }
+  .visible-mobile { display: flex !important; }
+  .enquiries-toolbar { flex-direction: column; align-items: stretch !important; }
+  .enquiries-filters-wrap { flex-direction: column; align-items: stretch !important; width: 100%; }
+  .enquiries-filters-wrap > div, .enquiries-filters-wrap > input, .enquiries-filters-wrap > button { width: 100%; }
+}
