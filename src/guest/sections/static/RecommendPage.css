@@ -290,3 +290,552 @@
 
 
 
+/* ==========================================================================
+   RECOMMENDED BY US PAGE MOBILE RESPONSIVE
+   ========================================================================== */
+
+/* ─── Tablets & Small Laptops (1024px - 1200px) ─── */
+@media (max-width: 1200px) {
+  .recommend-main-container {
+    max-width: calc(100% - 80px);
+  }
+
+  .dashboard-hero-banner {
+    padding: 30px 40px;
+    height: 360px;
+  }
+
+  .dashboard-hero-title {
+    font-size: 44px;
+  }
+
+  .recommend-cards-grid {
+    grid-gap: 24px;
+  }
+}
+
+/* ─── Tablet Portrait (900px) ─── */
+@media (max-width: 900px) {
+  .recommend-main-container {
+    max-width: calc(100% - 40px);
+    margin-top: 40px;
+  }
+
+  .dashboard-hero-banner {
+    height: 300px;
+    padding: 20px 20px;
+  }
+
+  .dashboard-hero-title {
+    font-size: 36px;
+  }
+
+  .recommend-header-row {
+    margin-bottom: 32px;
+  }
+
+  .recommend-header-title {
+    font-size: 28px;
+  }
+
+  .recommend-header-sub {
+    font-size: 13px;
+  }
+
+  .recommend-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 20px;
+  }
+
+  .recommend-property-card {
+    padding: 18px;
+  }
+
+  .recommend-card-img-wrap {
+    height: 200px;
+  }
+
+  .recommend-card-name-text {
+    font-size: 18px;
+  }
+
+  .recommend-specs-2x2-grid {
+    grid-gap: 10px 12px;
+  }
+
+  .recommend-spec-pill {
+    font-size: 11px;
+  }
+}
+
+/* ─── Tablet Small / Large Mobile (768px) ─── */
+@media (max-width: 768px) {
+  .recommend-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 18px;
+  }
+
+  .recommend-property-card {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .recommend-card-img-wrap {
+    height: 180px;
+    border-radius: 15px;
+  }
+
+  .recommend-heart-circle {
+    width: 34px;
+    height: 34px;
+    top: 12px;
+    right: 12px;
+  }
+
+  .recommend-heart-circle svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .recommend-card-name-text {
+    font-size: 16px;
+  }
+
+  .recommend-card-location-row {
+    font-size: 12px;
+  }
+
+  .recommend-specs-2x2-grid {
+    grid-gap: 8px 10px;
+    padding: 12px 0;
+  }
+
+  .recommend-spec-pill {
+    font-size: 10px;
+    gap: 6px;
+  }
+
+  .recommend-spec-pill img {
+    width: 12px;
+    height: 12px;
+  }
+
+  .price-green-bold {
+    font-size: 16px;
+  }
+
+  .recommend-price-tag-row {
+    font-size: 12px;
+  }
+
+  .recommend-actions-row {
+    gap: 8px;
+  }
+
+  .recommend-details-btn-blue,
+  .recommend-contact-btn-green {
+    height: 38px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+}
+
+/* ─── Mobile Large (640px) ─── */
+@media (max-width: 640px) {
+  .recommend-main-container {
+    max-width: calc(100% - 32px);
+    margin-top: 32px;
+  }
+
+  .dashboard-hero-banner {
+    height: 240px;
+    padding: 20px 16px !important;
+  }
+
+  .dashboard-hero-title {
+    font-size: 28px;
+    margin-top: 60px !important;
+  }
+
+  .recommend-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .recommend-header-title {
+    font-size: 24px;
+  }
+
+  .recommend-header-sub {
+    font-size: 14px;
+  }
+
+  .recommend-filter-btn {
+    padding: 6px 14px 6px 8px;
+    font-size: 13px;
+  }
+
+  .recommend-filter-btn img {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Mobile filter panel */
+  .filter-panel-box {
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 16px !important;
+    margin: 12px 0 !important;
+  }
+
+  .filter-panel-box input {
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+  }
+
+  .filter-panel-box label {
+    font-size: 10px !important;
+  }
+
+  /* Single column grid for mobile */
+  .recommend-cards-grid {
+    grid-template-columns: 1fr !important;
+    grid-gap: 16px !important;
+  }
+
+  .recommend-property-card {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .recommend-card-img-wrap {
+    height: 200px;
+  }
+
+  .recommend-heart-circle {
+    width: 36px;
+    height: 36px;
+    top: 12px;
+    right: 12px;
+  }
+
+  .recommend-heart-circle svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .recommend-card-name-text {
+    font-size: 17px;
+    line-height: 1.3;
+  }
+
+  .recommend-card-location-row {
+    font-size: 12px;
+  }
+
+  .recommend-card-location-row svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .recommend-specs-2x2-grid {
+    padding: 12px 0;
+    grid-gap: 8px 10px;
+  }
+
+  .recommend-spec-pill {
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  .recommend-spec-pill img {
+    width: 12px;
+    height: 12px;
+  }
+
+  .price-green-bold {
+    font-size: 17px;
+  }
+
+  .recommend-price-tag-row {
+    font-size: 12px;
+  }
+
+  .recommend-actions-row {
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .recommend-details-btn-blue,
+  .recommend-contact-btn-green {
+    height: 40px;
+    font-size: 13px;
+  }
+}
+
+/* ─── Mobile Medium (480px) ─── */
+@media (max-width: 480px) {
+  .recommend-main-container {
+    max-width: calc(100% - 24px);
+    margin-top: 24px;
+  }
+
+  .dashboard-hero-banner {
+    height: 200px !important;
+    padding: 16px 12px !important;
+  }
+
+  .dashboard-hero-title {
+    font-size: 24px !important;
+    margin-top: 50px !important;
+  }
+
+  .recommend-header-title {
+    font-size: 20px;
+  }
+
+  .recommend-header-sub {
+    font-size: 13px;
+  }
+
+  .recommend-filter-btn {
+    padding: 5px 12px 5px 6px;
+    font-size: 12px;
+  }
+
+  .recommend-filter-btn img {
+    width: 24px;
+    height: 24px;
+  }
+
+  .filter-panel-box {
+    padding: 12px !important;
+  }
+
+  .recommend-cards-grid {
+    grid-gap: 14px !important;
+  }
+
+  .recommend-property-card {
+    padding: 14px;
+    border-radius: 18px;
+  }
+
+  .recommend-card-img-wrap {
+    height: 180px;
+    border-radius: 12px;
+  }
+
+  .recommend-heart-circle {
+    width: 32px;
+    height: 32px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .recommend-heart-circle svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .recommend-card-name-text {
+    font-size: 16px;
+  }
+
+  .recommend-card-location-row {
+    font-size: 11px;
+  }
+
+  .recommend-card-location-row svg {
+    width: 11px;
+    height: 11px;
+  }
+
+  .recommend-specs-2x2-grid {
+    padding: 10px 0;
+    grid-gap: 6px 8px;
+  }
+
+  .recommend-spec-pill {
+    font-size: 10px;
+    gap: 5px;
+  }
+
+  .recommend-spec-pill img {
+    width: 11px;
+    height: 11px;
+  }
+
+  .price-green-bold {
+    font-size: 16px;
+  }
+
+  .recommend-price-tag-row {
+    font-size: 11px;
+  }
+
+  .recommend-actions-row {
+    gap: 6px;
+  }
+
+  .recommend-details-btn-blue,
+  .recommend-contact-btn-green {
+    height: 36px;
+    font-size: 12px;
+  }
+}
+
+/* ─── Mobile Small (360px) ─── */
+@media (max-width: 360px) {
+  .recommend-main-container {
+    max-width: calc(100% - 16px);
+  }
+
+  .dashboard-hero-banner {
+    height: 180px !important;
+    padding: 12px 8px !important;
+  }
+
+  .dashboard-hero-title {
+    font-size: 20px !important;
+    margin-top: 40px !important;
+  }
+
+  .recommend-header-row {
+    gap: 12px;
+  }
+
+  .recommend-header-title {
+    font-size: 18px;
+  }
+
+  .recommend-header-sub {
+    font-size: 12px;
+  }
+
+  .recommend-filter-btn {
+    padding: 4px 10px 4px 4px;
+    font-size: 11px;
+  }
+
+  .recommend-filter-btn img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .recommend-cards-grid {
+    grid-gap: 12px !important;
+  }
+
+  .recommend-property-card {
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .recommend-card-img-wrap {
+    height: 160px;
+    border-radius: 10px;
+  }
+
+  .recommend-heart-circle {
+    width: 30px;
+    height: 30px;
+    top: 8px;
+    right: 8px;
+  }
+
+  .recommend-heart-circle svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  .recommend-card-name-text {
+    font-size: 15px;
+  }
+
+  .recommend-card-location-row {
+    font-size: 10px;
+  }
+
+  .recommend-card-location-row svg {
+    width: 10px;
+    height: 10px;
+  }
+
+  .recommend-specs-2x2-grid {
+    padding: 8px 0;
+    grid-gap: 4px 6px;
+  }
+
+  .recommend-spec-pill {
+    font-size: 9px;
+    gap: 4px;
+  }
+
+  .recommend-spec-pill img {
+    width: 10px;
+    height: 10px;
+  }
+
+  .price-green-bold {
+    font-size: 14px;
+  }
+
+  .recommend-price-tag-row {
+    font-size: 10px;
+  }
+
+  .recommend-details-btn-blue,
+  .recommend-contact-btn-green {
+    height: 34px;
+    font-size: 11px;
+  }
+}
+
+/* ─── Touch Enhancements for Mobile ─── */
+@media (max-width: 640px) {
+  .recommend-property-card {
+    cursor: pointer;
+  }
+
+  .recommend-heart-circle,
+  .recommend-details-btn-blue,
+  .recommend-contact-btn-green,
+  .recommend-filter-btn {
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    touch-action: manipulation;
+  }
+
+  /* Ensure buttons have enough touch target */
+  .recommend-heart-circle {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .recommend-details-btn-blue,
+  .recommend-contact-btn-green {
+    min-height: 44px;
+  }
+
+  .recommend-filter-btn {
+    min-height: 44px;
+  }
+
+  /* Better spacing for touch */
+  .recommend-header-row {
+    gap: 16px;
+  }
+
+  /* Improved readability on mobile */
+  .recommend-card-name-text {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .recommend-spec-pill span {
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+}
