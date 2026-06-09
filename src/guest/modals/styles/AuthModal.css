@@ -150,6 +150,90 @@
 
 .mt-36 { margin-top: 36px; }
 
+/* Social buttons */
+.auth-social-btn {
+  background: #f4f6f8;
+  border: none;
+  border-radius: 10px;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.auth-social-btn-login {
+  background: #F3F4F6;
+  border-radius: 8px;
+  width: 42px;
+  height: 42px;
+}
+
+.auth-social-btn:hover {
+  background-color: #e5e7eb;
+}
+
+.auth-social-btn-login:hover {
+  background-color: #e5e7eb;
+}
+
+/* Forgot password button */
+.auth-forgot-btn {
+  background: none;
+  border: none;
+  color: #58A429;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: none;
+}
+
+.auth-forgot-btn:hover {
+  text-decoration: underline;
+}
+
+/* Separator and divider elements */
+.auth-separator-line {
+  width: 100%;
+  border-top: 1px dotted #D1D5DB;
+  margin: 24px 0 12px 0;
+}
+
+.auth-divider-section {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 12px 0 24px 0;
+}
+
+.auth-divider-line {
+  flex: 1;
+  border-top: 1px dotted #D1D5DB;
+}
+
+.auth-divider-text {
+  padding: 0 16px;
+  font-size: 13px;
+  color: #9CA3AF;
+}
+
+/* Login specific divider */
+.auth-login-separator-line {
+  width: 100%;
+  border-top: 1px dotted #D1D5DB;
+  margin: 24px 0 8px 0;
+}
+
+.auth-login-divider-section {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 20px 0;
+}
+
 .auth-social-row {
   display: flex;
   justify-content: center;
@@ -186,9 +270,15 @@
 }
 
 /* Split login layout */
-.auth-login-split-container { display: flex; width: 100%; height: 100%; }
+.auth-login-split-container { 
+  display: flex; 
+  width: 100%; 
+  height: 100%; 
+  flex: 1;
+}
+
 .auth-login-left-image {
-  width: 480px;
+  width: 550px;
   min-width: 380px;
   flex: 0 0 auto;
   height: 100%;
@@ -199,7 +289,27 @@
   align-items: center;
   justify-content: center;
   border-radius: 25px 0 0 25px;
+  overflow: hidden;
 }
+
+.auth-login-left-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  border-radius: 0;
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+}
+
+/* Image hover effect for desktop */
+@media (min-width: 1025px) and (hover: hover) {
+  .auth-login-left-image img:hover {
+    transform: scale(1.15);
+  }
+}
+
 .auth-login-right-content {
   flex: 1;
   padding: 50px 80px;
@@ -209,11 +319,14 @@
   box-sizing: border-box;
   overflow-y: auto;
   max-height: 100%;
+  position: relative;
 }
+
 .auth-login-form {
   display: flex;
   flex-direction: column;
   width: 100%;
+  gap: 16px;
 }
 
 /* Scrollbar styling */
@@ -228,3 +341,9 @@
 .auth-signup-content, .auth-login-right-content { scrollbar-width: thin; scrollbar-color: rgba(156, 163, 175, 0.4) transparent; }
 
 .auth-textarea-field { resize: none; line-height: 1.5; min-height: 100px; }
+
+/* ==========================================================================
+   RESPONSIVE STYLES
+   Mobile and tablet responsive styles are located in:
+   → AuthModal-responsive.css
+   ========================================================================== */

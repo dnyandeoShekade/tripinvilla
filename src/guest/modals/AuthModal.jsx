@@ -41,12 +41,12 @@ export default function AuthModal(props) {
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
-        <button className="auth-close-btn" style={{ position: 'absolute', top: '24px', right: '28px', background: 'none', border: 'none', fontSize: '30px', color: '#9CA3AF', cursor: 'pointer', zIndex: 100 }} onClick={() => setAuthModalOpen(false)}>&times;</button>
+        <button className="auth-close-btn" onClick={() => setAuthModalOpen(false)}>&times;</button>
         
         {authMode === 'signup' ? (
-          <div className="auth-signup-content fade-in" style={{ width: '100%', boxSizing: 'border-box' }}>
+          <div className="auth-signup-content fade-in">
             
-            <h2 className="auth-modal-title" style={{ textAlign: 'center', fontFamily: "'Lato', sans-serif", fontSize: '32px', fontWeight: '500', color: '#111827', lineHeight: '1.35', marginBottom: '32px' }}>
+            <h2 className="auth-modal-title">
               Sign Up To <br />Find Your <span style={{ backgroundColor: '#0066ff', color: '#FFFFFF', padding: '2px 14px', borderRadius: '0px', display: 'inline-block', fontWeight: '700' }}>Perfect Stay</span>
             </h2>
             
@@ -97,7 +97,7 @@ export default function AuthModal(props) {
                 </div>
               </div>
 
-              <button type="submit" className="auth-submit-btn-green" style={{ width: '100%', borderRadius: '15px', fontSize: '16px', fontWeight: '600', backgroundColor: '#58A429', color: '#FFFFFF', border: 'none', cursor: 'pointer', marginTop: '8px', height: '48px', transition: 'background-color 0.2s' }}>{authLoading ? 'Registering...' : 'Continue'}</button>
+              <button type="submit" className="auth-submit-btn-green">{authLoading ? 'Registering...' : 'Continue'}</button>
             </form>
 
             {/* Dotted separator line */}
@@ -111,8 +111,8 @@ export default function AuthModal(props) {
             </div>
 
             {/* Official Brand square social items */}
-            <div className="auth-social-row" style={{ display: 'flex', gap: '32px', justifyContent: 'center', marginBottom: '24px' }}>
-              <button style={{ background: '#f4f6f8', border: 'none', borderRadius: '10px', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background-color 0.2s' }} onClick={() => handleOAuthLogin('google')}>
+            <div className="auth-social-row">
+              <button className="auth-social-btn" onClick={() => handleOAuthLogin('google')}>
                 <svg width="24" height="24" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -120,37 +120,42 @@ export default function AuthModal(props) {
                   <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z"/>
                 </svg>
               </button>
-              <button style={{ background: '#f4f6f8', border: 'none', borderRadius: '10px', width: '50px', height: '50px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background-color 0.2s' }} onClick={() => handleOAuthLogin('facebook')}>
+              <button className="auth-social-btn" onClick={() => handleOAuthLogin('facebook')}>
                 <svg width="24" height="24" viewBox="0 0 24 24">
                   <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                 </svg>
               </button>
             </div>
 
-            <div className="auth-footer-links" style={{ textAlign: 'center' }}>
-              <p className="auth-switch-text" style={{ fontSize: '14px', color: '#4B5563', margin: '6px 0' }}>
-                Already have an account? <span className="auth-link-green" style={{ color: '#58A429', fontWeight: '600', cursor: 'pointer', textDecoration: 'none' }} onClick={() => setAuthMode('login')}>Log In</span>
+            <div className="auth-footer-links">
+              <p className="auth-switch-text">
+                Already have an account? <span className="auth-link-green" onClick={() => setAuthMode('login')}>Log In</span>
               </p>
-              <p className="auth-switch-text" style={{ fontSize: '14px', color: '#4B5563', margin: '6px 0' }}>
-                <span className="auth-link-owner" style={{ color: '#58A429', fontWeight: '600', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => { window.location.href = token ? `/owner/login?token=${token}` : '/owner/login'; setAuthModalOpen(false); }}>Log In as a Property Owner</span>
+              <p className="auth-switch-text">
+                <span className="auth-link-owner" onClick={() => { window.location.href = token ? `/owner/login?token=${token}` : '/owner/login'; setAuthModalOpen(false); }}>Log In as a Property Owner</span>
               </p>
             </div>
           </div>
         ) : (
-          <div className="auth-login-split-container fade-in" style={{ display: 'flex', width: '100%', height: '100%', flex: 1 }}>
+          <div className="auth-login-split-container fade-in">
             {/* Left side scenic Sunset pool image with clean CSS Glassmorphism Box */}
-            <div className="auth-login-left-image" style={{ width: '550px', flexShrink: 0, height: '100%', display: 'block', overflow: 'hidden', position: 'relative' }}>
-              <img src={loginLeftImg} alt="Sign In / Sign Up" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', display: 'block', borderRadius: '0', transform: 'scale(1.15)' }} />
+            <div className="auth-login-left-image">
+              <img 
+                src={loginLeftImg} 
+                alt="Sign In / Sign Up" 
+                loading="eager"
+                decoding="async"
+              />
             </div>
 
             {/* Right side Log In form fields */}
-            <div className="auth-login-right-content" style={{ flex: 1, padding: '50px 80px', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxSizing: 'border-box', position: 'relative' }}>
+            <div className="auth-login-right-content">
               
-              <h2 className="auth-modal-title login-title-align" style={{ fontFamily: "'Lato', sans-serif", fontSize: '24px', fontWeight: '400', color: '#374151', lineHeight: '1.4', marginBottom: '24px' }}>
+              <h2 className="auth-modal-title login-title-align">
                 Log In Your Account To <br />Find Your <span style={{ backgroundColor: '#0066FF', color: '#FFFFFF', padding: '2px 10px', borderRadius: '4px', marginLeft: '6px', fontWeight: '700', display: 'inline-block' }}>Perfect Stay</span>
               </h2>
               
-              <form onSubmit={handleLoginSubmit} className="auth-login-form" autoComplete="off" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              <form onSubmit={handleLoginSubmit} className="auth-login-form" autoComplete="off">
                 <div className="auth-form-group full-width">
                   <label className="auth-input-label">Email Address*</label>
                   <input type="text" className="auth-input-field" placeholder="jhondoe@gmail.com" value={loginEmail} onChange={(e) => setLoginEmail(e.target.value)} required autoComplete="off" />
@@ -171,16 +176,14 @@ export default function AuthModal(props) {
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2px', marginBottom: '8px' }}>
                   <button
                     type="button"
+                    className="auth-forgot-btn"
                     onClick={() => setShowForgotPwd(true)}
-                    style={{ background: 'none', border: 'none', color: '#58A429', fontSize: '12px', fontWeight: 600, cursor: 'pointer', padding: 0 }}
-                    onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
-                    onMouseOut={(e) => e.target.style.textDecoration = 'none'}
                   >
                     Forgot Password?
                   </button>
                 </div>
 
-                <button type="submit" className="auth-submit-btn-green" style={{ width: '100%', borderRadius: '8px', fontSize: '15px', fontWeight: '600', backgroundColor: '#58A429', color: '#FFFFFF', border: 'none', cursor: 'pointer', height: '46px', transition: 'background-color 0.2s', marginTop: '4px' }}>
+                <button type="submit" className="auth-submit-btn-green">
                   {authLoading ? 'Logging In...' : 'Continue'}
                 </button>
               </form>
@@ -195,8 +198,8 @@ export default function AuthModal(props) {
                 <div style={{ flex: 1, borderTop: '1px dotted #D1D5DB' }}></div>
               </div>
 
-              <div className="auth-social-row" style={{ display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '8px' }}>
-                <button style={{ background: '#F3F4F6', border: 'none', borderRadius: '8px', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background-color 0.2s' }} onClick={() => handleOAuthLogin('google')}>
+              <div className="auth-social-row">
+                <button className="auth-social-btn auth-social-btn-login" onClick={() => handleOAuthLogin('google')}>
                   <svg width="20" height="20" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -204,7 +207,7 @@ export default function AuthModal(props) {
                     <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.85c.87-2.6 3.3-4.53 6.16-4.53z"/>
                   </svg>
                 </button>
-                <button style={{ background: '#F3F4F6', border: 'none', borderRadius: '8px', width: '42px', height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: 'background-color 0.2s' }} onClick={() => handleOAuthLogin('facebook')}>
+                <button className="auth-social-btn auth-social-btn-login" onClick={() => handleOAuthLogin('facebook')}>
                   <svg width="20" height="20" viewBox="0 0 24 24">
                     <path fill="#1877F2" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
                   </svg>
@@ -213,10 +216,10 @@ export default function AuthModal(props) {
 
               <div className="auth-footer-links">
                 <p className="auth-switch-text">
-                  Don't have an account? <span className="auth-link-green" style={{ color: '#58A429', fontWeight: '600', cursor: 'pointer', textDecoration: 'none' }} onClick={() => setAuthMode('signup')}>Sign Up</span>
+                  Don't have an account? <span className="auth-link-green" onClick={() => setAuthMode('signup')}>Sign Up</span>
                 </p>
                 <p className="auth-switch-text">
-                  <span className="auth-link-owner" style={{ color: '#58A429', fontWeight: '600', cursor: 'pointer', textDecoration: 'underline' }} onClick={() => { window.location.href = token ? `/owner/login?token=${token}` : '/owner/login'; setAuthModalOpen(false); }}>Log in as a Property Owner</span>
+                  <span className="auth-link-owner" onClick={() => { window.location.href = token ? `/owner/login?token=${token}` : '/owner/login'; setAuthModalOpen(false); }}>Log in as a Property Owner</span>
                 </p>
               </div>
             </div>

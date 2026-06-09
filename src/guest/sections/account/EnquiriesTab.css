@@ -77,3 +77,454 @@
   margin: 0;
 }
 
+/* ==========================================================================
+   ENQUIRIES TAB MOBILE RESPONSIVE STYLES
+   ========================================================================== */
+
+/* ─── Tablets & Small Laptops (1024px - 1200px) ─── */
+@media (max-width: 1200px) {
+  .dashboard-content-box {
+    max-width: calc(100% - 80px);
+  }
+  .dashboard-hero-banner {
+    padding: 30px 40px;
+    height: 360px;
+  }
+  .dashboard-hero-title {
+    font-size: 44px;
+  }
+}
+
+/* ─── Tablet Portrait (900px) ─── */
+@media (max-width: 900px) {
+  .dashboard-content-box {
+    max-width: calc(100% - 40px);
+    margin-top: 32px;
+  }
+  .dashboard-hero-banner {
+    height: 300px;
+    padding: 20px 20px;
+  }
+  .dashboard-hero-title {
+    font-size: 36px;
+  }
+  
+  .dashboard-capsule-nav {
+    flex-wrap: wrap;
+    padding: 10px 16px;
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center;
+  }
+  .capsule-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .list-card-img-wrap {
+    width: 120px !important;
+    height: 120px !important;
+    margin: 12px !important;
+    margin-right: 0 !important;
+  }
+
+  .list-card-details {
+    padding: 18px !important;
+  }
+}
+
+/* ─── Mobile Large (640px) ─── */
+@media (max-width: 640px) {
+  .dashboard-content-box {
+    max-width: calc(100% - 32px);
+  }
+  .dashboard-hero-banner {
+    height: 240px;
+    padding: 20px 16px !important;
+  }
+  .dashboard-hero-title {
+    font-size: 28px;
+    margin-top: 60px !important;
+  }
+
+  .dashboard-section-main {
+    font-size: 24px;
+  }
+
+  .dashboard-section-sub {
+    font-size: 14px;
+  }
+
+  .wishlist-title-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  /* Mobile filter panel */
+  .filter-panel-box {
+    flex-direction: column !important;
+    gap: 16px !important;
+    padding: 16px !important;
+  }
+
+  .filter-panel-box > div:last-child {
+    width: 100% !important;
+  }
+
+  /* Mobile capsule navigation - horizontal scroll */
+  .dashboard-capsule-nav {
+    width: 100% !important;
+    overflow-x: auto !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    padding: 10px 16px !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #D1D5DB #F3F4F6 !important;
+  }
+
+  .dashboard-capsule-nav::-webkit-scrollbar {
+    height: 6px !important;
+  }
+
+  .dashboard-capsule-nav::-webkit-scrollbar-track {
+    background: #F3F4F6 !important;
+    border-radius: 10px !important;
+  }
+
+  .dashboard-capsule-nav::-webkit-scrollbar-thumb {
+    background: #D1D5DB !important;
+    border-radius: 10px !important;
+  }
+
+  .capsule-btn {
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    padding: 10px 20px !important;
+    font-size: 13px !important;
+  }
+
+  /* Mobile Enquiry Cards */
+  .dashboard-list-items-stack {
+    gap: 16px !important;
+    margin-top: 24px !important;
+  }
+
+  .dashboard-list-card {
+    flex-direction: column !important;
+    padding: 16px !important;
+    border-radius: 16px !important;
+  }
+
+  .dashboard-list-card > div:first-child {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  .list-card-img-wrap {
+    width: 100% !important;
+    height: 200px !important;
+    margin: 0 !important;
+    border-radius: 12px !important;
+    align-self: stretch !important;
+  }
+
+  .list-card-details {
+    padding: 0 !important;
+    flex: 1 !important;
+  }
+
+  .list-card-title {
+    font-size: 16px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .list-card-location {
+    font-size: 12px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .list-card-question {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Status badge responsive */
+  .dashboard-list-card span[style*="padding: 4px 10px"] {
+    font-size: 11px !important;
+    padding: 3px 8px !important;
+  }
+
+  /* Reply section mobile */
+  .dashboard-list-card > div:last-child[style*="marginLeft"] {
+    margin-left: 0 !important;
+    margin-top: 12px !important;
+    padding: 10px 12px !important;
+  }
+
+  .dashboard-list-card > div:last-child strong {
+    font-size: 11px !important;
+  }
+
+  .dashboard-list-card > div:last-child p {
+    font-size: 12px !important;
+  }
+}
+
+/* ─── Mobile Medium (480px) ─── */
+@media (max-width: 480px) {
+  .dashboard-content-box {
+    max-width: calc(100% - 24px);
+    margin-top: 24px !important;
+  }
+
+  .dashboard-hero-banner {
+    height: 200px !important;
+    padding: 16px 12px !important;
+  }
+
+  .dashboard-hero-title {
+    font-size: 24px !important;
+    margin-top: 50px !important;
+  }
+
+  .dashboard-section-main {
+    font-size: 20px !important;
+  }
+
+  .dashboard-section-sub {
+    font-size: 13px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .btn-wishlist-filter {
+    padding: 6px 14px 6px 8px !important;
+    font-size: 13px !important;
+  }
+
+  .btn-wishlist-filter img {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .filter-panel-box {
+    padding: 12px !important;
+    margin: 12px 0 !important;
+  }
+
+  .filter-panel-box input,
+  .filter-panel-box select {
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+  }
+
+  .filter-panel-box label {
+    font-size: 10px !important;
+  }
+
+  .dashboard-capsule-nav {
+    padding: 8px 12px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .capsule-btn {
+    padding: 8px 16px !important;
+    font-size: 12px !important;
+    gap: 6px !important;
+  }
+
+  .capsule-btn svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  /* Enquiry Cards Mobile Medium */
+  .dashboard-list-items-stack {
+    gap: 14px !important;
+  }
+
+  .dashboard-list-card {
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+
+  .list-card-img-wrap {
+    height: 180px !important;
+    border-radius: 10px !important;
+  }
+
+  .list-card-title {
+    font-size: 15px !important;
+  }
+
+  .list-card-location {
+    font-size: 11px !important;
+  }
+
+  .list-card-location svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+
+  .list-card-question {
+    font-size: 12px !important;
+  }
+
+  /* Status badge smaller */
+  .dashboard-list-card span[style*="padding: 4px 10px"] {
+    font-size: 10px !important;
+    padding: 2px 6px !important;
+  }
+
+  /* Reply section compact */
+  .dashboard-list-card > div:last-child[style*="marginLeft"] {
+    padding: 8px 10px !important;
+  }
+
+  .dashboard-list-card > div:last-child strong {
+    font-size: 10px !important;
+  }
+
+  .dashboard-list-card > div:last-child p {
+    font-size: 11px !important;
+  }
+}
+
+/* ─── Mobile Small (360px) ─── */
+@media (max-width: 360px) {
+  .dashboard-content-box {
+    max-width: calc(100% - 16px);
+  }
+
+  .dashboard-hero-banner {
+    height: 180px !important;
+    padding: 12px 8px !important;
+  }
+
+  .dashboard-hero-title {
+    font-size: 20px !important;
+    margin-top: 40px !important;
+  }
+
+  .dashboard-section-main {
+    font-size: 18px !important;
+  }
+
+  .wishlist-title-header-row {
+    gap: 12px !important;
+  }
+
+  .btn-wishlist-filter {
+    padding: 5px 12px 5px 6px !important;
+    font-size: 12px !important;
+  }
+
+  .btn-wishlist-filter img {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  .dashboard-capsule-nav {
+    padding: 6px 8px !important;
+  }
+
+  .capsule-btn {
+    padding: 6px 12px !important;
+    font-size: 11px !important;
+  }
+
+  .capsule-btn svg {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  /* Enquiry Cards Extra Small */
+  .dashboard-list-items-stack {
+    gap: 12px !important;
+  }
+
+  .dashboard-list-card {
+    padding: 12px !important;
+    border-radius: 12px !important;
+  }
+
+  .list-card-img-wrap {
+    height: 160px !important;
+    border-radius: 8px !important;
+  }
+
+  .list-card-title {
+    font-size: 14px !important;
+  }
+
+  .list-card-location {
+    font-size: 10px !important;
+  }
+
+  .list-card-location svg {
+    width: 10px !important;
+    height: 10px !important;
+  }
+
+  .list-card-question {
+    font-size: 11px !important;
+  }
+
+  /* Status badge extra small */
+  .dashboard-list-card span[style*="padding: 4px 10px"] {
+    font-size: 9px !important;
+    padding: 2px 5px !important;
+  }
+
+  /* Reply section extra compact */
+  .dashboard-list-card > div:last-child[style*="marginLeft"] {
+    padding: 6px 8px !important;
+    margin-top: 10px !important;
+  }
+
+  .dashboard-list-card > div:last-child strong {
+    font-size: 9px !important;
+  }
+
+  .dashboard-list-card > div:last-child p {
+    font-size: 10px !important;
+  }
+}
+
+/* ─── Touch Enhancements for Mobile ─── */
+@media (max-width: 640px) {
+  .dashboard-list-card {
+    cursor: pointer !important;
+  }
+
+  .btn-wishlist-filter,
+  .capsule-btn {
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1) !important;
+    touch-action: manipulation !important;
+  }
+
+  .dashboard-capsule-nav {
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Ensure buttons have enough touch target */
+  .capsule-btn {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  .btn-wishlist-filter {
+    min-height: 44px !important;
+  }
+
+  /* Better spacing for touch */
+  .dashboard-list-card > div:first-child {
+    gap: 12px !important;
+  }
+
+  /* Improved readability on mobile */
+  .list-card-question {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+}

@@ -2,6 +2,8 @@ import { Heart, MapPin } from 'lucide-react';
 import { areaIcon, bedIcon, guestIcon, roomIcon } from '../../../assets';
 import { propertyCategories, propertiesVillasList, propertiesHomestaysList } from '../../../data/mockData';
 import './PropertiesGridPage.css';
+import '../../../guest/styles/property-categories-mobile.css';
+import { useEffect, useRef } from 'react';
 
 export default function PropertiesGridPage(props) {
   const {
@@ -18,6 +20,8 @@ export default function PropertiesGridPage(props) {
     allProperties,
   } = props;
 
+  const scrollerRef = useRef(null);
+
   const typeMap = { Apartments: 'Apartment', Homestays: 'Homestay', Resorts: 'Resort', Motels: 'Motel', Cottages: 'Cottage', Bungalows: 'Bungalow', Villas: 'Villa' };
   const activeType = typeMap[activePropCategory] || activePropCategory || 'Villa';
 
@@ -28,11 +32,29 @@ export default function PropertiesGridPage(props) {
 
   const mappedProps = mapDbProperties ? mapDbProperties(actualProps, []) : [];
 
+  // Handle scroll behavior for mobile (simplified)
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+
+    // Just ensure smooth scrolling is enabled
+    scroller.style.scrollBehavior = 'smooth';
+    
+    return () => {
+      // Cleanup if needed
+    };
+  }, []);
+
   return (
     <div className="properties-page-layout fade-in">
 
       {/* Category Scroller */}
-      <div className="properties-categories-scroller">
+      <div 
+        className="properties-categories-scroller"
+        ref={scrollerRef}
+        role="tablist"
+        aria-label="Property categories"
+      >
         <div className="properties-categories-inner">
           {propertyCategories.map((cat) => {
             const isSelected = activePropCategory === cat.name;
@@ -46,13 +68,28 @@ export default function PropertiesGridPage(props) {
                   setWhere('');
                   fetchProperties({ type: cat.name, search: '' });
                 }}
+                aria-label={`Filter by ${cat.name}`}
+                role="tab"
+                aria-selected={isSelected}
+                data-category={cat.name}
               >
                 <span className="prop-cat-icon">
                   {cat.iconImg
-                    ? <img src={cat.iconImg} alt={cat.name} style={{ width: '22px', height: '22px', objectFit: 'contain' }} />
+                    ? <img 
+                        src={cat.iconImg} 
+                        alt={cat.name} 
+                        style={{ 
+                          width: '22px', 
+                          height: '22px', 
+                          objectFit: 'contain',
+                          // Responsive icon sizing
+                          maxWidth: '100%',
+                          maxHeight: '100%'
+                        }} 
+                      />
                     : cat.icon}
                 </span>
-                <span>{cat.name}</span>
+                <span className="prop-cat-text">{cat.name}</span>
               </button>
             );
           })}

@@ -18,6 +18,7 @@
   /* Top offset 39px and centered horizontally */
   padding: 0;
   box-sizing: border-box;
+  overflow: visible;
 }
 
 /* Logo Specs: Width 176px, Height 85px, Top -10px, Left -14px */
@@ -53,10 +54,17 @@
   padding: 0 20px;
   justify-content: space-between;
   box-sizing: border-box;
+  position: relative;
+  overflow-x: hidden;
 }
 
 .nav-pill-wrapper::-webkit-scrollbar {
   display: none;
+}
+
+.nav-pill-wrapper {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
 
 .nav-pill-item {
@@ -159,6 +167,7 @@
   padding: 24px 32px;
   z-index: 10;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 /* Tabs row specs: Width 445px, Height 32px, Top 29px, Left 417.5px (Centered) */

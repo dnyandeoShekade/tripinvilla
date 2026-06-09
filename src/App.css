@@ -3,6 +3,7 @@
 
 /* ── Core Pages ─────────────────────────────────────── */
 @import "./guest/styles/00-home-hero-section.css";
+@import "./guest/styles/00-hero-mobile.css";
 @import "./guest/styles/00-hero-navbar-search.css";
 @import "./guest/styles/01-home-destinations-carousel.css";
 @import "./guest/styles/02-home-section-titles.css";
@@ -23,6 +24,8 @@
 
 /* ── Modals (one CSS per modal component) ────────────── */
 @import "./guest/modals/styles/AuthModal.css";
+@import "./guest/modals/styles/AuthModal-responsive.css";
+@import "./guest/modals/styles/AuthModal-mobile-image-fix.css";
 @import "./guest/modals/styles/ContactHostModal.css";
 @import "./guest/modals/styles/ReviewModal.css";
 @import "./guest/modals/styles/GalleryModal.css";
@@ -30,3 +33,6 @@
 
 /* ── Shared Widgets ──────────────────────────────────── */
 @import "./guest/styles/17-shared-widgets.css";
+
+/* ── Responsive Styles ───────────────────────────────── */
+@import "./guest/styles/home-responsive.css";

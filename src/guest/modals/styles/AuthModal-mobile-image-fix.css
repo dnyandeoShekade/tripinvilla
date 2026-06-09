@@ -1,0 +1,191 @@
+/* ==========================================================================
+   AUTH MODAL - MOBILE IMAGE FIX
+   Clean image responsiveness for mobile screens
+   ========================================================================== */
+
+/* ===== MOBILE IMAGE OVERRIDE - CLEAN AND SIMPLE ===== */
+@media (max-width: 768px) {
+  /* Force mobile image container rules */
+  .auth-login-left-image {
+    width: 100% !important;
+    height: 140px !important;
+    min-width: unset !important;
+    max-width: 100% !important;
+    flex: none !important;
+    border-radius: 16px 16px 0 0 !important;
+    overflow: hidden !important;
+    position: relative !important;
+    display: block !important;
+    background: #f3f4f6;
+  }
+
+  /* Force mobile image rules */
+  .auth-login-left-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: center center !important;
+    display: block !important;
+    border-radius: 16px 16px 0 0 !important;
+    transform: scale(1.0) !important;
+    transition: none !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+  }
+
+  /* Remove any conflicting styles */
+  .auth-login-left-image img:hover {
+    transform: scale(1.0) !important;
+  }
+}
+
+/* ===== SMALLER MOBILE SCREENS ===== */
+@media (max-width: 480px) {
+  .auth-login-left-image {
+    height: 80px !important;
+    border-radius: 12px 12px 0 0 !important;
+  }
+
+  .auth-login-left-image img {
+    border-radius: 12px 12px 0 0 !important;
+    object-position: center center !important;
+  }
+}
+
+/* ===== VERY SMALL SCREENS - HIDE IMAGE ===== */
+@media (max-width: 320px) {
+  .auth-login-left-image {
+    display: none !important;
+  }
+
+  .auth-modal-card.login-split-card {
+    border-radius: 12px !important;
+  }
+
+  .auth-login-right-content {
+    border-radius: 12px !important;
+  }
+}
+
+/* ===== LANDSCAPE MODE ===== */
+@media (max-width: 768px) and (orientation: landscape) {
+  .auth-login-left-image {
+    height: 60px !important;
+  }
+
+  .auth-login-left-image img {
+    object-position: center center !important;
+  }
+}
+/* ===== DEBUGGING AND PERFORMANCE ===== */
+@media (max-width: 768px) {
+  /* Ensure no conflicting background or content */
+  .auth-login-left-image::before,
+  .auth-login-left-image::after {
+    display: none !important;
+  }
+
+  /* Force block display and reset any flex properties */
+  .auth-login-left-image {
+    align-items: unset !important;
+    justify-content: unset !important;
+    background-size: unset !important;
+    background-position: unset !important;
+    background-image: none !important;
+  }
+
+  /* Image performance */
+  .auth-login-left-image img {
+    will-change: auto !important;
+    backface-visibility: visible !important;
+    -webkit-backface-visibility: visible !important;
+  }
+
+  /* Prevent any text or pseudo-content */
+  .auth-login-left-image * {
+    pointer-events: none;
+  }
+
+  .auth-login-left-image img {
+    pointer-events: auto;
+  }
+}
+
+/* ===== FORCE OVERRIDE ANY CONFLICTING RULES ===== */
+@media screen and (max-width: 768px) {
+  .auth-modal-card.login-split-card .auth-login-left-image {
+    width: 100% !important;
+    height: 120px !important;
+  }
+
+  .auth-modal-card.login-split-card .auth-login-left-image img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+}
+/* ===== ALTERNATIVE OBJECT FIT APPROACHES ===== */
+@media (max-width: 768px) {
+  /* Try object-fit: cover with better positioning */
+  .auth-login-left-image.cover-mode img {
+    object-fit: cover !important;
+    object-position: center 40% !important;
+  }
+
+  /* Try object-fit: contain to show full image */
+  .auth-login-left-image.contain-mode img {
+    object-fit: contain !important;
+    object-position: center center !important;
+    background: #f8f9fa;
+  }
+
+  /* Scale down approach */
+  .auth-login-left-image.scale-mode img {
+    object-fit: cover !important;
+    object-position: center center !important;
+    transform: scale(0.9) !important;
+  }
+}
+
+/* ===== RESPONSIVE HEIGHT ADJUSTMENTS ===== */
+@media (max-width: 768px) and (min-width: 641px) {
+  .auth-login-left-image {
+    height: 160px !important;
+  }
+}
+
+@media (max-width: 640px) and (min-width: 481px) {
+  .auth-login-left-image {
+    height: 140px !important;
+  }
+}
+
+@media (max-width: 480px) and (min-width: 321px) {
+  .auth-login-left-image {
+    height: 120px !important;
+  }
+
+  .auth-login-left-image img {
+    object-fit: contain !important;
+  }
+}
+
+/* ===== SPECIFIC FIX FOR IMAGE CUTTING ===== */
+@media (max-width: 768px) {
+  /* If the image has specific content that's being cut, use contain */
+  .auth-login-left-image img {
+    object-fit: contain !important;
+    object-position: center center !important;
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  }
+
+  /* Add padding inside container to prevent cutting */
+  .auth-login-left-image {
+    padding: 8px;
+    box-sizing: border-box;
+  }
+
+  .auth-login-left-image img {
+    border-radius: 8px !important;
+  }
+}
